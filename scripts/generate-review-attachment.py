@@ -120,7 +120,7 @@ def main() -> int:
             [
                 "All 85 books are free for everyone; nothing in the reading "
                 "experience is behind a paywall. "
-                "47 public-domain classics (Standard Ebooks) and 38 original "
+                "46 public-domain classics (Standard Ebooks) and 39 original "
                 "graded stories written by us.",
             ],
             False,

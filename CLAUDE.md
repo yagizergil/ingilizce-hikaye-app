@@ -198,6 +198,7 @@ gerekmiyor.
 pipeline (spaCy) değişikliği bu round'da yapılmaz.
 
 **Gerekçe:**
+
 1. `book_tokens` (surface→lemma per-occurrence) migration 009'da
    bilinçli olarak kaldırıldı; migration'ın kendi yorumu tokenizasyon/
    lemmatizasyonun cihazda yapılacağını söylüyor — bunu tersine
@@ -369,7 +370,7 @@ kapalı.
 
 **Çalışan:** Expo SDK 57 üzerinde tam bir okuma + öğrenme + gelir döngüsü.
 
-- **İçerik:** 85 yayında kitap. 47 klasik (kamu malı) + 38 özgün A1/A2
+- **İçerik:** 85 yayında kitap. 46 klasik (kamu malı) + 39 özgün A1/A2
   hikâye. Ayrıca özgün **B1** hikâyeler üretiliyor (bkz. aşağıdaki içerik
   notu). 26.071 kelimelik İngilizce-Türkçe sözlük (%100 çevirili).
 - **Okuma:** native sayfalanan reader, kelime tıklama → Türkçe karşılık,

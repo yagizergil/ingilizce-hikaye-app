@@ -165,7 +165,7 @@ The app requires no account. It creates an anonymous session on first
 launch and opens straight into the library.
 
 All 85 books are free for every user. Nothing in the reading experience is
-behind a paywall: 47 are public-domain works from Standard Ebooks and 38
+behind a paywall: 46 are public-domain works from Standard Ebooks and 39
 are original graded stories we wrote ourselves. Content rights are covered
 by public domain status and our own authorship.
 

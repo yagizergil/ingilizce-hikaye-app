@@ -83,11 +83,11 @@ Anlamadığın kelimeye dokun, Türkçe karşılığı anında açılsın.
 Cümleye uzun bas, cümlenin tamamının çevirisini gör.
 
 SENİN SEVİYENDEN BAŞLA
-Yeni başlıyorsan A1 ve A2 seviyesinde, tek oturumda bitebilecek kısa
-hikâyeler var — her biri 6-8 dakika. Sonra B1 seviyesinde biraz daha uzun
-özgün hikâyelere, oradan B2 ve üstünde dünya edebiyatının klasiklerine
-geçersin. Uygulama açılışta bir dakikalık bir
-kelime testiyle sana nereden başlayacağını söyler.
+Yeni başlıyorsan A1 ve A2 seviyesinde, tek oturumda bitebilecek 39 kısa
+hikâye var — her biri 6-8 dakika, bu uygulama için yazıldı. Hazır
+hissettiğinde B1 ve üstünde dünya edebiyatının klasiklerine geçersin.
+Uygulama açılışta bir dakikalık bir kelime testiyle sana nereden
+başlayacağını söyler.
 
 OKURKEN ÖĞREN
 Bilmediğin kelimeye dokunduğunda Türkçe karşılığı açılır. Beğendiğin
@@ -154,11 +154,11 @@ Yeni: A1 ve A2 seviyesinde, tek oturumda bitebilecek 39 özgün hikâye eklendi.
 
 ## Kategori ve yaş
 
-| Alan | Değer | Gerekçe |
-|---|---|---|
-| Birincil kategori | Eğitim | Rakiplerin tamamı burada |
-| İkincil kategori | Kitaplar | `roman`, `klasik`, `öykü` aramalarını yakalar |
-| Yaş sınırı | 4+ | İçerikte şiddet/yetişkin tema yok; `books.content_warnings` boş |
+| Alan              | Değer    | Gerekçe                                                         |
+| ----------------- | -------- | --------------------------------------------------------------- |
+| Birincil kategori | Eğitim   | Rakiplerin tamamı burada                                        |
+| İkincil kategori  | Kitaplar | `roman`, `klasik`, `öykü` aramalarını yakalar                   |
+| Yaş sınırı        | 4+       | İçerikte şiddet/yetişkin tema yok; `books.content_warnings` boş |
 
 ---
 
@@ -175,3 +175,31 @@ Yeni: A1 ve A2 seviyesinde, tek oturumda bitebilecek 39 özgün hikâye eklendi.
    Toplanan veri: hesap kimliği (anonim ya da Apple/Google), okuma
    ilerlemesi, kaydedilen kelimeler, ürün telemetrisi (migration 020).
    Üçüncü parti analitik satıcısı YOK — beyan bu yüzden dar.
+
+---
+
+## DÜZELTME (2026-09-07, yayın öncesi son doğrulama)
+
+Açıklamadaki **"Sonra B1 seviyesinde biraz daha uzun özgün hikâyelere"**
+cümlesi kaldırıldı.
+
+Veritabanından ölçüldü: B1 seviyesinde 15 kitap var ama **hiçbiri özgün
+değil** — hepsi ortalama 197 dakikalık klasikler. Özgün hikâyelerin
+tamamı (39) A1 ve A2'de.
+
+| Seviye | Kitap | Özgün | Ort. süre |
+| ------ | ----- | ----- | --------- |
+| A1     | 9     | 9     | 6 dk      |
+| A2     | 30    | 30    | 8 dk      |
+| B1     | 15    | 0     | 197 dk    |
+| B2     | 24    | 0     | 271 dk    |
+| C1     | 5     | 0     | 326 dk    |
+| C2     | 2     | 0     | 298 dk    |
+
+Var olmayan bir içeriği açıklamada vaat etmek App Store Guideline 2.3.1
+kapsamında yanıltıcı metadatadır — bu, sesli okuma maddesinde bir kez
+yaşanmış hatanın aynısıydı. Kural değişmedi: bir şey önce üründe olur,
+sonra açıklamaya yazılır.
+
+Ayrıca kaynak dağılımı düzeltildi: **46 klasik + 39 özgün** (bazı
+belgelerde 47 + 38 yazıyordu, veritabanı 46 + 39 diyor).
