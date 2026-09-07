@@ -141,7 +141,23 @@ export type PurchaseOutcome =
  * dönülüyordu; sunucu tarafı sessizce başarısız olduğunda bile kullanıcıya
  * başarı gösterilmesinin sebebi buydu.
  */
-export async function purchasePackage(pkg: PurchasesPackage): Promise<PurchaseOutcome> {
+/**
+ * Satın alma olaylarına eklenen bağlam.
+ *
+ * NEDEN: `purchase_completed` yalnızca `package_id` taşıyordu. Huni
+ * analizi için paywall'ın HANGİ tetikleyiciden açıldığı en kritik boyut —
+ * profilden gelen kullanıcı ile kitabını bitirmiş kullanıcı aynı değil.
+ * Bağlam çağıran tarafta biliniyor, bu yüzden parametre olarak geçiyor.
+ */
+export interface PurchaseContext {
+  source: string;
+  plan: string;
+}
+
+export async function purchasePackage(
+  pkg: PurchasesPackage,
+  context?: PurchaseContext,
+): Promise<PurchaseOutcome> {
   const purchases = await loadPurchases();
   if (!purchases) return { status: "error" };
 
@@ -155,7 +171,7 @@ export async function purchasePackage(pkg: PurchasesPackage): Promise<PurchaseOu
       return { status: "not_entitled" };
     }
 
-    trackEvent("purchase_completed", { package_id: pkg.identifier });
+    trackEvent("purchase_completed", { package_id: pkg.identifier, ...context });
     return { status: "success" };
   } catch (error) {
     if (
@@ -163,7 +179,7 @@ export async function purchasePackage(pkg: PurchasesPackage): Promise<PurchaseOu
       error !== null &&
       (error as { userCancelled?: boolean }).userCancelled === true
     ) {
-      trackEvent("purchase_cancelled", { package_id: pkg.identifier });
+      trackEvent("purchase_cancelled", { package_id: pkg.identifier, ...context });
       return { status: "cancelled" };
     }
     trackError("revenuecat.purchase", error, { package_id: pkg.identifier });

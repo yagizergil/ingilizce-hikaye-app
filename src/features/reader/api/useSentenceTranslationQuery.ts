@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
+import { trackEvent } from "@/lib/analytics";
 
 interface TranslateSentenceResponse {
   status: "ok" | "unavailable";
@@ -39,7 +40,18 @@ export function useSentenceTranslationQuery(sentence: string | null) {
         throw new Error("sentence_translation_request_failed");
       }
       if (!data || data.status !== "ok" || !data.translation) {
-        throw new Error(data?.reason ?? "sentence_translation_unavailable");
+        const reason = data?.reason ?? "sentence_translation_unavailable";
+
+        // Kota tavanına çarpmak bir HATA değil, bir ÜRÜN SİNYALİ: ücretsiz
+        // katmanın günlük 10 çevirisi kaç kişiye yetmiyor? Premium'un
+        // gerçekten çözdüğü bir sıkıntı mı, yoksa kimsenin çarpmadığı bir
+        // tavan mı? Bu ölçülmeden paywall metni tahmine dayanır.
+        // (Bkz. docs/plans/2026-09-07-buyume-onerileri.md, Ö12.)
+        if (reason === "free_tier_daily_limit" || reason === "rate_limited") {
+          trackEvent("ai_quota_exhausted", { reason });
+        }
+
+        throw new Error(reason);
       }
 
       return { translation: data.translation };

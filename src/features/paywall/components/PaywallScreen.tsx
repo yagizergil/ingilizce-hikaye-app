@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -69,9 +69,42 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
     options[0] ??
     null;
 
+  /**
+   * Huni ölçümü (bkz. docs/plans/2026-09-07-buyume-onerileri.md, Ö12).
+   *
+   * NEDEN: telemetri paywall'ın AÇILDIĞINI ve satın almanın BİTTİĞİNİ
+   * görüyordu ama aradaki kaybı hiç görmüyordu. "100 kişi paywall'ı açtı,
+   * 3'ü satın aldı" biliniyordu; 97'sinin nerede ve ne kadar sonra
+   * vazgeçtiği bilinmiyordu — yani hiçbir iyileştirmenin işe yarayıp
+   * yaramadığı ölçülemiyordu.
+   *
+   * `viewedAtRef` süreyi, `outcomeRef` ise kapanışın bir vazgeçme mi yoksa
+   * başarılı satın almanın doğal sonucu mu olduğunu ayırıyor —
+   * `onClose()` her iki durumda da çağrılıyor.
+   */
+  // 0 ile baslatiliyor; gercek deger asagidaki effect'te yaziliyor.
+  // `useRef(Date.now())` render sirasinda saf olmayan bir cagri olurdu.
+  const viewedAtRef = useRef(0);
+  const outcomeRef = useRef<"pending" | "purchased">("pending");
+
   useEffect(() => {
+    viewedAtRef.current = Date.now();
     trackEvent("paywall_viewed", { source });
   }, [source]);
+
+  const handleDismiss = useCallback(() => {
+    if (outcomeRef.current === "pending") {
+      trackEvent("paywall_dismissed", {
+        source,
+        seconds_on_screen: Math.round((Date.now() - viewedAtRef.current) / 1000),
+        // Plan seçtiyse niyet vardı ama fiyatta vazgeçti; hiç seçmediyse
+        // teklif en baştan tutmadı. İkisi çok farklı sorunlar.
+        selected_plan: selected?.kind ?? "none",
+        had_packages: options.length > 0,
+      });
+    }
+    onClose();
+  }, [onClose, options.length, selected, source]);
 
   const refreshStatus = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey: subscriptionQueryKeys.all });
@@ -81,7 +114,7 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
     if (!selected) return;
 
     setBusy({ kind: "purchase", id: selected.pkg.identifier });
-    const outcome = await purchasePackage(selected.pkg);
+    const outcome = await purchasePackage(selected.pkg, { source, plan: selected.kind });
 
     if (outcome.status === "cancelled") {
       setBusy(null);
@@ -100,7 +133,19 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
       return;
     }
 
-    // Apple onayladı; sunucunun webhook ile yetkiyi yazmasını bekle.
+    // Apple onayladı. Kapanış artık bir vazgeçme değil.
+    outcomeRef.current = "purchased";
+    if (selected.trial) {
+      // Deneme başlangıcı ayrı bir olay: deneme→ödeme dönüşümü ancak
+      // denemenin ne zaman başladığı bilinirse ölçülebilir.
+      trackEvent("trial_started", {
+        source,
+        plan: selected.kind,
+        trial_days: selected.trial.days,
+      });
+    }
+
+    // Sunucunun webhook ile yetkiyi yazmasını bekle.
     setBusy({ kind: "activating" });
     const confirmed = await waitForServerPremium();
     setBusy(null);
@@ -117,7 +162,7 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
     Alert.alert(t("paywall.activatingTitle"), t("paywall.activatingBody"), [
       { text: t("common.ok"), onPress: onClose },
     ]);
-  }, [onClose, refreshStatus, selected, t]);
+  }, [onClose, refreshStatus, selected, source, t]);
 
   const handleRestore = useCallback(async () => {
     setBusy({ kind: "restore" });
@@ -161,7 +206,7 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
     <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
       <View style={styles.header}>
         <Pressable
-          onPress={onClose}
+          onPress={handleDismiss}
           hitSlop={spacing.sm}
           disabled={isBusy}
           accessibilityRole="button"

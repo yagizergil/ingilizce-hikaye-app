@@ -121,6 +121,26 @@ export function ReaderScreen({
   const [pageProgress, setPageProgress] = useState({ page: 0, totalPages: 1 });
   const [chapterEnded, setChapterEnded] = useState(false);
 
+  /**
+   * Bölümü BİTİRMEDEN çıkanları ölçmek için son durumun anlık kopyası.
+   *
+   * NEDEN REF: olay, bileşen sökülürken (unmount) atılıyor. Temizleme
+   * fonksiyonu kendi kapanışındaki değerleri görür; state'i doğrudan
+   * okusaydı her zaman ilk render'ın değerlerini (sayfa 0) yazardı.
+   */
+  const abandonRef = useRef({ page: 0, totalPages: 1, ended: false });
+
+  // Ref render sirasinda DEGIL, effect icinde guncelleniyor: render
+  // sirasinda ref yazmak React'in eszamanli render modunda tutarsiz
+  // sonuc verebilir.
+  useEffect(() => {
+    abandonRef.current = {
+      page: pageProgress.page,
+      totalPages: pageProgress.totalPages,
+      ended: chapterEnded,
+    };
+  }, [pageProgress.page, pageProgress.totalPages, chapterEnded]);
+
   const [activeWord, setActiveWord] = useState<WordSheetWord | null>(null);
   const [activeSentence, setActiveSentence] = useState<SentenceSheetSentence | null>(null);
 
@@ -224,6 +244,37 @@ export function ReaderScreen({
     setPageProgress({ page: payload.page, totalPages: payload.totalPages });
   }, []);
 
+  /**
+   * "Bölümü yarıda bıraktı" olayı (Ö12, bkz.
+   * docs/plans/2026-09-07-buyume-onerileri.md).
+   *
+   * NEDEN EN ÖNEMLİ EKSİK OLAY BUYDU: katalogda A2'den (ortalama 8 dakika)
+   * doğrudan B1'e (ortalama 197 dakika) atlanıyor ve "kullanıcı orada
+   * bırakıyor" hipotezi ürün kararlarının merkezinde. Ama bugüne kadar bu
+   * bir İNANÇTI — ölçülmüş değildi. Bu olay onu sayıya çeviriyor.
+   *
+   * Kitabın seviyesi olaya BİLEREK gömülmüyor: `book_id` var, seviye
+   * analizde `books.cefr_level` ile birleştirilerek alınır. Aynı veriyi
+   * iki yerde tutmak, biri değiştiğinde sessizce yanlış rapor üretir.
+   *
+   * İlk sayfadan çıkanlar sayılmıyor (`page > 0` koşulu): kitabı yanlışlıkla
+   * açıp hemen kapatmak bir "bırakma" değil, gürültü.
+   */
+  useEffect(() => {
+    return () => {
+      const { page, totalPages, ended } = abandonRef.current;
+      if (ended || page <= 0 || totalPages <= 0) return;
+
+      trackEvent("book_abandoned", {
+        bookId,
+        chapterId,
+        page,
+        totalPages,
+        percent: Math.round(((page + 1) / totalPages) * 100),
+      });
+    };
+  }, [bookId, chapterId]);
+
   const handleChapterEnd = useCallback(() => {
     // Chapter-completion analytics: also logs the page it fired at, which
     // is useful to sanity-check that chapterEnd only fires when the user
@@ -253,7 +304,8 @@ export function ReaderScreen({
         percent: 0,
       });
     } else {
-      const lastParagraphIndex = chapter?.paragraphs[chapter.paragraphs.length - 1]?.paragraphIndex ?? 0;
+      const lastParagraphIndex =
+        chapter?.paragraphs[chapter.paragraphs.length - 1]?.paragraphIndex ?? 0;
       saveProgressImmediately({
         bookId,
         chapterId,
@@ -262,7 +314,14 @@ export function ReaderScreen({
         finished: true,
       });
     }
-  }, [bookId, chapter, chapterId, pageProgress.page, pageProgress.totalPages, saveProgressImmediately]);
+  }, [
+    bookId,
+    chapter,
+    chapterId,
+    pageProgress.page,
+    pageProgress.totalPages,
+    saveProgressImmediately,
+  ]);
 
   const handlePagesReady = useCallback(
     (payload: PaginatedPagesReadyPayload) => {
@@ -398,7 +457,8 @@ export function ReaderScreen({
   // eslint-disable-next-line react-hooks/refs
   hasReachedReaderRef.current = true;
 
-  const progress = pageProgress.totalPages > 0 ? (pageProgress.page + 1) / pageProgress.totalPages : 0;
+  const progress =
+    pageProgress.totalPages > 0 ? (pageProgress.page + 1) / pageProgress.totalPages : 0;
 
   return (
     <View style={[styles.container, { backgroundColor: readerColors.background }]}>
@@ -432,7 +492,9 @@ export function ReaderScreen({
         />
 
         {chapterEnded ? (
-          <View style={[styles.chapterCompleteOverlay, { backgroundColor: readerColors.background }]}>
+          <View
+            style={[styles.chapterCompleteOverlay, { backgroundColor: readerColors.background }]}
+          >
             <ChapterCompleteCard
               sectionIndex={chapter.sectionIndex}
               chapterTitle={chapter.title}
