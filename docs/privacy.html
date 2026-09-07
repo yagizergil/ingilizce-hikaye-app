@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gizlilik Politikası — İngilizce Hikaye</title>
+    <meta
+      name="description"
+      content="İngilizce Hikaye uygulamasının gizlilik politikası: hangi veriler toplanıyor, nerede saklanıyor, nasıl silinir."
+    />
+    <style>
+/*
+ * GitHub Pages üzerinde barındırılan gizlilik/destek sayfalarının stili.
+ *
+ * NEDEN AYRI BİR SİTE: App Store Connect gönderimi iki ZORUNLU genel URL
+ * istiyor — gizlilik politikası ve destek sayfası. İkisi de boş olduğu
+ * için gönderim engelleniyordu. Ayrı bir barındırma hizmeti kurmak yerine
+ * deponun kendi GitHub Pages'i kullanılıyor: ek maliyet, ek hesap ve ek
+ * bakım yok.
+ *
+ * Tasarım uygulamanın kendi token'larından geliyor (src/theme/tokens):
+ * aynı kağıt zemin, aynı mürekkep, aynı terracotta accent, aynı yazı
+ * ailesi. Denetçi ve kullanıcı için sayfa uygulamanın devamı gibi
+ * görünsün; jenerik bir "legal boilerplate" sayfası değil.
+ */
+
+:root {
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --ink: #1e1c19;
+  --ink-soft: #8a8378;
+  --hairline: #e7e2d8;
+  --accent: #a6572e;
+  --deep: #1f3a5f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1712;
+    --surface: #251f19;
+    --ink: #f2ece2;
+    --ink-soft: #a2988a;
+    --hairline: #3a322a;
+    --accent: #d98b5c;
+    --deep: #8fb4de;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-text-size-adjust: 100%;
+}
+
+.wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem;
+}
+
+header {
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--deep);
+  color: var(--bg);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  flex: none;
+}
+
+.brand-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.eyebrow {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 0.35rem;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: 1.3rem;
+  margin: 2.5rem 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.05rem;
+  margin: 1.75rem 0 0.5rem;
+}
+
+p,
+li {
+  color: var(--ink);
+}
+
+.lede {
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  margin: 2.5rem 0;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+}
+
+th {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hairline);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+footer a {
+  margin-right: 1rem;
+}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <a class="brand" href="index.html">
+          <span class="brand-mark" aria-hidden="true">İ</span>
+          <span class="brand-name">İngilizce Hikaye</span>
+        </a>
+      </header>
+
+      <p class="eyebrow">Yasal</p>
+      <h1>Gizlilik Politikası</h1>
+      <p class="lede">Son güncelleme: 7 Eylül 2026</p>
+
+      <div class="card">
+        <h2 style="margin-top: 0">Kısaca</h2>
+        <ul>
+          <li>Uygulamayı kullanmak için hesap açman gerekmiyor.</li>
+          <li>Kişisel veri satmıyoruz, reklam ağlarıyla paylaşmıyoruz.</li>
+          <li>Üçüncü parti analitik ya da reklam SDK'sı kullanmıyoruz.</li>
+          <li>Verilerin Avrupa Birliği'nde (Frankfurt) barındırılıyor.</li>
+          <li>Hesabını uygulama içinden tek dokunuşla kalıcı olarak silebilirsin.</li>
+        </ul>
+      </div>
+
+      <h2>Topladığımız veriler</h2>
+
+      <h3>Hesap</h3>
+      <p>
+        Uygulamayı ilk açtığında sana <strong>anonim</strong> bir hesap kimliği oluşturulur. Bu kimlik
+        bir isim, e-posta ya da telefon numarası içermez; yalnızca ilerlemenin cihazlar arasında
+        kaybolmaması içindir.
+      </p>
+      <p>
+        İsteğe bağlı olarak Apple ile giriş, Google ile giriş ya da e-posta ile kayıt olabilirsin. O
+        durumda ilgili sağlayıcının bize verdiği kimlik ve (varsa) e-posta adresin saklanır. Apple ile
+        giriş kullanırken e-postanı gizlemeyi seçersen gerçek adresini hiçbir zaman görmeyiz.
+      </p>
+
+      <h3>Kullanım verileri</h3>
+      <ul>
+        <li>Hangi kitabı ve bölümü okuduğun, ne kadar ilerlediğin</li>
+        <li>Kaydettiğin kelimeler ve bunların tekrar takvimi</li>
+        <li>Seviye testi sonucun ve tahmini kelime dağarcığın</li>
+        <li>
+          Uygulama içi olaylar: hangi ekranı açtığın, hangi düğmeye bastığın, bir bölümün ne kadar
+          sürede yüklendiği
+        </li>
+        <li>Beklenmeyen hatalar: hata mesajı ve teknik yığın izi</li>
+      </ul>
+      <p>
+        Bu veriler uygulamayı geliştirmek, hataları bulmak ve sana uygun kitapları önermek için
+        kullanılır.
+      </p>
+
+      <h3>Toplamadığımız veriler</h3>
+      <ul>
+        <li>Konum</li>
+        <li>Rehber, fotoğraflar, takvim ya da cihazdaki diğer dosyalar</li>
+        <li>Reklam kimliği (IDFA) — reklam göstermiyoruz, takip etmiyoruz</li>
+        <li>
+          Ödeme bilgileri — abonelik satın alırsan ödeme tamamen Apple üzerinden yapılır, kart bilgin
+          bize hiçbir zaman ulaşmaz
+        </li>
+      </ul>
+
+      <hr />
+
+      <h2>Verinin nerede tutulduğu</h2>
+      <p>
+        Veriler Supabase üzerinde, Amazon Web Services'in Frankfurt (eu-central-1) bölgesinde
+        barındırılır. Her kullanıcı yalnızca kendi satırlarına erişebilir; bu kısıt veritabanı
+        seviyesinde (row level security) uygulanır.
+      </p>
+
+      <h2>Üçüncü taraflar</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Hizmet</th>
+              <th>Ne için</th>
+              <th>Ne paylaşılıyor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Supabase</td>
+              <td>Veritabanı, kimlik doğrulama</td>
+              <td>Yukarıdaki tüm veriler</td>
+            </tr>
+            <tr>
+              <td>Apple</td>
+              <td>Giriş ve abonelik</td>
+              <td>Apple'ın kendi kimlik doğrulaması</td>
+            </tr>
+            <tr>
+              <td>Google</td>
+              <td>İsteğe bağlı giriş</td>
+              <td>Google'ın kendi kimlik doğrulaması</td>
+            </tr>
+            <tr>
+              <td>RevenueCat</td>
+              <td>Abonelik durumunun takibi</td>
+              <td>Anonim hesap kimliği ve abonelik durumu</td>
+            </tr>
+            <tr>
+              <td>Anthropic</td>
+              <td>Kelime çevirisi ve AI açıklamaları</td>
+              <td>Yalnızca çevrilecek kelime/cümle metni</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Anthropic'e gönderilen metin uygulamanın kendi kitaplarından gelir; kimliğinle
+        ilişkilendirilmez.
+      </p>
+      <p>Reklam ağı, veri simsarı ya da analitik satıcısı kullanmıyoruz.</p>
+
+      <h2>Çocuklar</h2>
+      <p>
+        Uygulama 4 yaş ve üzeri için derecelendirilmiştir ve içeriğinde yetişkin tema bulunmaz. 13
+        yaşından küçük çocuklardan bilerek kişisel veri toplamayız.
+      </p>
+
+      <h2>Haklarınız</h2>
+      <ul>
+        <li>
+          <strong>Silme:</strong> Profil → Hesabı sil. Hesabın ve tüm verilerin kalıcı olarak silinir;
+          geri alınamaz.
+        </li>
+        <li>
+          <strong>Erişim ve taşınabilirlik:</strong> Verilerinin bir kopyasını istemek için aşağıdaki
+          adrese yaz.
+        </li>
+        <li>
+          <strong>Düzeltme:</strong> Seviyeni, tercihlerini ve kayıtlı kelimelerini uygulama içinden
+          istediğin zaman değiştirebilirsin.
+        </li>
+      </ul>
+      <p>KVKK ve GDPR kapsamındaki haklarını kullanmak için bize yazabilirsin.</p>
+
+      <h2>Değişiklikler</h2>
+      <p>
+        Bu politika değişirse tarihi güncelleriz ve önemli değişiklikleri uygulama içinde bildiririz.
+      </p>
+
+      <h2>İletişim</h2>
+      <p>E-posta: <a href="mailto:etkinlikyweb@gmail.com">etkinlikyweb@gmail.com</a></p>
+
+      <footer>
+        <a href="index.html">Ana sayfa</a>
+        <a href="support.html">Destek</a>
+      </footer>
+    </div>
+  </body>
+</html>

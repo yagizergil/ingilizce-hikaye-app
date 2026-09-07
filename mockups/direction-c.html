@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Yön C — Baskı Atölyesi</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1EEE6;
+    --ink:#181614;
+    --ink-soft:#6E685D;
+    /* per-book "spine" colors — muted, ink-mixed, not neon */
+    --spine-1:#5B3A2E; /* frankenstein — oxblood */
+    --spine-2:#3A4A3F; /* sherlock — bottle green */
+    --spine-3:#8A6A2E; /* oz — mustard ochre */
+    --spine-4:#2E3A4A; /* call of the wild — slate blue */
+    --spine-5:#5A2E4A; /* wilde — plum */
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; width:390px; background:var(--paper); color:var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    -webkit-font-smoothing:antialiased;
+  }
+  .status{ height:14px; }
+  header{ padding:26px 20px 20px; }
+  .idx{ font-size:11px; color:var(--ink-soft); letter-spacing:.04em; }
+  h1{
+    font-family:'Fraunces', Georgia, serif; font-weight:600;
+    font-size:40px; line-height:0.95; margin:8px 0 0; letter-spacing:-.02em;
+  }
+
+  .grid{ padding:6px 20px 40px; display:grid; grid-template-columns:1fr; gap:14px; }
+
+  .card{
+    display:grid; grid-template-columns:88px 1fr; gap:0;
+    background:#fff; position:relative;
+  }
+  .spine{
+    width:88px; height:132px; position:relative; overflow:hidden;
+  }
+  .spine img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .spine .block{
+    position:absolute; inset:0; mix-blend-mode:multiply; opacity:.16;
+  }
+  .card .body{ padding:14px 14px 14px 16px; display:flex; flex-direction:column; justify-content:space-between; }
+  .card .top .num{ font-size:10px; color:var(--ink-soft); }
+  .card .top .title{
+    font-family:'Fraunces', serif; font-weight:600; font-size:20px;
+    line-height:1.08; margin:5px 0 4px; letter-spacing:-.01em;
+  }
+  .card .top .author{ font-size:11px; color:var(--ink-soft); }
+  .card .bottom{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-top:10px;
+  }
+  .card .lvl{
+    font-size:10px; padding:3px 7px; border:1px solid var(--ink); letter-spacing:.05em;
+  }
+  .card .stat{ font-size:10px; color:var(--ink-soft); text-align:right; line-height:1.5; }
+
+  .c1 .block{ background:var(--spine-1); } .c1 .lvl{ border-color:var(--spine-1); color:var(--spine-1); }
+  .c2 .block{ background:var(--spine-2); } .c2 .lvl{ border-color:var(--spine-2); color:var(--spine-2); }
+  .c3 .block{ background:var(--spine-3); } .c3 .lvl{ border-color:var(--spine-3); color:var(--spine-3); }
+  .c4 .block{ background:var(--spine-4); } .c4 .lvl{ border-color:var(--spine-4); color:var(--spine-4); }
+  .c5 .block{ background:var(--spine-5); } .c5 .lvl{ border-color:var(--spine-5); color:var(--spine-5); }
+
+  nav{
+    display:flex; padding:16px 20px 26px; gap:0; justify-content:space-between;
+    border-top:1px solid var(--ink);
+  }
+  nav .item{ font-size:10px; letter-spacing:.05em; color:var(--ink-soft); }
+  nav .item.active{ color:var(--ink); }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+  <header>
+    <div class="idx">Cilt 01–05</div>
+    <h1>Kitaplık</h1>
+  </header>
+
+  <div class="grid">
+    <div class="card c1">
+      <div class="spine"><img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/mary-shelley-frankenstein.jpg" /><div class="block"></div></div>
+      <div class="body">
+        <div class="top">
+          <div class="num">№ 01</div>
+          <div class="title">Frankenstein</div>
+          <div class="author">Mary Shelley</div>
+        </div>
+        <div class="bottom"><span class="lvl">C1</span><span class="stat">33 bölüm<br/>374 dk</span></div>
+      </div>
+    </div>
+
+    <div class="card c2">
+      <div class="spine"><img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/arthur-conan-doyle-the-adventures-of-sherlock-holmes.jpg" /><div class="block"></div></div>
+      <div class="body">
+        <div class="top">
+          <div class="num">№ 02</div>
+          <div class="title">Sherlock Holmes</div>
+          <div class="author">Arthur Conan Doyle</div>
+        </div>
+        <div class="bottom"><span class="lvl">B1</span><span class="stat">74 bölüm<br/>522 dk</span></div>
+      </div>
+    </div>
+
+    <div class="card c3">
+      <div class="spine"><img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/l-frank-baum-the-wonderful-wizard-of-oz.jpg" /><div class="block"></div></div>
+      <div class="body">
+        <div class="top">
+          <div class="num">№ 03</div>
+          <div class="title">The Wizard of Oz</div>
+          <div class="author">L. Frank Baum</div>
+        </div>
+        <div class="bottom"><span class="lvl">B1</span><span class="stat">24 bölüm<br/>197 dk</span></div>
+      </div>
+    </div>
+
+    <div class="card c4">
+      <div class="spine"><img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/jack-london-the-call-of-the-wild.jpg" /><div class="block"></div></div>
+      <div class="body">
+        <div class="top">
+          <div class="num">№ 04</div>
+          <div class="title">The Call of the Wild</div>
+          <div class="author">Jack London</div>
+        </div>
+        <div class="bottom"><span class="lvl">B2</span><span class="stat">19 bölüm<br/>160 dk</span></div>
+      </div>
+    </div>
+
+    <div class="card c5">
+      <div class="spine"><img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/oscar-wilde-childrens-stories.jpg" /><div class="block"></div></div>
+      <div class="body">
+        <div class="top">
+          <div class="num">№ 05</div>
+          <div class="title">Children's Stories</div>
+          <div class="author">Oscar Wilde</div>
+        </div>
+        <div class="bottom"><span class="lvl">B2</span><span class="stat">32 bölüm<br/>248 dk</span></div>
+      </div>
+    </div>
+  </div>
+
+  <nav>
+    <div class="item active">KİTAPLIK</div>
+    <div class="item">DEFTER</div>
+    <div class="item">PROFİL</div>
+  </nav>
+</body>
+</html>

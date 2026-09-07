@@ -1,0 +1,600 @@
+{
+  "app": {
+    "name": "Libro"
+  },
+  "tabs": {
+    "home": "Ana Sayfa",
+    "library": "Kütüphane",
+    "vocabulary": "Kelimelerim",
+    "profile": "Profil"
+  },
+  "placeholder": {
+    "comingSoon": "Yakında burada"
+  },
+  "notFound": {
+    "title": "Bulunamadı",
+    "message": "Bu ekran bulunamadı.",
+    "goHome": "Ana sayfaya dön"
+  },
+  "common": {
+    "back": "Geri",
+    "errorTitle": "Bir şeyler ters gitti",
+    "retry": "Tekrar dene",
+    "dismiss": "Kapat",
+    "crashTitle": "Uygulama beklenmedik bir sorunla karşılaştı",
+    "crashMessage": "Bu ekran yüklenemedi. Tekrar denemek sorunu genellikle çözer.",
+    "ok": "Tamam"
+  },
+  "ui": {
+    "levelBadge": {
+      "accessibilityLabel": "Seviye {{level}}"
+    }
+  },
+  "home": {
+    "loading": "Ana sayfa yükleniyor",
+    "error": "Ana sayfa yüklenemedi",
+    "addAccessibilityLabel": "Kitap ekle",
+    "empty": {
+      "title": "Henüz bir kitaba başlamadın",
+      "description": "Kütüphaneden ilk kitabını seç ve okumaya başla.",
+      "cta": "Kütüphaneyi keşfet"
+    },
+    "books": {
+      "title": "Kitaplar",
+      "more": "TÜMÜ →"
+    },
+    "book": {
+      "words": "{{value}} kelime",
+      "chapters": "{{value}} bölüm"
+    },
+    "shelves": {
+      "more": "TÜMÜ →",
+      "forYou": "Sana uygun",
+      "shortReads": "Kısa okumalar",
+      "byGenre": "Türlere göre",
+      "byAuthor": "Yazarlara göre",
+      "byTheme": "Konulara göre",
+      "favorites": "Favorilerin",
+      "continuingSeries": "Devam eden seriler",
+      "level": {
+        "beginner": "Başlangıç",
+        "intermediate": "Orta",
+        "advanced": "Gelişmiş"
+      }
+    },
+    "seriesCard": {
+      "progress": "{{current}}/{{total}}"
+    },
+    "newBooks": {
+      "title": "Yeni Kitaplar"
+    },
+    "currentlyReading": {
+      "title": "Şu An Okunuyor",
+      "percent": "%{{percent}}",
+      "remove": "Kaldığın yerden kaldır",
+      "removeAccessibilityLabel": "{{title}} kitabını şu an okunuyor listesinden kaldır"
+    },
+    "categories": {
+      "title": "Türler ve Konular",
+      "everyday": "Günlük Hayat",
+      "adventure": "Macera",
+      "fantasy": "Masal ve Fantastik",
+      "mystery": "Gizem",
+      "romance": "Aşk ve Toplum",
+      "philosophy": "Düşünce",
+      "gothic": "Gerilim ve Gotik",
+      "comedy": "Mizah",
+      "scifi": "Bilim Kurgu"
+    },
+    "authorsAndSeries": {
+      "title": "Yazarlar ve Seriler"
+    },
+    "categoryTag": {
+      "count": "kitap",
+      "accessibilityLabel": "{{label}}, {{count}} kitap"
+    },
+    "levelGroups": {
+      "beginner": "Başlangıç",
+      "intermediate": "Orta",
+      "advanced": "Gelişmiş",
+      "beginnerRange": "A1–A2",
+      "intermediateRange": "B1–B2",
+      "advancedRange": "C1–C2",
+      "count": "{{count}} kitap",
+      "accessibilityLabel": "{{title}}, {{count}} kitap"
+    },
+    "favoritesRead": {
+      "title": "Favoriler ve Okunanlar",
+      "favoritesLabel": "Favori",
+      "readLabel": "Okunan",
+      "accessibilityLabel": "{{favoritesCount}} favori, {{readCount}} okunan kitap"
+    },
+    "hero": {
+      "levelEyebrow": "SEVİYEN · {{level}}",
+      "welcomeEyebrow": "HOŞ GELDİN",
+      "title": "Bugün ne okuyalım?",
+      "continueBody": "%{{percent}} tamamlandı. Kaldığın yerden devam et.",
+      "startBody": "Seviyene uygun kısa hikâyelerle başla; her biri bir oturumda biter.",
+      "continueAction": "Okumaya devam et",
+      "browseAction": "Kitaplara göz at"
+    },
+    "streak": {
+      "accessibilitySafe_one": "{{count}} günlük seri, bugün tamamlandı",
+      "accessibilitySafe_other": "{{count}} günlük seri, bugün tamamlandı",
+      "accessibilityAtRisk_one": "{{count}} günlük seri, bugün henüz okumadın",
+      "accessibilityAtRisk_other": "{{count}} günlük seri, bugün henüz okumadın"
+    }
+  },
+  "collections": {
+    "ozSeries": {
+      "title": "Oz Serisi",
+      "description": "L. Frank Baum'un Oz dünyasını anlatan klasik roman dizisi."
+    }
+  },
+  "library": {
+    "title": "Kitaplık",
+    "loading": "Kitaplar yükleniyor",
+    "error": "Kitaplar yüklenemedi",
+    "empty": {
+      "title": "Kitap bulunamadı",
+      "description": "Farklı bir arama veya filtre deneyebilirsin."
+    },
+    "stats": {
+      "words": "Kelime",
+      "chapters": "Bölüm",
+      "minutes": "Dakika"
+    },
+    "book": {
+      "accessibilityLabel": "{{title}}, {{author}}, seviye {{level}}"
+    },
+    "search": {
+      "placeholder": "Başlık, yazar veya tür ara"
+    },
+    "sort": {
+      "recommended": "Önerilen",
+      "newest": "Yeni",
+      "popular": "Popüler",
+      "shortest": "Kısa→Uzun"
+    },
+    "filters": {
+      "open": "Filtreleri aç",
+      "button": "Filtrele",
+      "level": "Seviye",
+      "levelAll": "Tümü",
+      "levelGroup": {
+        "beginner": "Başlangıç",
+        "intermediate": "Orta",
+        "advanced": "Gelişmiş"
+      },
+      "length": "Uzunluk",
+      "lengthAny": "Fark etmez",
+      "lengthShort": "90 dk altı",
+      "lengthMedium": "300 dk altı",
+      "audioOnly": "Sadece sesli olanlar",
+      "reset": "Filtreleri sıfırla",
+      "apply": "Uygula"
+    },
+    "viewMode": {
+      "toggle": "Görünümü değiştir",
+      "grid": "Izgara",
+      "list": "Liste"
+    },
+    "card": {
+      "minutes": "{{count}} dk",
+      "audio": "Sesli"
+    }
+  },
+  "bookDetail": {
+    "back": "← Kitaplık",
+    "backAccessibilityLabel": "Kitaplığa dön",
+    "loading": "Kitap yükleniyor",
+    "error": "Kitap yüklenemedi",
+    "chapters": "Bölümler",
+    "cta": {
+      "start": "Okumaya başla",
+      "continue": "Okumaya devam et — Bölüm {{index}}"
+    },
+    "stats": {
+      "words": "Kelime",
+      "minutes": "Dakika",
+      "chapters": "Bölüm",
+      "completed": "Tamamlandı",
+      "completedValue": "%{{percent}}"
+    },
+    "chapterRow": {
+      "duration": "{{minutes}} dk",
+      "done": "tamamlandı",
+      "notDone": "tamamlanmadı",
+      "accessibilityLabel": "Bölüm {{index}}: {{title}}, {{status}}"
+    },
+    "empty": {
+      "title": "Henüz bölüm yok",
+      "description": "Bu kitabın bölümleri yakında eklenecek."
+    },
+    "source": {
+      "title": "Kaynak ve lisans",
+      "name": "Kaynak",
+      "license": "Lisans"
+    },
+    "series": {
+      "position": "Bu serinin {{index}}. kitabı",
+      "nextBook": "Sonraki kitap: {{title}}",
+      "lastBook": "Bu serinin son kitabı"
+    }
+  },
+  "reader": {
+    "header": {
+      "back": "Geri",
+      "settings": "Okuma ayarları"
+    },
+    "wordSheet": {
+      "pronounce": "Telaffuz et",
+      "noTranslation": "Bu kelime için karşılık bulunamadı",
+      "lookingUpTranslation": "Karşılık aranıyor…",
+      "save": "Kaydet",
+      "saved": "Kaydedildi",
+      "savedRemove": "Kaydedildi ✓ — kaldır",
+      "know": "Biliyorum",
+      "knownUndo": "Biliyorsun ✓ — geri al",
+      "senseWithPos": "{{pos}} {{gloss}}",
+      "pos": {
+        "noun": "(isim)",
+        "verb": "(fiil)",
+        "adjective": "(sıfat)",
+        "adverb": "(zarf)",
+        "preposition": "(edat)",
+        "determiner": "(belirteç)",
+        "pronoun": "(zamir)",
+        "conjunction": "(bağlaç)",
+        "interjection": "(ünlem)",
+        "other": ""
+      }
+    },
+    "sentenceTranslation": {
+      "toggle": "Cümle çevirisini göster",
+      "loading": "Çevriliyor…",
+      "error": "Cümle çevirisi alınamadı, lütfen tekrar dene"
+    },
+    "sentenceSheet": {
+      "explainGrammar": "Gramerini açıkla",
+      "premiumNotice": "Cümle çevirisi ve gramer açıklaması yakında AI ile gelecek."
+    },
+    "settings": {
+      "fontSize": "Yazı boyutu",
+      "increaseFontSize": "Yazıyı büyüt",
+      "decreaseFontSize": "Yazıyı küçült",
+      "fontFamily": "Yazı tipi",
+      "fontFamilyOptions": {
+        "serif": "Serif",
+        "sans": "Sans"
+      },
+      "theme": "Tema",
+      "themeOptions": {
+        "light": "Açık",
+        "sepia": "Sepya",
+        "dark": "Koyu",
+        "system": "Sistem"
+      },
+      "margin": "Kenar boşluğu",
+      "decreaseMargin": "Kenar boşluğunu azalt",
+      "increaseMargin": "Kenar boşluğunu artır",
+      "highlights": "Bilinmeyen kelimeleri vurgula"
+    },
+    "chapterComplete": {
+      "title": "Bölüm tamamlandı",
+      "nextChapter": "Sonraki bölüm",
+      "bookFinished": "Kitabı bitirdin. Tebrikler!",
+      "eyebrow": "BÖLÜM {{number}}",
+      "wordsLabel": "KELİME",
+      "minutesLabel": "DAKİKA",
+      "minutesValue": "{{count}} dk",
+      "backToBook": "Kitaba dön",
+      "finishBook": "Kitabı tamamla"
+    },
+    "error": {
+      "loadFailed": "Bölüm yüklenemedi. Lütfen tekrar dene.",
+      "progressNotSaved": "İlerlemen kaydedilemedi, internet bağlantını kontrol et.",
+      "saveWordFailed": "Kelime kaydedilemedi, internet bağlantını kontrol et.",
+      "unsaveWordFailed": "Kelime kayıtlardan kaldırılamadı, internet bağlantını kontrol et.",
+      "markKnownFailed": "Kelime 'biliyorum' olarak işaretlenemedi, internet bağlantını kontrol et.",
+      "unmarkKnownFailed": "İşlem geri alınamadı, internet bağlantını kontrol et.",
+      "notSignedIn": "Bu işlem için tekrar giriş yapman gerekiyor.",
+      "savedWordLimitTitle": "Kelime defterin dolu",
+      "savedWordLimitBody": "Ücretsiz katmanda en fazla 100 kelime tutulabiliyor. Kelimelerim sekmesinden öğrendiklerini işaretleyerek yer açabilirsin."
+    },
+    "wordAlreadySaved": "Bu kelime zaten kayıtlı.",
+    "footer": {
+      "nextChapter": "SONRAKİ BÖLÜM",
+      "finishBook": "KİTABI BİTİR"
+    }
+  },
+  "auth": {
+    "title": "Hesabını oluştur",
+    "subtitle": "İlerlemeni ve kelimelerini kaybetmemek için kaydol. İstemezsen misafir olarak devam edebilirsin.",
+    "google": "Google ile devam et",
+    "skip": "Şimdi değil",
+    "email": {
+      "placeholder": "E-posta adresin",
+      "send": "Bağlantı gönder",
+      "sentTitle": "Bağlantı gönderildi",
+      "sentBody": "E-postana gönderdiğimiz bağlantıya tıklayarak girişini tamamla."
+    },
+    "error": {
+      "generic": "Giriş yapılamadı, lütfen tekrar dene.",
+      "invalidEmail": "Geçerli bir e-posta adresi gir."
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "hero": {
+      "guest": "Misafir",
+      "anonymous": "Misafir olarak okuyorsun",
+      "memberSince": "{{date}} tarihinden beri üye"
+    },
+    "streak": {
+      "currentLabel": "GÜNLÜK SERİ",
+      "longestLabel": "EN UZUN SERİ",
+      "weekAccessibilityLabel": "Bu hafta {{count}} gün okudun",
+      "keepGoing": "{{count}} günlük serini sürdürmek için bugün de biraz oku.",
+      "startToday": "Bugün birkaç sayfa oku, serin başlasın.",
+      "days": {
+        "mon": "Pzt",
+        "tue": "Sal",
+        "wed": "Çar",
+        "thu": "Per",
+        "fri": "Cum",
+        "sat": "Cmt",
+        "sun": "Paz"
+      }
+    },
+    "week": {
+      "title": "BU HAFTA",
+      "totalMinutes": "{{count}} dk",
+      "dayAccessibilityLabel": "{{day}}: {{count}} dakika",
+      "empty": "Bu hafta henüz okumadın."
+    },
+    "loading": "Profil yükleniyor",
+    "error": "Profil yüklenemedi",
+    "stats": {
+      "savedWordsLabel": "Kaydedilen Kelime",
+      "completedBooksLabel": "Bitirilen Kitap",
+      "readingTime": {
+        "hoursMinutes": "{{hours}} sa {{minutes}} dk",
+        "minutesOnly": "{{minutes}} dk"
+      },
+      "sectionTitle": "Tüm Zamanlar",
+      "totalTimeLabel": "Toplam Okuma",
+      "totalActiveDaysLabel": "Okunan Gün"
+    },
+    "account": {
+      "sectionTitle": "Hesap",
+      "subscription": "Abonelik",
+      "subscriptionFree": "Ücretsiz",
+      "subscriptionPremium": "Premium",
+      "fontSize": "Okuma Fontu Boyutu",
+      "fontSizeValue": "%{{percent}}",
+      "theme": "Tema",
+      "language": "Dil",
+      "languageTr": "Türkçe",
+      "languageEn": "İngilizce",
+      "signUp": "Kaydol",
+      "signOut": "Çıkış yap",
+      "signOutError": "Çıkış yapılamadı, lütfen tekrar dene.",
+      "deleteAccount": "Hesabımı sil"
+    },
+    "footer": "{{name}} — sürüm {{version}}"
+  },
+  "vocabulary": {
+    "title": "Defter",
+    "loading": "Kelimeler yükleniyor",
+    "error": "Kelimeler yüklenemedi",
+    "summary": "{{total}} kelime · bugün {{due}} tekrar",
+    "filters": {
+      "all": "TÜMÜ",
+      "due": "TEKRAR BEKLEYEN",
+      "known": "ÖĞRENİLDİ"
+    },
+    "due": {
+      "today": "Bugün",
+      "tomorrow": "Yarın",
+      "days": "{{count}} gün",
+      "weeks": "{{count}} hafta",
+      "none": "—"
+    },
+    "pos": {
+      "noun": "İsim",
+      "verb": "Fiil",
+      "adjective": "Sıfat",
+      "adverb": "Zarf",
+      "preposition": "Edat",
+      "determiner": "Belirteç",
+      "pronoun": "Zamir",
+      "other": "Diğer"
+    },
+    "word": {
+      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+    },
+    "empty": {
+      "noWords": {
+        "title": "Defterin henüz boş",
+        "description": "Hikaye okurken bilmediğin bir kelimeye dokun ve kaydet — burada, tekrar için birikir."
+      },
+      "noMatch": {
+        "title": "Bu filtrede kelime yok",
+        "description": "Farklı bir filtre dene."
+      }
+    }
+  },
+  "browse": {
+    "loading": "Kitaplar yükleniyor",
+    "error": "Kitaplar yüklenemedi",
+    "empty": {
+      "title": "Kitap bulunamadı",
+      "description": "Bu kategoride henüz kitap yok."
+    },
+    "fallbackTitle": {
+      "beginner": "Başlangıç",
+      "intermediate": "Orta",
+      "advanced": "Gelişmiş"
+    }
+  },
+  "favorites": {
+    "toast": {
+      "added": "Favorilere eklendi",
+      "removed": "Favorilerden kaldırıldı"
+    },
+    "action": {
+      "add": "Favorilere ekle",
+      "remove": "Favorilerden kaldır"
+    },
+    "screen": {
+      "title": "Favoriler ve Okunanlar",
+      "loading": "Yükleniyor",
+      "error": "Yüklenemedi",
+      "favoritesSection": "Favoriler",
+      "readSection": "Okunanlar",
+      "emptyFavorites": {
+        "title": "Henüz favorin yok",
+        "description": "Beğendiğin kitapları favorilemek için kitap sayfasında kalpe dokun."
+      },
+      "emptyRead": {
+        "title": "Henüz okumaya başladığın kitap yok",
+        "description": "Bir kitabı açtığında burada listelenir."
+      },
+      "emptyBoth": {
+        "title": "Burası henüz boş",
+        "description": "Favorilediğin ve okumaya başladığın kitaplar burada listelenecek."
+      }
+    }
+  },
+  "account": {
+    "delete": {
+      "title": "Hesabını sil",
+      "body": "Bu işlem geri alınamaz. Hesabını sildiğinde aşağıdaki veriler kalıcı olarak silinir:",
+      "listTitle": "Silinecekler",
+      "item1": "Kaydettiğin kelimeler",
+      "item2": "Okuma ilerlemen ve istatistiklerin",
+      "item3": "Tekrar (SRS) kartların",
+      "item4": "Profil bilgilerin",
+      "confirmLabel": "Bu işlemin geri alınamayacağını anlıyorum.",
+      "confirmButton": "Hesabımı kalıcı olarak sil",
+      "error": "Hesap silinemedi, lütfen tekrar dene."
+    }
+  },
+  "srs": {
+    "loadError": "Tekrar kartları yüklenemedi.",
+    "revealHint": "Anlamı görmek için dokun",
+    "noGloss": "Karşılık bulunamadı",
+    "ratingAgain": "BİLMEDİM",
+    "ratingHard": "ZOR",
+    "ratingEasy": "KOLAY",
+    "doneTitle": "Bugünlük bitti",
+    "doneMessage": "{{count}} kelime tekrar ettin.",
+    "emptyTitle": "Tekrar edilecek kelime yok",
+    "emptyMessage": "Okurken kelime kaydettikçe burada tekrar kartların birikir.",
+    "startButton": "Tekrara başla",
+    "dueBadge": "{{count}} kelime hazır"
+  },
+  "onboarding": {
+    "introTitle": "Seviyeni bulalım",
+    "introBody": "Sana birkaç İngilizce kelime göstereceğiz. Her biri için bildiğini, emin olmadığını ya da bilmediğini söyle. Buna göre sana uygun kitapları öne çıkaralım.",
+    "introDuration": "YAKLAŞIK 1 DAKİKA",
+    "start": "Başlayalım",
+    "skip": "Şimdi değil",
+    "answerKnown": "Biliyorum",
+    "answerUnsure": "Emin değilim",
+    "answerUnknown": "Bilmiyorum",
+    "resultEyebrow": "OKUMAYA BURADAN BAŞLA",
+    "resultSize": "Yaklaşık {{count}} kelime biliyorsun.",
+    "adjustHint": "DOĞRU GELMEDİYSE DEĞİŞTİR",
+    "finish": "Kitaplara geç",
+    "loadError": "Test kelimeleri yüklenemedi."
+  },
+  "paywall": {
+    "title": "Okuduğun kelimeler aklında kalsın",
+    "subtitle": "Hikâyeler her zaman ücretsiz. Premium, öğrendiğini kalıcı kılar.",
+    "socialProof_one": "{{count}} HİKÂYE · A1'DEN C2'YE",
+    "socialProof_other": "{{count}} HİKÂYE · A1'DEN C2'YE",
+    "benefits": {
+      "unlimitedWords": "Sınırsız kelime kaydı — defter sınırı kalkar",
+      "spacedRepetition": "Aralıklı tekrar: her kelime unutmadan önce karşına çıkar",
+      "aiSentences": "Günde {{premium}} AI cümle çevirisi (ücretsiz katmanda {{free}})",
+      "aiSentencesGeneric": "AI cümle çevirisinde çok daha yüksek günlük kota",
+      "stats": "Okuma süresi, seri ve seviye istatistikleri"
+    },
+    "plan": {
+      "annual": "Yıllık",
+      "monthly": "Aylık",
+      "savings": "%{{percent}} TASARRUF",
+      "perMonth": "ayda {{price}}",
+      "trialDays_one": "{{count}} gün ücretsiz",
+      "trialDays_other": "{{count}} gün ücretsiz",
+      "periodYear": "yıl",
+      "periodMonth": "ay"
+    },
+    "ctaTrial_one": "{{count}} gün ücretsiz dene",
+    "ctaTrial_other": "{{count}} gün ücretsiz dene",
+    "ctaSubscribe": "Premium'a geç",
+    "legal": {
+      "trialThenPrice_one": "İlk {{count}} gün ücretsiz, sonra {{price}}/{{period}}.",
+      "trialThenPrice_other": "İlk {{count}} gün ücretsiz, sonra {{price}}/{{period}}.",
+      "price": "{{price}}/{{period}}.",
+      "autoRenew": "Abonelik, dönem bitiminden en az 24 saat önce iptal edilmezse otomatik yenilenir. İptal işlemini Apple Kimliği ayarlarından yapabilirsin.",
+      "terms": "Kullanım Koşulları",
+      "privacy": "Gizlilik Politikası",
+      "privacyMissing": "Gizlilik politikası bağlantısı yapılandırılmadı"
+    },
+    "freeAlwaysNote": "TÜM KİTAPLAR HER ZAMAN ÜCRETSİZ KALIR",
+    "restore": "Satın alımları geri yükle",
+    "purchaseError": "Satın alma tamamlanamadı. Lütfen tekrar dene.",
+    "notEntitledTitle": "Abonelik henüz görünmüyor",
+    "notEntitledBody": "Ödeme alındı ama abonelik aktif görünmüyor. Birkaç dakika sonra \"Satın alımları geri yükle\"yi dene; sorun sürerse bize yaz.",
+    "activatingCta": "Etkinleştiriliyor…",
+    "activatingTitle": "Aboneliğin etkinleştiriliyor",
+    "activatingBody": "Satın alman tamamlandı. Premium birkaç dakika içinde açılacak; açılmazsa \"Satın alımları geri yükle\" ile tazeleyebilirsin.",
+    "restoreFoundTitle": "Aboneliğin geri yüklendi",
+    "restoreFoundBody": "Premium özellikler yeniden açıldı.",
+    "restoreEmptyTitle": "Abonelik bulunamadı",
+    "restoreEmptyBody": "Bu Apple hesabında aktif bir abonelik yok.",
+    "noPackages": "Şu anda satın alınabilir bir paket yok.",
+    "unavailableInExpoGo": "SATIN ALMA YALNIZCA DERLENMİŞ UYGULAMADA ÇALIŞIR",
+    "upgradeRow": "Premium",
+    "wordListFull": "Kelime defterin {{count}}/{{limit}} dolu"
+  },
+  "reminders": {
+    "settingsLabel": "Hatırlatmalar",
+    "settingsHint": "Tekrar zamanı, yarım kalan hikâye ve seri için",
+    "permissionBlockedTitle": "Bildirimler kapalı",
+    "permissionBlockedBody": "Hatırlatma gönderebilmek için bildirim izni gerekiyor. iPhone Ayarları'ndan İngilizce Hikaye için bildirimleri açabilirsin.",
+    "openSettings": "Ayarları aç",
+    "permissionDeniedTitle": "Hatırlatmalar açılamadı",
+    "permissionDeniedBody": "Bildirim izni verilmedi. Ayarlar'dan istediğin zaman açabilirsin.",
+    "streakRescue": {
+      "title_one": "{{count}} günlük serin tehlikede",
+      "title_other": "{{count}} günlük serin tehlikede",
+      "body": "Bugün birkaç dakika okursan seri devam eder."
+    },
+    "reviewDue": {
+      "title_one": "{{count}} kelimen tekrar bekliyor",
+      "title_other": "{{count}} kelimen tekrar bekliyor",
+      "body": "Unutmadan önce hızlıca geçelim mi?"
+    },
+    "continueReading": {
+      "title": "Yarım kalan bir hikâyen var",
+      "body": "«{{title}}» seni bekliyor."
+    }
+  },
+  "completion": {
+    "eyebrow_one": "{{count}}. KİTABINI BİTİRDİN",
+    "eyebrow_other": "{{count}}. KİTABINI BİTİRDİN",
+    "wordsLabel": "kaydedilen kelime",
+    "minutesValue_one": "{{count}} dk",
+    "minutesValue_other": "{{count}} dk",
+    "minutesLabel": "okuma süresi",
+    "reviewWords": "Kelimeleri tekrar et",
+    "findNextBook": "Sıradaki hikâyeyi bul",
+    "upgradeTitle": "Bu kelimeler kalıcı olsun",
+    "upgradeHint": "Premium ile sınırsız kelime defteri ve tekrar",
+    "error": "Bu ekran yüklenemedi."
+  }
+}

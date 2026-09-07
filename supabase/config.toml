@@ -1,0 +1,33 @@
+project_id = "ingilizce-hikaye"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "ingilizcehikaye://"
+
+# ---------------------------------------------------------------------------
+# Edge Functions
+#
+# Varsayilan olarak her fonksiyon gecerli bir Supabase JWT'si ister. Bu,
+# istemcinin cagirdigi fonksiyonlar icin dogru davranis — delete-account,
+# translate-lemma ve translate-sentence caginin kimligini JWT'den dogruluyor.
+#
+# revenuecat-webhook'u RevenueCat cagiriyor; onun bir Supabase kullanicisi
+# yok, dolayisiyla JWT de yok. Dogrulama bunun yerine paylasilan bir sirla
+# yapiliyor (REVENUECAT_WEBHOOK_SECRET, sabit zamanli karsilastirma —
+# bkz. fonksiyonun kendi yorumlari). JWT dogrulamasi acik birakilirsa her
+# webhook teslimi 401 ile donerdi.
+# ---------------------------------------------------------------------------
+[functions.revenuecat-webhook]
+verify_jwt = false

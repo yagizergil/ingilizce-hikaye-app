@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Tab Bar — 3 Durum</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#FAF8F4; --ink:#1E1C19; --ink-soft:#8A8378; --hairline:#E7E2D8; --accent:#A6572E; }
+  *{box-sizing:border-box;}
+  body{ margin:0; width:390px; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; padding-bottom:40px; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+
+  .case{ margin-bottom:34px; }
+  .case-label.mono{
+    font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft);
+    padding:18px 20px 8px;
+  }
+  .frame{ border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline); background:#fff; }
+
+  nav{ display:flex; justify-content:space-between; padding:16px 20px; }
+  nav .item.mono{ font-size:10px; letter-spacing:.06em; color:var(--ink-soft); position:relative; }
+  nav .item.active{ color:var(--ink); }
+  nav .item.active::after{
+    content:""; position:absolute; left:0; right:0; bottom:-8px; height:1.5px; background:var(--accent);
+  }
+
+  .hidden-note{ padding:22px 20px; font-size:12px; color:var(--ink-soft); font-style:italic; }
+</style>
+</head>
+<body>
+  <div class="case">
+    <div class="case-label mono">Durum 1 — Normal (Kitaplık aktif)</div>
+    <div class="frame">
+      <nav>
+        <div class="item mono active">Kitaplık</div>
+        <div class="item mono">Defter</div>
+        <div class="item mono">Profil</div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="case">
+    <div class="case-label mono">Durum 2 — Defter aktif</div>
+    <div class="frame">
+      <nav>
+        <div class="item mono">Kitaplık</div>
+        <div class="item mono active">Defter</div>
+        <div class="item mono">Profil</div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="case">
+    <div class="case-label mono">Durum 3 — Reader ekranında</div>
+    <div class="frame">
+      <div class="hidden-note mono">Tab bar tamamen gizli. Reader tam ekran; geri dönüş üstteki "← Kitap adı" bağlantısıyla, tab bar'la değil (bkz. reader.html).</div>
+    </div>
+  </div>
+</body>
+</html>

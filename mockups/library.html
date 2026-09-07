@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Kitaplık</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#FAF8F4; --ink:#1E1C19; --ink-soft:#8A8378; --hairline:#E7E2D8; --accent:#A6572E; }
+  *{box-sizing:border-box;}
+  body{ margin:0; width:390px; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .status{ height:14px; }
+
+  header{ padding:26px 20px 16px; }
+  h1.display{ font-size:28px; font-weight:600; margin:0; letter-spacing:-.01em; }
+
+  .filters{ display:flex; gap:18px; padding:0 20px 18px; border-bottom:1px solid var(--hairline); }
+  .filters .f.mono{ font-size:11px; letter-spacing:.05em; color:var(--ink-soft); padding-bottom:10px; }
+  .filters .f.active{ color:var(--ink); border-bottom:2px solid var(--accent); margin-bottom:-11px; }
+
+  .list{ padding:0 20px 34px; }
+  .book{
+    display:grid; grid-template-columns:64px 1fr; gap:16px;
+    padding:22px 0; border-bottom:1px solid var(--hairline);
+  }
+  .book img{ width:64px; height:96px; object-fit:cover; display:block; }
+  .book .content{ display:flex; flex-direction:column; justify-content:space-between; }
+  .book .title.display{ font-size:19px; font-weight:600; line-height:1.2; }
+  .book .author.mono{ font-size:11px; color:var(--ink-soft); margin-top:4px; letter-spacing:.02em; }
+  .book .stats{ display:flex; gap:14px; margin-top:10px; }
+  .book .stat{ }
+  .book .stat .n.mono{ font-size:13px; font-weight:500; }
+  .book .stat .l.mono{ font-size:9px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; }
+  .book .lvl.mono{
+    font-size:10px; letter-spacing:.05em; border:1px solid var(--ink); padding:2px 6px;
+    align-self:flex-start;
+  }
+
+  nav{ display:flex; justify-content:space-between; padding:16px 20px 26px; border-top:1px solid var(--hairline); }
+  nav .item.mono{ font-size:10px; letter-spacing:.06em; color:var(--ink-soft); }
+  nav .item.active{ color:var(--ink); }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+  <header><h1 class="display">Kitaplık</h1></header>
+
+  <div class="filters">
+    <div class="f mono active">TÜMÜ</div>
+    <div class="f mono">B1</div>
+    <div class="f mono">B2</div>
+    <div class="f mono">C1</div>
+  </div>
+
+  <div class="list">
+    <div class="book">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/mary-shelley-frankenstein.jpg" />
+      <div class="content">
+        <div>
+          <div class="lvl mono">C1</div>
+          <div class="title display" style="margin-top:6px">Frankenstein</div>
+          <div class="author mono">Mary Shelley</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="n mono">74.858</div><div class="l mono">Kelime</div></div>
+          <div class="stat"><div class="n mono">33</div><div class="l mono">Bölüm</div></div>
+          <div class="stat"><div class="n mono">374</div><div class="l mono">Dakika</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="book">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/arthur-conan-doyle-the-adventures-of-sherlock-holmes.jpg" />
+      <div class="content">
+        <div>
+          <div class="lvl mono">B1</div>
+          <div class="title display" style="margin-top:6px">The Adventures of Sherlock Holmes</div>
+          <div class="author mono">Arthur Conan Doyle</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="n mono">104.335</div><div class="l mono">Kelime</div></div>
+          <div class="stat"><div class="n mono">74</div><div class="l mono">Bölüm</div></div>
+          <div class="stat"><div class="n mono">522</div><div class="l mono">Dakika</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="book">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/l-frank-baum-the-wonderful-wizard-of-oz.jpg" />
+      <div class="content">
+        <div>
+          <div class="lvl mono">B1</div>
+          <div class="title display" style="margin-top:6px">The Wonderful Wizard of Oz</div>
+          <div class="author mono">L. Frank Baum</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="n mono">39.331</div><div class="l mono">Kelime</div></div>
+          <div class="stat"><div class="n mono">24</div><div class="l mono">Bölüm</div></div>
+          <div class="stat"><div class="n mono">197</div><div class="l mono">Dakika</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="book">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/jack-london-the-call-of-the-wild.jpg" />
+      <div class="content">
+        <div>
+          <div class="lvl mono">B2</div>
+          <div class="title display" style="margin-top:6px">The Call of the Wild</div>
+          <div class="author mono">Jack London</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="n mono">31.911</div><div class="l mono">Kelime</div></div>
+          <div class="stat"><div class="n mono">19</div><div class="l mono">Bölüm</div></div>
+          <div class="stat"><div class="n mono">160</div><div class="l mono">Dakika</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="book">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/oscar-wilde-childrens-stories.jpg" />
+      <div class="content">
+        <div>
+          <div class="lvl mono">B2</div>
+          <div class="title display" style="margin-top:6px">Children's Stories</div>
+          <div class="author mono">Oscar Wilde</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="n mono">49.539</div><div class="l mono">Kelime</div></div>
+          <div class="stat"><div class="n mono">32</div><div class="l mono">Bölüm</div></div>
+          <div class="stat"><div class="n mono">248</div><div class="l mono">Dakika</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav>
+    <div class="item mono active">Kitaplık</div>
+    <div class="item mono">Defter</div>
+    <div class="item mono">Profil</div>
+  </nav>
+</body>
+</html>

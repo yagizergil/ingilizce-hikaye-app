@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Profil</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#FAF8F4; --ink:#1E1C19; --ink-soft:#8A8378; --hairline:#E7E2D8; --accent:#A6572E; }
+  *{box-sizing:border-box;}
+  body{ margin:0; width:390px; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .status{ height:14px; }
+
+  header{ padding:26px 20px 20px; }
+  h1.display{ font-size:28px; font-weight:600; margin:0; }
+
+  .stats-grid{
+    display:grid; grid-template-columns:1fr 1fr; border-top:1px solid var(--hairline);
+    border-bottom:1px solid var(--hairline);
+  }
+  .stat-cell{
+    padding:20px; border-right:1px solid var(--hairline);
+  }
+  .stat-cell:nth-child(2n){ border-right:none; }
+  .stat-cell:nth-child(-n+2){ border-bottom:1px solid var(--hairline); }
+  .stat-cell .n.mono{ font-size:26px; font-weight:500; }
+  .stat-cell .l.mono{ font-size:10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
+
+  .section-head{ padding:26px 20px 12px; }
+  .section-head .t.display{ font-size:18px; font-weight:600; }
+
+  .rows{ padding:0 20px; }
+  .row{
+    display:flex; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--hairline);
+  }
+  .row .k.mono{ font-size:13px; color:var(--ink); }
+  .row .v.mono{ font-size:13px; color:var(--ink-soft); }
+
+  .footer-note.mono{
+    padding:26px 20px 40px; font-size:10px; color:var(--ink-soft); line-height:1.6;
+  }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+  <header><h1 class="display">Profil</h1></header>
+
+  <div class="stats-grid">
+    <div class="stat-cell"><div class="n mono">6</div><div class="l mono">Bu Hafta Gün</div></div>
+    <div class="stat-cell"><div class="n mono">4 sa 12 dk</div><div class="l mono">Bu Hafta Okuma</div></div>
+    <div class="stat-cell"><div class="n mono">128</div><div class="l mono">Kaydedilen Kelime</div></div>
+    <div class="stat-cell"><div class="n mono">2</div><div class="l mono">Bitirilen Kitap</div></div>
+  </div>
+
+  <div class="section-head"><div class="t display">Hesap</div></div>
+  <div class="rows">
+    <div class="row"><div class="k mono">Abonelik</div><div class="v mono">Ücretsiz</div></div>
+    <div class="row"><div class="k mono">Okuma Fontu Boyutu</div><div class="v mono">%100</div></div>
+    <div class="row"><div class="k mono">Tema</div><div class="v mono">Açık</div></div>
+    <div class="row"><div class="k mono">Dil</div><div class="v mono">Türkçe</div></div>
+  </div>
+
+  <div class="footer-note mono">İngilizce Hikaye — sürüm 0.1.0</div>
+</body>
+</html>

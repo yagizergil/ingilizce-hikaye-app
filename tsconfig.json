@@ -1,0 +1,34 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    // TS 6.0 "baseUrl" kullanimini deprecate etti; Metro/jest yol cozumlemesi
+    // buna bagli oldugu icin simdilik koruyup uyariyi susturuyoruz (TS 7 oncesi tasinacak).
+    "ignoreDeprecations": "6.0",
+    // TS 6.0 artik node_modules/@types altini otomatik dahil etmiyor;
+    // jest ve node global tiplerini acikca bildiriyoruz.
+    "types": ["jest", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "include": [
+    "app",
+    "src",
+    "*.ts",
+    "*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "pipeline"
+  ]
+}

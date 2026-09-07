@@ -1,0 +1,600 @@
+{
+  "app": {
+    "name": "Libro"
+  },
+  "tabs": {
+    "home": "Home",
+    "library": "Library",
+    "vocabulary": "My Words",
+    "profile": "Profile"
+  },
+  "placeholder": {
+    "comingSoon": "Coming soon"
+  },
+  "notFound": {
+    "title": "Not found",
+    "message": "This screen doesn't exist.",
+    "goHome": "Go to home screen"
+  },
+  "common": {
+    "back": "Back",
+    "errorTitle": "Something went wrong",
+    "retry": "Retry",
+    "dismiss": "Dismiss",
+    "crashTitle": "Something went wrong",
+    "crashMessage": "This screen could not load. Trying again usually fixes it.",
+    "ok": "OK"
+  },
+  "ui": {
+    "levelBadge": {
+      "accessibilityLabel": "Level {{level}}"
+    }
+  },
+  "home": {
+    "loading": "Loading home",
+    "error": "Couldn't load home",
+    "addAccessibilityLabel": "Add a book",
+    "empty": {
+      "title": "You haven't started a book yet",
+      "description": "Pick your first book from the library and start reading.",
+      "cta": "Explore the library"
+    },
+    "books": {
+      "title": "Books",
+      "more": "ALL →"
+    },
+    "book": {
+      "words": "{{value}} words",
+      "chapters": "{{value}} chapters"
+    },
+    "shelves": {
+      "more": "ALL →",
+      "forYou": "For you",
+      "shortReads": "Short reads",
+      "byGenre": "By genre",
+      "byAuthor": "By author",
+      "byTheme": "By theme",
+      "favorites": "Your favorites",
+      "continuingSeries": "Continuing series",
+      "level": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      }
+    },
+    "seriesCard": {
+      "progress": "{{current}}/{{total}}"
+    },
+    "newBooks": {
+      "title": "New Books"
+    },
+    "currentlyReading": {
+      "title": "Currently Reading",
+      "percent": "{{percent}}%",
+      "remove": "Remove from currently reading",
+      "removeAccessibilityLabel": "Remove {{title}} from currently reading"
+    },
+    "categories": {
+      "title": "Genres & Themes",
+      "everyday": "Everyday Life",
+      "adventure": "Adventure",
+      "fantasy": "Fantasy & Fairy Tale",
+      "mystery": "Mystery",
+      "romance": "Romance & Society",
+      "philosophy": "Philosophy",
+      "gothic": "Gothic & Suspense",
+      "comedy": "Comedy",
+      "scifi": "Science Fiction"
+    },
+    "authorsAndSeries": {
+      "title": "Authors & Series"
+    },
+    "categoryTag": {
+      "count": "books",
+      "accessibilityLabel": "{{label}}, {{count}} books"
+    },
+    "levelGroups": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "beginnerRange": "A1–A2",
+      "intermediateRange": "B1–B2",
+      "advancedRange": "C1–C2",
+      "count": "{{count}} books",
+      "accessibilityLabel": "{{title}}, {{count}} books"
+    },
+    "favoritesRead": {
+      "title": "Favorites & Read",
+      "favoritesLabel": "Favorites",
+      "readLabel": "Read",
+      "accessibilityLabel": "{{favoritesCount}} favorites, {{readCount}} read books"
+    },
+    "hero": {
+      "levelEyebrow": "YOUR LEVEL · {{level}}",
+      "welcomeEyebrow": "WELCOME",
+      "title": "What shall we read today?",
+      "continueBody": "{{percent}}% done. Pick up where you left off.",
+      "startBody": "Start with short stories at your level — each one fits in a single sitting.",
+      "continueAction": "Continue reading",
+      "browseAction": "Browse books"
+    },
+    "streak": {
+      "accessibilitySafe_one": "{{count}}-day streak, done for today",
+      "accessibilitySafe_other": "{{count}}-day streak, done for today",
+      "accessibilityAtRisk_one": "{{count}}-day streak, you haven't read today",
+      "accessibilityAtRisk_other": "{{count}}-day streak, you haven't read today"
+    }
+  },
+  "collections": {
+    "ozSeries": {
+      "title": "The Oz Series",
+      "description": "L. Frank Baum's classic novel series set in the world of Oz."
+    }
+  },
+  "library": {
+    "title": "Library",
+    "loading": "Loading books",
+    "error": "Couldn't load books",
+    "empty": {
+      "title": "No books found",
+      "description": "Try a different search or filter."
+    },
+    "stats": {
+      "words": "Words",
+      "chapters": "Chapters",
+      "minutes": "Minutes"
+    },
+    "book": {
+      "accessibilityLabel": "{{title}}, {{author}}, level {{level}}"
+    },
+    "search": {
+      "placeholder": "Search title, author, or genre"
+    },
+    "sort": {
+      "recommended": "Recommended",
+      "newest": "Newest",
+      "popular": "Popular",
+      "shortest": "Short→Long"
+    },
+    "filters": {
+      "open": "Open filters",
+      "button": "Filter",
+      "level": "Level",
+      "levelAll": "All",
+      "levelGroup": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "length": "Length",
+      "lengthAny": "Any",
+      "lengthShort": "Under 90 min",
+      "lengthMedium": "Under 300 min",
+      "audioOnly": "Audio only",
+      "reset": "Reset filters",
+      "apply": "Apply"
+    },
+    "viewMode": {
+      "toggle": "Toggle view",
+      "grid": "Grid",
+      "list": "List"
+    },
+    "card": {
+      "minutes": "{{count}} min",
+      "audio": "Audio"
+    }
+  },
+  "bookDetail": {
+    "back": "← Library",
+    "backAccessibilityLabel": "Back to library",
+    "loading": "Loading book",
+    "error": "Couldn't load book",
+    "chapters": "Chapters",
+    "cta": {
+      "start": "Start reading",
+      "continue": "Continue reading — Chapter {{index}}"
+    },
+    "stats": {
+      "words": "Words",
+      "minutes": "Minutes",
+      "chapters": "Chapters",
+      "completed": "Completed",
+      "completedValue": "{{percent}}%"
+    },
+    "chapterRow": {
+      "duration": "{{minutes}} min",
+      "done": "done",
+      "notDone": "not done",
+      "accessibilityLabel": "Chapter {{index}}: {{title}}, {{status}}"
+    },
+    "empty": {
+      "title": "No chapters yet",
+      "description": "This book's chapters will be added soon."
+    },
+    "source": {
+      "title": "Source & license",
+      "name": "Source",
+      "license": "License"
+    },
+    "series": {
+      "position": "Book {{index}} of this series",
+      "nextBook": "Next book: {{title}}",
+      "lastBook": "Last book in this series"
+    }
+  },
+  "reader": {
+    "header": {
+      "back": "Back",
+      "settings": "Reading settings"
+    },
+    "wordSheet": {
+      "pronounce": "Pronounce",
+      "noTranslation": "No translation found for this word",
+      "lookingUpTranslation": "Looking up translation…",
+      "save": "Save",
+      "saved": "Saved",
+      "savedRemove": "Saved ✓ — remove",
+      "know": "I know this",
+      "knownUndo": "Known ✓ — undo",
+      "senseWithPos": "{{pos}} {{gloss}}",
+      "pos": {
+        "noun": "(n.)",
+        "verb": "(v.)",
+        "adjective": "(adj.)",
+        "adverb": "(adv.)",
+        "preposition": "(prep.)",
+        "determiner": "(det.)",
+        "pronoun": "(pron.)",
+        "conjunction": "(conj.)",
+        "interjection": "(interj.)",
+        "other": ""
+      }
+    },
+    "sentenceTranslation": {
+      "toggle": "Show sentence translation",
+      "loading": "Translating…",
+      "error": "Couldn't get the sentence translation, please try again"
+    },
+    "sentenceSheet": {
+      "explainGrammar": "Explain grammar",
+      "premiumNotice": "Sentence translation and grammar explanations are coming soon via AI."
+    },
+    "settings": {
+      "fontSize": "Font size",
+      "increaseFontSize": "Increase font size",
+      "decreaseFontSize": "Decrease font size",
+      "fontFamily": "Font family",
+      "fontFamilyOptions": {
+        "serif": "Serif",
+        "sans": "Sans"
+      },
+      "theme": "Theme",
+      "themeOptions": {
+        "light": "Light",
+        "sepia": "Sepia",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "margin": "Margin",
+      "decreaseMargin": "Decrease margin",
+      "increaseMargin": "Increase margin",
+      "highlights": "Highlight unknown words"
+    },
+    "chapterComplete": {
+      "title": "Chapter complete",
+      "nextChapter": "Next chapter",
+      "bookFinished": "You finished the book. Well done!",
+      "eyebrow": "CHAPTER {{number}}",
+      "wordsLabel": "WORDS",
+      "minutesLabel": "MINUTES",
+      "minutesValue": "{{count}} min",
+      "backToBook": "Back to book",
+      "finishBook": "Finish the book"
+    },
+    "error": {
+      "loadFailed": "Couldn't load the chapter. Please try again.",
+      "progressNotSaved": "Couldn't save your progress, check your connection.",
+      "saveWordFailed": "Couldn't save the word, check your connection.",
+      "unsaveWordFailed": "Couldn't remove the word, check your connection.",
+      "markKnownFailed": "Couldn't mark the word as known, check your connection.",
+      "unmarkKnownFailed": "Couldn't undo that, check your connection.",
+      "notSignedIn": "You need to sign in again to do that.",
+      "savedWordLimitTitle": "Your word list is full",
+      "savedWordLimitBody": "The free tier holds up to 100 words. Mark words as learned in My Words to make room."
+    },
+    "wordAlreadySaved": "This word is already saved.",
+    "footer": {
+      "nextChapter": "NEXT CHAPTER",
+      "finishBook": "FINISH BOOK"
+    }
+  },
+  "auth": {
+    "title": "Create your account",
+    "subtitle": "Sign up so you don't lose your progress and saved words. You can also keep using the app as a guest.",
+    "google": "Continue with Google",
+    "skip": "Not now",
+    "email": {
+      "placeholder": "Your email address",
+      "send": "Send link",
+      "sentTitle": "Link sent",
+      "sentBody": "Tap the link we emailed you to finish signing in."
+    },
+    "error": {
+      "generic": "Couldn't sign in, please try again.",
+      "invalidEmail": "Enter a valid email address."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "hero": {
+      "guest": "Guest",
+      "anonymous": "Reading as a guest",
+      "memberSince": "Member since {{date}}"
+    },
+    "streak": {
+      "currentLabel": "DAY STREAK",
+      "longestLabel": "LONGEST STREAK",
+      "weekAccessibilityLabel": "You read on {{count}} days this week",
+      "keepGoing": "Read a little today to keep your {{count}}-day streak.",
+      "startToday": "Read a few pages today to start a streak.",
+      "days": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      }
+    },
+    "week": {
+      "title": "THIS WEEK",
+      "totalMinutes": "{{count}} min",
+      "dayAccessibilityLabel": "{{day}}: {{count}} minutes",
+      "empty": "No reading yet this week."
+    },
+    "loading": "Loading profile",
+    "error": "Couldn't load profile",
+    "stats": {
+      "savedWordsLabel": "Saved Words",
+      "completedBooksLabel": "Books Finished",
+      "readingTime": {
+        "hoursMinutes": "{{hours}}h {{minutes}}m",
+        "minutesOnly": "{{minutes}}m"
+      },
+      "sectionTitle": "All Time",
+      "totalTimeLabel": "Total Reading",
+      "totalActiveDaysLabel": "Days Read"
+    },
+    "account": {
+      "sectionTitle": "Account",
+      "subscription": "Subscription",
+      "subscriptionFree": "Free",
+      "subscriptionPremium": "Premium",
+      "fontSize": "Reading Font Size",
+      "fontSizeValue": "{{percent}}%",
+      "theme": "Theme",
+      "language": "Language",
+      "languageTr": "Turkish",
+      "languageEn": "English",
+      "signUp": "Sign up",
+      "signOut": "Sign out",
+      "signOutError": "Couldn't sign out, please try again.",
+      "deleteAccount": "Delete my account"
+    },
+    "footer": "{{name}} — version {{version}}"
+  },
+  "vocabulary": {
+    "title": "Notebook",
+    "loading": "Loading words",
+    "error": "Couldn't load words",
+    "summary": "{{total}} words · {{due}} due today",
+    "filters": {
+      "all": "ALL",
+      "due": "DUE",
+      "known": "LEARNED"
+    },
+    "due": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "days": "{{count}} days",
+      "weeks": "{{count}} weeks",
+      "none": "—"
+    },
+    "pos": {
+      "noun": "Noun",
+      "verb": "Verb",
+      "adjective": "Adjective",
+      "adverb": "Adverb",
+      "preposition": "Preposition",
+      "determiner": "Determiner",
+      "pronoun": "Pronoun",
+      "other": "Other"
+    },
+    "word": {
+      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+    },
+    "empty": {
+      "noWords": {
+        "title": "Your notebook is empty",
+        "description": "Tap a word you don't know while reading to save it here for review."
+      },
+      "noMatch": {
+        "title": "No words match this filter",
+        "description": "Try a different filter."
+      }
+    }
+  },
+  "browse": {
+    "loading": "Loading books",
+    "error": "Couldn't load books",
+    "empty": {
+      "title": "No books found",
+      "description": "There are no books in this category yet."
+    },
+    "fallbackTitle": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  },
+  "favorites": {
+    "toast": {
+      "added": "Added to favorites",
+      "removed": "Removed from favorites"
+    },
+    "action": {
+      "add": "Add to favorites",
+      "remove": "Remove from favorites"
+    },
+    "screen": {
+      "title": "Favorites & Read",
+      "loading": "Loading",
+      "error": "Couldn't load",
+      "favoritesSection": "Favorites",
+      "readSection": "Read",
+      "emptyFavorites": {
+        "title": "No favorites yet",
+        "description": "Tap the heart on a book's page to favorite books you like."
+      },
+      "emptyRead": {
+        "title": "You haven't started any books yet",
+        "description": "Books you open will be listed here."
+      },
+      "emptyBoth": {
+        "title": "Nothing here yet",
+        "description": "Books you favorite or start reading will be listed here."
+      }
+    }
+  },
+  "account": {
+    "delete": {
+      "title": "Delete your account",
+      "body": "This action can't be undone. Deleting your account permanently removes:",
+      "listTitle": "What gets deleted",
+      "item1": "Your saved words",
+      "item2": "Your reading progress and stats",
+      "item3": "Your spaced-repetition (SRS) cards",
+      "item4": "Your profile information",
+      "confirmLabel": "I understand this can't be undone.",
+      "confirmButton": "Permanently delete my account",
+      "error": "Couldn't delete your account, please try again."
+    }
+  },
+  "srs": {
+    "loadError": "Review cards could not be loaded.",
+    "revealHint": "Tap to see the meaning",
+    "noGloss": "No translation found",
+    "ratingAgain": "AGAIN",
+    "ratingHard": "HARD",
+    "ratingEasy": "EASY",
+    "doneTitle": "Done for today",
+    "doneMessage": "You reviewed {{count}} words.",
+    "emptyTitle": "Nothing to review",
+    "emptyMessage": "Save words while reading and your review cards will collect here.",
+    "startButton": "Start review",
+    "dueBadge": "{{count}} words ready"
+  },
+  "onboarding": {
+    "introTitle": "Let's find your level",
+    "introBody": "We'll show you a few English words. For each one, tell us whether you know it, aren't sure, or don't know it. We'll use that to suggest the right books.",
+    "introDuration": "ABOUT 1 MINUTE",
+    "start": "Let's start",
+    "skip": "Not now",
+    "answerKnown": "I know it",
+    "answerUnsure": "Not sure",
+    "answerUnknown": "I don't know it",
+    "resultEyebrow": "START READING HERE",
+    "resultSize": "You know roughly {{count}} words.",
+    "adjustHint": "CHANGE IT IF THIS LOOKS WRONG",
+    "finish": "Go to books",
+    "loadError": "Test words could not be loaded."
+  },
+  "paywall": {
+    "title": "Make the words you read stick",
+    "subtitle": "Stories are always free. Premium helps you keep what you learn.",
+    "socialProof_one": "{{count}} STORY · A1 TO C2",
+    "socialProof_other": "{{count}} STORIES · A1 TO C2",
+    "benefits": {
+      "unlimitedWords": "Unlimited saved words — no notebook limit",
+      "spacedRepetition": "Spaced repetition: every word returns before you forget it",
+      "aiSentences": "{{premium}} AI sentence translations a day (free tier: {{free}})",
+      "aiSentencesGeneric": "A much higher daily quota for AI sentence translation",
+      "stats": "Reading time, streak and level statistics"
+    },
+    "plan": {
+      "annual": "Yearly",
+      "monthly": "Monthly",
+      "savings": "SAVE {{percent}}%",
+      "perMonth": "{{price}}/mo",
+      "trialDays_one": "{{count}} day free",
+      "trialDays_other": "{{count}} days free",
+      "periodYear": "year",
+      "periodMonth": "month"
+    },
+    "ctaTrial_one": "Try free for {{count}} day",
+    "ctaTrial_other": "Try free for {{count}} days",
+    "ctaSubscribe": "Go Premium",
+    "legal": {
+      "trialThenPrice_one": "Free for {{count}} day, then {{price}}/{{period}}.",
+      "trialThenPrice_other": "Free for {{count}} days, then {{price}}/{{period}}.",
+      "price": "{{price}}/{{period}}.",
+      "autoRenew": "Your subscription renews automatically unless cancelled at least 24 hours before the period ends. You can cancel in your Apple ID settings.",
+      "terms": "Terms of Use",
+      "privacy": "Privacy Policy",
+      "privacyMissing": "Privacy policy link is not configured"
+    },
+    "freeAlwaysNote": "EVERY BOOK STAYS FREE, ALWAYS",
+    "restore": "Restore purchases",
+    "purchaseError": "The purchase could not be completed. Please try again.",
+    "notEntitledTitle": "Subscription not visible yet",
+    "notEntitledBody": "Your payment went through but the subscription isn't active yet. Try \"Restore purchases\" in a few minutes; if it persists, get in touch.",
+    "activatingCta": "Activating…",
+    "activatingTitle": "Activating your subscription",
+    "activatingBody": "Your purchase is complete. Premium will unlock within a few minutes; if it doesn't, use \"Restore purchases\" to refresh.",
+    "restoreFoundTitle": "Subscription restored",
+    "restoreFoundBody": "Premium features are unlocked again.",
+    "restoreEmptyTitle": "No subscription found",
+    "restoreEmptyBody": "There is no active subscription on this Apple account.",
+    "noPackages": "No purchasable package is available right now.",
+    "unavailableInExpoGo": "PURCHASES ONLY WORK IN A COMPILED BUILD",
+    "upgradeRow": "Premium",
+    "wordListFull": "Your notebook is {{count}}/{{limit}} full"
+  },
+  "reminders": {
+    "settingsLabel": "Reminders",
+    "settingsHint": "For reviews, unfinished stories and your streak",
+    "permissionBlockedTitle": "Notifications are off",
+    "permissionBlockedBody": "Reminders need notification permission. You can turn notifications on for İngilizce Hikaye in your iPhone Settings.",
+    "openSettings": "Open Settings",
+    "permissionDeniedTitle": "Reminders not enabled",
+    "permissionDeniedBody": "Notification permission wasn't granted. You can turn it on any time in Settings.",
+    "streakRescue": {
+      "title_one": "Your {{count}}-day streak is at risk",
+      "title_other": "Your {{count}}-day streak is at risk",
+      "body": "Read for a few minutes today and it keeps going."
+    },
+    "reviewDue": {
+      "title_one": "{{count}} word is waiting for review",
+      "title_other": "{{count}} words are waiting for review",
+      "body": "Shall we run through them before you forget?"
+    },
+    "continueReading": {
+      "title": "You have an unfinished story",
+      "body": "“{{title}}” is waiting for you."
+    }
+  },
+  "completion": {
+    "eyebrow_one": "YOU FINISHED BOOK {{count}}",
+    "eyebrow_other": "YOU FINISHED BOOK {{count}}",
+    "wordsLabel": "words saved",
+    "minutesValue_one": "{{count}} min",
+    "minutesValue_other": "{{count}} min",
+    "minutesLabel": "reading time",
+    "reviewWords": "Review these words",
+    "findNextBook": "Find your next story",
+    "upgradeTitle": "Make these words stick",
+    "upgradeHint": "Premium unlocks unlimited saved words and review",
+    "error": "This screen could not be loaded."
+  }
+}

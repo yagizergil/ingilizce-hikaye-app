@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Yön A — Arşiv / Fihrist</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F1E7;
+    --paper-raised:#EFE8D9;
+    --ink:#2A241C;
+    --ink-soft:#6B6151;
+    --rule:#D9CFB8;
+    --accent:#8A3B2B; /* deep brick red — sealing-wax / ex-libris stamp */
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; width:390px; background:var(--paper); color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .status{ height:14px; }
+  header{ padding:28px 22px 18px; }
+  .kicker{
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink-soft); font-style:italic;
+  }
+  h1{
+    font-size:30px; font-weight:600; margin:6px 0 0; letter-spacing:-.01em;
+  }
+  .rule{ height:1px; background:var(--rule); margin:0 22px; }
+  .rule-thick{ height:1px; background:var(--ink); margin:0 22px; opacity:.15; }
+
+  .catalog{ padding:4px 22px 40px; }
+  .entry{
+    display:flex; gap:16px; padding:22px 0; border-bottom:1px solid var(--rule);
+  }
+  .entry:last-child{ border-bottom:none; }
+  .cover{
+    width:64px; height:96px; flex-shrink:0; object-fit:cover;
+    box-shadow: 0 0 0 1px rgba(42,36,28,.12);
+  }
+  .meta{ flex:1; min-width:0; padding-top:2px; }
+  .num{
+    font-size:11px; color:var(--ink-soft); letter-spacing:.06em;
+    font-variant-numeric: tabular-nums;
+  }
+  .title{
+    font-size:19px; font-weight:600; margin:3px 0 2px; line-height:1.22;
+  }
+  .author{
+    font-size:13px; font-style:italic; color:var(--ink-soft); margin:0 0 8px;
+  }
+  .tags{ display:flex; gap:10px; align-items:baseline; }
+  .level{
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--accent); border-bottom:1px solid var(--accent); padding-bottom:1px;
+  }
+  .dur{ font-size:11px; color:var(--ink-soft); }
+  .dur::before{ content:"·"; margin-right:10px; color:var(--rule); }
+
+  footer{
+    padding:16px 22px 26px; display:flex; justify-content:space-between;
+    font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  footer span{ border-top:1px solid var(--rule); padding-top:8px; flex:1; text-align:center; }
+  footer span:first-child{ text-align:left; color:var(--ink); border-top-color:var(--ink); }
+  footer span:last-child{ text-align:right; }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+  <header>
+    <div class="kicker">Kitaplığım · 5 cilt</div>
+    <h1>Fihrist</h1>
+  </header>
+  <div class="rule-thick"></div>
+
+  <div class="catalog">
+    <div class="entry">
+      <img class="cover" src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/mary-shelley-frankenstein.jpg" />
+      <div class="meta">
+        <div class="num">No. 01 — 33 Bölüm</div>
+        <div class="title">Frankenstein</div>
+        <div class="author">Mary Shelley</div>
+        <div class="tags"><span class="level">C1</span><span class="dur">374 dk</span></div>
+      </div>
+    </div>
+    <div class="entry">
+      <img class="cover" src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/arthur-conan-doyle-the-adventures-of-sherlock-holmes.jpg" />
+      <div class="meta">
+        <div class="num">No. 02 — 74 Bölüm</div>
+        <div class="title">The Adventures of Sherlock Holmes</div>
+        <div class="author">Arthur Conan Doyle</div>
+        <div class="tags"><span class="level">B1</span><span class="dur">522 dk</span></div>
+      </div>
+    </div>
+    <div class="entry">
+      <img class="cover" src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/l-frank-baum-the-wonderful-wizard-of-oz.jpg" />
+      <div class="meta">
+        <div class="num">No. 03 — 24 Bölüm</div>
+        <div class="title">The Wonderful Wizard of Oz</div>
+        <div class="author">L. Frank Baum</div>
+        <div class="tags"><span class="level">B1</span><span class="dur">197 dk</span></div>
+      </div>
+    </div>
+    <div class="entry">
+      <img class="cover" src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/jack-london-the-call-of-the-wild.jpg" />
+      <div class="meta">
+        <div class="num">No. 04 — 19 Bölüm</div>
+        <div class="title">The Call of the Wild</div>
+        <div class="author">Jack London</div>
+        <div class="tags"><span class="level">B2</span><span class="dur">160 dk</span></div>
+      </div>
+    </div>
+    <div class="entry">
+      <img class="cover" src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/oscar-wilde-childrens-stories.jpg" />
+      <div class="meta">
+        <div class="num">No. 05 — 32 Bölüm</div>
+        <div class="title">Children's Stories</div>
+        <div class="author">Oscar Wilde</div>
+        <div class="tags"><span class="level">B2</span><span class="dur">248 dk</span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Fihrist</span>
+    <span>Defter</span>
+    <span>Profil</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+# =============================================================================
+# BU DOSYA İKİ TAMAMEN AYRI DENETİM MODU İÇİN EŞİK TANIMLAR (bkz.
+# validator.py validate_book, is_adaptation parametresi). İKİSİNİ
+# KARIŞTIRMAYIN — bir kitabın seviyesini TESPİT etmek için kullanılan
+# ölçümler (level_inference, aşağıda) ile o kitabı bir seviyeye KABUL
+# etmek için kullanılan eşikler (levels, hemen altta) FARKLI amaçlara
+# hizmet eder:
+#
+#   is_adaptation=True (KALİTE denetimi) -> `levels.*` uygulanır: hedef
+#   seviye için kapsam/cümle-uzunluğu eşikleri KABUL kriteridir.
+#
+#   is_adaptation=False (YAYINLANABİLİRLİK denetimi, ham kaynak metin) ->
+#   `levels.*` HİÇ UYGULANMAZ. Sadece `common.off_list.raw`,
+#   `common.max_dialect_ratio`/`dialect_ratio_auto_reject` ve
+#   `copyright.max_author_death_year` uygulanır.
+# =============================================================================
+
+# SADECE is_adaptation=True (adapte/basitleştirilmiş metin) için KABUL
+# eşikleri. avg_sentence_length ve max_sentence_length kelime cinsinden
+# (whitespace tokenization). coverage_at_or_below: o seviyeye ve altına ait
+# lemma'ların kitaptaki toplam token içindeki oranı (yüzde, 0-100).
+# is_adaptation=False'ta bu blok TAMAMEN devre dışıdır (validator.py'de
+# is_adaptation koşuluyla gate'lenir) — ham hiçbir klasik metin %95
+# kümülatif kapsama ulaşmaz, bu eşikleri ham metne uygulamak her kitabı
+# reddeder (bkz. Call of the Wild: B2 tespit edilip B2 kabul eşiğine
+# çarpıp reddedilmesi — düzeltilen döngüsel hata).
+levels:
+  A1:
+    min_coverage: 95.0
+    max_avg_sentence_length: 8.0
+    max_sentence_length: 15
+  A2:
+    min_coverage: 95.0
+    max_avg_sentence_length: 12.0
+    max_sentence_length: 25
+  B1:
+    min_coverage: 95.0
+    max_avg_sentence_length: 19.0
+    max_sentence_length: 45
+  B2:
+    min_coverage: 95.0
+    max_avg_sentence_length: 24.0
+    max_sentence_length: 60
+
+# Tüm seviyeler için ortak eşikler.
+common:
+  # off_list_ratio için İKİ eşik: off_list_warn (aşılırsa UYARI, kitap
+  # geçer) ve off_list_max (aşılırsa RED). ADAPTE durumuna göre ayrı —
+  # %5 gibi sıkı bir eşik, basitleştirilmiş/adapte edilmiş bir metin
+  # için doğru bir kalite kriteridir, ama ham bir klasik için çok
+  # sıkıdır: C1/C2 düzeyinde bir romanda "countenance", "wretch",
+  # "vengeance", "hovel" gibi kelimeler doğal olarak CEFR sözlüğü
+  # dışındadır — zengin kelime dağarcığı, kalite kusuru değil. Ama
+  # off_list_max (ham metinlerde %12) hâlâ bir GÜVENLİK AĞI: %20
+  # off-list demek her 5 kelimeden biri sözlükte yok demek — bu ya
+  # bozuk bir parse ya da gerçekten okunamayacak kadar zor bir metin,
+  # ikisi de REDDİ hak eder, sadece uyarıyı değil.
+  off_list:
+    adaptation:
+      off_list_warn: 3.0
+      off_list_max: 5.0
+    raw:
+      off_list_warn: 8.0
+      off_list_max: 12.0
+    # is_original=true (Task 3, "STRICT mod" — orijinal/LLM üretimi
+    # A1/A2/B1 kitaplar): `adaptation`dan (%5 max) daha sıkı bir tavan —
+    # orijinal içerik baştan hedef seviye için YAZILIYOR, bu yüzden
+    # var olan bir metni adapte etmekten daha yüksek bir standart makul.
+    # warn == max kasıtlı: spec'te tek bir "%3'ün üzerinde reddedilir"
+    # kuralı var, ayrı bir uyarı bandı yok.
+    original:
+      off_list_warn: 3.0
+      off_list_max: 3.0
+  # dialect_ratio ve author_death_year (aşağıda, copyright) kuralları
+  # HER İKİSİNDE de (adapte/ham) sıkı kalır — bunlar kalite tercihi
+  # değil, doğruluk (öğrenciye yanlış İngilizce öğretmeme) ve telif
+  # meseleleri.
+  max_dialect_ratio: 3.0
+  dialect_ratio_auto_reject: 8.0
+  archaic_ratio_label_threshold: 0.1
+  # Sağlık kontrolü (validate_book, is_adaptation'dan bağımsız) — parse'ın
+  # içeriğin bir kısmını sessizce atladığı durumları yakalamak için (bkz.
+  # oyun/drama EPUB'larında <table> tabanlı diyalog, eski <p>-only
+  # selector'ün neredeyse hiçbir şeyi yakalamaması). Kural: her 10KB
+  # sıkıştırılmamış XHTML metni için en az bu kadar kelime beklenir.
+  # Gerçek düzyazı kitaplarda bu oran rahatlıkla aşılır (HTML markup'ı
+  # metnin küçük bir kısmıdır); 1000/10KB, markup dahil kabaca ~1
+  # kelime/10 byte'lık kaba bir alt sınırdır.
+  min_words_per_10kb_xhtml: 1000
+  # content_type='play' için ayrı (daha düşük) oran eşiği: sahne oyunu
+  # XHTML'i <table><tr><td> + konuşmacı adı hücreleri içerir — aynı
+  # diyalog metni, düzyazıya göre satır başına çok daha fazla markup
+  # (tablo/hücre etiketleri, tekrarlanan konuşmacı adları) taşır, bu
+  # yüzden kelime/byte oranı düzyazıdan doğal olarak daha düşüktür.
+  # Wilde'ın 3 oyunu (A Woman of No Importance, The Importance of Being
+  # Earnest, Lady Windermere's Fan) düzeltilmiş extraction sonrası
+  # tutarlı biçimde ~600-650 kelime/10KB civarında ölçüldü — üçü de
+  # aynı oranda, parse'ın rastgele eksik çalıştığını değil, oyun
+  # formatının yapısal markup yükünü yansıtıyor. min_total_word_count
+  # (aşağıda) hâlâ mutlak güvenlik ağı olarak kalır.
+  min_words_per_10kb_xhtml_play: 500
+  # Herhangi bir kitabın (oyun dahil) altına düşemeyeceği mutlak kelime
+  # sayısı tabanı — oran kontrolünden bağımsız bir güvenlik ağı.
+  min_total_word_count: 3000
+
+# author_death_year bu yıldan sonraysa kitap reddedilir (TR/AB: ölüm + 70
+# yıl kuralı, referans yıl bu dosyanın güncellendiği tarihe göre ayarlanır).
+copyright:
+  max_author_death_year: 1956
+
+# Seviye TESPİTİ (BookMetrics.inferred_level) için ayrı eşikler —
+# `levels.*.min_coverage` (%95, yukarıda) ile KARIŞTIRILMAMALI. %95, adapte/
+# basitleştirilmiş bir metnin bir seviye için KABUL kriteridir; ham klasik
+# metinlerin seviyesini TESPİT etmek için yanlıştır — hiçbir gerçek klasik
+# metin %95 kümülatif kelime kapsamına ulaşmaz (bkz. Frankenstein C1'de
+# %91.76). Bunun yerine: kümülatif kapsamı ilk min_coverage'a ulaştıran
+# seviye aday alınır; ortalama cümle uzunluğu sentence_length_bump_threshold'u
+# aşıyorsa bir seviye yukarı çıkarılır (üslup/sözdizimi karmaşıklığı saf
+# kelime kapsamından daha zor bir seviyeye işaret ediyor demektir — ör.
+# Frankenstein: B2 kapsamı %90.85 ama ort. cümle 22.6 -> C1).
+level_inference:
+  min_coverage: 90.0
+  sentence_length_bump_threshold: 20.0

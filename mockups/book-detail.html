@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Kitap Detay — Frankenstein</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#FAF8F4; --ink:#1E1C19; --ink-soft:#8A8378; --hairline:#E7E2D8; --accent:#A6572E; }
+  *{box-sizing:border-box;}
+  body{ margin:0; width:390px; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .status{ height:14px; }
+
+  .topbar{ padding:14px 20px; font-size:11px; }
+  .topbar .back.mono{ color:var(--ink-soft); }
+
+  .hero{ display:grid; grid-template-columns:104px 1fr; gap:18px; padding:8px 20px 24px; }
+  .hero img{ width:104px; height:156px; object-fit:cover; display:block; }
+  .hero .info{ display:flex; flex-direction:column; justify-content:space-between; }
+  .hero .lvl.mono{ font-size:10px; letter-spacing:.05em; border:1px solid var(--ink); padding:2px 6px; align-self:flex-start; }
+  .hero .title.display{ font-size:26px; font-weight:600; line-height:1.08; margin:10px 0 4px; letter-spacing:-.01em; }
+  .hero .author.mono{ font-size:12px; color:var(--ink-soft); }
+
+  .statline{
+    display:flex; padding:0 20px 22px; gap:0; border-bottom:1px solid var(--hairline);
+  }
+  .statline .stat{ flex:1; }
+  .statline .n.mono{ font-size:17px; font-weight:500; }
+  .statline .l.mono{ font-size:9px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+
+  .cta{ margin:22px 20px; }
+  .cta button{
+    width:100%; padding:15px; background:var(--ink); color:var(--bg); border:none;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+
+  .section-head{ padding:8px 20px 12px; }
+  .section-head .t.display{ font-size:18px; font-weight:600; }
+
+  .chapters{ padding:0 20px 40px; }
+  .ch{
+    display:flex; align-items:baseline; gap:14px; padding:13px 0;
+    border-bottom:1px solid var(--hairline);
+  }
+  .ch .idx.mono{ font-size:11px; color:var(--ink-soft); width:20px; flex-shrink:0; }
+  .ch .title.display{ font-size:15px; font-weight:500; flex:1; }
+  .ch .dur.mono{ font-size:10px; color:var(--ink-soft); }
+  .ch.done .title.display{ color:var(--ink-soft); }
+  .ch.done .idx.mono::after{ content:"✓"; margin-left:2px; }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+  <div class="topbar"><span class="back mono">← Kitaplık</span></div>
+
+  <div class="hero">
+    <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/mary-shelley-frankenstein.jpg" />
+    <div class="info">
+      <div class="lvl mono">C1</div>
+      <div class="title display">Frankenstein</div>
+      <div class="author mono">Mary Shelley</div>
+    </div>
+  </div>
+
+  <div class="statline">
+    <div class="stat"><div class="n mono">74.858</div><div class="l mono">Kelime</div></div>
+    <div class="stat"><div class="n mono">33</div><div class="l mono">Bölüm</div></div>
+    <div class="stat"><div class="n mono">374</div><div class="l mono">Dakika</div></div>
+    <div class="stat"><div class="n mono">%42</div><div class="l mono">Tamamlandı</div></div>
+  </div>
+
+  <div class="cta"><button>OKUMAYA DEVAM ET — BÖLÜM 5</button></div>
+
+  <div class="section-head"><div class="t display">Bölümler</div></div>
+  <div class="chapters">
+    <div class="ch done"><div class="idx mono">01</div><div class="title display">Letter I</div><div class="dur mono">6 dk</div></div>
+    <div class="ch done"><div class="idx mono">02</div><div class="title display">Letter II</div><div class="dur mono">7 dk</div></div>
+    <div class="ch done"><div class="idx mono">03</div><div class="title display">Letter III</div><div class="dur mono">2 dk</div></div>
+    <div class="ch done"><div class="idx mono">04</div><div class="title display">Letter IV</div><div class="dur mono">14 dk</div></div>
+    <div class="ch"><div class="idx mono">05</div><div class="title display">Chapter I</div><div class="dur mono">9 dk</div></div>
+    <div class="ch"><div class="idx mono">06</div><div class="title display">Chapter II</div><div class="dur mono">11 dk</div></div>
+    <div class="ch"><div class="idx mono">07</div><div class="title display">Chapter III</div><div class="dur mono">13 dk</div></div>
+    <div class="ch"><div class="idx mono">08</div><div class="title display">Chapter IV</div><div class="dur mono">13 dk</div></div>
+  </div>
+</body>
+</html>

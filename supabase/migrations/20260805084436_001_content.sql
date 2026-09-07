@@ -1,0 +1,1 @@
+-- see supabase/migrations/001_content.sql

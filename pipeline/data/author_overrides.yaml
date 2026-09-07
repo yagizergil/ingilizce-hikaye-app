@@ -1,0 +1,19 @@
+# Wikidata çözemediğinde veya yanlış eşleştirdiğinde elle doldurulan
+# yazar -> ölüm yılı önbelleği. Anahtar, EPUB dc:creator alanındaki adın
+# tamamıyla birebir aynı olmak ZORUNDA DEĞİL — eşleştirme soyad + en az
+# bir diğer isim parçasının örtüşmesine bakar (bkz. src/author_overrides.py),
+# yani 'Mary Shelley' anahtarı EPUB'daki 'Mary Wollstonecraft Shelley' ile
+# eşleşir.
+#
+# Antik/ölüm tarihi bilinmeyen ama tartışmasız kamu malı olan yazarlar
+# (Homer gibi) için gerçek bir yıl yerine belirgin şekilde eski bir yıl
+# kullanılır — validate_author_death_year sadece "1956'dan sonra mı"
+# kontrolü yapar, bu yüzden -750 gibi bir değer "1956 öncesi" olarak
+# doğru şekilde kabul edilir.
+
+'Mary Shelley': 1851
+'Ring Lardner': 1933
+'Jane Austen': 1817
+'Alexandre Dumas': 1870
+'Marcus Aurelius': 180
+'Homer': -750

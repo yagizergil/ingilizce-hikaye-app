@@ -1,0 +1,2 @@
+[console_scripts]
+pipeline = src.cli:app

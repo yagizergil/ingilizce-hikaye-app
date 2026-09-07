@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Okuma Ekranı — Frankenstein, Chapter I</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#FAF8F4; --ink:#241F19; --ink-soft:#8A8378; --hairline:#E7E2D8; --accent:#A6572E; }
+  *{box-sizing:border-box;}
+  body{ margin:0; width:390px; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .status{ height:14px; }
+
+  /* minimal chrome — no title bar clutter, no promo, no banner */
+  .progress-line{ height:2px; background:var(--hairline); position:relative; }
+  .progress-line i{ position:absolute; inset:0; width:31%; background:var(--accent); display:block; }
+
+  .chrome{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 22px 18px;
+  }
+  .chrome .loc.mono{ font-size:10px; letter-spacing:.05em; color:var(--ink-soft); text-transform:uppercase; }
+  .chrome .pct.mono{ font-size:10px; color:var(--ink-soft); }
+
+  .reading{
+    padding:6px 24px 60px; font-family:'Literata', Georgia, serif;
+    font-size:18px; line-height:1.7; color:var(--ink);
+  }
+  .reading h2{
+    font-size:13px; font-weight:400; font-style:italic; color:var(--ink-soft);
+    margin:0 0 22px; font-family:'Literata', Georgia, serif;
+  }
+  .reading p{ margin:0 0 20px; }
+  .word-lookup{
+    text-decoration: underline dotted var(--ink-soft) 1px; text-underline-offset:3px;
+  }
+
+  /* bottom sheet affordance for a tapped word — shown collapsed as a hint */
+  .sheet-hint{
+    position:relative; margin:0 24px; padding:14px 16px; background:#fff;
+    border-top:1px solid var(--hairline);
+  }
+  .sheet-hint .word{ font-family:'Literata', serif; font-style:italic; font-size:15px; }
+  .sheet-hint .gloss.mono{ font-size:12px; color:var(--ink-soft); margin-top:4px; }
+  .sheet-hint .pos.mono{ font-size:9px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+  <div class="progress-line"><i></i></div>
+  <div class="chrome">
+    <div class="loc mono">← Frankenstein</div>
+    <div class="pct mono">Bölüm 5 · %31</div>
+  </div>
+
+  <div class="reading">
+    <h2>Chapter I</h2>
+    <p>I am by birth a Genevese; and my family is one of the most
+    distinguished of that republic. My ancestors had been for many years
+    counsellors and syndics; and my father had filled several public
+    situations with honour and reputation. He was respected by all who knew
+    him, for his <span class="word-lookup">integrity</span> and
+    <span class="word-lookup">indefatigable</span> attention to public
+    business.</p>
+    <p>As the circumstances of his marriage illustrate his character, I
+    cannot refrain from relating them. One of his most intimate friends was
+    a merchant, who, from a flourishing state, fell, through numerous
+    mischances, into <span class="word-lookup">poverty</span>. This man,
+    whose name was Beaufort, was of a proud and unbending disposition, and
+    could not bear to live in poverty and <span class="word-lookup">oblivion</span>
+    in the same country where he had formerly been distinguished for his
+    rank and magnificence.</p>
+    <p>Having paid his debts, therefore, in the most honourable manner, he
+    retreated with his daughter to the town of Lucerne, where he lived
+    unknown and in <span class="word-lookup">wretchedness</span>. My father
+    loved Beaufort with the truest friendship, and was deeply grieved by
+    his retreat in these unfortunate circumstances.</p>
+  </div>
+
+  <div class="sheet-hint">
+    <div class="pos mono">Noun</div>
+    <div class="word">oblivion</div>
+    <div class="gloss mono">unutuluş</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Ana Sayfa</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF8F4; --ink:#1E1C19; --ink-soft:#8A8378; --hairline:#E7E2D8; --accent:#A6572E;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; width:390px; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .reading{ font-family:'Literata', Georgia, serif; }
+  .status{ height:14px; }
+
+  header{ padding:28px 20px 6px; }
+  .eyebrow.mono{ font-size:11px; letter-spacing:.06em; color:var(--ink-soft); text-transform:uppercase; }
+  h1.display{ font-size:32px; font-weight:600; margin:8px 0 0; letter-spacing:-.01em; }
+
+  /* continue reading — asymmetric: fixed cover col, variable content */
+  .continue{
+    margin:24px 20px 0; display:grid; grid-template-columns:64px 1fr;
+    gap:16px; padding-bottom:22px; border-bottom:1px solid var(--hairline);
+  }
+  .continue img{ width:64px; height:96px; object-fit:cover; display:block; }
+  .continue .col{ display:flex; flex-direction:column; justify-content:space-between; padding-top:2px; }
+  .continue .label.mono{ font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); }
+  .continue .title.display{ font-size:20px; font-weight:600; line-height:1.15; margin:5px 0; }
+  .continue .prog{ display:flex; align-items:center; gap:8px; }
+  .continue .bar{ flex:1; height:2px; background:var(--hairline); position:relative; }
+  .continue .bar i{ position:absolute; inset:0; width:42%; background:var(--accent); }
+  .continue .pct.mono{ font-size:11px; color:var(--accent); }
+
+  .section-head{
+    padding:26px 20px 12px; display:flex; justify-content:space-between; align-items:baseline;
+  }
+  .section-head .t.display{ font-size:18px; font-weight:600; }
+  .section-head .more.mono{ font-size:10px; color:var(--ink-soft); letter-spacing:.05em; }
+
+  .row{
+    margin:0 20px; display:grid; grid-template-columns:52px 1fr;
+    gap:14px; padding:16px 0; border-bottom:1px solid var(--hairline);
+  }
+  .row img{ width:52px; height:78px; object-fit:cover; display:block; }
+  .row .title.display{ font-size:16px; font-weight:600; line-height:1.25; margin-bottom:4px; }
+  .row .meta.mono{ font-size:10px; color:var(--ink-soft); letter-spacing:.03em; display:flex; gap:10px; }
+  .row .meta .lvl{ color:var(--ink); }
+
+  nav{ display:flex; justify-content:space-between; padding:16px 20px 26px; border-top:1px solid var(--hairline); margin-top:4px; }
+  nav .item.mono{ font-size:10px; letter-spacing:.06em; color:var(--ink-soft); }
+  nav .item.active{ color:var(--ink); }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+  <header>
+    <div class="eyebrow mono">Bugün</div>
+    <h1 class="display">Kitaplığım</h1>
+  </header>
+
+  <div class="continue">
+    <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/mary-shelley-frankenstein.jpg" />
+    <div class="col">
+      <div>
+        <div class="label mono">Kaldığın yer — Bölüm 14</div>
+        <div class="title display">Frankenstein</div>
+      </div>
+      <div class="prog"><div class="bar"><i></i></div><div class="pct mono">%42</div></div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="t display">Kitaplar</div>
+    <div class="more mono">TÜMÜ →</div>
+  </div>
+
+  <div class="row">
+    <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/arthur-conan-doyle-the-adventures-of-sherlock-holmes.jpg" />
+    <div>
+      <div class="title display">The Adventures of Sherlock Holmes</div>
+      <div class="meta mono"><span class="lvl">B1</span><span>104.335 kelime</span><span>74 bölüm</span></div>
+    </div>
+  </div>
+  <div class="row">
+    <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/l-frank-baum-the-wonderful-wizard-of-oz.jpg" />
+    <div>
+      <div class="title display">The Wonderful Wizard of Oz</div>
+      <div class="meta mono"><span class="lvl">B1</span><span>39.331 kelime</span><span>24 bölüm</span></div>
+    </div>
+  </div>
+  <div class="row">
+    <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/jack-london-the-call-of-the-wild.jpg" />
+    <div>
+      <div class="title display">The Call of the Wild</div>
+      <div class="meta mono"><span class="lvl">B2</span><span>31.911 kelime</span><span>19 bölüm</span></div>
+    </div>
+  </div>
+
+  <nav>
+    <div class="item mono active">Kitaplık</div>
+    <div class="item mono">Defter</div>
+    <div class="item mono">Profil</div>
+  </nav>
+</body>
+</html>

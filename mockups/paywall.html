@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Paywall</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /*
+    Paywall — 2026-09-07 denetimi sonrası.
+
+    Bu mockup diğerlerinden SONRA yazıldı: denetimde ürünün para kazandığı
+    tek ekranın tasarım sisteminin dışında kaldığı çıktı (mockups/ içinde
+    home, library, book-detail, reader, vocabulary, profile, tab-bar vardı;
+    paywall yoktu) ve bu kodda görünüyordu — hiyerarşisiz bir liste ve her
+    paket için eşit ağırlıkta birer buton.
+
+    Palet ve tipografi diğer mockup'larla birebir aynı; yeni hiçbir renk
+    ya da yüz eklenmedi.
+
+    ÜRÜN İLKESİ #1: bu ekran reader'ın İÇİNDE asla açılmaz. Açıldığı yerler:
+    Profil, Kelimelerim şeridi, kitap bitirme ekranı.
+  */
+  :root{ --bg:#FAF8F4; --ink:#1E1C19; --ink-soft:#8A8378; --hairline:#E7E2D8; --accent:#A6572E; --surface:#FFFFFF; --danger:#B3453A; }
+  *{box-sizing:border-box;}
+  body{ margin:0; width:390px; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .status{ height:14px; }
+
+  .close{ padding:8px 20px 0; }
+  .close svg{ display:block; }
+
+  .head{ padding:14px 20px 0; }
+  h1.display{ font-size:28px; font-weight:600; margin:0; line-height:1.15; }
+  .sub.mono{ font-size:13px; color:var(--ink-soft); margin-top:10px; line-height:1.55; }
+
+  /* Sosyal kanıt: uygulama henüz yayında olmadığı için yıldız/yorum yok —
+     elde olan tek dürüst kanıt katalog derinliği. Sayı sunucudan geliyor. */
+  .proof.mono{
+    font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent); margin-top:14px;
+  }
+
+  .benefits{ padding:22px 20px 4px; display:flex; flex-direction:column; gap:12px; }
+  .benefit{ display:flex; gap:12px; align-items:flex-start; }
+  .benefit .ico{ width:20px; height:20px; flex:none; margin-top:1px; }
+  .benefit .t.mono{ font-size:13px; line-height:1.5; }
+
+  /* Plan seçici — tek birincil eylem için ayrılmış alan.
+     Yıllık ÖN SEÇİLİ: 2px accent kenarlık + beyaz yüzey + tik. */
+  .plans{ padding:18px 20px 0; display:flex; flex-direction:column; gap:10px; }
+  .plan{
+    display:flex; justify-content:space-between; align-items:center; gap:14px;
+    border:1px solid var(--hairline); border-radius:12px; padding:14px 16px; min-height:64px;
+  }
+  .plan.sel{ border:2px solid var(--accent); background:var(--surface); padding:13px 15px; }
+  .plan .left{ display:flex; flex-direction:column; gap:4px; }
+  .plan .name{ font-family:'Fraunces', Georgia, serif; font-size:17px; font-weight:600; }
+  .plan .name-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .badge.mono{
+    font-size:10px; letter-spacing:.06em; color:var(--accent);
+    border:1px solid var(--accent); border-radius:6px; padding:2px 6px;
+  }
+  .plan .trial.mono{ font-size:11px; color:var(--ink-soft); }
+  .plan .right{ text-align:right; display:flex; flex-direction:column; gap:3px; }
+  .plan .price.mono{ font-size:15px; font-weight:500; font-variant-numeric:tabular-nums; }
+  .plan .per.mono{ font-size:11px; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+
+  .cta{
+    margin:18px 20px 0; background:var(--accent); color:#fff; border-radius:12px;
+    min-height:52px; display:flex; align-items:center; justify-content:center;
+  }
+  .cta .l.mono{ font-size:13px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; }
+
+  /* App Store Review Guideline 3.1.2(a) — bu blok isteğe bağlı DEĞİL.
+     Süre, dönem başına fiyat, otomatik yenileme ve iki bağlantı zorunlu. */
+  .legal{ padding:14px 20px 0; display:flex; flex-direction:column; gap:6px; }
+  .legal .l.mono{ font-size:10px; color:var(--ink-soft); line-height:1.7; text-align:center; }
+  .legal .links{ display:flex; justify-content:center; gap:8px; align-items:center; }
+  .legal .links a{ font-size:10px; color:var(--ink); text-decoration:underline; }
+  .legal .links span{ font-size:10px; color:var(--ink-soft); }
+
+  .free-note.mono{
+    padding:22px 20px 0; font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-soft); text-align:center; line-height:1.7;
+  }
+
+  .restore{
+    margin:18px 20px 40px; border:1px solid var(--ink); border-radius:12px;
+    min-height:52px; display:flex; align-items:center; justify-content:center;
+  }
+  .restore .l.mono{ font-size:13px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+
+  <div class="close">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A8378" stroke-width="1.8" stroke-linecap="round">
+      <path d="M6 6l12 12M18 6L6 18"/>
+    </svg>
+  </div>
+
+  <div class="head">
+    <h1 class="display">Okuduğun kelimeler aklında kalsın</h1>
+    <div class="sub mono">Hikâyeler her zaman ücretsiz. Premium, öğrendiğini kalıcı kılar.</div>
+    <div class="proof mono">85 hikâye · A1'den C2'ye</div>
+  </div>
+
+  <div class="benefits">
+    <div class="benefit">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#A6572E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 4h9a2 2 0 0 1 2 2v14l-6.5-4L4 20V6a2 2 0 0 1 2-2z"/>
+      </svg>
+      <div class="t mono">Sınırsız kelime kaydı — defter sınırı kalkar</div>
+    </div>
+    <div class="benefit">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#A6572E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/>
+      </svg>
+      <div class="t mono">Aralıklı tekrar: her kelime unutmadan önce karşına çıkar</div>
+    </div>
+    <div class="benefit">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#A6572E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l1.9 4.6L18.5 9l-4.6 1.4L12 15l-1.9-4.6L5.5 9l4.6-1.4z"/><path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z"/>
+      </svg>
+      <div class="t mono">Günde 200 AI cümle çevirisi (ücretsiz katmanda 10)</div>
+    </div>
+    <div class="benefit">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#A6572E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/>
+      </svg>
+      <div class="t mono">Okuma süresi, seri ve seviye istatistikleri</div>
+    </div>
+  </div>
+
+  <div class="plans">
+    <div class="plan sel">
+      <div class="left">
+        <div class="name-row">
+          <div class="name">Yıllık</div>
+          <div class="badge mono">%58 TASARRUF</div>
+        </div>
+        <div class="trial mono">7 gün ücretsiz</div>
+      </div>
+      <div class="right">
+        <div class="price mono">₺399,99</div>
+        <div class="per mono">ayda ₺33,33</div>
+      </div>
+    </div>
+
+    <div class="plan">
+      <div class="left">
+        <div class="name-row"><div class="name">Aylık</div></div>
+      </div>
+      <div class="right">
+        <div class="price mono">₺79,99</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta"><div class="l mono">7 gün ücretsiz dene</div></div>
+
+  <div class="legal">
+    <div class="l mono">İlk 7 gün ücretsiz, sonra ₺399,99/yıl.</div>
+    <div class="l mono">Abonelik, dönem bitiminden en az 24 saat önce iptal edilmezse otomatik yenilenir. İptal işlemini Apple Kimliği ayarlarından yapabilirsin.</div>
+    <div class="links">
+      <a href="#">Kullanım Koşulları</a>
+      <span>·</span>
+      <a href="#">Gizlilik Politikası</a>
+    </div>
+  </div>
+
+  <div class="free-note mono">Tüm kitaplar her zaman ücretsiz kalır</div>
+
+  <div class="restore"><div class="l mono">Satın alımları geri yükle</div></div>
+</body>
+</html>

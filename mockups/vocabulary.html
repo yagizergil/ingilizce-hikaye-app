@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>Defter — Kaydedilen Kelimeler</title>
+<meta name="viewport" content="width=390, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Literata:ital,opsz,wght@0,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#FAF8F4; --ink:#1E1C19; --ink-soft:#8A8378; --hairline:#E7E2D8; --accent:#A6572E; }
+  *{box-sizing:border-box;}
+  body{ margin:0; width:390px; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .reading{ font-family:'Literata', Georgia, serif; }
+  .status{ height:14px; }
+
+  header{ padding:26px 20px 6px; }
+  h1.display{ font-size:28px; font-weight:600; margin:0; }
+  .summary.mono{ font-size:11px; color:var(--ink-soft); margin-top:8px; letter-spacing:.02em; }
+  .summary .n{ color:var(--ink); font-weight:500; }
+
+  .filters{ display:flex; gap:18px; padding:18px 20px; border-bottom:1px solid var(--hairline); }
+  .filters .f.mono{ font-size:11px; letter-spacing:.05em; color:var(--ink-soft); }
+  .filters .f.active{ color:var(--ink); border-bottom:2px solid var(--accent); padding-bottom:9px; margin-bottom:-10px; }
+
+  .list{ padding:0 20px 40px; }
+  .word{
+    display:grid; grid-template-columns:1fr auto; gap:4px 12px;
+    padding:18px 0; border-bottom:1px solid var(--hairline); align-items:baseline;
+  }
+  .word .lemma.display{ font-size:20px; font-weight:600; }
+  .word .due.mono{ font-size:9px; color:var(--accent); text-align:right; text-transform:uppercase; letter-spacing:.05em; }
+  .word .gloss.reading{ font-size:14px; color:var(--ink-soft); font-style:italic; }
+  .word .src.mono{ font-size:9px; color:var(--ink-soft); text-align:right; }
+  .word .tags{ grid-column:1 / -1; display:flex; gap:8px; margin-top:4px; }
+  .word .tag.mono{ font-size:9px; color:var(--ink-soft); border:1px solid var(--hairline); padding:2px 6px; text-transform:uppercase; letter-spacing:.04em; }
+
+  nav{ display:flex; justify-content:space-between; padding:16px 20px 26px; border-top:1px solid var(--hairline); }
+  nav .item.mono{ font-size:10px; letter-spacing:.06em; color:var(--ink-soft); }
+  nav .item.active{ color:var(--ink); }
+</style>
+</head>
+<body>
+  <div class="status"></div>
+  <header>
+    <h1 class="display">Defter</h1>
+    <div class="summary mono"><span class="n">128</span> kelime · bugün <span class="n">6</span> tekrar</div>
+  </header>
+
+  <div class="filters">
+    <div class="f mono active">TÜMÜ</div>
+    <div class="f mono">TEKRAR BEKLEYEN</div>
+    <div class="f mono">ÖĞRENİLDİ</div>
+  </div>
+
+  <div class="list">
+    <div class="word">
+      <div class="lemma display">oblivion</div>
+      <div class="due mono">Bugün</div>
+      <div class="gloss reading">unutuluş</div>
+      <div class="src mono">Frankenstein</div>
+      <div class="tags"><span class="tag mono">İsim</span></div>
+    </div>
+    <div class="word">
+      <div class="lemma display">indefatigable</div>
+      <div class="due mono">Bugün</div>
+      <div class="gloss reading">yorulmak bilmez</div>
+      <div class="src mono">Frankenstein</div>
+      <div class="tags"><span class="tag mono">Sıfat</span></div>
+    </div>
+    <div class="word">
+      <div class="lemma display">despair</div>
+      <div class="due mono">Yarın</div>
+      <div class="gloss reading">umutsuzluk</div>
+      <div class="src mono">Frankenstein</div>
+      <div class="tags"><span class="tag mono">İsim</span><span class="tag mono">B1</span></div>
+    </div>
+    <div class="word">
+      <div class="lemma display">wretched</div>
+      <div class="due mono">3 gün</div>
+      <div class="gloss reading">sefil</div>
+      <div class="src mono">Frankenstein</div>
+      <div class="tags"><span class="tag mono">Sıfat</span></div>
+    </div>
+    <div class="word">
+      <div class="lemma display">distinguished</div>
+      <div class="due mono">5 gün</div>
+      <div class="gloss reading">seçkin</div>
+      <div class="src mono">Frankenstein</div>
+      <div class="tags"><span class="tag mono">Sıfat</span><span class="tag mono">B2</span></div>
+    </div>
+    <div class="word">
+      <div class="lemma display">abode</div>
+      <div class="due mono">1 hafta</div>
+      <div class="gloss reading">konut</div>
+      <div class="src mono">Frankenstein</div>
+      <div class="tags"><span class="tag mono">İsim</span></div>
+    </div>
+  </div>
+
+  <nav>
+    <div class="item mono">Kitaplık</div>
+    <div class="item mono active">Defter</div>
+    <div class="item mono">Profil</div>
+  </nav>
+</body>
+</html>

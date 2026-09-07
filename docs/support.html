@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Destek — İngilizce Hikaye</title>
+    <meta
+      name="description"
+      content="İngilizce Hikaye uygulaması için destek: sık sorulan sorular, abonelik yönetimi, hesap silme ve iletişim."
+    />
+    <style>
+/*
+ * GitHub Pages üzerinde barındırılan gizlilik/destek sayfalarının stili.
+ *
+ * NEDEN AYRI BİR SİTE: App Store Connect gönderimi iki ZORUNLU genel URL
+ * istiyor — gizlilik politikası ve destek sayfası. İkisi de boş olduğu
+ * için gönderim engelleniyordu. Ayrı bir barındırma hizmeti kurmak yerine
+ * deponun kendi GitHub Pages'i kullanılıyor: ek maliyet, ek hesap ve ek
+ * bakım yok.
+ *
+ * Tasarım uygulamanın kendi token'larından geliyor (src/theme/tokens):
+ * aynı kağıt zemin, aynı mürekkep, aynı terracotta accent, aynı yazı
+ * ailesi. Denetçi ve kullanıcı için sayfa uygulamanın devamı gibi
+ * görünsün; jenerik bir "legal boilerplate" sayfası değil.
+ */
+
+:root {
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --ink: #1e1c19;
+  --ink-soft: #8a8378;
+  --hairline: #e7e2d8;
+  --accent: #a6572e;
+  --deep: #1f3a5f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1712;
+    --surface: #251f19;
+    --ink: #f2ece2;
+    --ink-soft: #a2988a;
+    --hairline: #3a322a;
+    --accent: #d98b5c;
+    --deep: #8fb4de;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-text-size-adjust: 100%;
+}
+
+.wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem;
+}
+
+header {
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--deep);
+  color: var(--bg);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  flex: none;
+}
+
+.brand-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.eyebrow {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 0.35rem;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: 1.3rem;
+  margin: 2.5rem 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.05rem;
+  margin: 1.75rem 0 0.5rem;
+}
+
+p,
+li {
+  color: var(--ink);
+}
+
+.lede {
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  margin: 2.5rem 0;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+}
+
+th {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hairline);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+footer a {
+  margin-right: 1rem;
+}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <a class="brand" href="index.html">
+          <span class="brand-mark" aria-hidden="true">İ</span>
+          <span class="brand-name">İngilizce Hikaye</span>
+        </a>
+      </header>
+
+      <p class="eyebrow">Yardım</p>
+      <h1>Destek</h1>
+      <p class="lede">
+        Bir sorun mu var, bir öneri mi? Aşağıdaki adrese yaz — genelde aynı gün dönüyoruz.
+      </p>
+
+      <div class="card">
+        <p style="margin: 0">
+          <strong>E-posta:</strong>
+          <a href="mailto:etkinlikyweb@gmail.com">etkinlikyweb@gmail.com</a>
+        </p>
+      </div>
+
+      <h2>Sık sorulan sorular</h2>
+
+      <h3>Kitaplar ücretli mi?</h3>
+      <p>
+        Hayır. Uygulamadaki bütün kitaplar herkese açık ve ücretsiz. Klasikler kamu malı eserler,
+        seviyeli hikâyeler ise bizim yazdığımız özgün metinler. Premium abonelik "daha fazlasını"
+        sunar, kitapları kilitlemez.
+      </p>
+
+      <h3>Premium ne veriyor?</h3>
+      <ul>
+        <li>Sınırsız kelime defteri</li>
+        <li>Sınırsız aralıklı tekrar (SRS)</li>
+        <li>Yüksek AI cümle çevirisi kotası</li>
+        <li>Ayrıntılı öğrenme istatistikleri</li>
+      </ul>
+
+      <h3>Aboneliğimi nasıl iptal ederim?</h3>
+      <p>
+        Abonelik Apple hesabın üzerinden yönetiliyor. iPhone'da
+        <strong>Ayarlar → [adın] → Abonelikler</strong> yolunu izleyip "İngilizce Hikaye"yi seç ve
+        iptal et. İptal ettiğinde dönem sonuna kadar premium açık kalır.
+      </p>
+
+      <h3>Satın alımımı yeni telefonuma nasıl taşırım?</h3>
+      <p>
+        Paywall ekranındaki <strong>"Satın alımları geri yükle"</strong> bağlantısına dokun. Aynı Apple
+        kimliğiyle giriş yaptığın sürece aboneliğin geri gelir.
+      </p>
+
+      <h3>Ödeme yaptım ama premium açılmadı</h3>
+      <p>
+        Abonelik doğrulaması sunucu tarafında yapılıyor ve bazen birkaç saniye sürüyor. Uygulamayı
+        kapatıp açmayı dene; hâlâ açılmadıysa satın alma tarihini de yazarak bize e-posta gönder,
+        elle açalım.
+      </p>
+
+      <h3>Bir kelimenin çevirisi yanlış / bulunamıyor</h3>
+      <p>
+        Sözlüğümüz 26.000 kelime içeriyor ama her çekim biçimini kusursuz çözemiyoruz. Karşılaştığın
+        kelimeyi ve içinde geçtiği cümleyi bize yaz — sözlüğe ekleyelim.
+      </p>
+
+      <h3>Hesabımı ve verilerimi nasıl silerim?</h3>
+      <p>
+        Uygulama içinden: <strong>Profil → Hesabı sil</strong>. Bu işlem hesabını ve tüm verilerini
+        kalıcı olarak siler, geri alınamaz. Ayrıntılar için
+        <a href="privacy.html">gizlilik politikası</a>.
+      </p>
+
+      <h3>Hangi seviyeler var?</h3>
+      <p>
+        A1'den C1'e kadar. İlk açılışta kısa bir seviye testi yapıyoruz ve sana uygun kitapları öne
+        çıkarıyoruz; seviyeni sonradan istediğin zaman değiştirebilirsin.
+      </p>
+
+      <h3>İnternet olmadan okuyabilir miyim?</h3>
+      <p>
+        Açtığın bölümler cihazına kaydediliyor, o bölümleri çevrimdışı okuyabilirsin. Yeni bir kitap
+        indirmek ve AI cümle çevirisi için bağlantı gerekiyor.
+      </p>
+
+      <footer>
+        <a href="index.html">Ana sayfa</a>
+        <a href="privacy.html">Gizlilik politikası</a>
+      </footer>
+    </div>
+  </body>
+</html>

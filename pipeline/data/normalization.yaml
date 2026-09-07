@@ -1,0 +1,181 @@
+# Kapsam ölçümü öncesi kelime normalizasyonu. Amaç: metnin gerçek anlamda
+# aynı lemma'ya karşılık gelen ama yüzeysel biçimi farklı olan kelimelerini
+# (BrE yazımı, kesme işaretli kısaltmalar, eye-dialect) CEFR sözlüğündeki
+# standart AmE/tam biçime indirgemek. Bu katman olmadan off_list_ratio
+# gerçekte olmayan bir "bilinmeyen kelime" oranı gösterir.
+#
+# TÜM anahtar ve değerler tek tırnaklıdır — tırnaksız yes/no/on/off/true/
+# false YAML 1.1'de otomatik boolean'a çevriliyor ("Norway problem", bkz.
+# `nay: no` -> Python'da False çıkması). load_normalization_maps() ayrıca
+# bunu savunma katmanıyla da kontrol eder.
+
+# Sondan eşleşen yazım kuralları (regex değil, basit suffix eşleştirme).
+# Sıra önemli: en spesifik önce.
+bre_to_ame_suffixes:
+  - from: 'our'
+    to: 'or'
+    # 'your' BUG: -our eki değil, kelimenin kendisi tesadüfen "our" ile
+    # bitiyor (y-our). is_known kapısı (bkz. normalize.py) bunu genel
+    # olarak önlüyor, ama vocab olmadan çağrılan yerler (normalize_text'in
+    # dialect_ratio ölçümü gibi) için burada da açıkça hariç tutuluyor.
+    exceptions: ['hour', 'flour', 'sour', 'tour', 'contour', 'devour', 'glamour', 'your']
+  - from: 'ise'
+    to: 'ize'
+    # rise/arise/raise/enterprise BUG: -ise eki değil, kelimenin kendisi
+    # -ise ile bitiyor. Aynı gerekçe: is_known genel çözüm, bunlar
+    # vocab'sız çağrılar için ek güvenlik.
+    exceptions: ['advertise', 'advise', 'compromise', 'despise', 'disguise', 'exercise',
+                 'franchise', 'improvise', 'revise', 'supervise', 'surprise', 'televise',
+                 'promise', 'wise', 'otherwise', 'likewise', 'rise', 'arise', 'raise',
+                 'enterprise']
+  - from: 'isation'
+    to: 'ization'
+  - from: 'yse'
+    to: 'yze'
+  - from: 'ogue'
+    to: 'og'
+    exceptions: ['rogue', 'vogue']
+  - from: 're'
+    to: 'er'
+    only: ['centre', 'theatre', 'metre', 'litre', 'fibre', 'calibre', 'sombre', 'sceptre']
+
+# Tam kelime eşleşmeleri (tek yönlü, BrE -> AmE veya arkaik -> güncel).
+word_map:
+  'towards': 'toward'
+  'backwards': 'backward'
+  'forwards': 'forward'
+  'afterwards': 'afterward'
+  'amongst': 'among'
+  'amidst': 'amid'
+  'whilst': 'while'
+  'grey': 'gray'
+  'cheque': 'check'
+  'jewellery': 'jewelry'
+  'travelling': 'traveling'
+  'travelled': 'traveled'
+  'traveller': 'traveler'
+  'cancelled': 'canceled'
+  'cancelling': 'canceling'
+  'modelling': 'modeling'
+  'labelled': 'labeled'
+  'jewelled': 'jeweled'
+  'woollen': 'woolen'
+  'fuelled': 'fueled'
+  'signalled': 'signaled'
+  'kerb': 'curb'
+  'tyre': 'tire'
+  'aeroplane': 'airplane'
+  'mould': 'mold'
+  'moult': 'molt'
+  'smoulder': 'smolder'
+  'plough': 'plow'
+  'draught': 'draft'
+  'gaol': 'jail'
+  'storey': 'story'
+  'cannot': 'can not'
+  'favourite': 'favorite'
+  'tranquillity': 'tranquility'
+  'tranquillize': 'tranquilize'
+
+# İngilizce kısaltmalar -> açık biçim. Kesme işareti kaldırılmış/kaldırılmamış
+# her iki biçim de anahtar olarak tutulur (metin temizlemede apostrof
+# farklı unicode karakterlerle gelebiliyor, normalize.py hem düz hem
+# tipografik apostrofu aynı anahtara indirger).
+contractions:
+  'don''t': 'do not'
+  'doesn''t': 'does not'
+  'didn''t': 'did not'
+  'won''t': 'will not'
+  'wouldn''t': 'would not'
+  'can''t': 'can not'
+  'couldn''t': 'could not'
+  'shouldn''t': 'should not'
+  'isn''t': 'is not'
+  'aren''t': 'are not'
+  'wasn''t': 'was not'
+  'weren''t': 'were not'
+  'haven''t': 'have not'
+  'hasn''t': 'has not'
+  'hadn''t': 'had not'
+  'ain''t': 'is not'
+  'i''m': 'i am'
+  'you''re': 'you are'
+  'we''re': 'we are'
+  'they''re': 'they are'
+  'it''s': 'it is'
+  'he''s': 'he is'
+  'she''s': 'she is'
+  'that''s': 'that is'
+  'there''s': 'there is'
+  'here''s': 'here is'
+  'what''s': 'what is'
+  'who''s': 'who is'
+  'i''ve': 'i have'
+  'you''ve': 'you have'
+  'we''ve': 'we have'
+  'they''ve': 'they have'
+  'i''ll': 'i will'
+  'you''ll': 'you will'
+  'he''ll': 'he will'
+  'she''ll': 'she will'
+  'we''ll': 'we will'
+  'they''ll': 'they will'
+  'it''ll': 'it will'
+  'i''d': 'i would'
+  'you''d': 'you would'
+  'he''d': 'he would'
+  'she''d': 'she would'
+  'we''d': 'we would'
+  'they''d': 'they would'
+  'let''s': 'let us'
+  'y''all': 'you all'
+  'o''clock': 'of the clock'
+
+# Eye-dialect: yazarların telaffuzu taklit etmek için kullandığı, standart
+# olmayan yazımlar (genelde köylü/işçi sınıfı diyaloğunda). Bunlar
+# dialect_ratio ölçümüne GİRER (normalizasyon ÖNCESİ sayılır), ama
+# off_list_ratio'ya girmemesi için normalizasyon SONRASI standart kelimeye
+# çevrilir.
+eye_dialect:
+  'goin''': 'going'
+  'doin''': 'doing'
+  'nothin''': 'nothing'
+  'somethin''': 'something'
+  'anythin''': 'anything'
+  'comin''': 'coming'
+  'runnin''': 'running'
+  'talkin''': 'talking'
+  'lookin''': 'looking'
+  'gettin''': 'getting'
+  'wonderin''': 'wondering'
+  'askin''': 'asking'
+  'o''': 'of'
+  '''em': 'them'
+  '''tis': 'it is'
+  '''twas': 'it was'
+  '''twill': 'it will'
+  'ast': 'asked'
+  'axed': 'asked'
+  'knowed': 'knew'
+  'seed': 'saw'
+  'hisself': 'himself'
+  'theirselves': 'themselves'
+  'acrost': 'across'
+  'yor': 'your'
+  'w''ile': 'while'
+  '''cause': 'because'
+  '''bout': 'about'
+  '''fore': 'before'
+  '''gainst': 'against'
+  '''cept': 'except'
+  'gonna': 'going to'
+  'gotta': 'got to'
+  'wanna': 'want to'
+  'gimme': 'give me'
+  'lemme': 'let me'
+  'kinda': 'kind of'
+  'sorta': 'sort of'
+  'dunno': 'do not know'
+  'yer': 'your'
+  'aye': 'yes'
+  'nay': 'no'

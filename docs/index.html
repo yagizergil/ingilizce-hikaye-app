@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>İngilizce Hikaye — Oku, Öğren</title>
+    <meta
+      name="description"
+      content="Seviyene göre İngilizce hikâyeler oku, kelime öğren. Anlamadığın kelimeye dokun, Türkçe karşılığı anında açılsın."
+    />
+    <style>
+/*
+ * GitHub Pages üzerinde barındırılan gizlilik/destek sayfalarının stili.
+ *
+ * NEDEN AYRI BİR SİTE: App Store Connect gönderimi iki ZORUNLU genel URL
+ * istiyor — gizlilik politikası ve destek sayfası. İkisi de boş olduğu
+ * için gönderim engelleniyordu. Ayrı bir barındırma hizmeti kurmak yerine
+ * deponun kendi GitHub Pages'i kullanılıyor: ek maliyet, ek hesap ve ek
+ * bakım yok.
+ *
+ * Tasarım uygulamanın kendi token'larından geliyor (src/theme/tokens):
+ * aynı kağıt zemin, aynı mürekkep, aynı terracotta accent, aynı yazı
+ * ailesi. Denetçi ve kullanıcı için sayfa uygulamanın devamı gibi
+ * görünsün; jenerik bir "legal boilerplate" sayfası değil.
+ */
+
+:root {
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --ink: #1e1c19;
+  --ink-soft: #8a8378;
+  --hairline: #e7e2d8;
+  --accent: #a6572e;
+  --deep: #1f3a5f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1712;
+    --surface: #251f19;
+    --ink: #f2ece2;
+    --ink-soft: #a2988a;
+    --hairline: #3a322a;
+    --accent: #d98b5c;
+    --deep: #8fb4de;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-text-size-adjust: 100%;
+}
+
+.wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem;
+}
+
+header {
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--deep);
+  color: var(--bg);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  flex: none;
+}
+
+.brand-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.eyebrow {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 0.35rem;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: 1.3rem;
+  margin: 2.5rem 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.05rem;
+  margin: 1.75rem 0 0.5rem;
+}
+
+p,
+li {
+  color: var(--ink);
+}
+
+.lede {
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  margin: 2.5rem 0;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+}
+
+th {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--hairline);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+footer a {
+  margin-right: 1rem;
+}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <a class="brand" href="index.html">
+          <span class="brand-mark" aria-hidden="true">İ</span>
+          <span class="brand-name">İngilizce Hikaye</span>
+        </a>
+      </header>
+
+      <p class="eyebrow">iOS uygulaması</p>
+      <h1>Okuyarak İngilizce öğren</h1>
+      <p class="lede">
+        Seviyene göre İngilizce hikâyeler oku. Anlamadığın kelimeye dokun, Türkçe karşılığı anında
+        açılsın. Cümleye uzun bas, tamamının çevirisini gör.
+      </p>
+
+      <div class="card">
+        <h2 style="margin-top: 0">Ne var?</h2>
+        <ul>
+          <li><strong>85 kitap</strong> — 47 kamu malı klasik, 38 özgün seviyeli hikâye</li>
+          <li><strong>A1'den C1'e</strong> seviye etiketleri ve kısa bir seviye testi</li>
+          <li><strong>26.000 kelimelik</strong> İngilizce–Türkçe sözlük, tek dokunuşla</li>
+          <li><strong>Kelime defteri</strong> ve aralıklı tekrar (SM-2) ile kalıcı öğrenme</li>
+          <li><strong>Çevrimdışı okuma</strong> — açtığın bölümler cihazında kalır</li>
+        </ul>
+        <p style="margin-bottom: 0">
+          Bütün kitaplar herkese açık ve ücretsizdir. Premium abonelik daha fazlasını sunar, temel
+          işlevi kilitlemez.
+        </p>
+      </div>
+
+      <h2>Bağlantılar</h2>
+      <ul>
+        <li><a href="support.html">Destek ve sık sorulan sorular</a></li>
+        <li><a href="privacy.html">Gizlilik politikası</a></li>
+        <li>
+          <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+            >Kullanım koşulları (Apple standart EULA)</a
+          >
+        </li>
+      </ul>
+
+      <footer>
+        <a href="support.html">Destek</a>
+        <a href="privacy.html">Gizlilik</a>
+        <a href="mailto:etkinlikyweb@gmail.com">İletişim</a>
+      </footer>
+    </div>
+  </body>
+</html>
