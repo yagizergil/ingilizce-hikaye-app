@@ -1,0 +1,77 @@
+APP STORE CONNECT — KOPYALANACAK METINLER
+Son guncelleme: 7 Eylul 2026
+
+============================================================
+NAME (30)  — 28/30
+============================================================
+İngilizce Hikaye: Oku, Öğren
+
+============================================================
+SUBTITLE (30)  — 30/30
+============================================================
+Okuyarak Kelime, Anında Çeviri
+
+============================================================
+KEYWORDS (100)  — 100/100
+============================================================
+okuma,defter,cümle,ezber,öykü,metin,klasik,türkçe,hikayeler,kitaplar,seviyeli,kolay,test,a1,a2,b1,b2
+
+============================================================
+DESCRIPTION (4000)  — 1520/4000
+DIKKAT: Bu metin 2026-09-07'de duzeltildi. Icinde
+"Sonra B1 seviyesinde biraz daha uzun ozgun hikayelere"
+cumlesi OLMAMALI — B1'de ozgun hikaye yok (2.3.1 riski).
+============================================================
+Türkçe bilen biri için yazılmış bir İngilizce okuma uygulaması.
+Anlamadığın kelimeye dokun, Türkçe karşılığı anında açılsın.
+Cümleye uzun bas, cümlenin tamamının çevirisini gör.
+
+SENİN SEVİYENDEN BAŞLA
+Yeni başlıyorsan A1 ve A2 seviyesinde, tek oturumda bitebilecek 39 kısa
+hikâye var — her biri 6-8 dakika, bu uygulama için yazıldı. Hazır
+hissettiğinde B1 ve üstünde dünya edebiyatının klasiklerine geçersin.
+Uygulama açılışta bir dakikalık bir kelime testiyle sana nereden
+başlayacağını söyler.
+
+OKURKEN ÖĞREN
+Bilmediğin kelimeye dokunduğunda Türkçe karşılığı açılır. Beğendiğin
+kelimeyi kaydet; uygulama onu aralıklı tekrar yöntemiyle, unutmaya
+başladığın gün karşına çıkarır. Kelimeyi ilk gördüğün cümleyle birlikte
+gösterir — ezber değil, hatırlama.
+
+KİTAPLAR HER ZAMAN ÜCRETSİZ
+Tüm kitaplar, tüm bölümler, sınırsız okuma. Reklam yok. Okuma ekranında
+hiçbir zaman kesinti, banner ya da abonelik teklifi görmezsin.
+
+PREMIUM NE EKLER
+- Sınırsız kelime kaydı (ücretsiz katmanda 100 kelime)
+- Aralıklı tekrar ile sınırsız kelime tekrarı
+- Günde 200 AI cümle çevirisi (ücretsiz katmanda 10)
+- Okuma süresi, seri ve seviye istatistikleri
+
+NELER VAR
+- 85 kitap ve hikâye
+- 39'u yeni başlayanlar için yazılmış kısa, seviyeli özgün hikâye
+- 26.000 kelimelik İngilizce-Türkçe sözlük
+- Çevrimdışı okuma
+- Koyu tema, yazı tipi ve punto ayarı
+
+Klasik eserler telif hakkı sona ermiş, herkesin serbestçe kullanabileceği
+kaynaklardan alınmıştır. Seviyeli hikâyeler İngilizce Hikaye Stüdyosu
+tarafından bu uygulama için yazılmıştır.
+
+============================================================
+PROMOTIONAL TEXT (170)  — 148/170
+============================================================
+Yeni: A1 ve A2 seviyesinde, tek oturumda bitebilecek 39 özgün hikâye eklendi. Artık İngilizceye yeni başlayanlar da ilk günden okumaya başlayabilir.
+
+============================================================
+WHAT'S NEW (4000)
+============================================================
+İlk sürüm. 85 kitap, 26.000 kelimelik Türkçe sözlük ve yeni
+başlayanlar için yazılmış 39 kısa hikâye ile yayındayız.
+
+============================================================
+COPYRIGHT (200)
+============================================================
+2026 Yağız Ergil
