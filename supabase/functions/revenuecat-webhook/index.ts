@@ -166,11 +166,35 @@ Deno.serve(async (req: Request) => {
   const type = typeof event.type === "string" ? event.type : "UNKNOWN";
 
   if (IGNORED_EVENTS.has(type)) {
+    console.log(`revenuecat-webhook: ignored informational event type=${type}`);
     return jsonResponse({ status: "ignored", reason: "informational_event", type }, 200);
   }
 
   if (!touchesPremium(event)) {
-    return jsonResponse({ status: "ignored", reason: "other_entitlement", type }, 200);
+    // BU YOL SESSIZDI ve bir teshisi yavaslatti (2026-09-07): gercek bir
+    // satin alma olayi 200 donduruldu ama hicbir sey yazilmadi, gunlukte
+    // de iz yoktu. Ignored yollarinin da loglanmasi sart — "200 ama etki
+    // yok" en zor teshis edilen durum.
+    //
+    // Bu satir gorunuyorsa: RevenueCat'teki entitlement kimligi tam olarak
+    // "premium" degil. Asagidaki `received` alani gercekte ne geldigini
+    // gosteriyor.
+    const received = Array.isArray(event.entitlement_ids)
+      ? event.entitlement_ids.join(",")
+      : (event.entitlement_id ?? "<none>");
+    console.error(
+      `revenuecat-webhook: entitlement mismatch type=${type} expected="${PREMIUM_ENTITLEMENT}" received="${received}" product=${event.product_id ?? "?"}`,
+    );
+    return jsonResponse(
+      {
+        status: "ignored",
+        reason: "other_entitlement",
+        type,
+        expected: PREMIUM_ENTITLEMENT,
+        received,
+      },
+      200,
+    );
   }
 
   const userId = resolveUserId(event);
