@@ -234,3 +234,79 @@ olduğu sürece GitHub Pages ücretsiz katmanda çalışmaz.
 >
 > Depoyu private tutmak isterseniz sayfaları başka bir yerde barındırmak
 > gerekir (Netlify/Vercel ücretsiz katmanı ya da GitHub Pro).
+
+---
+
+## 8. RevenueCat webhook sırrı — GELİR BLOKÖRÜ
+
+**Bu adım yapılmadan kullanıcı ödeme yapar ama premium AÇILMAZ.**
+
+Doğrulandı (7 Eylül 2026): `revenuecat-webhook` Edge Function dağıtılmış
+durumda ama beklediği `REVENUECAT_WEBHOOK_SECRET` ortam değişkeni
+tanımlı değil. Fonksiyona atılan her istek şu anda `500 not_configured`
+dönüyor — yani RevenueCat'in gönderdiği bütün satın alma bildirimleri
+reddediliyor.
+
+Zincir neden böyle kurulu (ADR-009): `user_entitlements` tablosunda
+**hiçbir yazma politikası yok** (doğrulandı: 1 policy, 0 write policy).
+İstemci premium'u kendine açamaz; yalnızca service_role ile çalışan
+webhook açabilir. Bu, ödeme doğrulamasının istemciye bırakılmaması için
+bilinçli bir tasarım — ama zincirin ilk halkası kurulmazsa hiç premium
+verilmiyor.
+
+### Yapılacaklar
+
+Aşağıdaki sır bu oturumda üretildi; iki yere de AYNI değeri yazın.
+
+```
+rcwh_hec-wn6ss7l_TBuBO7hnQCHHaOxFlHPcihLmA1RSRGXzKD6y
+```
+
+**1. Supabase tarafı**
+
+Supabase Dashboard → Project Settings → Edge Functions → Secrets →
+Add new secret:
+
+| Name                        | Value            |
+| --------------------------- | ---------------- |
+| `REVENUECAT_WEBHOOK_SECRET` | yukarıdaki değer |
+
+**2. RevenueCat tarafı**
+
+RevenueCat Dashboard → Project Settings → Integrations → Webhooks → Add:
+
+| Alan                 | Değer                                                                      |
+| -------------------- | -------------------------------------------------------------------------- |
+| Webhook URL          | `https://lzewiwkwcshwxsfwybml.supabase.co/functions/v1/revenuecat-webhook` |
+| Authorization header | yukarıdaki değer                                                           |
+| Event types          | Tümü (fonksiyon ilgilenmediklerini zaten yok sayıyor)                      |
+
+**3. Doğrulama**
+
+Sır yazıldıktan sonra:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" -X POST "https://lzewiwkwcshwxsfwybml.supabase.co/functions/v1/revenuecat-webhook" -H "Content-Type: application/json" -d "{}"
+```
+
+- `500` dönerse: sır hâlâ tanımlı değil.
+- `401` dönerse: **doğru** — sır tanımlı ve yetkisiz istek reddediliyor.
+
+Ardından RevenueCat'teki "Send test event" ile gerçek bir olay gönderip
+`user_entitlements` tablosuna satır düştüğünü kontrol edin.
+
+---
+
+## 9. Kalan manuel adımlar — özet
+
+| #   | Adım                                                                         | Kim           |
+| --- | ---------------------------------------------------------------------------- | ------------- |
+| 1   | `REVENUECAT_WEBHOOK_SECRET` (Supabase + RevenueCat)                          | Siz — bölüm 8 |
+| 2   | Depoyu public yapıp GitHub Pages'i aç                                        | Siz — bölüm 7 |
+| 3   | `npx eas-cli build --platform ios --profile production` (Apple girişi ister) | Siz           |
+| 4   | App Privacy formu                                                            | Siz — bölüm 3 |
+| 5   | Contact Information + Review Notes                                           | Siz — bölüm 4 |
+| 6   | Pricing: Free                                                                | Siz — bölüm 5 |
+| 7   | Support/Marketing URL + Copyright                                            | Siz — bölüm 2 |
+| 8   | IAP tanıtım görselleri                                                       | Siz — bölüm 6 |
+| 9   | Kalan 2 ekran görüntüsü (8/10 yüklü)                                         | Siz           |
