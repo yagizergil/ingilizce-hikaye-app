@@ -1,8 +1,7 @@
 import { useCallback, useEffect } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
@@ -135,19 +134,12 @@ export default function HomeScreen() {
     [removeFromCurrentlyReadingMutation],
   );
 
-  // "+" in the top bar (reference app's add-book affordance) -- this
-  // product has no user-facing "upload your own book" flow (content only
-  // ever comes from the pipeline, see CLAUDE.md's product principle #3),
-  // so the closest honest equivalent is "go find a book to start", i.e.
-  // the Library tab.
-  const handlePressAdd = useCallback(() => {
-    trackEvent("home_add_pressed");
-    router.push("/(tabs)/library");
-  }, [router]);
-
   if (isExtrasLoading) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.bg.primary }]}
+        edges={["top"]}
+      >
         <View style={styles.topBar}>
           <Text style={[type.wordmark, { color: theme.text.primary }]}>{t("app.name")}</Text>
         </View>
@@ -175,6 +167,15 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
+      {/*
+        Ust barda "+" dugmesi VARDI ve kaldirildi. Referans uygulamadan
+        alinmisti ama bu uygulamada kullanicinin ekleyebilecegi bir sey
+        yok (icerik yalnizca pipeline'dan gelir, urun ilkesi #3), bu
+        yuzden Kutuphane sekmesine gidiyordu. "+" evrensel olarak
+        "olustur/ekle" demek; kullanici ne yaptigini anlamadigini
+        bildirdi. Ustelik Kutuphane zaten alt barda kendi sekmesinde —
+        dugme hem yaniltici hem gereksizdi.
+      */}
       <View style={styles.topBar}>
         <Text style={[type.wordmark, { color: theme.text.primary }]}>{t("app.name")}</Text>
         <View style={styles.topBarActions}>
@@ -183,15 +184,6 @@ export default function HomeScreen() {
             readToday={profileStats?.readToday ?? false}
             onPress={handleOpenStreak}
           />
-          <Pressable
-            onPress={handlePressAdd}
-            style={styles.addButton}
-            accessibilityRole="button"
-            accessibilityLabel={t("home.addAccessibilityLabel")}
-            hitSlop={spacing.sm}
-          >
-            <Ionicons name="add" size={26} color={theme.text.primary} />
-          </Pressable>
         </View>
       </View>
 
@@ -208,7 +200,11 @@ export default function HomeScreen() {
               onBrowseLevel={handleBrowseAtLevel}
             />
 
-            <BookShelf title={t("home.newBooks.title")} books={newBooks} onPressBook={handleOpenBook} />
+            <BookShelf
+              title={t("home.newBooks.title")}
+              books={newBooks}
+              onPressBook={handleOpenBook}
+            />
 
             <CurrentlyReadingShelf
               books={currentlyReading ?? []}
@@ -265,10 +261,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     paddingBottom: spacing.sm,
-  },
-  addButton: {
-    position: "absolute",
-    right: spacing.lg,
   },
   levelGroups: {
     marginTop: spacing.sectionGap,

@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Libro"
+    "name": "İngilizce Hikaye"
   },
   "tabs": {
     "home": "Home",
@@ -33,7 +33,6 @@
   "home": {
     "loading": "Loading home",
     "error": "Couldn't load home",
-    "addAccessibilityLabel": "Add a book",
     "empty": {
       "title": "You haven't started a book yet",
       "description": "Pick your first book from the library and start reading.",

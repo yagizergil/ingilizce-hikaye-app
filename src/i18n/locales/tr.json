@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Libro"
+    "name": "İngilizce Hikaye"
   },
   "tabs": {
     "home": "Ana Sayfa",
@@ -33,7 +33,6 @@
   "home": {
     "loading": "Ana sayfa yükleniyor",
     "error": "Ana sayfa yüklenemedi",
-    "addAccessibilityLabel": "Kitap ekle",
     "empty": {
       "title": "Henüz bir kitaba başlamadın",
       "description": "Kütüphaneden ilk kitabını seç ve okumaya başla.",
