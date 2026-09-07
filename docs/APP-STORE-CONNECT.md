@@ -310,3 +310,86 @@ Ardından RevenueCat'teki "Send test event" ile gerçek bir olay gönderip
 | 7   | Support/Marketing URL + Copyright                                            | Siz — bölüm 2 |
 | 8   | IAP tanıtım görselleri                                                       | Siz — bölüm 6 |
 | 9   | Kalan 2 ekran görüntüsü (8/10 yüklü)                                         | Siz           |
+
+---
+
+## 10. ASO metinleri — son hâl (kopyala-yapıştır)
+
+> Kaynak: `docs/aso/07-arastirma-2026-09-07.md`. TR storefront'ta 307
+> uygulamanın gerçek ad+altyazı çifti çıkarılarak yapıldı. Karakter
+> sayıları ve jeton tekrarları ayrıca doğrulandı.
+
+### Name — DEĞİŞMİYOR (28/30)
+
+```
+İngilizce Hikaye: Oku, Öğren
+```
+
+### Subtitle — DEĞİŞİYOR (30/30)
+
+Eski: `Seviyeli Hikaye, Anında Çeviri`
+
+```
+Okuyarak Kelime, Anında Çeviri
+```
+
+**Neden:** eski altyazıdaki `Hikaye` zaten Name'de var — 7 karakter boşa
+gidiyordu. Yerine gelen `Okuyarak`, araştırmanın en büyük bulgusunu
+hedefliyor: `okuyarak ingilizce` aramasının ilk 10 sonucunun **toplam oyu
+140** ve sekiz uygulamanın da track ID'si 2025–2026 doğumlu olduğunu
+gösteriyor. Bu olgunlaşmış değil, şu anda oluşan bir küme — ve mevcut
+metadata'mızda "okuyarak" hiçbir yerde geçmiyordu. `Kelime` de keywords
+alanından buraya taşınarak orada yer açıyor.
+
+### Keywords — DEĞİŞİYOR (tam 100/100)
+
+Eski: `kelime,ögren,okuma,ceviri,sözlük,seviye,klasik,roman,defter,cümle,hikâye,ezber,a2,b1,b2,metin,öykü`
+
+```
+okuma,defter,cümle,ezber,öykü,metin,klasik,türkçe,hikayeler,kitaplar,seviyeli,kolay,test,a1,a2,b1,b2
+```
+
+**Çıkarılanlar ve gerekçeleri (40 karakter geri kazanıldı):**
+
+| Çıkan    | Neden                                                                                                                                                                                                    |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ögren`  | Name'de `Öğren` var. Üstelik yazım hatası: doğru form `öğren`. Ölçüm `ogrenme/öğrenme` örtüşmesini 10'da 3 buldu — yani `ğ` normalize EDİLMİYOR ve bu melez form muhtemelen hiçbir sorguyu yakalamıyordu |
+| `ceviri` | Subtitle'da `Çeviri` var; ç↔c normalize ediliyor (örtüşme 6/9)                                                                                                                                           |
+| `hikâye` | Name ve Subtitle'da iki kez geçiyor                                                                                                                                                                      |
+| `kelime` | Yeni Subtitle'a taşındı                                                                                                                                                                                  |
+| `seviye` | `seviyeli` olarak geri kondu                                                                                                                                                                             |
+| `sözlük` | Tureng'in hâkim olduğu bir küme; sıfır şans                                                                                                                                                              |
+| `roman`  | Sorgu Dreame/GALATEA/Romanlar döndürüyor — **aşk romanı** niyeti, bizim havuzun tam tersi                                                                                                                |
+
+**Eklenenler:** `türkçe`, `hikayeler` (çoğul ayrı jeton gibi davranıyor —
+`ingilizce hikaye` ve `ingilizce hikayeler` farklı sıralama döndürüyor),
+`kitaplar`, `seviyeli`, `kolay`, `test`, `a1`.
+
+Etkin benzersiz jeton **16 → 25**, tek karakter fazladan harcamadan.
+
+### YASAK terimler
+
+`sesli`, `dinle`, `dinleme`, `seslendirme` — hiçbir alana konmayacak.
+
+Okuma kümesindeki rakiplerin çoğu ("Oku, dinle ve kelime öğren", "Sesli
+Hikayeler ve Çeviri") dinlemeyi satıyor ve bu terimler cazip görünüyor.
+Ama üründe **TTS yok**; `expo-speech` yalnızca tek kelime telaffuzu için
+ve o ücretsiz. Bu terimleri koymak Guideline 2.3.1 ihlali olurdu —
+paywall'dan sesli okumayı kaldıran karar ASO tarafında da aynen geçerli.
+
+### Rakip durumu (TR storefront gerçeği)
+
+Beş küresel rakibin dördü TR'de rakip değil: **Readlang listelenmiyor**,
+**LingQ hiç yerelleştirilmemiş** (altyazısında "İngilizce" kelimesi bile
+yok), **Beelinguapp** TR altyazısını Almanca/Fransızca'ya harcamış ve
+`ingilizce hikaye` ilk 10'unda yok, **Duolingo** 481K oyla en güçlü ama
+altyazısının 8 karakterini "Satranç"a ayırmış ve okuma kümesinde tek jeton
+hedeflemiyor.
+
+Gerçek rakipler yerel ve küçük: Readable (1.775 oy), Reading Power
+(2.137), İngilizce Okuma (1.369).
+
+> **Ölçüm sınırı:** gerçek arama hacmi ölçülemedi — Apple Search Ads
+> "Search Popularity" skoru ASA hesabı gerektiriyor. Rapordaki hacim
+> tahminleri havuz derinliği ve rakip oy hacminden türetilmiş GÖRECELİ
+> değerlerdir.
