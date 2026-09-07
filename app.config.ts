@@ -59,7 +59,28 @@ const config: ExpoConfig = {
     // calisiyor; sessiz moda ragmen duyulmasi icin oturum kategorisinin
     // "playback" olmasi gerekiyor. Bunu ayarlayan API expo-audio'da —
     // bkz. src/lib/audioSession.ts.
-    "expo-audio",
+    //
+    // UC SECENEGIN DE KAPATILMASI ZORUNLU. Plugin'in varsayilanlari bu
+    // uygulama icin yanlis ve ikisi dogrudan red sebebi. Ilk uretim
+    // derlemesinin IPA'si incelenerek bulundu:
+    //
+    //  - `enableBackgroundPlayback` varsayilani TRUE ve Info.plist'e
+    //    `UIBackgroundModes: ["audio"]` yaziyor. Uygulama arka planda ses
+    //    CALMIYOR (audioSession.ts `shouldPlayInBackground: false`).
+    //    Kullanilmayan bir arka plan modu beyan etmek Guideline 2.5.4
+    //    kapsaminda bilinen bir red gerekcesi.
+    //  - `microphonePermission` varsayilani bir NSMicrophoneUsageDescription
+    //    metni ekliyor. Uygulama mikrofonu HIC kullanmiyor; kullanilmayan
+    //    bir izin beyani hem gereksiz hem de denetimde soru isareti.
+    //  - `recordAudioAndroid` ayni sebeple kapali: kayit yok.
+    [
+      "expo-audio",
+      {
+        microphonePermission: false,
+        enableBackgroundPlayback: false,
+        recordAudioAndroid: false,
+      },
+    ],
     // `aps-environment` yetkilendirmesini siler. expo-notifications onu
     // push kullanilmasa bile kosulsuz ekliyor; bu uygulama yalnizca YEREL
     // bildirim kullandigi icin (ADR-010) o yetkilendirme gereksiz ve
