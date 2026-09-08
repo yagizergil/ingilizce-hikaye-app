@@ -14,6 +14,7 @@ export { ChapterListItem } from "@/features/library/components/ChapterListItem";
 export { BookHero } from "@/features/library/components/BookHero";
 export { BookStatsRow } from "@/features/library/components/BookStatsRow";
 export { BookSeriesInfo } from "@/features/library/components/BookSeriesInfo";
+export { BookAudioCard } from "@/features/library/components/BookAudioCard";
 export { SourceLicenseSheet } from "@/features/library/components/SourceLicenseSheet";
 export type {
   Book,

@@ -219,6 +219,14 @@
       "position": "Book {{index}} of this series",
       "nextBook": "Next book: {{title}}",
       "lastBook": "Last book in this series"
+    },
+    "audio": {
+      "label": "NARRATION",
+      "unlocked": "This story is read in a natural voice, word by word.",
+      "tasterOffer": "You can listen to this story in a natural voice — your free story will be used here.",
+      "tasterSpent": "You used your free natural-voice story elsewhere. This story can still be read aloud by your device.",
+      "tasterCta": "Use my free listen here",
+      "upgradeCta": "Natural voice on every story"
     }
   },
   "reader": {

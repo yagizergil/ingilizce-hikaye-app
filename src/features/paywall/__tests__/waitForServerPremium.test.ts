@@ -16,6 +16,7 @@ import { waitForServerPremium } from "@/features/paywall/api/waitForServerPremiu
 
 const mockFetchStatus = jest.fn();
 const mockTrackEvent = jest.fn();
+const mockSync = jest.fn();
 
 jest.mock("@/features/paywall/api/useSubscriptionQuery", () => ({
   fetchSubscriptionStatus: (...args: unknown[]) => mockFetchStatus(...args),
@@ -23,6 +24,12 @@ jest.mock("@/features/paywall/api/useSubscriptionQuery", () => ({
 
 jest.mock("@/lib/analytics", () => ({
   trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+}));
+
+// Onarım adımı ağ ve Supabase istemcisi üzerinden gidiyor; burada test
+// edilen şey bekleme mantığı, onarımın kendisi değil.
+jest.mock("@/features/paywall/api/syncEntitlement", () => ({
+  syncEntitlementFromStore: (...args: unknown[]) => mockSync(...args),
 }));
 
 function status(isPremium: boolean) {
@@ -60,6 +67,8 @@ describe("waitForServerPremium", () => {
     jest.useFakeTimers();
     mockFetchStatus.mockReset();
     mockTrackEvent.mockReset();
+    mockSync.mockReset();
+    mockSync.mockResolvedValue(false);
   });
 
   afterEach(() => {
@@ -93,14 +102,58 @@ describe("waitForServerPremium", () => {
 
   it("ağ hatasında pes etmez, denemeye devam eder", async () => {
     // Geçici bir ağ hatası satın almayı kaybetmiş saymamalı.
-    mockFetchStatus
-      .mockRejectedValueOnce(new Error("network"))
-      .mockResolvedValue(status(true));
+    mockFetchStatus.mockRejectedValueOnce(new Error("network")).mockResolvedValue(status(true));
 
     const promise = waitForServerPremium();
     await advance(2000);
 
     await expect(promise).resolves.toBe(true);
+  });
+
+  it("webhook hızlı ulaşırsa onarıma hiç gitmez", async () => {
+    // Mutlu yolda RevenueCat API'sine dokunmak gereksiz bir bağımlılık ve
+    // gereksiz bir gecikme olurdu.
+    mockFetchStatus.mockResolvedValue(status(true));
+
+    const promise = waitForServerPremium();
+    await advance(500);
+
+    await expect(promise).resolves.toBe(true);
+    expect(mockSync).not.toHaveBeenCalled();
+  });
+
+  it("webhook gelmezse onarımı BİR KEZ dener", async () => {
+    // Bu testin koruduğu davranış: kaçan bir webhook eskiden yetkinin
+    // KALICI kaybı demekti (2026-09-07 olayı). Yalnızca yoklamak o durumu
+    // hiç düzeltmez. Onarımın her yoklamada tekrarlanmaması da önemli:
+    // RevenueCat API'si her denemede yeniden çağrılırdı.
+    mockFetchStatus.mockResolvedValue(status(false));
+
+    const promise = waitForServerPremium();
+    await advance(25_000);
+
+    await expect(promise).resolves.toBe(false);
+    expect(mockSync).toHaveBeenCalledTimes(1);
+  });
+
+  it("onarım yetkiyi yazarsa sonraki yoklama premium görür", async () => {
+    mockFetchStatus
+      .mockResolvedValueOnce(status(false))
+      .mockResolvedValueOnce(status(false))
+      .mockResolvedValueOnce(status(false))
+      .mockResolvedValue(status(true));
+
+    const promise = waitForServerPremium();
+    await advance(6000);
+
+    await expect(promise).resolves.toBe(true);
+    expect(mockSync).toHaveBeenCalledTimes(1);
+    // Onarımdan geçtiği olayda görünmeli: kaç satın almanın webhook
+    // yerine onarımla kurtarıldığı ölçülebilsin.
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      "entitlement_confirmed",
+      expect.objectContaining({ repaired: true }),
+    );
   });
 
   it("süre dolarsa false döner ve sonsuza kadar beklemez", async () => {

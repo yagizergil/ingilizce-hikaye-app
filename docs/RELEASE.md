@@ -43,10 +43,16 @@ npx supabase db push
 
 Uygulanacak iki yeni migration:
 
-| Migration                 | Ne yapıyor                                                                                                                                                                                                           |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `028_entitlement_webhook` | `user_entitlements`'a denetim/idempotans alanları (`product_id`, `store`, `rc_event_id`, `rc_event_ms`, `is_trial`) ve `apply_entitlement_event()` fonksiyonu. RLS'ye DOKUNMUYOR — yazma yolu yalnızca service_role. |
-| `029_ai_tier_limits`      | AI cümle çevirisi kotasını katmana bağlar: ücretsiz 10/gün, premium 200/gün. Öncesinde herkes için 30'du. `my_ai_sentence_quota()` ile istemci de kotayı okuyabiliyor.                                               |
+| Migration                 | Ne yapıyor                                                                                                                                                                                                                                    |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `028_entitlement_webhook` | `user_entitlements`'a denetim/idempotans alanları (`product_id`, `store`, `rc_event_id`, `rc_event_ms`, `is_trial`) ve `apply_entitlement_event()` fonksiyonu. RLS'ye DOKUNMUYOR — yazma yolu yalnızca service_role.                          |
+| `029_ai_tier_limits`      | AI cümle çevirisi kotasını katmana bağlar: ücretsiz 10/gün, premium 200/gün. Öncesinde herkes için 30'du. `my_ai_sentence_quota()` ile istemci de kotayı okuyabiliyor.                                                                        |
+| `031_audio_access`        | Stüdyo seslendirmesine erişim: `audio_taster_grants` (kullanıcı başına BİR ücretsiz hikâye — sınır şemada, birincil anahtar `user_id`), `claim_audio_taster()`, `can_play_book_audio()` ve `book-audio` deposunu **public olmaktan çıkarır**. |
+
+> **031 canlı davranışı değiştiriyor:** `book-audio` deposu private oluyor.
+> Bu migration uygulandıktan sonra `chapter-audio` fonksiyonu dağıtılmadan
+> hiçbir kullanıcı stüdyo sesini duyamaz (cihaz sesi etkilenmez — ADR-011
+> yolu bu zincirden geçmiyor). İkisini birlikte dağıt.
 
 > **029 canlı davranışı değiştiriyor:** ücretsiz kullanıcının günlük AI
 > çeviri hakkı 30'dan 10'a iniyor. Bu bilinçli — paywall "AI destekli
@@ -63,6 +69,29 @@ npx supabase functions deploy revenuecat-webhook --no-verify-jwt
 ```bash
 npx supabase functions deploy translate-sentence
 ```
+
+```bash
+npx supabase functions deploy sync-entitlement
+```
+
+```bash
+npx supabase functions deploy chapter-audio
+```
+
+`sync-entitlement` bir ONARIM yolu: kaçan bir RevenueCat webhook'u eskiden
+yetkinin kalıcı kaybı demekti (2026-09-07'de gerçekten yaşandı — ayrıntı
+fonksiyonun kendi başlığında). Çalışması için bir sır gerekiyor:
+
+```bash
+npx supabase secrets set REVENUECAT_API_KEY=<RevenueCat gizli anahtarı>
+```
+
+> Bu anahtar **yalnızca sunucuda** yaşar. `EXPO_PUBLIC_*` olarak
+> girilirse bundle'a gömülür ve herkese açık olur.
+
+`chapter-audio`, private `book-audio` deposu için kısa ömürlü imzalı
+bağlantı üretir; erişim kararını migration 031'deki `can_play_book_audio()`
+veriyor. Migration 031 uygulanmadan dağıtılırsa fonksiyon çalışmaz.
 
 `revenuecat-webhook` JWT doğrulaması olmadan çalışır (RevenueCat'in Supabase
 kullanıcısı yok); doğrulama paylaşılan sırla yapılıyor — bir sonraki adım.

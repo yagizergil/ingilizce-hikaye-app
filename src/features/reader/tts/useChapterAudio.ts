@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useAudioPlayer } from "expo-audio";
 import { useQuery } from "@tanstack/react-query";
 
+import { supabase } from "@/lib/supabase";
 import { trackError } from "@/lib/analytics";
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
 import {
@@ -16,6 +17,24 @@ import type { RefObject } from "react";
 import type { PaginatedReaderHandle } from "@/features/reader/components/PaginatedReaderView";
 import type { ReaderChapter } from "@/features/reader/types";
 import type { ReaderTtsController } from "@/features/reader/tts/useReaderTts";
+
+/**
+ * Bulut sürücüsünün denetleyicisi + gerçekten kullanılabilir olup olmadığı.
+ *
+ * NEDEN `available` DIŞARI ÇIKIYOR: erişim kararı ASENKRON (imzalı bağlantı
+ * sunucudan geliyor) ama hangi sürücünün aktif olduğuna ReaderScreen her
+ * render'da senkron karar vermek zorunda. Bu bayrak olmadan, erişimi
+ * olmayan kullanıcıda bulut sürücüsü seçilir ve sesli okuma düğmesi hiçbir
+ * şey yapmazdı — oysa doğru davranış cihaz sesine düşmek.
+ */
+export interface ChapterAudioController extends ReaderTtsController {
+  available: boolean;
+}
+
+interface SignedAudio {
+  audioUrl: string;
+  timingsUrl: string;
+}
 
 interface UseChapterAudioOptions {
   readerRef: RefObject<PaginatedReaderHandle | null>;
@@ -65,22 +84,56 @@ export function useChapterAudio({
   chapter,
   rate,
   enabled,
-}: UseChapterAudioOptions): ReaderTtsController {
+}: UseChapterAudioOptions): ChapterAudioController {
   const status = useTtsStore((state) => state.status);
   const setStatus = useTtsStore((state) => state.setStatus);
   const setSpokenKey = useTtsStore((state) => state.setSpokenKey);
 
-  const player = useAudioPlayer(enabled ? (chapter?.audioUrl ?? undefined) : undefined);
+  /**
+   * İmzalı bağlantılar.
+   *
+   * NEDEN SATIRDAKİ ADRES DOĞRUDAN KULLANILMIYOR: `book-audio` deposu
+   * migration 031 ile herkese açık olmaktan çıktı. Adresler hâlâ
+   * `book_sections` satırında duruyor ama artık tek başlarına açılmıyor;
+   * erişimi sunucu (`chapter-audio`) veriyor ve kararı orada
+   * `can_play_book_audio()` alıyor.
+   *
+   * 403 (kilitli) bir HATA DEĞİL: sorgu null döner, `available` false olur
+   * ve reader cihaz sesine düşer — yani erişimi olmayan kullanıcı için
+   * hiçbir şey bozulmaz, sadece ses cihazın sesi olur.
+   */
+  const signedQuery = useQuery<SignedAudio | null>({
+    queryKey: ["reader", "signedAudio", chapter?.id ?? null],
+    enabled: enabled && Boolean(chapter?.id),
+    staleTime: 60 * 60 * 1000, // Bağlantı 2 saat geçerli; bir saat sonra tazele.
+    retry: false,
+    queryFn: async () => {
+      if (!chapter?.id) return null;
+      const { data, error } = await supabase.functions.invoke<SignedAudio>("chapter-audio", {
+        body: { sectionId: chapter.id },
+      });
+      if (error) {
+        // Kilit ve "ses yok" beklenen durumlar; gürültü yapmadan null.
+        return null;
+      }
+      return data ?? null;
+    },
+  });
+
+  const signed = signedQuery.data ?? null;
+  const available = enabled && signed !== null;
+
+  const player = useAudioPlayer(signed?.audioUrl ?? undefined);
 
   // Zamanlama dosyası bölüm boyunca değişmiyor; `staleTime: Infinity`
   // aynı bölüme dönüldüğünde yeniden indirilmesini önlüyor.
   const timingsQuery = useQuery<ChapterAudioTimings | null>({
-    queryKey: ["reader", "audioTimings", chapter?.audioTimingsUrl ?? null],
-    enabled: enabled && Boolean(chapter?.audioTimingsUrl),
+    queryKey: ["reader", "audioTimings", chapter?.id ?? null],
+    enabled: Boolean(signed),
     staleTime: Infinity,
     queryFn: async () => {
-      if (!chapter?.audioTimingsUrl) return null;
-      const response = await fetch(chapter.audioTimingsUrl);
+      if (!signed) return null;
+      const response = await fetch(signed.timingsUrl);
       if (!response.ok) throw new Error(`audio_timings_${response.status}`);
       return (await response.json()) as ChapterAudioTimings;
     },
@@ -172,7 +225,7 @@ export function useChapterAudio({
       return;
     }
 
-    if (!enabled || !chapter?.audioUrl) return;
+    if (!available) return;
 
     recomputePageWords();
 
@@ -195,18 +248,7 @@ export function useChapterAudio({
     setStatus("speaking");
     clearTick();
     tickRef.current = setInterval(tick, TICK_MS);
-  }, [
-    chapter?.audioUrl,
-    clearTick,
-    enabled,
-    pause,
-    player,
-    rate,
-    recomputePageWords,
-    setStatus,
-    status,
-    tick,
-  ]);
+  }, [available, clearTick, pause, player, rate, recomputePageWords, setStatus, status, tick]);
 
   // Bölüm değişince ya da ekrandan çıkınca sesi kesinlikle durdur.
   useEffect(() => {
@@ -229,5 +271,5 @@ export function useChapterAudio({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapter?.id, enabled]);
 
-  return { toggle, pause, stop: hardStop };
+  return { toggle, pause, stop: hardStop, available };
 }

@@ -219,6 +219,14 @@
       "position": "Bu serinin {{index}}. kitabı",
       "nextBook": "Sonraki kitap: {{title}}",
       "lastBook": "Bu serinin son kitabı"
+    },
+    "audio": {
+      "label": "SESLENDİRME",
+      "unlocked": "Bu hikâye doğal sesle, kelime kelime takip edilerek okunuyor.",
+      "tasterOffer": "Bu hikâyeyi doğal sesle dinleyebilirsin — ücretsiz hakkın burada kullanılır.",
+      "tasterSpent": "Ücretsiz doğal ses hakkını başka bir hikâyede kullandın. Bu hikâye cihazının sesiyle yine dinlenebilir.",
+      "tasterCta": "Ücretsiz dinlemeyi burada kullan",
+      "upgradeCta": "Tüm hikâyelerde doğal ses"
     }
   },
   "reader": {

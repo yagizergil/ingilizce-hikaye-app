@@ -204,10 +204,19 @@ def supabase_headers() -> dict[str, str]:
     return {"Authorization": f"Bearer {SERVICE_KEY}", "apikey": SERVICE_KEY}
 
 
-def fetch_sections(client: httpx.Client, slug: str | None) -> list[dict]:
-    """Seslendirilecek bolumleri, paragraflariyla birlikte getirir."""
+def fetch_sections(client: httpx.Client, slug: str | None, force: bool = False) -> list[dict]:
+    """Seslendirilecek bolumleri, paragraflariyla birlikte getirir.
+
+    NEDEN VARSAYILAN OLARAK ATLIYOR (`force=False`): bu is 207 bolum ve
+    ~738.000 faturalanabilir karakter, aylik 1M ucretsiz kotanin buyuk
+    kismi. Is yarida kesilirse (ag hatasi, makine kapanmasi) betigi
+    yeniden calistirmak KALDIGI YERDEN degil BASTAN uretirdi ve kotayi
+    ikinci kez harcardi -- yani bir kesinti dogrudan faturaya donerdi.
+    Zaten sesi ve zamanlamasi olan bolum atlanir; yeniden uretmek icin
+    `--force`.
+    """
     params = {
-        "select": "id,order_index,title,book_id,books!inner(slug,title,is_original,status)",
+        "select": "id,order_index,title,book_id,audio_url,audio_timings_url,books!inner(slug,title,is_original,status)",
         "books.is_original": "eq.true",
         "books.status": "eq.published",
         "order": "book_id,order_index",
@@ -219,6 +228,15 @@ def fetch_sections(client: httpx.Client, slug: str | None) -> list[dict]:
     response.raise_for_status()
     sections = response.json()
 
+    if not force:
+        before = len(sections)
+        sections = [s for s in sections if not (s.get("audio_url") and s.get("audio_timings_url"))]
+        skipped = before - len(sections)
+        if skipped:
+            print(f"  {skipped} bolum zaten sesli, atlaniyor (--force ile yeniden uretilir)")
+
+    # Paragraflar ATLAMADAN SONRA getiriliyor: atlanan bolum icin istek
+    # atmak yuzlerce gereksiz round-trip demekti.
     for section in sections:
         paragraphs = client.get(
             f"{SUPABASE_URL}/rest/v1/book_paragraphs",
@@ -272,16 +290,21 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="API cagirmadan dogrula")
     parser.add_argument("--slug", help="Yalnizca bu kitap")
     parser.add_argument("--limit", type=int, help="En fazla bu kadar bolum isle")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Sesi zaten olan bolumleri de yeniden uret (kota harcar)",
+    )
     args = parser.parse_args()
 
     with httpx.Client(timeout=180) as client:
         print("Bolumler getiriliyor...")
-        sections = fetch_sections(client, args.slug)
+        sections = fetch_sections(client, args.slug, force=args.force)
         if args.limit:
             sections = sections[: args.limit]
         if not sections:
-            print("Eslesen bolum yok.")
-            return 1
+            print("Uretilecek bolum kalmadi (hepsi zaten sesli).")
+            return 0
 
         # --- Once tamamini olc: kota ve bayt siniri surprizi olmasin ---
         total_chunks = 0

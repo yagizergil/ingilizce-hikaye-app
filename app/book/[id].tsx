@@ -9,9 +9,18 @@ import { useTranslation } from "react-i18next";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
-import { Button, EmptyState, ErrorState, Hairline, LoadingState, SectionHeader, useToast } from "@/components/ui";
+import {
+  Button,
+  EmptyState,
+  ErrorState,
+  Hairline,
+  LoadingState,
+  SectionHeader,
+  useToast,
+} from "@/components/ui";
 import { useFavoritedBookIdsQuery, useToggleFavoriteMutation } from "@/features/home";
 import {
+  BookAudioCard,
   BookHero,
   BookSeriesInfo,
   BookStatsRow,
@@ -97,7 +106,10 @@ export default function BookDetailScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.bg.primary }]}
+        edges={["top"]}
+      >
         <LoadingState message={t("bookDetail.loading")} />
       </SafeAreaView>
     );
@@ -105,7 +117,10 @@ export default function BookDetailScreen() {
 
   if (isError || !data) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.bg.primary }]}
+        edges={["top"]}
+      >
         <ErrorState message={t("bookDetail.error")} onRetry={() => void refetch()} />
       </SafeAreaView>
     );
@@ -137,7 +152,12 @@ export default function BookDetailScreen() {
           hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
           style={styles.favoriteButton}
         >
-          <Text style={[type.sectionHeading, { color: isFavorited ? theme.accent : theme.text.secondary }]}>
+          <Text
+            style={[
+              type.sectionHeading,
+              { color: isFavorited ? theme.accent : theme.text.secondary },
+            ]}
+          >
             {isFavorited ? "♥" : "♡"}
           </Text>
         </Pressable>
@@ -145,7 +165,15 @@ export default function BookDetailScreen() {
 
       <BookHero book={book} />
       <BookStatsRow book={book} progressPercent={progressPercent} />
-      {series ? <BookSeriesInfo series={series} onPressNextBook={handlePressNextBookInSeries} /> : null}
+      {series ? (
+        <BookSeriesInfo series={series} onPressNextBook={handlePressNextBookInSeries} />
+      ) : null}
+
+      <BookAudioCard
+        bookId={book.id}
+        hasAudio={book.hasAudio}
+        onPressUpgrade={() => router.push("/paywall?source=audio")}
+      />
 
       <View style={styles.cta}>
         <Button label={ctaLabel} onPress={handlePressCta} disabled={!continueChapter} fullWidth />
@@ -154,7 +182,10 @@ export default function BookDetailScreen() {
       <SectionHeader title={t("bookDetail.chapters")} style={styles.sectionHead} />
 
       {book.chapters.length === 0 ? (
-        <EmptyState title={t("bookDetail.empty.title")} description={t("bookDetail.empty.description")} />
+        <EmptyState
+          title={t("bookDetail.empty.title")}
+          description={t("bookDetail.empty.description")}
+        />
       ) : null}
     </View>
   );

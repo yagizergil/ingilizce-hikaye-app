@@ -1,4 +1,5 @@
 import { fetchSubscriptionStatus } from "@/features/paywall/api/useSubscriptionQuery";
+import { syncEntitlementFromStore } from "@/features/paywall/api/syncEntitlement";
 import { trackEvent } from "@/lib/analytics";
 
 /**
@@ -20,6 +21,11 @@ import { trackEvent } from "@/lib/analytics";
  * çağıran, kullanıcıya "birazdan etkinleşecek" der ve ekranı kapatır —
  * satın alma kaybolmuş değildir, "Satın alımları geri yükle" her zaman
  * durumu tazeler.
+ *
+ * ONARIM ADIMI: webhook birkaç saniyede gelmezse bir kez `sync-entitlement`
+ * çağrılıyor. Buna neden gerek olduğu `syncEntitlement.ts` içinde yazılı —
+ * özeti: kaçan bir webhook eskiden yetkinin KALICI kaybı demekti. Beklemeye
+ * yalnızca yoklama eklenirse o durum hiç düzelmez, sonsuza kadar yoklanır.
  */
 
 /** Toplam bekleme süresi. Webhook tipik olarak 1-2 sn içinde ulaşıyor. */
@@ -29,6 +35,14 @@ const TIMEOUT_MS = 20_000;
 const POLL_DELAYS_MS: readonly [number, ...number[]] = [
   400, 600, 1000, 1500, 2000, 3000, 4000, 5000,
 ];
+
+/**
+ * Kaçıncı yoklamadan sonra onarım denenecek.
+ *
+ * 3 yoklama ~2 saniye demek: normal bir webhook bu süre içinde zaten
+ * ulaşıyor, dolayısıyla mutlu yolda RevenueCat API'sine hiç dokunulmuyor.
+ */
+const SYNC_AFTER_ATTEMPT = 3;
 
 /** Son eleman tekrar eder; dizinin sınırını aşmak mümkün değil. */
 function delayForAttempt(attempt: number): number {
@@ -49,6 +63,7 @@ function delay(ms: number): Promise<void> {
 export async function waitForServerPremium(): Promise<boolean> {
   const startedAt = Date.now();
   let attempt = 0;
+  let syncTried = false;
 
   while (Date.now() - startedAt < TIMEOUT_MS) {
     await delay(delayForAttempt(attempt));
@@ -60,8 +75,16 @@ export async function waitForServerPremium(): Promise<boolean> {
         trackEvent("entitlement_confirmed", {
           attempts: attempt,
           elapsed_ms: Date.now() - startedAt,
+          repaired: syncTried,
         });
         return true;
+      }
+
+      if (!syncTried && attempt >= SYNC_AFTER_ATTEMPT) {
+        syncTried = true;
+        // Dönüş değerine güvenmiyoruz: doğruluk kaynağı sunucudaki satır,
+        // bir sonraki yoklama onu zaten okuyacak.
+        await syncEntitlementFromStore();
       }
     } catch {
       // Ağ hatası geçici olabilir; süre dolana kadar denemeye devam et.
@@ -70,6 +93,6 @@ export async function waitForServerPremium(): Promise<boolean> {
     }
   }
 
-  trackEvent("entitlement_wait_timeout", { attempts: attempt });
+  trackEvent("entitlement_wait_timeout", { attempts: attempt, repaired: syncTried });
   return false;
 }

@@ -282,7 +282,113 @@ B1_BRIEFS: tuple[Brief, ...] = (
     ),
 )
 
-BRIEFS: dict[str, tuple[Brief, ...]] = {"B1": B1_BRIEFS}
+
+#: B2 konu havuzu. B1'den farkı, her brief'in İKİ basınç taşıması (prompt
+#: §7): somut bir hedef VE onunla çatışan bir bağlılık/bedel. Bu uzunlukta
+#: (23-37 dk) tek hatlı bir gerilim gevşiyor.
+#:
+#: Ayrıca hepsi evrensel bir kurumda geçiyor — hastane, mahkeme, fabrika,
+#: gazete, üniversite, liman. Bunlar her ülkede var; ulusal bir sınav ya da
+#: yerel bir bayram yok (prompt §5).
+B2_BRIEFS: tuple[Brief, ...] = (
+    Brief(
+        "the-witness-who-stayed",
+        "A court interpreter realises the witness she is translating for "
+        "is deliberately saying less than he knows — and that the man in "
+        "the dock is her landlord, who forgave her rent for two years.",
+        ("drama", "mystery"),
+        ("truth", "loyalty"),
+    ),
+    Brief(
+        "the-third-shift",
+        "A factory safety inspector finds the fault that caused an "
+        "accident, and traces the signature on the ignored report to the "
+        "supervisor who trained her.",
+        ("drama",),
+        ("responsibility", "loyalty"),
+    ),
+    Brief(
+        "the-correction",
+        "A young newspaper editor must decide whether to print a "
+        "correction that would clear a stranger's name and end her "
+        "mentor's career, four days before he retires.",
+        ("drama",),
+        ("truth", "courage"),
+    ),
+    Brief(
+        "the-night-ward",
+        "A nurse on a long night shift is the only one who believes a "
+        "patient's account of what happened, while the notes in the file "
+        "were written by the colleague who covered her own mistake.",
+        ("drama", "mystery"),
+        ("trust", "responsibility"),
+    ),
+    Brief(
+        "the-harbour-lease",
+        "A woman returns to the port town she left at eighteen to sign "
+        "away her father's boat lease, and discovers the buyer is the "
+        "family her father blamed for losing it.",
+        ("drama",),
+        ("family", "forgiveness"),
+    ),
+    Brief(
+        "the-second-marking",
+        "A university tutor re-marks an exam and finds the failing script "
+        "belongs to the student whose scholarship letter she signed.",
+        ("drama",),
+        ("responsibility", "fairness"),
+    ),
+    Brief(
+        "the-unsent-application",
+        "An architect discovers her firm's winning design was drawn by an "
+        "intern who left without credit, and the intern is now the client "
+        "reviewing the project.",
+        ("drama",),
+        ("truth", "ambition"),
+    ),
+    Brief(
+        "the-quiet-carriage",
+        "A train guard covers for a colleague's missed inspection, then "
+        "has to explain a delay to a passenger whose mother is waiting at "
+        "a hospital two hundred kilometres away.",
+        ("drama",),
+        ("responsibility", "kindness"),
+    ),
+    Brief(
+        "the-inherited-debt",
+        "A baker inherits her uncle's shop along with a debt to the "
+        "neighbour who has fed the whole street on credit for a decade.",
+        ("drama",),
+        ("family", "community"),
+    ),
+    Brief(
+        "the-missing-hour",
+        "A hotel's security officer finds one hour cut from the corridor "
+        "footage on the night a guest's case disappeared, and the only "
+        "person with the access code is the one who reported the theft.",
+        ("mystery", "drama"),
+        ("trust", "truth"),
+    ),
+    Brief(
+        "the-open-file",
+        "A city archivist is asked to lose a planning document that would "
+        "stop a development, by the councillor who saved the archive from "
+        "closure.",
+        ("drama",),
+        ("truth", "community"),
+    ),
+    Brief(
+        "the-return-flight",
+        "A translator accompanying a delegation abroad realises the "
+        "contract she is interpreting has a clause that will cost her own "
+        "town its water rights.",
+        ("drama",),
+        ("responsibility", "home"),
+    ),
+)
+
+
+BRIEFS: dict[str, tuple[Brief, ...]] = {"B1": B1_BRIEFS, "B2": B2_BRIEFS}
 
 
 def load_prompt(level: str) -> str:

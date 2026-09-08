@@ -157,15 +157,32 @@ export function ReaderScreen({
     enabled: hasCloudAudio,
   });
 
+  /**
+   * Bulut sesi yalnızca ERİŞİM ONAYLANDIĞINDA seçiliyor.
+   *
+   * `hasCloudAudio` "bu bölüm için stüdyo sesi ÜRETİLMİŞ mi" demek;
+   * `cloudAudio.available` ise "bu kullanıcı onu dinleyebilir mi" demek —
+   * ikincisi sunucudan geliyor (imzalı bağlantı, migration 031). Ayrım
+   * önemli: erişimi olmayan kullanıcı için bulut sürücüsü seçilseydi
+   * seslendirme düğmesi hiçbir şey yapmazdı. Bunun yerine cihaz sesine
+   * düşüyor — ADR-011'deki ücretsiz sesli okuma aynen çalışmaya devam
+   * ediyor, hiçbir şey kaybolmuyor.
+   *
+   * Bu yüzden reader'da kilit ikonu, "yükselt" düğmesi ya da herhangi bir
+   * premium promosyonu YOK (Ürün İlkesi #1). Seçim kitap detayında
+   * yapılıyor, okuma akışının dışında.
+   */
+  const useCloudAudio = cloudAudio.available;
+
   const deviceTts = useReaderTts({
     readerRef,
-    chapterId: hasCloudAudio ? undefined : chapter?.id,
+    chapterId: useCloudAudio ? undefined : chapter?.id,
     bookId: chapter?.bookId,
     rate: settings.speechRate,
     voiceId: settings.speechVoiceId,
   });
 
-  const tts = hasCloudAudio ? cloudAudio : deviceTts;
+  const tts = useCloudAudio ? cloudAudio : deviceTts;
   // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
   // `stop` konumu sıfırlıyor, yani kullanıcı sözlüğe bakıp geri döndüğünde
   // seslendirme sayfanın başından başlıyordu.
