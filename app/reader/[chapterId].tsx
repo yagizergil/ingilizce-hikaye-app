@@ -3,7 +3,10 @@ import { ReaderScreen } from "@/features/reader";
 import { ErrorBoundary } from "@/components/ui";
 
 export default function ReaderRoute() {
-  const { chapterId } = useLocalSearchParams<{ chapterId: string }>();
+  const { chapterId, autoplay } = useLocalSearchParams<{
+    chapterId: string;
+    autoplay?: string;
+  }>();
 
   if (!chapterId) return null;
 
@@ -20,6 +23,8 @@ export default function ReaderRoute() {
         // `replace`: geri tuşu kullanıcıyı az önce bitirdiği bölümün son
         // sayfasına geri götürmesin.
         onFinishBook={(bookId) => router.replace(`/book-finished?bookId=${bookId}`)}
+        // Kitap detayındaki "Dinle" düğmesi buraya `?autoplay=1` ile geliyor.
+        autoStartSpeech={autoplay === "1"}
       />
     </ErrorBoundary>
   );

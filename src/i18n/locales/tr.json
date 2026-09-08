@@ -191,7 +191,9 @@
     "chapters": "Bölümler",
     "cta": {
       "start": "Okumaya başla",
-      "continue": "Okumaya devam et — Bölüm {{index}}"
+      "continue": "Okumaya devam et — Bölüm {{index}}",
+      "listen": "Dinle",
+      "listenAccessibilityLabel": "Bu kitabı dinle"
     },
     "stats": {
       "words": "Kelime",

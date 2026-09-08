@@ -191,7 +191,9 @@
     "chapters": "Chapters",
     "cta": {
       "start": "Start reading",
-      "continue": "Continue reading — Chapter {{index}}"
+      "continue": "Continue reading — Chapter {{index}}",
+      "listen": "Listen",
+      "listenAccessibilityLabel": "Listen to this book"
     },
     "stats": {
       "words": "Words",

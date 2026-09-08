@@ -30,6 +30,16 @@ import type { ReaderTtsController } from "@/features/reader/tts/useReaderTts";
  */
 export interface ChapterAudioController extends ReaderTtsController {
   available: boolean;
+  /**
+   * Erişim kararı verildi mi (`available`'ın artık güvenilir olduğu an).
+   *
+   * NEDEN AYRI BİR BAYRAK: `available` başlangıçta da false, "erişim yok"
+   * durumunda da false — ikisi ayırt edilemiyor. Bu ayrım yalnızca bir
+   * yerde kritik: "Dinle" düğmesiyle gelen otomatik başlatma. Karar
+   * gelmeden başlatılırsa `available` henüz false olduğu için CİHAZ sesi
+   * çalar, yani düğme tam olarak istenmeyen sesi çalmış olur.
+   */
+  accessResolved: boolean;
 }
 
 interface SignedAudio {
@@ -287,5 +297,8 @@ export function useChapterAudio({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapter?.id, enabled]);
 
-  return { toggle, pause, stop: hardStop, available };
+  // Bölüm için stüdyo sesi hiç üretilmemişse beklenecek bir karar da yok.
+  const accessResolved = !enabled || signedQuery.isFetched;
+
+  return { toggle, pause, stop: hardStop, available, accessResolved };
 }

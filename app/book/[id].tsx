@@ -77,6 +77,21 @@ export default function BookDetailScreen() {
     router.push(`/reader/${data.continueChapter.id}`);
   };
 
+  /**
+   * "Dinle": okumayla AYNI bölüme gidiyor, tek farkı seslendirmenin
+   * kendiliğinden başlaması. Ayrı bir dinleme ekranı açmıyoruz — metin ve
+   * ses aynı yüzeyde, çünkü ürünün amacı dinlemek değil OKURKEN takip
+   * edebilmek (ADR-011/012).
+   */
+  const handlePressListen = () => {
+    if (!data?.book || !data.continueChapter) return;
+    trackEvent("book_listen_started", {
+      bookId: data.book.id,
+      chapterId: data.continueChapter.id,
+    });
+    router.push(`/reader/${data.continueChapter.id}?autoplay=1`);
+  };
+
   const handleBack = () => {
     router.back();
   };
@@ -177,6 +192,14 @@ export default function BookDetailScreen() {
 
       <View style={styles.cta}>
         <Button label={ctaLabel} onPress={handlePressCta} disabled={!continueChapter} fullWidth />
+        <Button
+          label={t("bookDetail.cta.listen")}
+          accessibilityLabel={t("bookDetail.cta.listenAccessibilityLabel")}
+          onPress={handlePressListen}
+          disabled={!continueChapter}
+          variant="secondary"
+          fullWidth
+        />
       </View>
 
       <SectionHeader title={t("bookDetail.chapters")} style={styles.sectionHead} />
@@ -227,6 +250,7 @@ const styles = StyleSheet.create({
   cta: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.ml,
+    gap: spacing.sm,
   },
   sectionHead: {
     paddingHorizontal: spacing.lg,

@@ -54,6 +54,12 @@ interface ReaderScreenProps {
   onOpenChapter: (chapterId: string) => void;
   /** Kitabın son bölümü bitti — kutlama ekranına geçiş (reader'ın dışı). */
   onFinishBook: (bookId: string) => void;
+  /**
+   * Kitap detayındaki "Dinle" düğmesiyle gelindi — seslendirme kendiliğinden
+   * başlasın. Yalnızca AÇILIŞTA bir kez; kullanıcı duraklattığında yeniden
+   * başlatmıyor.
+   */
+  autoStartSpeech?: boolean;
 }
 
 /**
@@ -69,6 +75,7 @@ export function ReaderScreen({
   onBack,
   onOpenChapter,
   onFinishBook,
+  autoStartSpeech = false,
 }: ReaderScreenProps) {
   const { t } = useTranslation();
   const readerColors = useReaderThemeColors();
@@ -123,6 +130,12 @@ export function ReaderScreen({
   const { mutate: saveProgressImmediately } = useReadingProgressMutation();
 
   const [pageProgress, setPageProgress] = useState({ page: 0, totalPages: 1 });
+  /**
+   * İlk sayfalama tamamlandı mı. `pageProgress.totalPages` bunun yerine
+   * kullanılamıyor: başlangıç değeri 1, yani "hazır" ile "henüz ölçülmedi"
+   * ayırt edilemiyor. Yalnızca otomatik başlatmayı bekletmek için var.
+   */
+  const [pagesReady, setPagesReady] = useState(false);
   const [chapterEnded, setChapterEnded] = useState(false);
 
   /**
@@ -183,6 +196,38 @@ export function ReaderScreen({
   });
 
   const tts = useCloudAudio ? cloudAudio : deviceTts;
+
+  /**
+   * "Dinle" ile gelindiğinde seslendirmeyi bir kez kendiliğinden başlatır.
+   *
+   * ÜÇ KOŞUL BİRDEN gerekiyor ve üçü de gerçek bir hataya karşılık geliyor:
+   *  - `chapter`: metin gelmeden başlatacak bir şey yok.
+   *  - `pagesReady`: sayfalama bitmeden başlatmak, konuşma birimlerini
+   *    henüz ölçülmemiş bir sayfadan kurmaya çalışırdı.
+   *  - `accessResolved`: erişim kararı gelmeden `available` hâlâ false
+   *    olduğu için CİHAZ sesi çalardı — yani düğme, kullanıcının duymak
+   *    istemediği sesi çalmış olurdu.
+   *
+   * `toggle` bir ref üzerinden okunuyor: sürücü bulut/cihaz arasında
+   * değiştiğinde kimliği de değişiyor ve onu bağımlılığa koymak efekti
+   * yeniden çalıştırırdı.
+   */
+  const autoStartedRef = useRef(false);
+  const toggleRef = useRef(tts.toggle);
+
+  // Render sırasında ref'e yazmak SDK 57'nin react-hooks kuralına takılıyor.
+  // Bu efekt AŞAĞIDAKİNDEN ÖNCE tanımlı, yani aynı commit'te önce çalışıyor:
+  // otomatik başlatma her zaman güncel `toggle`'ı görüyor.
+  useEffect(() => {
+    toggleRef.current = tts.toggle;
+  }, [tts.toggle]);
+
+  useEffect(() => {
+    if (!autoStartSpeech || autoStartedRef.current) return;
+    if (!chapter || !pagesReady || !cloudAudio.accessResolved) return;
+    autoStartedRef.current = true;
+    toggleRef.current();
+  }, [autoStartSpeech, chapter, pagesReady, cloudAudio.accessResolved]);
   // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
   // `stop` konumu sıfırlıyor, yani kullanıcı sözlüğe bakıp geri döndüğünde
   // seslendirme sayfanın başından başlıyordu.
@@ -403,6 +448,7 @@ export function ReaderScreen({
   const handlePagesReady = useCallback(
     (payload: PaginatedPagesReadyPayload) => {
       setPageProgress((previous) => ({ page: previous.page, totalPages: payload.totalPages }));
+      setPagesReady(true);
 
       if (!firstPaintReportedRef.current) {
         firstPaintReportedRef.current = true;
