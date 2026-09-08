@@ -16,10 +16,13 @@ interface RawSection {
   order_index: number;
   title: string | null;
   word_count: number | null;
+  audio_url: string | null;
+  audio_timings_url: string | null;
   book_paragraphs: RawParagraph[];
 }
 
 const SECTION_SELECT = `id, book_id, order_index, title, word_count,
+  audio_url, audio_timings_url,
   book_paragraphs ( id, order_index, text )`;
 
 function toReaderChapter(raw: RawSection, nextChapterId: string | null): ReaderChapter {
@@ -39,6 +42,8 @@ function toReaderChapter(raw: RawSection, nextChapterId: string | null): ReaderC
     wordCount: raw.word_count,
     paragraphs,
     nextChapterId,
+    audioUrl: raw.audio_url,
+    audioTimingsUrl: raw.audio_timings_url,
   };
 }
 

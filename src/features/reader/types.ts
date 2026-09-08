@@ -12,6 +12,17 @@ export interface ReaderChapter {
   wordCount: number | null;
   paragraphs: ReaderParagraph[];
   nextChapterId: string | null;
+  /**
+   * Onceden uretilmis seslendirmenin adresi; yoksa null.
+   *
+   * Yalnizca ozgun hikayelerde dolu (bkz.
+   * `pipeline/scripts/generate_audio.py`). Klasiklerde null kalir ve okuma
+   * cihaz-ustu TTS'e duser (ADR-011) — yani ses HER ZAMAN calisir, bulut
+   * sesi yalnizca bir UST KATMAN.
+   */
+  audioUrl: string | null;
+  /** Kelime zaman damgalarinin adresi; `audioUrl` ile birlikte dolu olur. */
+  audioTimingsUrl: string | null;
 }
 
 export type ReaderFontFamily = "serif" | "sans";

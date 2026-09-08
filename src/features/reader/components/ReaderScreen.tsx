@@ -30,6 +30,7 @@ import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { ReaderHeader } from "@/features/reader/components/ReaderHeader";
 import { useReaderTts } from "@/features/reader/tts/useReaderTts";
+import { useChapterAudio } from "@/features/reader/tts/useChapterAudio";
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
 import { ReaderFooter } from "@/features/reader/components/ReaderFooter";
 import { PaginatedReaderView } from "@/features/reader/components/PaginatedReaderView";
@@ -131,13 +132,40 @@ export function ReaderScreen({
    */
   const readerRef = useRef<PaginatedReaderHandle | null>(null);
   const isSpeaking = useTtsStore((state) => state.status === "speaking");
-  const tts = useReaderTts({
+
+  /**
+   * Sesli okumanın İKİ sürücüsü var ve hangisinin kullanılacağı bölümde
+   * hazır ses olup olmadığına bağlı:
+   *
+   *  - `useChapterAudio` — önceden üretilmiş Google TTS sesi ve sunucudan
+   *    gelen kelime zaman damgaları. Yalnızca özgün hikâyelerde var
+   *    (bkz. `pipeline/scripts/generate_audio.py`).
+   *  - `useReaderTts` — cihazın kendi konuşma motoru (ADR-011). Her kitapta
+   *    çalışır, klasiklerin tek seçeneği.
+   *
+   * İkisi de her render'da çağrılıyor çünkü hook'lar koşullu olamaz;
+   * `enabled` bayrağı pasif olanın ortak vurgu deposuna dokunmasını
+   * engelliyor. Dışarıya tek bir denetleyici veriliyor, arayüz aynı —
+   * `ReaderHeader` hangi kaynağın çaldığını bilmiyor ve bilmesi gerekmiyor.
+   */
+  const hasCloudAudio = Boolean(chapter?.audioUrl && chapter?.audioTimingsUrl);
+
+  const cloudAudio = useChapterAudio({
     readerRef,
-    chapterId: chapter?.id,
+    chapter,
+    rate: settings.speechRate,
+    enabled: hasCloudAudio,
+  });
+
+  const deviceTts = useReaderTts({
+    readerRef,
+    chapterId: hasCloudAudio ? undefined : chapter?.id,
     bookId: chapter?.bookId,
     rate: settings.speechRate,
     voiceId: settings.speechVoiceId,
   });
+
+  const tts = hasCloudAudio ? cloudAudio : deviceTts;
   // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
   // `stop` konumu sıfırlıyor, yani kullanıcı sözlüğe bakıp geri döndüğünde
   // seslendirme sayfanın başından başlıyordu.

@@ -68,8 +68,24 @@ SERVICE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
 
 BUCKET = "book-audio"
 
-# Ses. Kadin, ABD Ingilizcesi, WaveNet (ucretsiz kotasi teyitli 1M/ay).
-VOICE_NAME = "en-US-Wavenet-F"
+# Ses. Kadin, ABD Ingilizcesi, Neural2.
+#
+# NEDEN NEURAL2, CHIRP3 DEGIL: Chirp3 ve Studio sesleri belirgin sekilde
+# daha iyi ama KELIME ZAMANLAMASI VEREMIYOR. Test edildi:
+#   - Studio acikca reddediyor: "`<mark>` tags are not currently supported
+#     by Studio voices" (400).
+#   - Chirp3 hata VERMIYOR ama 0 zaman damgasi donduruyor — sessizce
+#     calismiyor, ki bu daha tehlikeli: ses uretilir, uygulamada vurgu hic
+#     hareket etmez, fark edilmez.
+# Uygulamanin ayirt edici ozelligi "okurken takip edebilmek" oldugu icin
+# vurgu feda edilmedi.
+#
+# MALIYET NOTU: WaveNet'in 1M/ay ucretsiz kotasi kaynakla teyitli;
+# Neural2'ninki dogrulanamadi. En kotu senaryo (hic ucretsiz kota yoksa)
+# 706.286 karakter x $16/1M = ~$11 tek seferlik. Neural2 de ayni kotayi
+# paylasiyorsa 0. Ucuz kalmasi sart olursa VOICE_NAME'i
+# "en-US-Wavenet-F" yapmak yeterli — baska hicbir sey degismez.
+VOICE_NAME = "en-US-Neural2-F"
 LANGUAGE_CODE = "en-US"
 SPEAKING_RATE = 0.92  # Dil ogrenen icin biraz yavas; 1.0 anadili hizi.
 
