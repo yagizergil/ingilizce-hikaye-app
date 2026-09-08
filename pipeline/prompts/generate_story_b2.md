@@ -174,7 +174,9 @@ commentary, no explanation of your choices.
 ```
 ---
 title: <Story title>
+author: <the author value given in the brief>
 level: B2
+target_level: B2
 genres: [<genre>, <genre>]
 themes: [<theme>, <theme>]
 ---
@@ -189,7 +191,12 @@ themes: [<theme>, <theme>]
 ```
 
 - `title` is plain text, no quotes needed unless it contains a colon.
-- `genres` and `themes` must be the values given to you in the brief.
+- `author`, `genres` and `themes` must be the values given to you in the brief.
+- `target_level` is **B2**, never anything else. This field decides which
+  shelf the story lands on: original content is published at its
+  `target_level`, not at an inferred level (see `pipeline/src/publish.py`).
+  A story written to close the B2 gap but labelled B1 lands in the band
+  that is already full and leaves the gap exactly where it was.
 - Chapters are separated by `# ` headings only. No other heading levels.
 - Paragraphs are separated by a blank line. No markdown emphasis, no
   lists, no horizontal rules inside the story.
@@ -209,6 +216,7 @@ before returning.
 7. There is a real turn, **and** a second pressure that collides with
    the first at least once.
 8. No cultural reference a Turkish learner would have to look up.
-9. The draft would **not** pass as a B1 story — the sentences carry
-   more than one idea and the argument of the story has more than one
-   layer.
+9. `target_level` in the frontmatter reads **B2**.
+10. The draft would **not** pass as a B1 story — the sentences carry
+    more than one idea and the argument of the story has more than one
+    layer.

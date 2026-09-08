@@ -68,7 +68,7 @@ class BookMeta:
     # cli.py validate() author_death_year (telif) kontrolünü tamamen
     # ATLAR — orijinal içeriğin public-domain telif meselesi yok.
     is_original: bool = False
-    target_level: str | None = None  # A1 | A2 | B1 — frontmatter'dan
+    target_level: str | None = None  # A1 | A2 | B1 | B2 — frontmatter'dan
     # collection_books'a bağlanacak seri slug'ı, varsa (bkz. cli.py ingest
     # markdown dalı, Task 5).
     series: str | None = None

@@ -439,6 +439,96 @@ def run_validator(md_path: Path) -> tuple[bool, str]:
     return result.returncode == 0, (result.stdout or "") + (result.stderr or "")
 
 
+# ---------------------------------------------------------------------------
+# Üretilen metnin ŞEKLİNİ garanti eden iki kontrol
+#
+# NEDEN GEREKLİ: pipeline'ın STRICT doğrulayıcısı yayın kriterini uyguluyor
+# ve o kriter yalnızca TAVAN koyuyor (cümle ortalaması <= 24, tekil cümle
+# <= 60). B2'nin asıl derdi ise TABAN: ortalaması 15 kelime olan bir metin
+# doğrulayıcıdan rahatça geçer ama yapısal olarak B1'dir ve `infer_level`
+# onu B1 sayar — yani doldurulmak istenen boşluk yerinde kalır. İlk B2
+# denemesi tam olarak buraya düştü (ortalama 15,1).
+# ---------------------------------------------------------------------------
+
+#: Seviye başına cümle uzunluğu TABANI. Prompt 17-21 diyor; kabul eşiği
+#: 16,5, çünkü ölçüm yöntemi (kısaltmalar, diyalog) küçük sapmalar
+#: üretiyor ve 0,5 kelimelik bir sapma için bir üretim turu harcamak
+#: anlamsız. 15'lik bir metin ise gerçekten B1'dir ve geçmemeli.
+LEVEL_MIN_AVG_SENTENCE = {"B2": 16.5}
+
+
+def _body_sentences(story: str) -> list[str]:
+    """Frontmatter ve bölüm başlıklarını atarak cümleleri döndürür."""
+    parts = story.split("---", 2)
+    body = parts[2] if len(parts) > 2 else story
+    body = re.sub(r"^#.*$", "", body, flags=re.MULTILINE)
+    return [s for s in re.split(r"(?<=[.!?])\s+", body) if s.strip()]
+
+
+def sentence_shape_report(story: str, level: str) -> str | None:
+    """Taban ihlalini modele geri verilecek somut bir gerekçe olarak döndürür."""
+    floor = LEVEL_MIN_AVG_SENTENCE.get(level)
+    if floor is None:
+        return None
+
+    lengths = [len(re.findall(r"[A-Za-z']+", s)) for s in _body_sentences(story)]
+    if not lengths:
+        return None
+
+    average = sum(lengths) / len(lengths)
+    if average >= floor:
+        return None
+
+    return (
+        f"- Average sentence length is {average:.1f} words, below the {level} "
+        f"floor of {floor}. This draft is structurally a B1 story with harder "
+        f"vocabulary: it would be inferred as B1 and shelved in a band that is "
+        f"already full. Rewrite so that sentences carry a main idea plus a "
+        f"qualification or consequence (subordination), targeting an average "
+        f"of 17-21 words. Do NOT reach the average by chaining clauses with "
+        f"'and'."
+    )
+
+
+def force_frontmatter(story: str, brief: Brief, level: str) -> str:
+    """Seviye/yazar/etiket alanlarını modelin yazdığına BAKMADAN sabitler.
+
+    NEDEN MODELE GÜVENMİYORUZ: ilk B2 denemesi frontmatter'a
+    `target_level: B1` yazdı. Özgün içerikte yayın seviyesi doğrudan
+    `target_level`'dan geliyor (CLAUDE.md'de belgelenen tuzak), yani tek
+    kelimelik bir model sapması kitabı yanlış rafa koyuyor ve bunu hiçbir
+    doğrulayıcı yakalamıyor — metin o seviyede zaten geçerli. Değerler
+    zaten bizde; sormak yerine yazmak doğru olan.
+    """
+    parts = story.split("---")
+    if len(parts) < 3:
+        return story  # Frontmatter yok; doğrulayıcı zaten reddedecek.
+
+    forced = {
+        "author": AUTHOR,
+        "level": level,
+        "target_level": level,
+        "genres": f"[{', '.join(brief.genres)}]",
+        "themes": f"[{', '.join(brief.themes)}]",
+    }
+
+    lines = []
+    seen: set[str] = set()
+    for line in parts[1].strip("\n").splitlines():
+        key = line.split(":", 1)[0].strip()
+        if key in forced:
+            lines.append(f"{key}: {forced[key]}")
+            seen.add(key)
+        else:
+            lines.append(line)
+
+    for key, value in forced.items():
+        if key not in seen:
+            lines.append(f"{key}: {value}")
+
+    return "---\n" + "\n".join(lines) + "\n---" + "---".join(parts[2:])
+
+
 def generate_one(
     client: Anthropic,
     model: str,
@@ -481,11 +571,21 @@ def generate_one(
                 print(f"    deneme {attempt}: boş yanıt — {last_report}")
             continue
 
+        story = force_frontmatter(story, brief, level)
+
         candidate = REJECTED_DIR / f"{brief.slug}.attempt{attempt}.md"
         candidate.parent.mkdir(parents=True, exist_ok=True)
         candidate.write_text(story, encoding="utf-8")
 
         passed, report = run_validator(candidate)
+
+        # Doğrulayıcı tavanı ölçüyor, taban bize ait — ikisi de geçmeden
+        # hikâye kabul edilmiyor.
+        shape_problem = sentence_shape_report(story, level)
+        if shape_problem is not None:
+            passed = False
+            report = f"{report}\n{shape_problem}"
+
         last_report = report
         if verbose:
             print(f"    deneme {attempt}: {'GEÇTİ' if passed else 'takıldı'}")

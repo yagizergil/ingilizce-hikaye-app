@@ -123,7 +123,7 @@ def validate_book(
     #    içeremez; altındaysa parse kırık demektir. is_original=True İÇİN
     #    ATLANIR: bu taban (3000 kelime) EPUB tabanlı tam kitaplar/oyunlar
     #    için bir "parse kırık mı" sağlık kontrolü — orijinal, tek
-    #    oturumda üretilen bir A1/A2/B1 hikaye (bkz. Task 4 prompt'u,
+    #    oturumda üretilen bir seviyeli hikaye (bkz. Task 4 prompt'u,
     #    ~600-900 kelime/bölüm x birkaç bölüm) meşru şekilde 3000
     #    kelimenin altında olabilir; parse'ın kırıldığına dair bir sinyal
     #    değildir (markdown parse'ı zaten yapısal olarak basit/güvenilir,

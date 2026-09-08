@@ -6,7 +6,7 @@ Format:
     ---
     title: ...
     author: ...
-    target_level: A1 | A2 | B1
+    target_level: A1 | A2 | B1 | B2
     genres: [...]
     themes: [...]
     series: <slug>       # opsiyonel
@@ -37,7 +37,13 @@ import yaml
 
 from src.models import BookMeta, ExtractedBook, ParagraphData, SectionData
 
-_VALID_LEVELS = {"A1", "A2", "B1"}
+# B2 2026-09-08'de eklendi. Liste başlangıçta A1/A2/B1'di çünkü özgün
+# içerik o üç seviyeden ibaretti; B2 üretimi başlayınca burası TEK
+# tıkanma noktası oldu — profiler (CEFR_ORDER), validator (_CEFR_ORDER) ve
+# config/thresholds.yaml B2'yi zaten tanıyordu, frontmatter kapıda
+# reddediliyordu. Bu küme "hangi seviyeleri ÜRETİYORUZ" listesidir;
+# C1/C2 bilinçli olarak dışarıda: hedef kullanıcı A2-B2 (CLAUDE.md).
+_VALID_LEVELS = {"A1", "A2", "B1", "B2"}
 _FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?\n)---\s*\n?(.*)\Z", re.DOTALL)
 _H1_RE = re.compile(r"^#\s+(.+?)\s*$")
 
