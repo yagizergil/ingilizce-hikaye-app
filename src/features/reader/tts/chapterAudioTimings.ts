@@ -93,6 +93,39 @@ export function mapTimingsToPage(
 }
 
 /**
+ * Sayfanın çevrilmesi gereken an: sesin, bu sayfadan SONRAKİ ilk kelimeye
+ * ulaştığı zaman. Sonrasında kelime yoksa (bölümün son sayfası) null.
+ *
+ * NEDEN BÖYLE, "son kelime + sabit gecikme" DEĞİL: burası bir ara
+ * `sonKelime.time + 0.35` idi. O sabit, son kelimenin ne kadar sürdüğünü
+ * ve ondan sonraki duraklamayı bilmiyor — kısa bir kelimede geç, uzun bir
+ * cümle sonunda çok erken çeviriyordu. Erken çevirmek, kullanıcının
+ * gözünde vurgunun sesin önüne geçmesi demek.
+ *
+ * Bir sonraki kelimenin başlangıcı ise TAM olarak doğru an: ses o kelimeyi
+ * söylemeye başladığında o kelime zaten yeni sayfada duruyor.
+ *
+ * `timings` zaman sırasında (üretim sırası kelime sırası); ikili arama.
+ */
+export function pageTurnTimeAfter(timings: RawWordTiming[], lastWordTime: number): number | null {
+  let low = 0;
+  let high = timings.length - 1;
+  let answer: number | null = null;
+
+  while (low <= high) {
+    const mid = (low + high) >> 1;
+    if (timings[mid]!.t > lastWordTime) {
+      answer = timings[mid]!.t;
+      high = mid - 1;
+    } else {
+      low = mid + 1;
+    }
+  }
+
+  return answer;
+}
+
+/**
  * Verilen ana ait kelimenin listedeki sırası — ikili arama.
  *
  * NEDEN İKİLİ ARAMA: bu fonksiyon oynatma sırasında saniyede birkaç kez

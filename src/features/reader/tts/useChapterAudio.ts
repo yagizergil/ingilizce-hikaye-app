@@ -11,6 +11,7 @@ import { isAwaitingAutoStart, shouldAutoStart } from "@/features/reader/tts/auto
 import {
   findWordIndexAtTime,
   mapTimingsToPage,
+  pageTurnTimeAfter,
   type ChapterAudioTimings,
   type TimedWord,
 } from "@/features/reader/tts/chapterAudioTimings";
@@ -196,6 +197,8 @@ export function useChapterAudio({
 
   /** Görünen sayfaya ait kelimeler; sayfa değişince yeniden hesaplanıyor. */
   const pageWordsRef = useRef<TimedWord[]>([]);
+  /** Sayfanın çevrileceği an; bölümün son sayfasındaysak null. */
+  const pageTurnAtRef = useRef<number | null>(null);
   const lastKeyRef = useRef<string | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -209,7 +212,11 @@ export function useChapterAudio({
   const recomputePageWords = useCallback(() => {
     const segments = readerRef.current?.getCurrentPageSpeech() ?? [];
     const timings = timingsQuery.data?.words ?? [];
-    pageWordsRef.current = mapTimingsToPage(timings, segments, paragraphIndexById.current);
+    const words = mapTimingsToPage(timings, segments, paragraphIndexById.current);
+    pageWordsRef.current = words;
+
+    const last = words[words.length - 1];
+    pageTurnAtRef.current = last ? pageTurnTimeAfter(timings, last.time) : null;
   }, [readerRef, timingsQuery.data]);
 
   const clearTick = useCallback(() => {
@@ -256,13 +263,18 @@ export function useChapterAudio({
       }
     }
 
-    // Sayfanın son kelimesi geçildiyse sıradaki sayfaya geç. Ses bölümün
-    // tamamını kesintisiz çalıyor; ekranın ona yetişmesi gerekiyor.
-    const last = words[words.length - 1];
-    if (last && time > last.time + 0.35) {
+    // Ses bir sonraki sayfanın ilk kelimesine geldiyse sayfayı çevir. Ses
+    // bölümün tamamını kesintisiz çalıyor; ekranın ona yetişmesi gerekiyor.
+    // Eşik `pageTurnTimeAfter` ile hesaplanıyor — sabit bir gecikme değil,
+    // o kelimenin gerçek başlangıç zamanı.
+    const turnAt = pageTurnAtRef.current;
+    if (turnAt !== null && time >= turnAt) {
       const advanced = readerRef.current?.advancePage() ?? false;
       if (advanced) {
         recomputePageWords();
+      } else {
+        // Son sayfadayız; bir daha denemeyelim.
+        pageTurnAtRef.current = null;
       }
     }
 

@@ -94,6 +94,8 @@ SPEAKING_RATE = 0.92  # Dil ogrenen icin biraz yavas; 1.0 anadili hizi.
 # guvenlik payi birakiliyor.
 MAX_REQUEST_BYTES = 4500
 
+from src.mp3_duration import mp3_duration_seconds
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -389,11 +391,21 @@ def main() -> int:
                     )
 
                 audio.extend(response.audio_content)
+
                 # Parcalar arka arkaya birlestiriliyor; sonraki parcanin
-                # zamanlari bu parcanin suresi kadar oteleniyor. Sure
-                # dogrudan gelmedigi icin son isaretten turetiliyor.
-                if response.timepoints:
-                    offset_seconds += max(tp.time_seconds for tp in response.timepoints) + 0.4
+                # zamanlari bu parcanin TAM suresi kadar otelenmek zorunda.
+                #
+                # BURASI BIR ZAMANLAR TAHMINDI ve hata veriyordu: oteleme
+                # "son <mark>'in zamani + 0,4 sn" diye hesaplaniyordu. Son
+                # isaretten sonra o kelimenin soylenmesi ve sondaki sessizlik
+                # geliyor; ikisi birlikte genelde 0,4 saniyeden uzun. Fark
+                # her parca sinirinda tekrarlanip BIRIKIYORDU (bolum basina
+                # 5-6 parca), sonuc olarak vurgu sesin onune geciyordu.
+                #
+                # Uygulama birlestirilmis dosyayi caliyor ve konumu o
+                # dosyadan okuyor, dolayisiyla dogru oteleme baytlarin
+                # GERCEK suresi. Kare basliklarindan olculuyor.
+                offset_seconds += mp3_duration_seconds(response.audio_content)
                 time.sleep(0.05)  # nazik ol
 
             audio_url = upload(client, f"{slug}/{section['order_index']}.mp3", bytes(audio), "audio/mpeg")

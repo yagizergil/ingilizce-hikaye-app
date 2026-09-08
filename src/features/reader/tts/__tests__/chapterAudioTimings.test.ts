@@ -1,6 +1,7 @@
 import {
   findWordIndexAtTime,
   mapTimingsToPage,
+  pageTurnTimeAfter,
   type RawWordTiming,
   type TimedWord,
 } from "@/features/reader/tts/chapterAudioTimings";
@@ -141,5 +142,45 @@ describe("findWordIndexAtTime", () => {
 
   it("boş listede -1 döner", () => {
     expect(findWordIndexAtTime([], 5)).toBe(-1);
+  });
+});
+
+describe("pageTurnTimeAfter", () => {
+  const timings = [
+    { p: 0, s: 0, e: 3, t: 1.0 },
+    { p: 0, s: 4, e: 8, t: 1.5 },
+    { p: 0, s: 9, e: 13, t: 2.2 },
+    { p: 1, s: 0, e: 5, t: 3.4 },
+  ];
+
+  it("sayfanın son kelimesinden sonraki ilk kelimenin zamanını verir", () => {
+    // Sayfa 2.2'de biten kelimeyle kapanıyorsa, sayfa 3.4'te çevrilmeli:
+    // ses o anda zaten yeni sayfanın ilk kelimesini söylüyor.
+    expect(pageTurnTimeAfter(timings, 2.2)).toBe(3.4);
+  });
+
+  it("ortadaki bir kelimeden sonrasını da doğru bulur", () => {
+    expect(pageTurnTimeAfter(timings, 1.0)).toBe(1.5);
+  });
+
+  it("bölümün son kelimesinden sonra null döner", () => {
+    // Son sayfa: çevrilecek bir yer yok. null olmasaydı sürücü her
+    // tıkta boşuna `advancePage()` denerdi.
+    expect(pageTurnTimeAfter(timings, 3.4)).toBeNull();
+  });
+
+  it("boş listede null döner", () => {
+    expect(pageTurnTimeAfter([], 1.0)).toBeNull();
+  });
+
+  it("aynı zamana sahip kelimeleri atlar, kesinlikle SONRAKİNİ verir", () => {
+    // Eşit zamanlı iki kelime aynı sayfadaysa, eşiği onlardan birine
+    // koymak sayfayı anında çevirirdi.
+    const withTies = [
+      { p: 0, s: 0, e: 3, t: 5.0 },
+      { p: 0, s: 4, e: 7, t: 5.0 },
+      { p: 0, s: 8, e: 11, t: 6.1 },
+    ];
+    expect(pageTurnTimeAfter(withTies, 5.0)).toBe(6.1);
   });
 });
