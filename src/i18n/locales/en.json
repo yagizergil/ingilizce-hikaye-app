@@ -224,7 +224,9 @@
   "reader": {
     "header": {
       "back": "Back",
-      "settings": "Reading settings"
+      "settings": "Reading settings",
+      "playSpeech": "Read aloud",
+      "pauseSpeech": "Pause reading aloud"
     },
     "wordSheet": {
       "pronounce": "Pronounce",
@@ -277,7 +279,19 @@
       "margin": "Margin",
       "decreaseMargin": "Decrease margin",
       "increaseMargin": "Increase margin",
-      "highlights": "Highlight unknown words"
+      "highlights": "Highlight unknown words",
+      "speechRate": "Reading speed",
+      "speechRateOptions": {
+        "0.8": "Slow",
+        "1": "Normal",
+        "1.2": "Fast"
+      },
+      "voice": "Voice",
+      "voiceTier": {
+        "premium": "high quality",
+        "enhanced": "enhanced"
+      },
+      "voiceUpgradeHint": "For a more natural voice: Settings > Accessibility > Spoken Content > Voices > English, and download one. It's free and one-time; it appears here afterwards."
     },
     "chapterComplete": {
       "title": "Chapter complete",

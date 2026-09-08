@@ -224,7 +224,9 @@
   "reader": {
     "header": {
       "back": "Geri",
-      "settings": "Okuma ayarları"
+      "settings": "Okuma ayarları",
+      "playSpeech": "Sesli oku",
+      "pauseSpeech": "Sesli okumayı duraklat"
     },
     "wordSheet": {
       "pronounce": "Telaffuz et",
@@ -277,7 +279,19 @@
       "margin": "Kenar boşluğu",
       "decreaseMargin": "Kenar boşluğunu azalt",
       "increaseMargin": "Kenar boşluğunu artır",
-      "highlights": "Bilinmeyen kelimeleri vurgula"
+      "highlights": "Bilinmeyen kelimeleri vurgula",
+      "speechRate": "Sesli okuma hızı",
+      "speechRateOptions": {
+        "0.8": "Yavaş",
+        "1": "Normal",
+        "1.2": "Hızlı"
+      },
+      "voice": "Ses",
+      "voiceTier": {
+        "premium": "yüksek kalite",
+        "enhanced": "gelişmiş"
+      },
+      "voiceUpgradeHint": "Daha doğal bir ses için: Ayarlar > Erişilebilirlik > Sözlü İçerik > Sesler > İngilizce'den bir ses indir. Ücretsiz ve bir kerelik; indirdikten sonra burada görünür."
     },
     "chapterComplete": {
       "title": "Bölüm tamamlandı",

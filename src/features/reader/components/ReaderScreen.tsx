@@ -29,6 +29,8 @@ import { useReaderPosition } from "@/features/reader/hooks/useReaderPosition";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { ReaderHeader } from "@/features/reader/components/ReaderHeader";
+import { useReaderTts } from "@/features/reader/tts/useReaderTts";
+import { useTtsStore } from "@/features/reader/tts/useTtsStore";
 import { ReaderFooter } from "@/features/reader/components/ReaderFooter";
 import { PaginatedReaderView } from "@/features/reader/components/PaginatedReaderView";
 import { WordSheet } from "@/features/reader/components/WordSheet";
@@ -40,6 +42,7 @@ import type {
   PaginatedPageChangePayload,
   PaginatedPagesReadyPayload,
 } from "@/features/reader/components/PaginatedReaderView";
+import type { PaginatedReaderHandle } from "@/features/reader/components/PaginatedReaderView";
 import type { ReaderWordTapPayload } from "@/features/reader/types";
 import type { WordSheetWord } from "@/features/reader/components/WordSheet";
 import type { SentenceSheetSentence } from "@/features/reader/components/SentenceSheet";
@@ -120,6 +123,25 @@ export function ReaderScreen({
 
   const [pageProgress, setPageProgress] = useState({ page: 0, totalPages: 1 });
   const [chapterEnded, setChapterEnded] = useState(false);
+
+  /**
+   * Sesli okuma. Sayfalama ve ölçülen kap boyutu `PaginatedReaderView`'ın
+   * içinde yaşadığı için okuma-konuşma köprüsü bir ref üzerinden kuruluyor
+   * (bkz. `PaginatedReaderHandle`).
+   */
+  const readerRef = useRef<PaginatedReaderHandle | null>(null);
+  const isSpeaking = useTtsStore((state) => state.status === "speaking");
+  const tts = useReaderTts({
+    readerRef,
+    chapterId: chapter?.id,
+    bookId: chapter?.bookId,
+    rate: settings.speechRate,
+    voiceId: settings.speechVoiceId,
+  });
+  // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
+  // `stop` konumu sıfırlıyor, yani kullanıcı sözlüğe bakıp geri döndüğünde
+  // seslendirme sayfanın başından başlıyordu.
+  const pauseSpeech = tts.pause;
 
   /**
    * Bölümü BİTİRMEDEN çıkanları ölçmek için son durumun anlık kopyası.
@@ -209,28 +231,38 @@ export function ReaderScreen({
     settings.highlightsEnabled,
   ]);
 
-  const handleWordTap = useCallback((payload: ReaderWordTapPayload) => {
-    // `reader_word_tap_latency` used to measure the WebView postMessage
-    // round-trip (`payload.tapMs`, a WebView `performance.now()` timestamp,
-    // vs. the RN-side receipt time) -- a real, meaningful gap of several
-    // milliseconds. With native pagination, `onWordTap` fires synchronously
-    // in the same JS call stack as the tap handler (see ReaderPage.tsx):
-    // there is no round-trip left to measure, and the two timestamps would
-    // always collapse to ~0ms (worse, `payload.tapMs` here is `Date.now()`
-    // wall-clock while the receipt side used `performance.now()`'s
-    // monotonic clock -- mismatched clocks that were never truly
-    // comparable). Rather than keep emitting a metric that measures nothing
-    // real, this instrumentation is intentionally dropped for the native
-    // path.
-    setActiveWord({
-      surface: payload.surface,
-      lemma: payload.lemma,
-      sentenceText: payload.sentenceText,
-      paragraphId: payload.paragraphId ?? "",
-      sentenceCharOffset: payload.sentenceCharOffset,
-    });
-    wordSheetRef.current?.present();
-  }, []);
+  const handleWordTap = useCallback(
+    (payload: ReaderWordTapPayload) => {
+      // `reader_word_tap_latency` used to measure the WebView postMessage
+      // round-trip (`payload.tapMs`, a WebView `performance.now()` timestamp,
+      // vs. the RN-side receipt time) -- a real, meaningful gap of several
+      // milliseconds. With native pagination, `onWordTap` fires synchronously
+      // in the same JS call stack as the tap handler (see ReaderPage.tsx):
+      // there is no round-trip left to measure, and the two timestamps would
+      // always collapse to ~0ms (worse, `payload.tapMs` here is `Date.now()`
+      // wall-clock while the receipt side used `performance.now()`'s
+      // monotonic clock -- mismatched clocks that were never truly
+      // comparable). Rather than keep emitting a metric that measures nothing
+      // real, this instrumentation is intentionally dropped for the native
+      // path.
+      // Sesli okumayı DURAKLAT (durdurma değil). İki sebep: (1) WordSheet'in
+      // telaffuz düğmesi aynı `expo-speech` motorunu kullanıyor, iki konuşma
+      // çakışırdı; (2) kullanıcı bir kelimeye baktığında metin akmaya devam
+      // etmemeli. Konum korunuyor, sözlükten dönünce kalınan yerden devam
+      // ediyor.
+      pauseSpeech();
+
+      setActiveWord({
+        surface: payload.surface,
+        lemma: payload.lemma,
+        sentenceText: payload.sentenceText,
+        paragraphId: payload.paragraphId ?? "",
+        sentenceCharOffset: payload.sentenceCharOffset,
+      });
+      wordSheetRef.current?.present();
+    },
+    [pauseSpeech],
+  );
 
   const handleSentenceLongPress = useCallback(
     (payload: { sentenceText: string; paragraphId: string }) => {
@@ -469,10 +501,13 @@ export function ReaderScreen({
         title={chapter.title ?? ""}
         onBack={onBack}
         onOpenSettings={() => settingsSheetRef.current?.present()}
+        onToggleSpeech={tts.toggle}
+        isSpeaking={isSpeaking}
       />
 
       <View style={styles.readerWrap}>
         <PaginatedReaderView
+          ref={readerRef}
           chapter={chapter}
           settings={{
             fontScale: settings.fontScale,

@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Pressable } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { Ionicons } from "@expo/vector-icons";
+
 import { spacing, monoType } from "@/theme";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 
@@ -10,12 +12,22 @@ interface ReaderHeaderProps {
   title: string;
   onBack: () => void;
   onOpenSettings: () => void;
+  /** Sesli okumayı başlatır/duraklatır. */
+  onToggleSpeech: () => void;
+  /** Şu an konuşuluyor mu — düğmenin ikonu ve etiketi buna göre. */
+  isSpeaking: boolean;
 }
 
 /** Top chrome: back button, chapter title, settings button — no progress
  * bar (moved to a plain percentage readout in `ReaderFooter`, per product
  * owner request). */
-export function ReaderHeader({ title, onBack, onOpenSettings }: ReaderHeaderProps) {
+export function ReaderHeader({
+  title,
+  onBack,
+  onOpenSettings,
+  onToggleSpeech,
+  isSpeaking,
+}: ReaderHeaderProps) {
   const { t } = useTranslation();
   const readerColors = useReaderThemeColors();
   const insets = useSafeAreaInsets();
@@ -38,9 +50,33 @@ export function ReaderHeader({ title, onBack, onOpenSettings }: ReaderHeaderProp
           <Text style={[monoType.rowText, { color: readerColors.text }]}>‹</Text>
         </Pressable>
 
-        <Text numberOfLines={1} style={[monoType.rowText, styles.title, { color: readerColors.text }]}>
+        <Text
+          numberOfLines={1}
+          style={[monoType.rowText, styles.title, { color: readerColors.text }]}
+        >
           {title}
         </Text>
+
+        {/*
+          Sesli okuma düğmesi. Okuma yüzeyinin bir KONTROLÜ — ürün ilkesi #1
+          reader içinde promosyonu yasaklıyor, okuma araçlarını değil.
+        */}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ selected: isSpeaking }}
+          accessibilityLabel={t(
+            isSpeaking ? "reader.header.pauseSpeech" : "reader.header.playSpeech",
+          )}
+          onPress={onToggleSpeech}
+          style={styles.iconButton}
+          hitSlop={8}
+        >
+          <Ionicons
+            name={isSpeaking ? "pause" : "volume-medium-outline"}
+            size={20}
+            color={readerColors.text}
+          />
+        </Pressable>
 
         <Pressable
           accessibilityRole="button"

@@ -13,6 +13,13 @@ import type { ReaderSettings } from "@/features/reader/types";
 // rather than guessing one in now.
 const DEFAULT_PAGE_TRANSITION_MS = 280;
 
+/**
+ * Seçilebilir konuşma hızları. Serbest bir kaydırıcı yerine üç adım:
+ * öğrenci "hangi hız doğru" sorusuyla uğraşmasın, üçünü deneyip birini
+ * seçsin. 0.8 varsayılan — normal hız (1.0) A2/B1 okuru için hızlı.
+ */
+export const speechRateOptions = [0.8, 1, 1.2] as const;
+
 const defaultSettings: ReaderSettings = {
   fontScale: readerFontScale.default,
   lineHeightScale: readerLineHeightScale.default,
@@ -20,6 +27,8 @@ const defaultSettings: ReaderSettings = {
   marginScale: 1,
   pageTransitionMs: DEFAULT_PAGE_TRANSITION_MS,
   highlightsEnabled: true,
+  speechRate: 0.8,
+  speechVoiceId: null,
 };
 
 interface ReaderSettingsState extends ReaderSettings {
@@ -29,6 +38,8 @@ interface ReaderSettingsState extends ReaderSettings {
   setFontFamily: (value: ReaderSettings["fontFamily"]) => void;
   setMarginScale: (value: number) => void;
   toggleHighlights: () => void;
+  setSpeechRate: (value: number) => void;
+  setSpeechVoiceId: (value: string | null) => void;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -62,6 +73,8 @@ export const useReaderSettings = create<ReaderSettingsState>()(
       setFontFamily: (fontFamily) => set({ fontFamily }),
       setMarginScale: (value) => set({ marginScale: clamp(value, 0.5, 1.5) }),
       toggleHighlights: () => set((state) => ({ highlightsEnabled: !state.highlightsEnabled })),
+      setSpeechRate: (value) => set({ speechRate: clamp(value, 0.5, 2) }),
+      setSpeechVoiceId: (speechVoiceId) => set({ speechVoiceId }),
     }),
     {
       name: "reader.settings",

@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useMemo } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 
 import { BottomSheetModal, BottomSheetView, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
@@ -7,10 +7,12 @@ import { useTranslation } from "react-i18next";
 import { spacing, radius, monoType } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
-import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
+import { speechRateOptions, useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
+import { getVoiceCatalog, hasHighQualityVoice } from "@/features/reader/tts/voiceCatalog";
 
 import type { ThemePreference } from "@/theme/useTheme";
 import type { ReaderFontFamily } from "@/features/reader/types";
+import type { CatalogVoice } from "@/features/reader/tts/voiceCatalog";
 
 const MARGIN_SCALE_STEP = 0.1;
 
@@ -47,7 +49,9 @@ function OptionChip<T extends string>({
         isActive ? { backgroundColor: activeColor } : undefined,
       ]}
     >
-      <Text style={[monoType.rowText, styles.chipText, { color: isActive ? onAccentColor : textColor }]}>
+      <Text
+        style={[monoType.rowText, styles.chipText, { color: isActive ? onAccentColor : textColor }]}
+      >
         {label}
       </Text>
     </Pressable>
@@ -59,7 +63,8 @@ export const ReaderSettingsSheet = forwardRef<BottomSheetModal>(
     const { t } = useTranslation();
     const readerColors = useReaderThemeColors();
     const { theme, preference, setPreference } = useTheme();
-    const snapPoints = useMemo(() => ["55%"], []);
+    // Sesli okuma hızı bölümü eklendiğinde 55% içerik kesiliyordu.
+    const snapPoints = useMemo(() => ["65%"], []);
 
     const fontScale = useReaderSettings((state) => state.fontScale);
     const increaseFontScale = useReaderSettings((state) => state.increaseFontScale);
@@ -70,6 +75,23 @@ export const ReaderSettingsSheet = forwardRef<BottomSheetModal>(
     const setMarginScale = useReaderSettings((state) => state.setMarginScale);
     const highlightsEnabled = useReaderSettings((state) => state.highlightsEnabled);
     const toggleHighlights = useReaderSettings((state) => state.toggleHighlights);
+    const speechRate = useReaderSettings((state) => state.speechRate);
+    const setSpeechRate = useReaderSettings((state) => state.setSpeechRate);
+    const speechVoiceId = useReaderSettings((state) => state.speechVoiceId);
+    const setSpeechVoiceId = useReaderSettings((state) => state.setSpeechVoiceId);
+
+    // Cihazdaki sesler oturum başına bir kez sorgulanıyor; sonuç
+    // `voiceCatalog` içinde önbellekli, buradaki state yalnızca render için.
+    const [voices, setVoices] = useState<CatalogVoice[]>([]);
+    useEffect(() => {
+      let active = true;
+      void getVoiceCatalog().then((catalog) => {
+        if (active) setVoices(catalog);
+      });
+      return () => {
+        active = false;
+      };
+    }, []);
 
     const decreaseMarginScale = useCallback(
       () => setMarginScale(Math.round((marginScale - MARGIN_SCALE_STEP) * 100) / 100),
@@ -102,6 +124,14 @@ export const ReaderSettingsSheet = forwardRef<BottomSheetModal>(
     // `sepia` ve `system` tema TANIMLARI duruyor (useTheme hâlâ ilk
     // açılışta cihaz temasını izliyor); yalnızca bu seçiciden kaldırıldı.
     const themes: ThemePreference[] = ["light", "dark"];
+
+    // OptionChip string değerlerle çalışıyor; hız sayısal olduğu için
+    // seçim string üzerinden yapılıp geri sayıya çevriliyor.
+    const speechRateValue = String(speechRate);
+    const handleSelectSpeechRate = useCallback(
+      (value: string) => setSpeechRate(Number(value)),
+      [setSpeechRate],
+    );
 
     return (
       <BottomSheetModal
@@ -200,6 +230,69 @@ export const ReaderSettingsSheet = forwardRef<BottomSheetModal>(
             </Pressable>
           </View>
 
+          {voices.length > 0 ? (
+            <>
+              <Text
+                style={[monoType.label, styles.sectionLabel, { color: readerColors.textMuted }]}
+              >
+                {t("reader.settings.voice")}
+              </Text>
+              <View style={styles.chipRow}>
+                {voices.map((voice) => (
+                  <OptionChip
+                    key={voice.identifier}
+                    value={voice.identifier}
+                    current={speechVoiceId ?? voices[0]?.identifier ?? ""}
+                    onSelect={setSpeechVoiceId}
+                    label={
+                      voice.tier === "standard"
+                        ? voice.name
+                        : `${voice.name} · ${t(`reader.settings.voiceTier.${voice.tier}`)}`
+                    }
+                    activeColor={theme.accent}
+                    onAccentColor={theme.text.onAccent}
+                    borderColor={readerColors.border}
+                    textColor={readerColors.text}
+                  />
+                ))}
+              </View>
+
+              {/*
+                iOS'ta gelişmiş/premium sesler VARSAYILAN OLARAK KURULU
+                DEĞİL — kullanıcı indirmediyse geriye yalnızca robotik
+                "compact" ses kalıyor. Uygulamanın ses kalitesini
+                artırabileceği en büyük kaldıraç bu indirmeyi söylemek;
+                bunun dışında yapabileceği bir şey yok.
+              */}
+              {!hasHighQualityVoice(voices) ? (
+                <Text
+                  style={[monoType.metaTight, styles.voiceHint, { color: readerColors.textMuted }]}
+                >
+                  {t("reader.settings.voiceUpgradeHint")}
+                </Text>
+              ) : null}
+            </>
+          ) : null}
+
+          <Text style={[monoType.label, styles.sectionLabel, { color: readerColors.textMuted }]}>
+            {t("reader.settings.speechRate")}
+          </Text>
+          <View style={styles.chipRow}>
+            {speechRateOptions.map((value) => (
+              <OptionChip
+                key={value}
+                value={String(value)}
+                current={speechRateValue}
+                onSelect={handleSelectSpeechRate}
+                label={t(`reader.settings.speechRateOptions.${String(value)}`)}
+                activeColor={theme.accent}
+                onAccentColor={theme.text.onAccent}
+                borderColor={readerColors.border}
+                textColor={readerColors.text}
+              />
+            ))}
+          </View>
+
           <Pressable
             accessibilityRole="switch"
             accessibilityState={{ checked: highlightsEnabled }}
@@ -256,6 +349,10 @@ const styles = StyleSheet.create({
   fontScaleValue: {
     minWidth: 48,
     textAlign: "center",
+  },
+  voiceHint: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xs,
   },
   chipRow: {
     flexDirection: "row",

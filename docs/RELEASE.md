@@ -43,10 +43,10 @@ npx supabase db push
 
 Uygulanacak iki yeni migration:
 
-| Migration | Ne yapıyor |
-|---|---|
+| Migration                 | Ne yapıyor                                                                                                                                                                                                           |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `028_entitlement_webhook` | `user_entitlements`'a denetim/idempotans alanları (`product_id`, `store`, `rc_event_id`, `rc_event_ms`, `is_trial`) ve `apply_entitlement_event()` fonksiyonu. RLS'ye DOKUNMUYOR — yazma yolu yalnızca service_role. |
-| `029_ai_tier_limits` | AI cümle çevirisi kotasını katmana bağlar: ücretsiz 10/gün, premium 200/gün. Öncesinde herkes için 30'du. `my_ai_sentence_quota()` ile istemci de kotayı okuyabiliyor. |
+| `029_ai_tier_limits`      | AI cümle çevirisi kotasını katmana bağlar: ücretsiz 10/gün, premium 200/gün. Öncesinde herkes için 30'du. `my_ai_sentence_quota()` ile istemci de kotayı okuyabiliyor.                                               |
 
 > **029 canlı davranışı değiştiriyor:** ücretsiz kullanıcının günlük AI
 > çeviri hakkı 30'dan 10'a iniyor. Bu bilinçli — paywall "AI destekli
@@ -157,10 +157,10 @@ Kodda hiçbir fiyat gömülü DEĞİL — hepsi RevenueCat "offerings"ten geliyo
 
 **App Store Connect'te oluşturulacak abonelikler:**
 
-| Ürün | Fiyat | Not |
-|---|---|---|
-| Aylık | ₺79,99 | Pahalı çapa; ana ürün değil |
-| Yıllık | ₺399,99 | Ana ürün, %58 indirim |
+| Ürün   | Fiyat                    | Not                                            |
+| ------ | ------------------------ | ---------------------------------------------- |
+| Aylık  | ₺79,99                   | Pahalı çapa; ana ürün değil                    |
+| Yıllık | ₺399,99                  | Ana ürün, %58 indirim                          |
 | Deneme | 7 gün, yalnızca yıllıkta | Paywall'ın birincil eylemi buna göre değişiyor |
 
 **RevenueCat panosunda:**
@@ -181,7 +181,30 @@ Kodda hiçbir fiyat gömülü DEĞİL — hepsi RevenueCat "offerings"ten geliyo
 kontrol et. Apple komisyonu ve TR Dijital Hizmet Vergisi sonrası net gelir
 orada kesin görünüyor; araştırma bu rakamı doğrulayamadı.
 
-## B3. Ekran görüntüleri
+## B3. Kitap kapakları (Higgsfield kredisi)
+
+63 özgün kitabın hepsinde artık uygulamanın kendi tasarım diliyle üretilmiş
+**tipografik kapak** var (krem zemin, terracotta vurgu, Fraunces başlık).
+Önceki kapaklar rastgele renkli bir dikdörtgen üzerinde başlığın ilk
+harfiydi.
+
+Yapay zekâ ile üretilmiş illüstrasyonlu kapaklar denendi ve sonuç iyi —
+ama **Higgsfield kredisi bitti** (bakiye: 0,75, starter plan). 12 istekten
+yalnızca 2'si geçti; o ikisi uygulandı
+(`two-names-on-the-lease`, `the-cat-that-belonged-to-everyone`).
+
+Kredi yüklendikten sonra kalanlar için: bana söyle, aynı palet ve
+prompt şablonuyla üretip yüklerim. Elle yapmak istersen tek kitaba görsel
+uygulama komutu:
+
+```bash
+cd pipeline && .venv/Scripts/python.exe scripts/refresh_covers.py --slug <slug> --image <dosya.png>
+```
+
+> **Not:** Supabase Storage CDN kapakları bir süre önbellekte tutuyor.
+> Yeni kapak hemen görünmezse bu yüzden; birkaç dakika içinde geçiyor.
+
+## B4. Ekran görüntüleri
 
 Hâlâ yok. App Store en az 3, tercihen 6 istiyor. Önerilen sıra
 `docs/aso/05-store-metinleri.md` içinde.
@@ -190,12 +213,13 @@ En kritik olan birincisi: reader'da bir kelimeye dokunulmuş ve Türkçe
 karşılığı açılmış hâli. Ürünün tamamı o tek ekranda anlatılıyor.
 
 Denetimden sonra çekilmeye değer iki yeni ekran daha var:
+
 - **Kitap bitirme kutlaması** (`/book-finished`) — kaydedilen kelime ve
   okuma süresiyle birlikte.
 - **Paywall** — yıllık plan seçili, %58 tasarruf rozeti ve deneme CTA'sı
   görünürken.
 
-## B4. Apple Search Ads hesabı
+## B5. Apple Search Ads hesabı
 
 Anahtar kelime seçimi (`docs/aso/02-anahtar-kelimeler.md`) sonuç sayısı ve
 rakip yoğunluğuna dayanıyor, **gerçek arama hacmine değil**. Gerçek hacim
@@ -218,17 +242,17 @@ yalnızca Apple Search Ads hesabıyla görülebiliyor.
 
 ## Denetimde kapatılan işler (referans)
 
-| İş | Durum |
-|---|---|
-| Yetki yazma zinciri (webhook + migration 028) | Kod hazır, dağıtım bekliyor |
-| Paywall yasal bloğu (Guideline 3.1.2(a)) | Yazıldı |
-| Paywall plan seçici, tasarruf rozeti, deneme CTA'sı | Yazıldı, 13 birim testi |
-| Var olmayan fayda maddeleri | Kaldırıldı; AI maddesi kotayla gerçek yapıldı |
-| AI kotasının katmana bağlanması (migration 029) | Kod hazır, dağıtım bekliyor |
-| Yerel hatırlatma bildirimleri | Yazıldı, 14 birim testi |
-| Uygulama içi puan isteme | Yazıldı (ikinci kitap bitişinde) |
-| Kitap bitirme ekranı + 3. paywall tetikleyicisi | Yazıldı |
-| Ana ekranda seri göstergesi | Yazıldı |
-| Kelime defteri şerit eşiği %80 → %60 | Yapıldı |
-| B1 içerik boşluğu | Prompt + üretim betiği yazıldı, hikâyeler üretiliyor |
-| Bayat test | Düzeltildi |
+| İş                                                  | Durum                                                |
+| --------------------------------------------------- | ---------------------------------------------------- |
+| Yetki yazma zinciri (webhook + migration 028)       | Kod hazır, dağıtım bekliyor                          |
+| Paywall yasal bloğu (Guideline 3.1.2(a))            | Yazıldı                                              |
+| Paywall plan seçici, tasarruf rozeti, deneme CTA'sı | Yazıldı, 13 birim testi                              |
+| Var olmayan fayda maddeleri                         | Kaldırıldı; AI maddesi kotayla gerçek yapıldı        |
+| AI kotasının katmana bağlanması (migration 029)     | Kod hazır, dağıtım bekliyor                          |
+| Yerel hatırlatma bildirimleri                       | Yazıldı, 14 birim testi                              |
+| Uygulama içi puan isteme                            | Yazıldı (ikinci kitap bitişinde)                     |
+| Kitap bitirme ekranı + 3. paywall tetikleyicisi     | Yazıldı                                              |
+| Ana ekranda seri göstergesi                         | Yazıldı                                              |
+| Kelime defteri şerit eşiği %80 → %60                | Yapıldı                                              |
+| B1 içerik boşluğu                                   | Prompt + üretim betiği yazıldı, hikâyeler üretiliyor |
+| Bayat test                                          | Düzeltildi                                           |

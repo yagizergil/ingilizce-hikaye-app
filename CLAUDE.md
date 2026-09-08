@@ -15,10 +15,12 @@ metinler. Gelir premium abonelikten geliyor.
 sınırsız kelime defteri, sınırsız aralıklı tekrar (SRS), yüksek AI cümle
 çevirisi kotası, ayrıntılı öğrenme istatistikleri.
 
-**Planlanan ama HENÜZ YOK:** sesli okuma (TTS). Bir dönem paywall'da
-satılıyordu ama özellik yazılmamıştı; denetimde kaldırıldı. Kural: bir
-fayda önce üründe çalışır, sonra paywall'a yazılır — tersi yanıltıcı
-metadatadır (App Store Guideline 2.3.1).
+**Sesli okuma ÜCRETSİZ** (bkz. ADR-011). Cihaz üstünde çalıştığı için
+marjinal maliyeti sıfır; ücretli yapmak yapay bir kısıt olurdu ve ilke
+#2'ye aykırı olurdu. Paywall'a yazılmaz.
+
+Kural (denetimden kalan): bir fayda önce üründe çalışır, sonra paywall'a
+yazılır — tersi yanıltıcı metadatadır (App Store Guideline 2.3.1).
 
 ### Hedef Kullanıcı
 
@@ -272,6 +274,44 @@ açılışta DEĞİL. iOS izin diyaloğu kullanıcı başına bir kez gösterile
 uygulamayı ilk açan kullanıcıya sormak o tek şansı harcamaktır. Varsayılan
 kapalı.
 
+### ADR-011: Sesli okuma cihaz üstünde, ses dosyası YOK
+
+**Karar:** Bölüm seslendirmesi ve kelime kelime vurgu, cihazın kendi
+konuşma motoruyla yapılıyor (`expo-speech`). Önceden üretilmiş ses dosyası,
+bulut TTS API'si ve zorlamalı hizalama (forced alignment) YOK.
+
+**Nasıl çalışıyor:** Ekranda duran her paragraf parçası ayrı bir konuşma
+birimi olarak okunuyor; platform okumak üzere olduğu kelimenin karakter
+konumunu bildiriyor (iOS `willSpeakRangeOfSpeechString`, Android
+`onRangeStart` — ikisi de `expo-speech`'in `onBoundary`'sine bağlı) ve o
+konum `tts/ttsPlan.ts` ile ekrandaki token'a çevriliyor.
+
+**Gerekçe — değerlendirilen alternatifler:**
+
+1. **Bulut TTS + zaman işaretleri** (Google Cloud TTS `<mark>` +
+   `TIMEPOINT_TYPE_SSML_MARK`). Ses kalitesi en iyisi ve kelime
+   zamanlaması kusursuz. Ama: faturalandırma hesabı, kota takibi, ~180 MB
+   ses dosyası, Supabase depolama ve çıkış bant genişliği, ve yalnızca ÖNCEDEN
+   ÜRETTİĞİMİZ kitapları kapsıyor — 46 klasik dışarıda kalırdı.
+2. **Yerel nöral TTS (Piper/Coqui) + zorlamalı hizalama (aeneas/WhisperX).**
+   Tamamen ücretsiz ve kaliteli, ama pipeline'a iki yeni ağır bağımlılık,
+   depolama/bant genişliği sorunu aynen duruyor ve yine yalnızca kendi
+   içeriğimizi kapsıyor.
+3. **Cihaz üstü TTS (seçilen).** Kalite bulut nöral seslerin altında ama
+   iOS'un gelişmiş (Enhanced) sesleri gerçekten iyi ve kullanıcı Ayarlar'dan
+   indirebiliyor. Buna karşılık: sıfır maliyet, sıfır depolama, sıfır bant
+   genişliği, çevrimdışı çalışıyor (uygulamanın offline bölüm önbelleğiyle
+   tutarlı) ve **her kitabı** kapsıyor — klasikler dâhil. Kelime sınırları
+   işletim sisteminden bedava geliyor, hizalamaya hiç gerek yok.
+
+Ürünün ihtiyacı "stüdyo kalitesinde sesli kitap" değil, "okurken takip
+edebilmek". Üçüncü seçenek bunu karşılıyor ve "basitlik önce gelir"
+ilkesiyle tek uyumlu olan o.
+
+**Bilinen sınır:** Arka planda çalmıyor. Bunun için `UIBackgroundModes:
+audio` ve bir kilit ekranı oynatma arayüzü gerekiyor; bu sürümde bilerek
+yok, uygulama arka plana alınınca ses susuyor.
+
 ## Kod Konvansiyonları
 
 **Dosya adlandırma**
@@ -370,11 +410,12 @@ kapalı.
 
 **Çalışan:** Expo SDK 57 üzerinde tam bir okuma + öğrenme + gelir döngüsü.
 
-- **İçerik:** 85 yayında kitap. 46 klasik (kamu malı) + 39 özgün A1/A2
-  hikâye. Ayrıca özgün **B1** hikâyeler üretiliyor (bkz. aşağıdaki içerik
-  notu). 26.071 kelimelik İngilizce-Türkçe sözlük (%100 çevirili).
+- **İçerik:** 109 yayında kitap. 46 klasik (kamu malı) + 63 özgün seviyeli
+  hikâye (4 A1, 35 A2, 24 B1). B1 boşluğu 2026-09-08'de kapatıldı.
+  26.000+ kelimelik İngilizce-Türkçe sözlük (%100 çevirili).
 - **Okuma:** native sayfalanan reader, kelime tıklama → Türkçe karşılık,
-  cümle uzun-basma → AI çevirisi, offline bölüm önbelleği (SQLite).
+  cümle uzun-basma → AI çevirisi, offline bölüm önbelleği (SQLite),
+  kelime kelime vurgulu sesli okuma (ADR-011).
 - **Öğrenme:** kelime kaydetme, SM-2 aralıklı tekrar motoru ve tekrar
   ekranı, 36 kelimelik seviye tespiti testi ve onboarding akışı.
 - **Gelir:** RevenueCat entegrasyonu; yetkiyi yalnızca webhook yazıyor
@@ -422,6 +463,19 @@ uzunluğunda hem tavan hem TABAN) + `pipeline/scripts/generate_stories.py`
 (kapalı döngü üretim: üret → pipeline'ın kendi STRICT doğrulayıcısından
 geçir → geçemezse gerekçelerle yeniden yazdır).
 
+**Sonuç (2026-09-08):** 24 özgün B1 hikâyesi üretildi ve yayınlandı,
+ortalama 2.811 kelime (~20 dk). Basamak artık sürekli: A1 3 dk → A2 8 dk →
+**B1 20 dk** → B1/B2 klasikler.
+
+**Yayınlarken çıkan ve düzeltilen tuzak:** `publish` seviyeyi metinden
+ÇIKARIYORDU (`inferred_level`) ve kontrollü kelime dağarcığıyla yazılmış
+metinlerde bu çıkarım sistematik olarak aşağı sapıyor — 24 B1 hikâyesinin
+tamamı A2, A2 hikâyelerinin 5'i A1 olarak etiketlenmişti. Uygulama kütüphane
+sekmelerini `cefr_level` ile filtrelediği için B1 hikâyeleri A2 rafında
+görünüyordu, yani doldurmak için yazıldıkları boşluk yerinde duruyordu.
+Artık özgün içerikte seviye = `target_level`; çıkarım yalnızca seviyesi
+bilinmeyen klasikler için (gerekçe `pipeline/src/publish.py` içinde).
+
 Betik `stories/` altına yazıyor, veritabanına DOKUNMUYOR. Yayınlama ayrı ve
 bilinçli bir adım:
 
@@ -440,9 +494,5 @@ cd pipeline
 - `.npmrc` içinde `legacy-peer-deps=true` — react-i18next@15 TS 6 peer'ini
   kabul etmiyor. react-i18next@17'ye geçmek i18next 23→26 sıçraması demek.
 - Sözlükte `cefr_level` %27 dolu, `ipa`/`audio_url`/`frequency_rank` boş.
-- **Sesli okuma (TTS) yok.** Paywall bir zamanlar onu premium faydası
-  olarak satıyordu; denetimde kaldırıldı çünkü özellik yazılmamıştı
-  (`expo-speech` yalnızca tek kelime telaffuzu için ve o ücretsiz). Geri
-  eklenecekse önce özellik yazılmalı, sonra paywall'a konmalı.
 - Android'de premium çalışmaz: `configurePurchases()` yalnızca iOS
   anahtarını okuyor. iOS-önce lansman için sorun değil.

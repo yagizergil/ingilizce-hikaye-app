@@ -9,12 +9,17 @@ import * as Speech from "expo-speech";
 import { spacing, monoType, readingType, type, tabBarIconSize } from "@/theme";
 import { Button, LevelBadge } from "@/components/ui";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
+import { getVoiceIdentifier } from "@/features/reader/tts/englishVoice";
+import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
 import { useGlobalLemmaLookup } from "@/features/reader/api/useGlobalLemmaLookup";
 import { useLiveWordTranslation } from "@/features/reader/api/useLiveWordTranslation";
 import { useSentenceTranslationQuery } from "@/features/reader/api/useSentenceTranslationQuery";
 import { inflectionHint, lemmaCandidates } from "@/features/reader/text/tokenizer";
 
-import type { BookLemmaDictionary, BookLemmaEntry } from "@/features/reader/api/useBookLemmaDictionary";
+import type {
+  BookLemmaDictionary,
+  BookLemmaEntry,
+} from "@/features/reader/api/useBookLemmaDictionary";
 import type { LemmaState } from "@/features/reader/api/useSavedWordsQuery";
 
 export interface WordSheetWord {
@@ -93,41 +98,13 @@ function buildSentenceSegments(
   return segments;
 }
 
-/**
- * `Speech.getAvailableVoicesAsync()` is a real device query -- looking it up
- * fresh on every pronounce tap would be wasteful. Memoized at module scope
- * (once per app session) rather than per-component-mount, since the result
- * (which enhanced-quality English voice, if any, exists on this device)
- * never changes within a session.
- */
-let enhancedEnglishVoicePromise: Promise<Speech.Voice | null> | null = null;
-
-function getEnhancedEnglishVoice(): Promise<Speech.Voice | null> {
-  if (!enhancedEnglishVoicePromise) {
-    enhancedEnglishVoicePromise = Speech.getAvailableVoicesAsync()
-      .then(
-        (voices) =>
-          voices.find(
-            (voice) => voice.language.startsWith("en") && voice.quality === Speech.VoiceQuality.Enhanced,
-          ) ?? null,
-      )
-      .catch(() => {
-        // No enhanced voice available/queryable on this device -- a normal,
-        // expected outcome (not every device ships enhanced voices), so we
-        // fall through to Speech.speak's own default voice rather than
-        // treating this as an error.
-        return null;
-      });
-  }
-  return enhancedEnglishVoicePromise;
-}
-
 export const WordSheet = forwardRef<BottomSheetModal, WordSheetProps>(function WordSheet(
   { word, lemmaDictionary, lemmaState, onSave, onUnsave, onMarkKnown, onUnmarkKnown, onDismiss },
   ref,
 ) {
   const { t } = useTranslation();
   const readerColors = useReaderThemeColors();
+  const speechVoiceId = useReaderSettings((state) => state.speechVoiceId);
   const snapPoints = useMemo(() => ["55%"], []);
 
   // Kitap sözlüğünde ARANACAK ADAYLAR (bkz. tokenizer.js
@@ -233,20 +210,26 @@ export const WordSheet = forwardRef<BottomSheetModal, WordSheetProps>(function W
 
   const renderBackdrop = useCallback(
     (props: React.ComponentProps<typeof BottomSheetBackdrop>) => (
-      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} pressBehavior="close" />
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        pressBehavior="close"
+      />
     ),
     [],
   );
 
   const handlePronounce = useCallback(() => {
     if (!word) return;
-    void getEnhancedEnglishVoice().then((voice) => {
+    // Sesli okumayla AYNI sesi kullanıyor: kullanıcının seçimi tek yerde.
+    void getVoiceIdentifier(speechVoiceId).then((voice) => {
       Speech.speak(word.surface, {
         language: "en-US",
-        ...(voice ? { voice: voice.identifier } : {}),
+        ...(voice ? { voice } : {}),
       });
     });
-  }, [word]);
+  }, [speechVoiceId, word]);
 
   // Stop any in-flight speech whenever the sheet closes -- either via the
   // user dismissing it (onDismiss) or the component unmounting outright
@@ -301,9 +284,15 @@ export const WordSheet = forwardRef<BottomSheetModal, WordSheetProps>(function W
 
             {entry?.ipa ? (
               <View style={styles.pronounceRow}>
-                <Text style={[monoType.wordGlossMono, { color: readerColors.textMuted }]}>{entry.ipa}</Text>
+                <Text style={[monoType.wordGlossMono, { color: readerColors.textMuted }]}>
+                  {entry.ipa}
+                </Text>
                 <Text
-                  style={[monoType.wordGlossMono, styles.pronounceButton, { color: readerColors.text }]}
+                  style={[
+                    monoType.wordGlossMono,
+                    styles.pronounceButton,
+                    { color: readerColors.text },
+                  ]}
                   onPress={handlePronounce}
                   accessibilityRole="button"
                   accessibilityLabel={t("reader.wordSheet.pronounce")}
@@ -313,7 +302,11 @@ export const WordSheet = forwardRef<BottomSheetModal, WordSheetProps>(function W
               </View>
             ) : (
               <Text
-                style={[monoType.wordGlossMono, styles.pronounceButtonAlone, { color: readerColors.text }]}
+                style={[
+                  monoType.wordGlossMono,
+                  styles.pronounceButtonAlone,
+                  { color: readerColors.text },
+                ]}
                 onPress={handlePronounce}
                 accessibilityRole="button"
                 accessibilityLabel={t("reader.wordSheet.pronounce")}
@@ -324,14 +317,18 @@ export const WordSheet = forwardRef<BottomSheetModal, WordSheetProps>(function W
 
             {primaryGloss ? (
               <View style={styles.glossBlock}>
-                <Text style={[readingType.gloss, { color: readerColors.text }]}>{primaryGloss}</Text>
+                <Text style={[readingType.gloss, { color: readerColors.text }]}>
+                  {primaryGloss}
+                </Text>
                 {otherSenses.length > 0 ? (
                   <Text style={[monoType.rowText, { color: readerColors.textMuted }]}>
                     {otherSenses
                       .map((sense) =>
                         sense.pos
                           ? t("reader.wordSheet.senseWithPos", {
-                              pos: t(`reader.wordSheet.pos.${sense.pos}`, { defaultValue: sense.pos }),
+                              pos: t(`reader.wordSheet.pos.${sense.pos}`, {
+                                defaultValue: sense.pos,
+                              }),
                               gloss: sense.trGloss,
                             })
                           : sense.trGloss,
@@ -385,7 +382,13 @@ export const WordSheet = forwardRef<BottomSheetModal, WordSheetProps>(function W
             </View>
 
             {isSentenceTranslationOpen ? (
-              <Text style={[readingType.gloss, styles.sentenceTranslationText, { color: readerColors.text }]}>
+              <Text
+                style={[
+                  readingType.gloss,
+                  styles.sentenceTranslationText,
+                  { color: readerColors.text },
+                ]}
+              >
                 {sentenceTranslation.isFetching
                   ? t("reader.sentenceTranslation.loading")
                   : sentenceTranslation.isError

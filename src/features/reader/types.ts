@@ -23,6 +23,20 @@ export interface ReaderSettings {
   marginScale: number;
   pageTransitionMs: number;
   highlightsEnabled: boolean;
+  /**
+   * Sesli okuma hızı. 1.0 = platformun kendi normal hızı
+   * (iOS'ta `AVSpeechUtteranceDefaultSpeechRate`).
+   *
+   * Dil öğrenen için hız bir konfor ayarı değil, anlaşılırlık ayarı:
+   * normal hız çoğu A2/B1 okuru için hızlı. Varsayılan bu yüzden 1.0'ın
+   * altında.
+   */
+  speechRate: number;
+  /**
+   * Kullanıcının seçtiği sesin kimliği; null ise cihazdaki en iyi ses
+   * kullanılır (bkz. `tts/voiceCatalog.ts`).
+   */
+  speechVoiceId: string | null;
 }
 
 /**

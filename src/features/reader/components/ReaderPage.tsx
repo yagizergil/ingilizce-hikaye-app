@@ -3,6 +3,8 @@ import { StyleSheet, Text } from "react-native";
 
 import { lemmatize, splitSentences, tokenize } from "@/features/reader/text/tokenizer";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
+import { ReaderWord } from "@/features/reader/components/ReaderWord";
+import { wordKey } from "@/features/reader/tts/ttsPlan";
 
 import type { ReactElement, ReactNode } from "react";
 import type { Page } from "@/features/reader/pagination/types";
@@ -61,7 +63,11 @@ interface RenderedParagraph {
  * punctuation at all still tokenizes into words with no `Sentence` entry --
  * pagerRuntime.js has the same edge case, guarded there via `sentences.length
  * ? ... : null`). */
-function findSentenceForOffset(sentences: Sentence[], charOffset: number, cursorRef: { index: number }): Sentence | null {
+function findSentenceForOffset(
+  sentences: Sentence[],
+  charOffset: number,
+  cursorRef: { index: number },
+): Sentence | null {
   if (sentences.length === 0) return null;
   while (
     cursorRef.index < sentences.length - 1 &&
@@ -185,15 +191,16 @@ export function ReaderPage({
           const isSaved = savedLemmas.has(lemma);
 
           currentSentenceTokens.push(
-            <Text
+            <ReaderWord
               key={`w-${token.start}-${tokenIndex}`}
-              accessibilityElementsHidden
-              importantForAccessibility="no-hide-descendants"
-              style={[
-                isSaved
-                  ? { textDecorationLine: "underline" as const, textDecorationColor: readerColors.savedUnderline }
-                  : null,
-              ]}
+              text={token.text}
+              // Sesli okuma bu anahtarla hangi kelimenin vurgulanacağını
+              // buluyor. `ttsPlan` konuşulacak metni ÜRETİRKEN aynı formülü
+              // kullanıyor; ikisi eşleşmezse vurgu hiç görünmez.
+              wordKey={wordKey(paragraph.id, segment.charStart, token.start)}
+              isSaved={isSaved}
+              savedUnderlineColor={readerColors.savedUnderline}
+              spokenBackground={readerColors.highlight}
               onPress={() =>
                 onWordTap({
                   surface,
@@ -207,9 +214,7 @@ export function ReaderPage({
               onLongPress={() =>
                 onSentenceLongPress({ sentenceText: wordSentenceText, paragraphId: paragraph.id })
               }
-            >
-              {token.text}
-            </Text>,
+            />,
           );
         } else {
           currentSentenceTokens.push(
@@ -239,17 +244,11 @@ export function ReaderPage({
         ),
       };
     });
-  }, [
-    page,
-    paragraphById,
-    textStyle,
-    savedLemmas,
-    onWordTap,
-    onSentenceLongPress,
-    readerColors,
-  ]);
+  }, [page, paragraphById, textStyle, savedLemmas, onWordTap, onSentenceLongPress, readerColors]);
 
-  return <Text style={styles.pageContainer}>{renderedParagraphs.map((rendered) => rendered.node)}</Text>;
+  return (
+    <Text style={styles.pageContainer}>{renderedParagraphs.map((rendered) => rendered.node)}</Text>
+  );
 }
 
 /** `TypeStyle`'s exact fields RN's `<Text style>` accepts directly; kept as
