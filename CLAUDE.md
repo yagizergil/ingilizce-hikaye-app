@@ -575,38 +575,39 @@ cd pipeline
 
 Üretilen hikâyeler `stories/` altında ve **henüz yayınlanmadı**.
 
-### Ses: zamanlama dosyaları yeniden üretilmeli
+### Ses: kelime zamanlaması (çözülmüş hata, 2026-09-08)
 
-**Durum:** `generate_audio.py` düzeltildi ama **yayındaki 207 zamanlama
-dosyası hâlâ eski (hatalı) ötelemelerle üretilmiş.** Sesin kendisi doğru;
-bozuk olan yalnızca kelime zaman damgaları.
+**Belirti:** 2. sayfadan sonra vurgu sesin önüne geçiyor, fark sayfa
+ilerledikçe açılıyordu.
 
-**Hata neydi:** SSML 5.000 bayt sınırı yüzünden bölüm sesi parçalar hâlinde
-sentezlenip birleştiriliyor (851 parça / 207 bölüm ≈ bölüm başına 4). Sonraki
-parçanın zamanları önceki parçaların toplam süresi kadar ötelenmeli; bu süre
-`max(timepoint) + 0.4` diye TAHMİN ediliyordu. `max(timepoint)` son kelimenin
-BAŞLANGICI — ondan sonra o kelimenin söylenmesi ve sondaki sessizlik geliyor,
-ikisi 0,4 saniyeden uzun. Fark her parça sınırında tekrarlanıp birikiyor;
-bölüm sonuna doğru 1-2 saniye. Kullanıcının gördüğü: vurgu sesin önüne
-geçiyor ve sayfa ilerledikçe fark açılıyor.
+**Sebep:** SSML 5.000 bayt sınırı yüzünden bölüm sesi parçalar hâlinde
+sentezlenip birleştiriliyor (851 parça / 207 bölüm ≈ bölüm başına 4).
+Sonraki parçanın zamanları önceki parçaların toplam süresi kadar
+ötelenmeli; bu süre `max(timepoint) + 0.4` diye TAHMİN ediliyordu.
+`max(timepoint)` son kelimenin BAŞLANGICI — ondan sonra o kelimenin
+söylenmesi ve sondaki sessizlik geliyor. Ölçüldü: gerçek kuyruk ~0,7–1,5
+saniye, yani varsayılan 0,4 sistematik olarak KÜÇÜKTÜ ve fark her parça
+sınırında birikiyordu.
 
-Öteleme artık `src/mp3_duration.py` ile ÖLÇÜLÜYOR (MPEG kare başlıkları).
+**Kanıt (yeniden üretim öncesi/sonrası, "ses süresi − son kelime"):**
 
-**Yeniden üretim:**
+| Bölüm                                          | Önce    | Sonra                                |
+| ---------------------------------------------- | ------- | ------------------------------------ |
+| the-guest-who-never-left #0 (696 kelime)       | 4,46 sn | —                                    |
+| the-wrong-bus-to-the-interview #0 (680 kelime) | 3,15 sn | —                                    |
+| 20 bölümlük rastgele örneklem (331–906 kelime) | —       | ort. **1,12** / en fazla **1,52** sn |
 
-```
-cd pipeline
-.venv/Scripts/python.exe scripts/generate_audio.py --dry-run --force   # önce ölç
-.venv/Scripts/python.exe scripts/generate_audio.py --force
-```
+Kritik olan şu: kuyruk artık bölüm uzunluğuyla BÜYÜMÜYOR. Büyümesi zaten
+birikimin imzasıydı.
 
-- **Maliyet:** 706.286 faturalanabilir karakter. Ücretsiz kota 1.000.000 /
-  ay ve ilk üretim de bu ay yapıldı — yani aynı ay içinde ikinci bir tam
-  tur kotayı ~410.000 karakter aşar (~7 USD). **Ayın 1'inden sonra
-  ücretsiz.**
-- **Kimlik:** servis hesabı anahtarı yok (kurum politikası). ADC kullanılıyor;
-  süresi dolarsa `gcloud auth application-default login`.
-- `--force` olmadan betik "hepsi zaten sesli" deyip hiçbir şey yapmaz.
+**Çözüm:** öteleme `src/mp3_duration.py` ile ÖLÇÜLÜYOR (MPEG Layer III kare
+başlıkları toplanıyor; yeni bağımlılık yok). Ayrıca uygulama tarafında
+sayfa çevirme eşiği sabit gecikme yerine bir sonraki sayfanın ilk
+kelimesinin gerçek zamanı (`pageTurnTimeAfter`).
+
+**207 bölüm 2026-09-08'de yeniden üretildi.** Yeni bölüm eklenirse betik
+zaten doğru ötelemeyi kullanıyor; `--force` yalnızca var olanları yeniden
+üretmek için gerekli (maliyet: 706.286 karakter, ücretsiz kota 1M/ay).
 
 ### Bilinen teknik borç
 
