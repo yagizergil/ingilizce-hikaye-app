@@ -207,7 +207,11 @@ def extract(
             )
             _print_timing("Kapak hazırlama (yerel)", 0.0, timing)
             if not extracted.meta.cover_image_bytes:
-                extracted.meta.cover_image_bytes = generate_placeholder_cover(extracted.meta.title)
+                extracted.meta.cover_image_bytes = generate_placeholder_cover(
+                    extracted.meta.title,
+                    extracted.meta.author,
+                    extracted.meta.target_level,
+                )
                 extracted.meta.cover_image_ext = "png"
             cache.save(book, "extracted", extracted)
 
@@ -284,7 +288,11 @@ def extract(
 
         t0 = time.monotonic()
         if not extracted.meta.cover_image_bytes:
-            extracted.meta.cover_image_bytes = generate_placeholder_cover(extracted.meta.title)
+            extracted.meta.cover_image_bytes = generate_placeholder_cover(
+                extracted.meta.title,
+                extracted.meta.author,
+                extracted.meta.target_level,
+            )
             extracted.meta.cover_image_ext = "png"
         _print_timing("Kapak hazırlama (yerel)", time.monotonic() - t0, timing)
 

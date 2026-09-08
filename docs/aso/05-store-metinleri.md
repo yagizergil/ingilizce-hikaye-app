@@ -105,10 +105,16 @@ PREMIUM NE EKLER
 - Günde 200 AI cümle çevirisi (ücretsiz katmanda 10)
 - Okuma süresi, seri ve seviye istatistikleri
 
+SESLİ OKU, TAKİP ET
+Hikâyeyi sesli dinlerken okunan kelime metnin üzerinde işaretlenir. Gözün
+kulağını takip eder — telaffuzu ve kelimenin cümledeki yerini aynı anda
+öğrenirsin. Hız üç kademeli; yavaş, normal, hızlı. Sesli okuma ücretsizdir.
+
 NELER VAR
-- 85 kitap ve hikâye
-- 39'u yeni başlayanlar için yazılmış kısa, seviyeli özgün hikâye
+- 109 kitap ve hikâye
+- 63'ü seviyeli özgün hikâye (39 A1/A2, 24 B1)
 - 26.000 kelimelik İngilizce-Türkçe sözlük
+- Kelime kelime takipli sesli okuma
 - Çevrimdışı okuma
 - Koyu tema, yazı tipi ve punto ayarı
 

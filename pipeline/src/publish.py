@@ -135,7 +135,31 @@ def _upsert_book(
                 "content_type": meta.content_type,
                 "is_adaptation": meta.is_adaptation,
                 "cover_url": cover_url,
-                "cefr_level": metrics.inferred_level,
+                # ÖZGÜN İÇERİKTE SEVİYE YAZARIN BELİRLEDİĞİDİR, ÇIKARIM DEĞİL.
+                #
+                # `inferred_level` kelime kapsamına bakarak seviye tahmin
+                # ediyor ve bu KLASİKLER için doğru araç — orada seviyeyi
+                # bilmiyoruz, metinden çıkarmak zorundayız.
+                #
+                # Ama kontrollü kelime dağarcığıyla YAZILMIŞ bir metinde aynı
+                # çıkarım sistematik olarak aşağı sapıyor: metin zaten dar bir
+                # kelime kümesiyle yazıldığı için alt seviye kapsaması doğal
+                # olarak yüksek çıkıyor. Somut kanıt (2026-09-08):
+                #   - B1 hedefiyle yazılan 24 hikâyenin tamamı A2 çıkarıldı
+                #   - A2 hedefiyle yazılan hikâyelerin 4'ü A1 çıkarıldı
+                # Uygulama kütüphane sekmelerini `cefr_level` ile filtrelediği
+                # için bu, B1 hikâyelerin A2 rafında görünmesi demekti — yani
+                # doldurmak için yazıldıkları boşluk yerinde duruyordu.
+                #
+                # Yazarın hedefi keyfi bir etiket değil: metin o seviyenin
+                # kelime tavanı ve cümle kurallarına göre üretiliyor ve
+                # `validate` o seviyenin STRICT eşiklerinden geçiriyor. Geçmiş
+                # bir metnin seviyesi hedefidir.
+                "cefr_level": (
+                    meta.target_level
+                    if meta.is_original and meta.target_level
+                    else metrics.inferred_level
+                ),
                 "word_count": metrics.word_count,
                 "unique_lemma_count": metrics.unique_lemma_count,
                 "avg_sentence_length": metrics.sentence_length.mean,
