@@ -24,9 +24,9 @@ interface UseReaderPositionResult {
 }
 
 /**
- * Ephemeral per-chapter-session position tracking. This intentionally
- * follows useReaderProgress.ts's plain hook + ref + setTimeout debounce
- * precedent rather than adding a Zustand store: ADR-003's Zustand guidance
+ * Ephemeral per-chapter-session position tracking. This intentionally uses
+ * a plain hook + ref + setTimeout debounce rather than adding a Zustand
+ * store: ADR-003's Zustand guidance
  * covers persisted cross-render UI *preferences*, not a value that's
  * meaningless outside the currently-open WebView session and is never read
  * by any other component.
