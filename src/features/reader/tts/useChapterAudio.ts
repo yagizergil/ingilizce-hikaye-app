@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 
 import { useAudioPlayer } from "expo-audio";
 import { useQuery } from "@tanstack/react-query";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 
 import { supabase } from "@/lib/supabase";
 import { trackError } from "@/lib/analytics";
@@ -106,15 +107,30 @@ export function useChapterAudio({
     queryKey: ["reader", "signedAudio", chapter?.id ?? null],
     enabled: enabled && Boolean(chapter?.id),
     staleTime: 60 * 60 * 1000, // Bağlantı 2 saat geçerli; bir saat sonra tazele.
-    retry: false,
+    // Yalnızca GEÇİCİ hatalar buraya kadar geliyor (aşağıya bak); onlar da
+    // gerçekten tekrar denemeye değer.
+    retry: 2,
     queryFn: async () => {
       if (!chapter?.id) return null;
       const { data, error } = await supabase.functions.invoke<SignedAudio>("chapter-audio", {
         body: { sectionId: chapter.id },
       });
       if (error) {
-        // Kilit ve "ses yok" beklenen durumlar; gürültü yapmadan null.
-        return null;
+        const status = error instanceof FunctionsHttpError ? error.context?.status : undefined;
+
+        // 403 (kilitli) ve 404 (bu bölümde stüdyo sesi yok) bir KARAR,
+        // arıza değil. Tekrar denemek aynı cevabı getirir; null dönüp
+        // sessizce cihaz sesine düşüyoruz.
+        if (status === 403 || status === 404) return null;
+
+        // Geri kalan her şey GEÇİCİ: ağ kesintisi, 5xx, imzalama hatası.
+        // Bunları da null'a çevirmek, ödeyen bir kullanıcıyı tek bir ağ
+        // dalgalanması yüzünden o bölüm boyunca cihaz sesine düşürür ve
+        // sebebi hiçbir yerde görünmezdi. Fırlatmak yeniden denemeyi
+        // açıyor; denemeler de tükenirse sonuç yine cihaz sesi — yani en
+        // kötü durum eskisiyle aynı, iyi durum daha iyi.
+        trackError("chapterAudio.sign", error);
+        throw error;
       }
       return data ?? null;
     },
