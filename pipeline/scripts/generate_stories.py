@@ -447,35 +447,43 @@ def run_validator(md_path: Path) -> tuple[bool, str]:
 # <= 60). B2'nin asıl derdi ise TABAN: ortalaması 15 kelime olan bir metin
 # doğrulayıcıdan rahatça geçer ama yapısal olarak B1'dir ve `infer_level`
 # onu B1 sayar — yani doldurulmak istenen boşluk yerinde kalır. İlk B2
-# denemesi tam olarak buraya düştü (ortalama 15,1).
+# denemeleri tam olarak buraya düştü (spaCy ortalaması 12,9 ve 15,1).
 # ---------------------------------------------------------------------------
 
 #: Seviye başına cümle uzunluğu TABANI. Prompt 17-21 diyor; kabul eşiği
-#: 16,5, çünkü ölçüm yöntemi (kısaltmalar, diyalog) küçük sapmalar
-#: üretiyor ve 0,5 kelimelik bir sapma için bir üretim turu harcamak
-#: anlamsız. 15'lik bir metin ise gerçekten B1'dir ve geçmemeli.
+#: 16,5 — cümle bölme (kısaltmalar, diyalog) küçük sapmalar üretiyor ve
+#: 0,5 kelimelik bir sapma için bir üretim turu harcamak anlamsız.
+#: 15'lik bir metin ise gerçekten B1'dir (B1 tavanı 19) ve geçmemeli.
 LEVEL_MIN_AVG_SENTENCE = {"B2": 16.5}
 
-
-def _body_sentences(story: str) -> list[str]:
-    """Frontmatter ve bölüm başlıklarını atarak cümleleri döndürür."""
-    parts = story.split("---", 2)
-    body = parts[2] if len(parts) > 2 else story
-    body = re.sub(r"^#.*$", "", body, flags=re.MULTILINE)
-    return [s for s in re.split(r"(?<=[.!?])\s+", body) if s.strip()]
+#: Doğrulayıcının bastığı ortalama cümle uzunluğu satırı.
+_AVG_SENTENCE_RE = re.compile(r"Ort\. cümle:\s*([0-9]+(?:[.,][0-9]+)?)")
 
 
-def sentence_shape_report(story: str, level: str) -> str | None:
-    """Taban ihlalini modele geri verilecek somut bir gerekçe olarak döndürür."""
+def sentence_shape_report(validator_report: str, level: str) -> str | None:
+    """Taban ihlalini modele geri verilecek somut bir gerekçe olarak döndürür.
+
+    NEDEN SAYIYI DOĞRULAYICIDAN OKUYORUZ: burası bir ara kendi regex cümle
+    bölücüsüyle ölçüyordu ve o bölücü sistematik olarak YÜKSEK sapıyordu —
+    `?"` sonrası ya da kısaltmalarda bölemediği için daha az, daha uzun
+    "cümle" sayıyordu. Sonuç: taban tavanla farklı bir cetvelde ölçülüyordu.
+    Somut örnek: `the-witness-who-stayed` regexte 16,5'i geçip kabul
+    edilmişti, spaCy'de ortalaması 15,1 — yani tabanın reddetmesi gereken
+    değerin ta kendisi. `pipeline check` zaten spaCy ortalamasını basıyor;
+    aynı sayıyı okumak hem doğru hem de ikinci bir ölçüm kodunu ortadan
+    kaldırıyor.
+    """
     floor = LEVEL_MIN_AVG_SENTENCE.get(level)
     if floor is None:
         return None
 
-    lengths = [len(re.findall(r"[A-Za-z']+", s)) for s in _body_sentences(story)]
-    if not lengths:
+    match = _AVG_SENTENCE_RE.search(validator_report)
+    if match is None:
+        # Doğrulayıcı metriklere hiç ulaşamamış (ör. frontmatter hatası).
+        # Rapor zaten bir gerekçe taşıyor; ikinci bir gerekçe eklemiyoruz.
         return None
 
-    average = sum(lengths) / len(lengths)
+    average = float(match.group(1).replace(",", "."))
     if average >= floor:
         return None
 
@@ -581,7 +589,7 @@ def generate_one(
 
         # Doğrulayıcı tavanı ölçüyor, taban bize ait — ikisi de geçmeden
         # hikâye kabul edilmiyor.
-        shape_problem = sentence_shape_report(story, level)
+        shape_problem = sentence_shape_report(report, level)
         if shape_problem is not None:
             passed = False
             report = f"{report}\n{shape_problem}"

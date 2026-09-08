@@ -13,11 +13,25 @@ metinler. Gelir premium abonelikten geliyor.
 
 **Premium bugün ne sunuyor** (paywall'da yalnızca bunlar yazılabilir):
 sınırsız kelime defteri, sınırsız aralıklı tekrar (SRS), yüksek AI cümle
-çevirisi kotası, ayrıntılı öğrenme istatistikleri.
+çevirisi kotası, ayrıntılı öğrenme istatistikleri, ve **stüdyo
+seslendirmesi** (özgün hikâyelerde, bkz. ADR-012).
 
-**Sesli okuma ÜCRETSİZ** (bkz. ADR-011). Cihaz üstünde çalıştığı için
-marjinal maliyeti sıfır; ücretli yapmak yapay bir kısıt olurdu ve ilke
-#2'ye aykırı olurdu. Paywall'a yazılmaz.
+**Sesli okuma ÜCRETSİZ — ama iki ayrı şey var, karıştırma:**
+
+|                 | Kim okuyor                            | Hangi kitaplar       | Fiyat                        |
+| --------------- | ------------------------------------- | -------------------- | ---------------------------- |
+| **Cihaz sesi**  | `expo-speech`, telefonun kendi motoru | **Hepsi** (119)      | Ücretsiz, her zaman          |
+| **Stüdyo sesi** | Önceden üretilmiş Neural2 kaydı       | Özgün hikâyeler (63) | Premium + bir kitap ücretsiz |
+
+Cihaz sesi hiçbir koşulda kilitlenmez: marjinal maliyeti sıfır, ücretli
+yapmak yapay bir kısıt olurdu (ilke #2). Stüdyo sesi ise gerçek bir
+üretim ve bant genişliği maliyeti taşıyor, o yüzden premium — ama
+kullanıcı farkı duymadan satın alamayacağı için **bir hikâyeyi tam olarak
+ücretsiz dinleyebiliyor** (ADR-012).
+
+Erişimi olmayan kullanıcı için sonuç asla "ses yok" değil, "cihaz sesi".
+Reader'da hiçbir kilit/rozet/yükseltme yok (ilke #1); teklif yalnızca
+kitap detayında (`features/library/components/BookAudioCard.tsx`).
 
 Kural (denetimden kalan): bir fayda önce üründe çalışır, sonra paywall'a
 yazılır — tersi yanıltıcı metadatadır (App Store Guideline 2.3.1).
@@ -274,11 +288,19 @@ açılışta DEĞİL. iOS izin diyaloğu kullanıcı başına bir kez gösterile
 uygulamayı ilk açan kullanıcıya sormak o tek şansı harcamaktır. Varsayılan
 kapalı.
 
-### ADR-011: Sesli okuma cihaz üstünde, ses dosyası YOK
+### ADR-011: Sesli okumanın TABANI cihaz üstünde
 
-**Karar:** Bölüm seslendirmesi ve kelime kelime vurgu, cihazın kendi
-konuşma motoruyla yapılıyor (`expo-speech`). Önceden üretilmiş ses dosyası,
-bulut TTS API'si ve zorlamalı hizalama (forced alignment) YOK.
+> **Kısmen revize edildi (2026-09-08) — bkz. ADR-012.** Bu ADR başlangıçta
+> "ses dosyası ve bulut TTS YOK" diyordu. Bulut TTS artık VAR: özgün 63
+> hikâye Google Cloud Neural2 ile seslendirildi. Aşağıdaki 1. alternatifin
+> reddi bu yüzden artık geçerli değil; neyin değiştiği ADR-012'de.
+>
+> Bu ADR'nin AYAKTA KALAN kısmı — ve asıl önemli olan o: cihaz üstü TTS
+> silinmedi, **taban** oldu. Her kitapta, herkese, çevrimdışı, ücretsiz
+> çalışmaya devam ediyor. Stüdyo sesi onun üstüne binen bir katman.
+
+**Karar:** Her kitapta çalışan taban seslendirme, cihazın kendi konuşma
+motoruyla yapılıyor (`expo-speech`); kelime kelime vurgu buradan geliyor.
 
 **Nasıl çalışıyor:** Ekranda duran her paragraf parçası ayrı bir konuşma
 birimi olarak okunuyor; platform okumak üzere olduğu kelimenin karakter
@@ -293,6 +315,10 @@ konum `tts/ttsPlan.ts` ile ekrandaki token'a çevriliyor.
    zamanlaması kusursuz. Ama: faturalandırma hesabı, kota takibi, ~180 MB
    ses dosyası, Supabase depolama ve çıkış bant genişliği, ve yalnızca ÖNCEDEN
    ÜRETTİĞİMİZ kitapları kapsıyor — 46 klasik dışarıda kalırdı.
+   (2026-09-08: bu reddin dayanağı çürüdü. "Ya o ya bu" sanılmıştı; oysa
+   ikisi birlikte olabiliyor — bulut sesi ÖZGÜN içeriği kapsıyor, cihaz
+   sesi geri kalan her şeyi. Kapsama boşluğu bir kusur değil, tam olarak
+   premium/ücretsiz sınırının kendisi. Bkz. ADR-012.)
 2. **Yerel nöral TTS (Piper/Coqui) + zorlamalı hizalama (aeneas/WhisperX).**
    Tamamen ücretsiz ve kaliteli, ama pipeline'a iki yeni ağır bağımlılık,
    depolama/bant genişliği sorunu aynen duruyor ve yine yalnızca kendi
@@ -311,6 +337,47 @@ ilkesiyle tek uyumlu olan o.
 **Bilinen sınır:** Arka planda çalmıyor. Bunun için `UIBackgroundModes:
 audio` ve bir kilit ekranı oynatma arayüzü gerekiyor; bu sürümde bilerek
 yok, uygulama arka plana alınınca ses susuyor.
+
+### ADR-012: Stüdyo seslendirmesi — özgün içerikte, premium, bir kitap ücretsiz
+
+**Karar:** ADR-011'in üstüne ikinci bir sürücü eklendi. Özgün 63 hikâyenin
+207 bölümü Google Cloud TTS (`en-US-Neural2-F`) ile önceden seslendirildi;
+SSML `<mark>` + `enableTimePointing` ile kelime zaman işaretleri de
+üretildi, yani vurgu bu yolda da kelime kelime çalışıyor. Klasikler
+kapsam dışı ve öyle kalacak.
+
+**Neden ADR-011'in reddi çürüdü:** O karar bulut TTS'i "kapsama yetersiz"
+diye reddetmişti — 46 klasiği kapsamıyordu. Yanlış olan reddin kendisi
+değil, sorunun kurulumuydu: ikisi arasında SEÇMEK gerekmiyor. Cihaz sesi
+zaten yazılmış ve her kitapta çalışıyor; bulut sesi onun yerine değil,
+üstüne geliyor. Böylece "kapsamıyor" bir kusur olmaktan çıkıp premium
+sınırının doğal çizgisi oluyor: parasını ödediğimiz ses, kendi ürettiğimiz
+içerikte.
+
+**Neden premium:** Cihaz sesinin marjinal maliyeti sıfırdı, bunun değil —
+üretim faturası, Supabase depolama (~350 MB) ve her dinlemede çıkış bant
+genişliği var. Ücretsiz katman bundan zarar görmüyor: her kitap yine
+sonuna kadar okunabiliyor ve yine sesli dinlenebiliyor (ilke #2).
+
+**Neden bir hikâye tam ücretsiz** (`audio_taster_grants`, migration 031):
+"Doğal ses" bir paywall maddesi olarak hiçbir şey ifade etmiyor; farkı
+anlatmak mümkün değil, duyurmak gerekiyor. Hak KİTABA bağlanıyor ve şema
+gereği bir daha verilemiyor — tablonun birincil anahtarı `user_id`, yani
+ikinci bir satır fiziksel olarak imkânsız. Kural sunucuda:
+`can_play_book_audio()` (premium VEYA bu kitap için hak) tek karar yeri;
+istemcide ikinci bir kopyası yok.
+
+**Erişim nasıl kısıtlanıyor:** `book-audio` deposu ARTIK HERKESE AÇIK
+DEĞİL (migration 031). Açık kaldığı sürece kilit yalnızca görsel olurdu:
+dosya adresleri `book_sections.audio_url` içinde ve o satırları herkes
+okuyabiliyor. Bağlantıyı `supabase/functions/chapter-audio` üretiyor —
+çağıranın JWT'sini doğruluyor, `can_play_book_audio()`'ya soruyor, sonra
+2 saatlik imzalı bağlantı veriyor.
+
+**Bozulduğunda ne oluyor:** Fonksiyon 403 (`locked`) ya da 404
+(`no_audio`) dönerse reader sessizce cihaz sesine düşüyor. Kullanıcı için
+sonuç asla "ses çalışmıyor" değil. Bu, iki sürücülü olmanın asıl kazancı:
+bulut yolundaki her arıza bir kesinti değil, bir kalite düşüşü.
 
 ## Kod Konvansiyonları
 
@@ -403,19 +470,21 @@ yok, uygulama arka plana alınınca ses susuyor.
 
 ## Mevcut Durum ve Sonraki Adımlar
 
-> Son güncelleme: 2026-09-07 (yayın öncesi denetim oturumu). Bu bölüm her
+> Son güncelleme: 2026-09-08 (stüdyo sesi + B2 üretimi oturumu). Bu bölüm her
 > önemli oturumdan sonra güncellenir. `docs/ROADMAP.md` ve `docs/STATE.md`
 > çok daha eski; çelişki olursa burası geçerlidir. Yayın adımlarının tamamı
 > ve dağıtım komutları `docs/RELEASE.md` içinde.
 
 **Çalışan:** Expo SDK 57 üzerinde tam bir okuma + öğrenme + gelir döngüsü.
 
-- **İçerik:** 109 yayında kitap. 46 klasik (kamu malı) + 63 özgün seviyeli
-  hikâye (4 A1, 35 A2, 24 B1). B1 boşluğu 2026-09-08'de kapatıldı.
+- **İçerik:** 119 yayında kitap. 56 klasik (kamu malı: 17 B1, 27 B2, 6 C1,
+  6 C2) + 63 özgün seviyeli hikâye (4 A1, 35 A2, 24 B1). B1 boşluğu
+  2026-09-08'de kapatıldı; **özgün B2 hâlâ sıfır** (aşağıya bak).
   26.000+ kelimelik İngilizce-Türkçe sözlük (%100 çevirili).
 - **Okuma:** native sayfalanan reader, kelime tıklama → Türkçe karşılık,
   cümle uzun-basma → AI çevirisi, offline bölüm önbelleği (SQLite),
-  kelime kelime vurgulu sesli okuma (ADR-011).
+  kelime kelime vurgulu sesli okuma — iki sürücü: her kitapta cihaz sesi
+  (ADR-011), özgün 63 hikâyede stüdyo sesi (ADR-012).
 - **Öğrenme:** kelime kaydetme, SM-2 aralıklı tekrar motoru ve tekrar
   ekranı, 36 kelimelik seviye tespiti testi ve onboarding akışı.
 - **Gelir:** RevenueCat entegrasyonu; yetkiyi yalnızca webhook yazıyor
@@ -431,25 +500,39 @@ yok, uygulama arka plana alınınca ses susuyor.
   yazıldı, App Store metinleri karakter sayılarıyla hazır, paywall mockup'ı
   eklendi (`mockups/paywall.html`).
 
-29 migration versiyonlanmış, tüm tablolarda RLS aktif. i18n tam (tr + en,
-eşit anahtar — artık testle zorlanıyor). 142 test geçiyor, typecheck ve lint
-temiz.
+31 migration versiyonlanmış, tüm tablolarda RLS aktif. Üç Edge Function
+dağıtıldı (`revenuecat-webhook`, `chapter-audio`, `sync-entitlement`).
+i18n tam (tr + en, eşit anahtar — artık testle zorlanıyor). 186 test
+geçiyor, typecheck ve lint temiz. Supabase güvenlik denetçisinde gerçek
+bulgu yok: `SECURITY DEFINER` uyarılarının tamamı bilerek istemciye açılan
+RPC'ler (hepsi `auth.uid()` kapsamlı, `search_path` kilitli), "anonim
+erişim" uyarıları uygulamanın anonim oturum kullanmasının doğal sonucu, ve
+"sızmış parola koruması" bu uygulamada konusuz — parola ile giriş yok
+(anonim + Apple/Google kimlik jetonu + e-posta OTP).
 
 ### Yayına çıkmadan önce yapılması ZORUNLU olanlar
 
 Ayrıntılar ve komutlar `docs/RELEASE.md` içinde. Özet:
 
-1. **Migration 028 + 029'u uygula ve iki Edge Function'ı dağıt.** Kod
-   hazır; `user_entitlements`'a yazan zincir bunlar dağıtılmadan çalışmaz.
-2. **RevenueCat webhook'unu kur** (paylaşılan sır + URL). Bu yapılmadan
-   ödeme yapan kullanıcı premium alamaz.
-3. **Gizlilik politikasını barındır** ve `EXPO_PUBLIC_PRIVACY_URL`'e yaz —
+1. ~~Migration 028–031'i uygula ve Edge Function'ları dağıt.~~ **YAPILDI
+   (2026-09-08).** 31 migration da canlıda; `revenuecat-webhook`,
+   `chapter-audio` ve `sync-entitlement` dağıtıldı.
+2. **`REVENUECAT_API_KEY` sırrını Supabase'e ekle.** `sync-entitlement`
+   bu sır olmadan 500 `not_configured` dönüyor, yani kaçan bir webhook'u
+   onaran yol ÖLÜ. RevenueCat > Project Settings > API keys > **secret**
+   anahtar (public SDK anahtarı DEĞİL).
+3. **RevenueCat webhook'unu kur** (paylaşılan sır + URL) ve entitlement
+   adının tam olarak `premium` olduğunu doğrula. 2026-09-07'de gerçek bir
+   sandbox satın alması tam olarak bu yüzden kayboldu: yetki adı farklıydı,
+   tek webhook teslimi "other_entitlement" sayıldı ve RevenueCat aynı satın
+   alma için ikinci bir olay üretmedi (bkz. ADR-009, `sync-entitlement`).
+4. **Gizlilik politikasını barındır** ve `EXPO_PUBLIC_PRIVACY_URL`'e yaz —
    paywall'daki yasal bağlantı buradan geliyor, boşsa gönderim yapılmamalı.
-4. `eas init` + development build (satın alma Expo Go'da test edilemiyor).
-5. RevenueCat/App Store Connect ürün tanımları (aylık ₺79,99 / yıllık
+5. `eas init` + development build (satın alma Expo Go'da test edilemiyor).
+6. RevenueCat/App Store Connect ürün tanımları (aylık ₺79,99 / yıllık
    ₺399,99, paket kimlikleri `$rc_annual`/`$rc_monthly`, entitlement adı tam
    olarak `premium`).
-6. Ekran görüntüleri (hiç yok).
+7. Ekran görüntüleri (hiç yok).
 
 ### İçerik: B1 boşluğu
 
