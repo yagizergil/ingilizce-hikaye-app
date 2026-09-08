@@ -575,6 +575,39 @@ cd pipeline
 
 Üretilen hikâyeler `stories/` altında ve **henüz yayınlanmadı**.
 
+### Ses: zamanlama dosyaları yeniden üretilmeli
+
+**Durum:** `generate_audio.py` düzeltildi ama **yayındaki 207 zamanlama
+dosyası hâlâ eski (hatalı) ötelemelerle üretilmiş.** Sesin kendisi doğru;
+bozuk olan yalnızca kelime zaman damgaları.
+
+**Hata neydi:** SSML 5.000 bayt sınırı yüzünden bölüm sesi parçalar hâlinde
+sentezlenip birleştiriliyor (851 parça / 207 bölüm ≈ bölüm başına 4). Sonraki
+parçanın zamanları önceki parçaların toplam süresi kadar ötelenmeli; bu süre
+`max(timepoint) + 0.4` diye TAHMİN ediliyordu. `max(timepoint)` son kelimenin
+BAŞLANGICI — ondan sonra o kelimenin söylenmesi ve sondaki sessizlik geliyor,
+ikisi 0,4 saniyeden uzun. Fark her parça sınırında tekrarlanıp birikiyor;
+bölüm sonuna doğru 1-2 saniye. Kullanıcının gördüğü: vurgu sesin önüne
+geçiyor ve sayfa ilerledikçe fark açılıyor.
+
+Öteleme artık `src/mp3_duration.py` ile ÖLÇÜLÜYOR (MPEG kare başlıkları).
+
+**Yeniden üretim:**
+
+```
+cd pipeline
+.venv/Scripts/python.exe scripts/generate_audio.py --dry-run --force   # önce ölç
+.venv/Scripts/python.exe scripts/generate_audio.py --force
+```
+
+- **Maliyet:** 706.286 faturalanabilir karakter. Ücretsiz kota 1.000.000 /
+  ay ve ilk üretim de bu ay yapıldı — yani aynı ay içinde ikinci bir tam
+  tur kotayı ~410.000 karakter aşar (~7 USD). **Ayın 1'inden sonra
+  ücretsiz.**
+- **Kimlik:** servis hesabı anahtarı yok (kurum politikası). ADC kullanılıyor;
+  süresi dolarsa `gcloud auth application-default login`.
+- `--force` olmadan betik "hepsi zaten sesli" deyip hiçbir şey yapmaz.
+
 ### Bilinen teknik borç
 
 - Bundle 7.05 MB; 1.5 MB'ı RevenueCat SDK'sı (abonelik için zorunlu).
