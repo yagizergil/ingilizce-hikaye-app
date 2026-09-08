@@ -16,6 +16,15 @@ interface ReaderHeaderProps {
   onToggleSpeech: () => void;
   /** Şu an konuşuluyor mu — düğmenin ikonu ve etiketi buna göre. */
   isSpeaking: boolean;
+  /**
+   * Seslendirme bu bölümde ve bu kullanıcı için çalışabilir mi.
+   *
+   * NEDEN GİZLİYOR, KİLİTLEMİYOR: basıldığında hiçbir şey yapmayan bir
+   * düğme arıza gibi görünür, kilit ikonlu bir düğme ise okuma ekranına
+   * premium promosyonu sokar (Ürün İlkesi #1). İkisi de istenmiyor —
+   * düğme sadece yok.
+   */
+  canPlaySpeech: boolean;
 }
 
 /** Top chrome: back button, chapter title, settings button — no progress
@@ -27,6 +36,7 @@ export function ReaderHeader({
   onOpenSettings,
   onToggleSpeech,
   isSpeaking,
+  canPlaySpeech,
 }: ReaderHeaderProps) {
   const { t } = useTranslation();
   const readerColors = useReaderThemeColors();
@@ -61,22 +71,24 @@ export function ReaderHeader({
           Sesli okuma düğmesi. Okuma yüzeyinin bir KONTROLÜ — ürün ilkesi #1
           reader içinde promosyonu yasaklıyor, okuma araçlarını değil.
         */}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityState={{ selected: isSpeaking }}
-          accessibilityLabel={t(
-            isSpeaking ? "reader.header.pauseSpeech" : "reader.header.playSpeech",
-          )}
-          onPress={onToggleSpeech}
-          style={styles.iconButton}
-          hitSlop={8}
-        >
-          <Ionicons
-            name={isSpeaking ? "pause" : "volume-medium-outline"}
-            size={20}
-            color={readerColors.text}
-          />
-        </Pressable>
+        {canPlaySpeech ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ selected: isSpeaking }}
+            accessibilityLabel={t(
+              isSpeaking ? "reader.header.pauseSpeech" : "reader.header.playSpeech",
+            )}
+            onPress={onToggleSpeech}
+            style={styles.iconButton}
+            hitSlop={8}
+          >
+            <Ionicons
+              name={isSpeaking ? "pause" : "volume-medium-outline"}
+              size={20}
+              color={readerColors.text}
+            />
+          </Pressable>
+        ) : null}
 
         <Pressable
           accessibilityRole="button"

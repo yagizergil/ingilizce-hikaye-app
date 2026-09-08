@@ -1,21 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 
 /**
  * Bir kitabın stüdyo seslendirmesine erişim durumu.
  *
- * NEDEN KİTAP DETAYINDA, READER'DA DEĞİL: erişim kararının kullanıcıya
- * gösterildiği ve ücretsiz hakkın harcandığı yer okuma akışının DIŞINDA
- * olmak zorunda (Ürün İlkesi #1 — reader içinde premium promosyonu yok).
- * Reader tarafında hiçbir kilit görünmüyor; erişim yoksa sessizce cihaz
- * sesine düşüyor.
+ * NEDEN KİTAP DETAYINDA, READER'DA DEĞİL: premium teklifinin gösterildiği
+ * yer okuma akışının DIŞINDA olmak zorunda (Ürün İlkesi #1). Reader'da
+ * kilit ikonu ya da "yükselt" düğmesi yok; erişim yoksa seslendirme düğmesi
+ * hiç görünmüyor.
+ *
+ * NEDEN SUNUCUYA SORULUYOR: kural `can_play_book_audio()` içinde ve tek
+ * kopyası orada (migration 032). İstemcide "premium mi" diye ikinci bir
+ * kontrol yazmak, iki kopyanın zamanla ayrışması demek — ayrıştığında da
+ * kullanıcı ya ödediğini göremez ya da ödemediğini dinler.
  */
 export interface BookAudioAccess {
-  /** Bu kitabın sesi bu kullanıcıya açık mı (premium ya da ücretsiz hak). */
+  /** Bu kitabın stüdyo sesi bu kullanıcıya açık mı (aktif premium). */
   canPlay: boolean;
-  /** Ücretsiz hak hangi kitaba bağlı; hiç kullanılmadıysa null. */
-  tasterBookId: string | null;
 }
 
 export const bookAudioAccessKeys = {
@@ -24,18 +26,9 @@ export const bookAudioAccessKeys = {
 };
 
 async function fetchBookAudioAccess(bookId: string): Promise<BookAudioAccess> {
-  const [access, grant] = await Promise.all([
-    supabase.rpc("can_play_book_audio", { p_book_id: bookId }),
-    supabase.from("audio_taster_grants").select("book_id").maybeSingle<{ book_id: string }>(),
-  ]);
-
-  if (access.error) throw access.error;
-  if (grant.error) throw grant.error;
-
-  return {
-    canPlay: access.data === true,
-    tasterBookId: grant.data?.book_id ?? null,
-  };
+  const { data, error } = await supabase.rpc("can_play_book_audio", { p_book_id: bookId });
+  if (error) throw error;
+  return { canPlay: data === true };
 }
 
 export function useBookAudioAccessQuery(bookId: string | undefined, enabled: boolean) {
@@ -44,29 +37,5 @@ export function useBookAudioAccessQuery(bookId: string | undefined, enabled: boo
     enabled: Boolean(bookId) && enabled,
     queryFn: () => fetchBookAudioAccess(bookId as string),
     staleTime: 60_000,
-  });
-}
-
-/**
- * Ücretsiz hakkı bu kitaba bağlar.
- *
- * Sunucu idempotent: hak zaten kullanılmışsa yenisini VERMEZ, mevcut kitabı
- * döndürür (migration 031). Sınır uygulama kodunda değil şemada — tablonun
- * birincil anahtarı `user_id`, ikinci satır oluşamıyor.
- */
-export function useClaimAudioTasterMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (bookId: string): Promise<string | null> => {
-      const { data, error } = await supabase.rpc("claim_audio_taster", { p_book_id: bookId });
-      if (error) throw error;
-      return typeof data === "string" ? data : null;
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: bookAudioAccessKeys.all });
-      // İmzalı bağlantı sorgusu da tazelenmeli: kilit az önce açıldı.
-      void queryClient.invalidateQueries({ queryKey: ["reader", "signedAudio"] });
-    },
   });
 }

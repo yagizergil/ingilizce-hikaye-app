@@ -12,26 +12,18 @@ klasikler public domain, seviyeli hikâyeler kendi ürettiğimiz özgün
 metinler. Gelir premium abonelikten geliyor.
 
 **Premium bugün ne sunuyor** (paywall'da yalnızca bunlar yazılabilir):
-sınırsız kelime defteri, sınırsız aralıklı tekrar (SRS), yüksek AI cümle
-çevirisi kotası, ayrıntılı öğrenme istatistikleri, ve **stüdyo
-seslendirmesi** (özgün hikâyelerde, bkz. ADR-012).
+**stüdyo seslendirmesi**, sınırsız kelime defteri, sınırsız aralıklı tekrar
+(SRS), yüksek AI cümle çevirisi kotası, ayrıntılı öğrenme istatistikleri.
 
-**Sesli okuma ÜCRETSİZ — ama iki ayrı şey var, karıştırma:**
+**Dinlemek premium'dur** (bkz. ADR-012). Bölüm seslendirmesi önceden
+üretilmiş stüdyo kaydıyla yapılıyor ve özgün 63 hikâyede var; klasiklerde
+yok. Erişimi olmayan kullanıcıda seslendirme düğmesi hiç görünmüyor —
+kilit ikonu ya da "yükselt" düğmesi değil, düğmenin kendisi yok.
 
-|                 | Kim okuyor                            | Hangi kitaplar       | Fiyat                        |
-| --------------- | ------------------------------------- | -------------------- | ---------------------------- |
-| **Cihaz sesi**  | `expo-speech`, telefonun kendi motoru | **Hepsi** (119)      | Ücretsiz, her zaman          |
-| **Stüdyo sesi** | Önceden üretilmiş Neural2 kaydı       | Özgün hikâyeler (63) | Premium + bir kitap ücretsiz |
-
-Cihaz sesi hiçbir koşulda kilitlenmez: marjinal maliyeti sıfır, ücretli
-yapmak yapay bir kısıt olurdu (ilke #2). Stüdyo sesi ise gerçek bir
-üretim ve bant genişliği maliyeti taşıyor, o yüzden premium — ama
-kullanıcı farkı duymadan satın alamayacağı için **bir hikâyeyi tam olarak
-ücretsiz dinleyebiliyor** (ADR-012).
-
-Erişimi olmayan kullanıcı için sonuç asla "ses yok" değil, "cihaz sesi".
-Reader'da hiçbir kilit/rozet/yükseltme yok (ilke #1); teklif yalnızca
-kitap detayında (`features/library/components/BookAudioCard.tsx`).
+**Kelime telaffuzu ÜCRETSİZ ve öyle kalacak.** Sözlük kartındaki hoparlör
+cihazın kendi motoruyla (`expo-speech`) tek kelimeyi okuyor. Bu bir dinleme
+özelliği değil, sözlük akışının parçası; ücretli yapmak öğrenme döngüsünün
+ortasını kesmek olurdu.
 
 Kural (denetimden kalan): bir fayda önce üründe çalışır, sonra paywall'a
 yazılır — tersi yanıltıcı metadatadır (App Store Guideline 2.3.1).
@@ -288,96 +280,72 @@ açılışta DEĞİL. iOS izin diyaloğu kullanıcı başına bir kez gösterile
 uygulamayı ilk açan kullanıcıya sormak o tek şansı harcamaktır. Varsayılan
 kapalı.
 
-### ADR-011: Sesli okumanın TABANI cihaz üstünde
+### ADR-011: Cihaz üstü bölüm seslendirmesi (İPTAL EDİLDİ)
 
-> **Kısmen revize edildi (2026-09-08) — bkz. ADR-012.** Bu ADR başlangıçta
-> "ses dosyası ve bulut TTS YOK" diyordu. Bulut TTS artık VAR: özgün 63
-> hikâye Google Cloud Neural2 ile seslendirildi. Aşağıdaki 1. alternatifin
-> reddi bu yüzden artık geçerli değil; neyin değiştiği ADR-012'de.
+> **İptal (2026-09-08).** Bu ADR bölüm seslendirmesinin cihazın konuşma
+> motoruyla (`expo-speech`) yapılmasına karar veriyordu. Ürün sahibi
+> seslendirmeyi istisnasız premium yapma kararı aldı; cihaz üstü sürücü
+> (`tts/useReaderTts.ts`) silindi. Yerine geçen karar ADR-012.
 >
-> Bu ADR'nin AYAKTA KALAN kısmı — ve asıl önemli olan o: cihaz üstü TTS
-> silinmedi, **taban** oldu. Her kitapta, herkese, çevrimdışı, ücretsiz
-> çalışmaya devam ediyor. Stüdyo sesi onun üstüne binen bir katman.
+> **Neyin kaldığı:** `expo-speech` bağımlılığı duruyor ama artık yalnızca
+> KELİME TELAFFUZU için (`components/WordSheet.tsx` → `tts/englishVoice.ts`
+> → `tts/voiceCatalog.ts`). O ücretsiz. Okuma ayarlarındaki ses seçici de
+> artık yalnızca bunu yönetiyor ve metni bunu söylüyor.
+>
+> **Kaybedilen:** 56 klasikte dinleme diye bir şey yok, ve ücretsiz
+> kullanıcı hiçbir kitabı dinleyemiyor. Bu bilinen ve kabul edilmiş bir
+> bedel; ürün ilkesi #2'nin "ücretsiz katman gerçekten kullanılabilir
+> olmalı" şartı okuma tarafında karşılanıyor (tüm kitaplar, kelime
+> desteği, offline önbellek, kelime telaffuzu sınırsız ve ücretsiz).
+>
+> **Kararın orijinal gerekçesi tarih olarak duruyor** — cihaz üstü TTS'in
+> kapsama avantajı gerçekti; iptalin sebebi teknik değil, ticari.
 
-**Karar:** Her kitapta çalışan taban seslendirme, cihazın kendi konuşma
-motoruyla yapılıyor (`expo-speech`); kelime kelime vurgu buradan geliyor.
+**Eski karar (artık yürürlükte değil):** Bölüm seslendirmesi ve kelime
+kelime vurgu, cihazın kendi konuşma motoruyla yapılıyordu; platform okumak
+üzere olduğu kelimenin karakter konumunu bildiriyordu (iOS
+`willSpeakRangeOfSpeechString`, Android `onRangeStart`).
 
-**Nasıl çalışıyor:** Ekranda duran her paragraf parçası ayrı bir konuşma
-birimi olarak okunuyor; platform okumak üzere olduğu kelimenin karakter
-konumunu bildiriyor (iOS `willSpeakRangeOfSpeechString`, Android
-`onRangeStart` — ikisi de `expo-speech`'in `onBoundary`'sine bağlı) ve o
-konum `tts/ttsPlan.ts` ile ekrandaki token'a çevriliyor.
+### ADR-012: Seslendirme = stüdyo kaydı, istisnasız premium
 
-**Gerekçe — değerlendirilen alternatifler:**
+**Karar:** Bölüm seslendirmesinin tek sürücüsü var: önceden üretilmiş
+stüdyo kaydı. Özgün 63 hikâyenin 207 bölümü Google Cloud TTS
+(`en-US-Neural2-F`) ile seslendirildi; SSML `<mark>` +
+`enableTimePointing` ile kelime zaman işaretleri de üretildi, vurgu oradan
+geliyor. Klasikler kapsam dışı ve öyle kalacak. Dinlemek aktif premium
+gerektiriyor — ücretsiz "bir hikâye dinle" hakkı 2026-09-08'de kaldırıldı
+(migration 032).
 
-1. **Bulut TTS + zaman işaretleri** (Google Cloud TTS `<mark>` +
-   `TIMEPOINT_TYPE_SSML_MARK`). Ses kalitesi en iyisi ve kelime
-   zamanlaması kusursuz. Ama: faturalandırma hesabı, kota takibi, ~180 MB
-   ses dosyası, Supabase depolama ve çıkış bant genişliği, ve yalnızca ÖNCEDEN
-   ÜRETTİĞİMİZ kitapları kapsıyor — 46 klasik dışarıda kalırdı.
-   (2026-09-08: bu reddin dayanağı çürüdü. "Ya o ya bu" sanılmıştı; oysa
-   ikisi birlikte olabiliyor — bulut sesi ÖZGÜN içeriği kapsıyor, cihaz
-   sesi geri kalan her şeyi. Kapsama boşluğu bir kusur değil, tam olarak
-   premium/ücretsiz sınırının kendisi. Bkz. ADR-012.)
-2. **Yerel nöral TTS (Piper/Coqui) + zorlamalı hizalama (aeneas/WhisperX).**
-   Tamamen ücretsiz ve kaliteli, ama pipeline'a iki yeni ağır bağımlılık,
-   depolama/bant genişliği sorunu aynen duruyor ve yine yalnızca kendi
-   içeriğimizi kapsıyor.
-3. **Cihaz üstü TTS (seçilen).** Kalite bulut nöral seslerin altında ama
-   iOS'un gelişmiş (Enhanced) sesleri gerçekten iyi ve kullanıcı Ayarlar'dan
-   indirebiliyor. Buna karşılık: sıfır maliyet, sıfır depolama, sıfır bant
-   genişliği, çevrimdışı çalışıyor (uygulamanın offline bölüm önbelleğiyle
-   tutarlı) ve **her kitabı** kapsıyor — klasikler dâhil. Kelime sınırları
-   işletim sisteminden bedava geliyor, hizalamaya hiç gerek yok.
-
-Ürünün ihtiyacı "stüdyo kalitesinde sesli kitap" değil, "okurken takip
-edebilmek". Üçüncü seçenek bunu karşılıyor ve "basitlik önce gelir"
-ilkesiyle tek uyumlu olan o.
-
-**Bilinen sınır:** Arka planda çalmıyor. Bunun için `UIBackgroundModes:
-audio` ve bir kilit ekranı oynatma arayüzü gerekiyor; bu sürümde bilerek
-yok, uygulama arka plana alınınca ses susuyor.
-
-### ADR-012: Stüdyo seslendirmesi — özgün içerikte, premium, bir kitap ücretsiz
-
-**Karar:** ADR-011'in üstüne ikinci bir sürücü eklendi. Özgün 63 hikâyenin
-207 bölümü Google Cloud TTS (`en-US-Neural2-F`) ile önceden seslendirildi;
-SSML `<mark>` + `enableTimePointing` ile kelime zaman işaretleri de
-üretildi, yani vurgu bu yolda da kelime kelime çalışıyor. Klasikler
-kapsam dışı ve öyle kalacak.
-
-**Neden ADR-011'in reddi çürüdü:** O karar bulut TTS'i "kapsama yetersiz"
-diye reddetmişti — 46 klasiği kapsamıyordu. Yanlış olan reddin kendisi
-değil, sorunun kurulumuydu: ikisi arasında SEÇMEK gerekmiyor. Cihaz sesi
-zaten yazılmış ve her kitapta çalışıyor; bulut sesi onun yerine değil,
-üstüne geliyor. Böylece "kapsamıyor" bir kusur olmaktan çıkıp premium
-sınırının doğal çizgisi oluyor: parasını ödediğimiz ses, kendi ürettiğimiz
-içerikte.
+**Neden ADR-011 iptal edildi:** Cihaz üstü TTS teknik olarak sorunsuz
+çalışıyordu ve her kitabı kapsıyordu. İptalin sebebi kalite ve
+konumlandırma: cihaz sesi ile stüdyo kaydı arasındaki fark büyük, ve ikisi
+aynı düğmenin arkasında durduğunda kullanıcı hangisini duyduğunu bilmeden
+"seslendirme kötü" sonucuna varıyordu. Tek ve iyi bir ses, iki farklı
+kalitede sesten daha anlaşılır bir üründür.
 
 **Neden premium:** Cihaz sesinin marjinal maliyeti sıfırdı, bunun değil —
 üretim faturası, Supabase depolama (~350 MB) ve her dinlemede çıkış bant
-genişliği var. Ücretsiz katman bundan zarar görmüyor: her kitap yine
-sonuna kadar okunabiliyor ve yine sesli dinlenebiliyor (ilke #2).
+genişliği var.
 
-**Neden bir hikâye tam ücretsiz** (`audio_taster_grants`, migration 031):
-"Doğal ses" bir paywall maddesi olarak hiçbir şey ifade etmiyor; farkı
-anlatmak mümkün değil, duyurmak gerekiyor. Hak KİTABA bağlanıyor ve şema
-gereği bir daha verilemiyor — tablonun birincil anahtarı `user_id`, yani
-ikinci bir satır fiziksel olarak imkânsız. Kural sunucuda:
-`can_play_book_audio()` (premium VEYA bu kitap için hak) tek karar yeri;
-istemcide ikinci bir kopyası yok.
-
-**Erişim nasıl kısıtlanıyor:** `book-audio` deposu ARTIK HERKESE AÇIK
-DEĞİL (migration 031). Açık kaldığı sürece kilit yalnızca görsel olurdu:
-dosya adresleri `book_sections.audio_url` içinde ve o satırları herkes
+**Erişim nerede kısıtlanıyor:** `book-audio` deposu herkese açık DEĞİL
+(migration 031). Açık kaldığı sürece kilit yalnızca görsel olurdu: dosya
+adresleri `book_sections.audio_url` içinde ve o satırları herkes
 okuyabiliyor. Bağlantıyı `supabase/functions/chapter-audio` üretiyor —
 çağıranın JWT'sini doğruluyor, `can_play_book_audio()`'ya soruyor, sonra
-2 saatlik imzalı bağlantı veriyor.
+2 saatlik imzalı bağlantı veriyor. Kural TEK yerde: istemci de aynı
+fonksiyonu çağırıyor, ikinci bir kopyası yok.
 
-**Bozulduğunda ne oluyor:** Fonksiyon 403 (`locked`) ya da 404
-(`no_audio`) dönerse reader sessizce cihaz sesine düşüyor. Kullanıcı için
-sonuç asla "ses çalışmıyor" değil. Bu, iki sürücülü olmanın asıl kazancı:
-bulut yolundaki her arıza bir kesinti değil, bir kalite düşüşü.
+**Reader'da ne görünüyor:** Erişim yoksa seslendirme düğmesi HİÇ
+görünmüyor. Kilitli bir düğme koymak okuma ekranına premium promosyonu
+sokardı (Ürün İlkesi #1); basıldığında hiçbir şey yapmayan bir düğme ise
+arıza gibi görünürdü. Teklif kitap detayında: `BookAudioCard` ve "Dinle"
+düğmesi (kilitliyse paywall'a gidiyor).
+
+**Bozulduğunda ne oluyor:** `chapter-audio` 403/404 dönerse düğme
+görünmüyor; geçici hatalarda (5xx, ağ) sorgu yeniden deniyor. Artık geri
+düşülecek bir cihaz sesi olmadığı için bu ayrım eskisinden daha önemli —
+yutulan geçici bir hata, ödeyen kullanıcı için sesin tamamen kaybolması
+demek olurdu.
 
 ## Kod Konvansiyonları
 
@@ -466,7 +434,10 @@ bulut yolundaki her arıza bir kesinti değil, bir kalite düşüşü.
   aynı migration'da `ENABLE ROW LEVEL SECURITY` ve en az bir policy içerir.
 - **Okuma ekranında paywall** — `features/reader` içine premium
   promosyonu, banner, interstitial veya "yükseltmek ister misin" modalı
-  eklenmez (bkz. Ürün İlkesi #1).
+  eklenmez (bkz. Ürün İlkesi #1). Kilitli görünen bir düğme de buna dâhil:
+  erişim yoksa kontrol GİZLENİR, kilitlenmez.
+- **Kelime telaffuzunu ücretli yapma** — sözlük kartındaki hoparlör
+  ücretsiz kalır. Bölüm seslendirmesi premium, telaffuz değil (ADR-012).
 
 ## Mevcut Durum ve Sonraki Adımlar
 
@@ -479,12 +450,13 @@ bulut yolundaki her arıza bir kesinti değil, bir kalite düşüşü.
 
 - **İçerik:** 119 yayında kitap. 56 klasik (kamu malı: 17 B1, 27 B2, 6 C1,
   6 C2) + 63 özgün seviyeli hikâye (4 A1, 35 A2, 24 B1). B1 boşluğu
-  2026-09-08'de kapatıldı; **özgün B2 hâlâ sıfır** (aşağıya bak).
+  2026-09-08'de kapatıldı. **Özgün B2: 3 hikâye üretildi, 9'u API kredisi
+  bekliyor** (aşağıya bak).
   26.000+ kelimelik İngilizce-Türkçe sözlük (%100 çevirili).
 - **Okuma:** native sayfalanan reader, kelime tıklama → Türkçe karşılık,
   cümle uzun-basma → AI çevirisi, offline bölüm önbelleği (SQLite),
-  kelime kelime vurgulu sesli okuma — iki sürücü: her kitapta cihaz sesi
-  (ADR-011), özgün 63 hikâyede stüdyo sesi (ADR-012).
+  özgün 63 hikâyede kelime kelime vurgulu stüdyo seslendirmesi — premium
+  (ADR-012; cihaz üstü seslendirme kaldırıldı, ADR-011 iptal).
 - **Öğrenme:** kelime kaydetme, SM-2 aralıklı tekrar motoru ve tekrar
   ekranı, 36 kelimelik seviye tespiti testi ve onboarding akışı.
 - **Gelir:** RevenueCat entegrasyonu; yetkiyi yalnızca webhook yazıyor
@@ -500,7 +472,7 @@ bulut yolundaki her arıza bir kesinti değil, bir kalite düşüşü.
   yazıldı, App Store metinleri karakter sayılarıyla hazır, paywall mockup'ı
   eklendi (`mockups/paywall.html`).
 
-31 migration versiyonlanmış, tüm tablolarda RLS aktif. Üç Edge Function
+32 migration versiyonlanmış, tüm tablolarda RLS aktif. Üç Edge Function
 dağıtıldı (`revenuecat-webhook`, `chapter-audio`, `sync-entitlement`).
 i18n tam (tr + en, eşit anahtar — artık testle zorlanıyor). 186 test
 geçiyor, typecheck ve lint temiz. Supabase güvenlik denetçisinde gerçek
@@ -568,6 +540,40 @@ cd pipeline
 .venv/Scripts/python.exe -m src.cli run --book <slug>
 .venv/Scripts/python.exe -m src.cli publish --book <slug>
 ```
+
+### İçerik: B2 basamağı (devam ediyor)
+
+B1 kapandıktan sonra sıradaki boşluk B2: katalogda 27 klasik var ama özgün
+içerik yoktu, yani basamak yine 20 dakikalık B1'den 200 dakikalık klasiğe
+atlıyordu.
+
+**Üretim yolu B1'inkiyle aynı** (`--level B2`), iki ek korumayla:
+
+1. **Cümle uzunluğu TABANI** (`LEVEL_MIN_AVG_SENTENCE`). STRICT
+   doğrulayıcı yalnızca TAVAN koyuyor (B2 için ort. ≤24). B2'nin asıl
+   derdi taban: ortalaması 15 olan bir metin tavandan rahatça geçer ama
+   yapısal olarak B1'dir. Taban `pipeline check`'in bastığı **spaCy**
+   ortalamasını okuyor — kendi cümle bölücüsüyle ölçmek bir ara denendi ve
+   sistematik olarak yüksek saptı (`?"` sonrası ve kısaltmalarda
+   bölemiyor), yani taban tavanla farklı bir cetveldeydi.
+2. **`force_frontmatter()`** — seviye/yazar/etiket alanları modele
+   sorulmuyor, yazılıyor. İlk B2 denemesi künyeye `target_level: B1`
+   yazmıştı; özgün içerikte yayın seviyesi doğrudan oradan geldiği için
+   tek kelimelik bir sapma kitabı yanlış rafa koyuyor ve bunu hiçbir
+   doğrulayıcı yakalamıyor (metin o seviyede zaten geçerli).
+
+**Durum (2026-09-08):** 12 konudan **3'ü** üretildi ve doğrulayıcıdan
+geçti (ort. cümle 20,3 / 21,3 — hedef bant 17-21; ~5.000 kelime, ~35 dk).
+Kalan 9'u **Anthropic API kredisi bitince** yarıda kaldı; kredi
+yüklendiğinde aynı komut kaldığı yerden devam ediyor (var olan dosyaları
+atlıyor):
+
+```
+cd pipeline
+.venv/Scripts/python.exe scripts/generate_stories.py --level B2 --count 12
+```
+
+Üretilen hikâyeler `stories/` altında ve **henüz yayınlanmadı**.
 
 ### Bilinen teknik borç
 

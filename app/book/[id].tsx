@@ -25,6 +25,7 @@ import {
   BookSeriesInfo,
   BookStatsRow,
   ChapterListItem,
+  useBookAudioAccessQuery,
   useBookDetailQuery,
   useBookSeriesQuery,
 } from "@/features/library";
@@ -42,6 +43,10 @@ export default function BookDetailScreen() {
   const { theme } = useTheme();
   const { data, isLoading, isError, refetch } = useBookDetailQuery(id);
   const { data: series } = useBookSeriesQuery(data?.book?.id);
+  const { data: audioAccess } = useBookAudioAccessQuery(
+    data?.book?.id,
+    Boolean(data?.book?.hasAudio),
+  );
   const { data: favoritedBookIds } = useFavoritedBookIdsQuery();
   const toggleFavoriteMutation = useToggleFavoriteMutation();
   const { show: showToast } = useToast();
@@ -85,6 +90,17 @@ export default function BookDetailScreen() {
    */
   const handlePressListen = () => {
     if (!data?.book || !data.continueChapter) return;
+
+    // Kilitliyken reader'a göndermek işe yaramazdı: orada seslendirme
+    // düğmesi zaten görünmüyor ve kullanıcı neden dinleyemediğini
+    // anlamadan okuma ekranında kalırdı. Teklif okuma akışının dışında
+    // yapılıyor (Ürün İlkesi #1) — yani tam burada.
+    if (!audioAccess?.canPlay) {
+      trackEvent("book_listen_locked", { bookId: data.book.id });
+      router.push("/paywall?source=audio");
+      return;
+    }
+
     trackEvent("book_listen_started", {
       bookId: data.book.id,
       chapterId: data.continueChapter.id,
@@ -192,14 +208,18 @@ export default function BookDetailScreen() {
 
       <View style={styles.cta}>
         <Button label={ctaLabel} onPress={handlePressCta} disabled={!continueChapter} fullWidth />
-        <Button
-          label={t("bookDetail.cta.listen")}
-          accessibilityLabel={t("bookDetail.cta.listenAccessibilityLabel")}
-          onPress={handlePressListen}
-          disabled={!continueChapter}
-          variant="secondary"
-          fullWidth
-        />
+        {/* Stüdyo kaydı olmayan kitapta (klasiklerin tamamı) düğme hiç
+            görünmüyor: dinlenecek bir şey yok. */}
+        {book.hasAudio ? (
+          <Button
+            label={t("bookDetail.cta.listen")}
+            accessibilityLabel={t("bookDetail.cta.listenAccessibilityLabel")}
+            onPress={handlePressListen}
+            disabled={!continueChapter}
+            variant="secondary"
+            fullWidth
+          />
+        ) : null}
       </View>
 
       <SectionHeader title={t("bookDetail.chapters")} style={styles.sectionHead} />

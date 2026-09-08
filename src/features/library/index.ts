@@ -15,6 +15,7 @@ export { BookHero } from "@/features/library/components/BookHero";
 export { BookStatsRow } from "@/features/library/components/BookStatsRow";
 export { BookSeriesInfo } from "@/features/library/components/BookSeriesInfo";
 export { BookAudioCard } from "@/features/library/components/BookAudioCard";
+export { useBookAudioAccessQuery } from "@/features/library/api/useBookAudioAccess";
 export { SourceLicenseSheet } from "@/features/library/components/SourceLicenseSheet";
 export type {
   Book,

@@ -29,7 +29,6 @@ import { useReaderPosition } from "@/features/reader/hooks/useReaderPosition";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { ReaderHeader } from "@/features/reader/components/ReaderHeader";
-import { useReaderTts } from "@/features/reader/tts/useReaderTts";
 import { useChapterAudio } from "@/features/reader/tts/useChapterAudio";
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
 import { ReaderFooter } from "@/features/reader/components/ReaderFooter";
@@ -147,55 +146,32 @@ export function ReaderScreen({
   const isSpeaking = useTtsStore((state) => state.status === "speaking");
 
   /**
-   * Sesli okumanın İKİ sürücüsü var ve hangisinin kullanılacağı bölümde
-   * hazır ses olup olmadığına bağlı:
+   * Seslendirmenin TEK sürücüsü var: önceden üretilmiş stüdyo kaydı ve
+   * sunucudan gelen kelime zaman damgaları (`useChapterAudio`).
    *
-   *  - `useChapterAudio` — önceden üretilmiş Google TTS sesi ve sunucudan
-   *    gelen kelime zaman damgaları. Yalnızca özgün hikâyelerde var
-   *    (bkz. `pipeline/scripts/generate_audio.py`).
-   *  - `useReaderTts` — cihazın kendi konuşma motoru (ADR-011). Her kitapta
-   *    çalışır, klasiklerin tek seçeneği.
+   * Cihaz üstü sürücü (`useReaderTts`, eski ADR-011) 2026-09-08'de
+   * kaldırıldı: seslendirme artık istisnasız premium bir özellik ve
+   * yalnızca stüdyo kaydı olan kitaplarda var.
    *
-   * İkisi de her render'da çağrılıyor çünkü hook'lar koşullu olamaz;
-   * `enabled` bayrağı pasif olanın ortak vurgu deposuna dokunmasını
-   * engelliyor. Dışarıya tek bir denetleyici veriliyor, arayüz aynı —
-   * `ReaderHeader` hangi kaynağın çaldığını bilmiyor ve bilmesi gerekmiyor.
+   * İKİ AYRI BAYRAK, ikisi de gerekli:
+   *  - `hasStudioAudio` — bu bölüm için kayıt ÜRETİLMİŞ mi (klasiklerde yok).
+   *  - `audio.available` — bu kullanıcı onu ÇALABİLİR mi (premium; karar
+   *    sunucuda, imzalı bağlantıyla geliyor).
+   *
+   * İkisi de doğru değilse seslendirme düğmesi hiç GÖRÜNMÜYOR. Kilit
+   * ikonu, "yükselt" düğmesi ya da herhangi bir premium promosyonu da yok
+   * (Ürün İlkesi #1): reader satış yapmaz, teklif kitap detayında.
    */
-  const hasCloudAudio = Boolean(chapter?.audioUrl && chapter?.audioTimingsUrl);
+  const hasStudioAudio = Boolean(chapter?.audioUrl && chapter?.audioTimingsUrl);
 
-  const cloudAudio = useChapterAudio({
+  const tts = useChapterAudio({
     readerRef,
     chapter,
     rate: settings.speechRate,
-    enabled: hasCloudAudio,
+    enabled: hasStudioAudio,
   });
 
-  /**
-   * Bulut sesi yalnızca ERİŞİM ONAYLANDIĞINDA seçiliyor.
-   *
-   * `hasCloudAudio` "bu bölüm için stüdyo sesi ÜRETİLMİŞ mi" demek;
-   * `cloudAudio.available` ise "bu kullanıcı onu dinleyebilir mi" demek —
-   * ikincisi sunucudan geliyor (imzalı bağlantı, migration 031). Ayrım
-   * önemli: erişimi olmayan kullanıcı için bulut sürücüsü seçilseydi
-   * seslendirme düğmesi hiçbir şey yapmazdı. Bunun yerine cihaz sesine
-   * düşüyor — ADR-011'deki ücretsiz sesli okuma aynen çalışmaya devam
-   * ediyor, hiçbir şey kaybolmuyor.
-   *
-   * Bu yüzden reader'da kilit ikonu, "yükselt" düğmesi ya da herhangi bir
-   * premium promosyonu YOK (Ürün İlkesi #1). Seçim kitap detayında
-   * yapılıyor, okuma akışının dışında.
-   */
-  const useCloudAudio = cloudAudio.available;
-
-  const deviceTts = useReaderTts({
-    readerRef,
-    chapterId: useCloudAudio ? undefined : chapter?.id,
-    bookId: chapter?.bookId,
-    rate: settings.speechRate,
-    voiceId: settings.speechVoiceId,
-  });
-
-  const tts = useCloudAudio ? cloudAudio : deviceTts;
+  const canPlayAudio = tts.available;
 
   /**
    * "Dinle" ile gelindiğinde seslendirmeyi bir kez kendiliğinden başlatır.
@@ -224,10 +200,10 @@ export function ReaderScreen({
 
   useEffect(() => {
     if (!autoStartSpeech || autoStartedRef.current) return;
-    if (!chapter || !pagesReady || !cloudAudio.accessResolved) return;
+    if (!chapter || !pagesReady || !tts.accessResolved) return;
     autoStartedRef.current = true;
     toggleRef.current();
-  }, [autoStartSpeech, chapter, pagesReady, cloudAudio.accessResolved]);
+  }, [autoStartSpeech, chapter, pagesReady, tts.accessResolved]);
   // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
   // `stop` konumu sıfırlıyor, yani kullanıcı sözlüğe bakıp geri döndüğünde
   // seslendirme sayfanın başından başlıyordu.
@@ -594,6 +570,7 @@ export function ReaderScreen({
         onOpenSettings={() => settingsSheetRef.current?.present()}
         onToggleSpeech={tts.toggle}
         isSpeaking={isSpeaking}
+        canPlaySpeech={canPlayAudio}
       />
 
       <View style={styles.readerWrap}>

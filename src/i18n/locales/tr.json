@@ -224,11 +224,9 @@
     },
     "audio": {
       "label": "SESLENDİRME",
-      "unlocked": "Bu hikâye doğal sesle, kelime kelime takip edilerek okunuyor.",
-      "tasterOffer": "Bu hikâyeyi doğal sesle dinleyebilirsin — ücretsiz hakkın burada kullanılır.",
-      "tasterSpent": "Ücretsiz doğal ses hakkını başka bir hikâyede kullandın. Bu hikâye cihazının sesiyle yine dinlenebilir.",
-      "tasterCta": "Ücretsiz dinlemeyi burada kullan",
-      "upgradeCta": "Tüm hikâyelerde doğal ses"
+      "unlocked": "Bu hikâye stüdyo sesiyle, kelime kelime takip edilerek okunuyor.",
+      "upgradeCta": "Premium ile dinle",
+      "locked": "Stüdyo seslendirmesi premium'a dahil. Bu hikâyeyi doğal bir sesle, okuduğun kelime vurgulanarak dinleyebilirsin."
     }
   },
   "reader": {
@@ -296,12 +294,12 @@
         "1": "Normal",
         "1.2": "Hızlı"
       },
-      "voice": "Ses",
+      "voice": "Kelime telaffuz sesi",
       "voiceTier": {
         "premium": "yüksek kalite",
         "enhanced": "gelişmiş"
       },
-      "voiceUpgradeHint": "Daha doğal bir ses için: Ayarlar > Erişilebilirlik > Sözlü İçerik > Sesler > İngilizce'den bir ses indir. Ücretsiz ve bir kerelik; indirdikten sonra burada görünür."
+      "voiceUpgradeHint": "Sözlükteki kelimeleri okuyan cihaz sesi. Daha doğal duyulması için: Ayarlar > Erişilebilirlik > Sözlü İçerik > Sesler > İngilizce'den bir ses indir. Ücretsiz ve bir kerelik. (Bölüm seslendirmesi bundan bağımsız — o stüdyo kaydıyla yapılıyor.)"
     },
     "chapterComplete": {
       "title": "Bölüm tamamlandı",
@@ -539,6 +537,7 @@
     "socialProof_one": "{{count}} HİKÂYE · A1'DEN C2'YE",
     "socialProof_other": "{{count}} HİKÂYE · A1'DEN C2'YE",
     "benefits": {
+      "studioAudio": "63 hikâyede stüdyo seslendirmesi — okunan kelime vurgulanarak",
       "unlimitedWords": "Sınırsız kelime kaydı — defter sınırı kalkar",
       "spacedRepetition": "Aralıklı tekrar: her kelime unutmadan önce karşına çıkar",
       "aiSentences": "Günde {{premium}} AI cümle çevirisi (ücretsiz katmanda {{free}})",

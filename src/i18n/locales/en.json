@@ -224,11 +224,9 @@
     },
     "audio": {
       "label": "NARRATION",
-      "unlocked": "This story is read in a natural voice, word by word.",
-      "tasterOffer": "You can listen to this story in a natural voice — your free story will be used here.",
-      "tasterSpent": "You used your free natural-voice story elsewhere. This story can still be read aloud by your device.",
-      "tasterCta": "Use my free listen here",
-      "upgradeCta": "Natural voice on every story"
+      "unlocked": "This story is narrated in a studio voice, highlighted word by word.",
+      "upgradeCta": "Listen with premium",
+      "locked": "Studio narration is part of premium. Listen to this story in a natural voice, with each word highlighted as it is read."
     }
   },
   "reader": {
@@ -296,12 +294,12 @@
         "1": "Normal",
         "1.2": "Fast"
       },
-      "voice": "Voice",
+      "voice": "Word pronunciation voice",
       "voiceTier": {
         "premium": "high quality",
         "enhanced": "enhanced"
       },
-      "voiceUpgradeHint": "For a more natural voice: Settings > Accessibility > Spoken Content > Voices > English, and download one. It's free and one-time; it appears here afterwards."
+      "voiceUpgradeHint": "The device voice that reads dictionary words aloud. For a more natural sound: Settings > Accessibility > Spoken Content > Voices > English, and download a voice. Free and one-off. (Chapter narration is separate — that uses a studio recording.)"
     },
     "chapterComplete": {
       "title": "Chapter complete",
@@ -539,6 +537,7 @@
     "socialProof_one": "{{count}} STORY · A1 TO C2",
     "socialProof_other": "{{count}} STORIES · A1 TO C2",
     "benefits": {
+      "studioAudio": "Studio narration for 63 stories — each word highlighted as it's read",
       "unlimitedWords": "Unlimited saved words — no notebook limit",
       "spacedRepetition": "Spaced repetition: every word returns before you forget it",
       "aiSentences": "{{premium}} AI sentence translations a day (free tier: {{free}})",

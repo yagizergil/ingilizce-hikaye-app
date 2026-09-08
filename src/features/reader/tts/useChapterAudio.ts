@@ -17,7 +17,6 @@ import {
 import type { RefObject } from "react";
 import type { PaginatedReaderHandle } from "@/features/reader/components/PaginatedReaderView";
 import type { ReaderChapter } from "@/features/reader/types";
-import type { ReaderTtsController } from "@/features/reader/tts/useReaderTts";
 
 /**
  * Bulut sürücüsünün denetleyicisi + gerçekten kullanılabilir olup olmadığı.
@@ -28,6 +27,26 @@ import type { ReaderTtsController } from "@/features/reader/tts/useReaderTts";
  * olmayan kullanıcıda bulut sürücüsü seçilir ve sesli okuma düğmesi hiçbir
  * şey yapmazdı — oysa doğru davranış cihaz sesine düşmek.
  */
+/**
+ * Seslendirme denetleyicisinin arayüzü.
+ *
+ * Eskiden bunu cihaz sürücüsü (`useReaderTts`) tanımlıyor, bulut sürücüsü
+ * ondan türetiyordu. Cihaz üstü bölüm seslendirmesi kaldırılınca (bkz.
+ * CLAUDE.md, ADR-011 iptali) geriye tek sürücü kaldı ve arayüz buraya
+ * taşındı.
+ */
+export interface ReaderTtsController {
+  toggle: () => void;
+  /**
+   * Susturur ama KONUMU KORUR — tekrar başlatıldığında kalınan kelimeden
+   * devam eder. Kelimeye dokunma gibi "bir saniye bak, sonra devam et"
+   * durumları için.
+   */
+  pause: () => void;
+  /** Susturur ve konumu SIFIRLAR. Bölüm değişimi ve ekrandan çıkış için. */
+  stop: () => void;
+}
+
 export interface ChapterAudioController extends ReaderTtsController {
   available: boolean;
   /**

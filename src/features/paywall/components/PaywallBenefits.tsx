@@ -17,17 +17,23 @@ type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
  *
  * HER MADDE BUGÜN ÜRÜNDE VAR OLMAK ZORUNDA (denetim bulgusu, 2026-09-07):
  * liste eskiden "AI destekli açıklamalar" ve "sesli okuma" vaat ediyordu.
- * Sesli okuma diye bir özellik yoktu — `expo-speech` yalnızca tek kelime
- * telaffuzu için kullanılıyor ve o ücretsiz. AI çevirisi ise vardı ama
- * kotası herkes için aynıydı, yani premium faydası değildi. Liste şimdi
- * gerçekten farklılaşan üç şeye dayanıyor; AI maddesi de kotanın katmana
- * bağlanmasıyla (migration 029) dürüst hâle geldi.
+ * O tarihte sesli okuma diye bir özellik YOKTU — `expo-speech` yalnızca tek
+ * kelime telaffuzu için kullanılıyordu. AI çevirisi ise vardı ama kotası
+ * herkes için aynıydı, yani premium faydası değildi. İkisi de listeden
+ * çıkarıldı; AI maddesi kotanın katmana bağlanmasıyla (migration 029)
+ * dürüst hâle gelip geri döndü.
+ *
+ * `studioAudio` 2026-09-08'de eklendi ve aynı kuraldan geçti: 63 hikâyenin
+ * 207 bölümü gerçekten seslendirildi, erişim sunucuda kısıtlanıyor
+ * (migration 032 + `chapter-audio`) ve ücretsiz katmanda karşılığı yok.
+ * Yani bu sefer madde, çalışan bir özelliği anlatıyor.
  *
  * BURAYA BİR MADDE EKLEMEDEN ÖNCE: o özellik üründe çalışıyor mu ve
  * ücretsiz katmandan gerçekten farklı mı? İkisi de evet değilse madde
  * yanıltıcı metadatadır (Guideline 2.3.1).
  */
 const BENEFITS: { icon: IoniconName; key: string }[] = [
+  { icon: "headset-outline", key: "studioAudio" },
   { icon: "bookmarks-outline", key: "unlimitedWords" },
   { icon: "repeat-outline", key: "spacedRepetition" },
   { icon: "sparkles-outline", key: "aiSentences" },
