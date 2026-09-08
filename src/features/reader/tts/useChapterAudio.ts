@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useRef } from "react";
 
-import { useAudioPlayer } from "expo-audio";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { useQuery } from "@tanstack/react-query";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 
 import { supabase } from "@/lib/supabase";
 import { trackError } from "@/lib/analytics";
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
+import { isAwaitingAutoStart, shouldAutoStart } from "@/features/reader/tts/autoStartGate";
 import {
   findWordIndexAtTime,
   mapTimingsToPage,
@@ -50,15 +51,14 @@ export interface ReaderTtsController {
 export interface ChapterAudioController extends ReaderTtsController {
   available: boolean;
   /**
-   * Erişim kararı verildi mi (`available`'ın artık güvenilir olduğu an).
+   * "Dinle" ile gelindi, henüz çalmaya başlamadı.
    *
-   * NEDEN AYRI BİR BAYRAK: `available` başlangıçta da false, "erişim yok"
-   * durumunda da false — ikisi ayırt edilemiyor. Bu ayrım yalnızca bir
-   * yerde kritik: "Dinle" düğmesiyle gelen otomatik başlatma. Karar
-   * gelmeden başlatılırsa `available` henüz false olduğu için CİHAZ sesi
-   * çalar, yani düğme tam olarak istenmeyen sesi çalmış olur.
+   * NEDEN DIŞARI ÇIKIYOR: imzalı bağlantı + zaman işaretleri + ses
+   * dosyasının yüklenmesi birkaç saniye sürebiliyor. Bu aralıkta ekranda
+   * hiçbir işaret olmazsa kullanıcı için sonuç "düğmeye bastım, hiçbir şey
+   * olmadı" oluyor — arıza ile bekleme ayırt edilemiyor.
    */
-  accessResolved: boolean;
+  isPreparing: boolean;
 }
 
 interface SignedAudio {
@@ -72,6 +72,16 @@ interface UseChapterAudioOptions {
   chapter: ReaderChapter | null | undefined;
   /** Kullanıcının seçtiği okuma hızı; cihaz TTS'iyle aynı ölçek. */
   rate: number;
+  /**
+   * Kullanıcı "Dinle" ile geldi ve ekran hazır — sürücü hazır olur olmaz
+   * BİR KEZ başlasın.
+   *
+   * NEDEN KARAR BURADA, ReaderScreen'de DEĞİL: "hazır" olmanın ne demek
+   * olduğunu (imzalı bağlantı + zaman işaretleri + yüklenmiş oynatıcı)
+   * yalnızca bu hook biliyor. Dışarıdan tetiklemek, o üç durumun hepsini
+   * ekrana sızdırmak ve birini unutmak demekti — nitekim unutuldu.
+   */
+  autoStart?: boolean;
   /**
    * Bu hook AKTİF sürücü mü.
    *
@@ -97,23 +107,19 @@ const TICK_MS = 60;
  * Önceden üretilmiş bölüm seslendirmesini çalar ve kelime kelime vurguyu
  * sürer.
  *
- * NEDEN CİHAZ TTS'İNDEN AYRI BİR HOOK: ikisi aynı arayüzü (`toggle`,
- * `pause`, `stop`) ve aynı vurgu deposunu (`useTtsStore`) paylaşıyor ama
- * mekanizmaları taban tabana farklı. Cihaz TTS'i metni parça parça
- * konuşturup platformun `onBoundary` olayını dinliyor; burada ise hazır
- * bir ses dosyası çalıyor ve vurgu, sunucudan gelen zaman damgalarından
- * SÜRÜLÜYOR. İkisini tek hook'a sıkıştırmak her satırda "hangi moddayız"
- * sorusunu sordururdu.
+ * Hazır bir ses dosyası çalıyor ve vurguyu sunucudan gelen zaman
+ * damgalarından sürüyor. Seslendirmenin TEK sürücüsü bu (ADR-012); cihaz
+ * üstü sürücü 2026-09-08'de kaldırıldı.
  *
- * KATMAN İLİŞKİSİ: bu üst katman. `audioUrl` yoksa (klasiklerin tamamı,
- * ADR-011) reader cihaz TTS'ine düşüyor — yani sesli okuma HER KİTAPTA
- * çalışıyor, bulut sesi yalnızca özgün hikâyelerde devreye giriyor.
+ * `enabled` false ise (klasiklerin tamamı — stüdyo kaydı yok) hook hiçbir
+ * ağ isteği yapmıyor ve ortak vurgu deposuna dokunmuyor.
  */
 export function useChapterAudio({
   readerRef,
   chapter,
   rate,
   enabled,
+  autoStart = false,
 }: UseChapterAudioOptions): ChapterAudioController {
   const status = useTtsStore((state) => state.status);
   const setStatus = useTtsStore((state) => state.setStatus);
@@ -169,6 +175,10 @@ export function useChapterAudio({
   const available = enabled && signed !== null;
 
   const player = useAudioPlayer(signed?.audioUrl ?? undefined);
+  // Oynatıcının `isLoaded` alanı düz bir özellik: okumak render'ı
+  // tetiklemiyor. Otomatik başlatma tam olarak o anı beklediği için
+  // REAKTİF durum gerekiyor.
+  const playerStatus = useAudioPlayerStatus(player);
 
   // Zamanlama dosyası bölüm boyunca değişmiyor; `staleTime: Infinity`
   // aynı bölüme dönüldüğünde yeniden indirilmesini önlüyor.
@@ -309,15 +319,48 @@ export function useChapterAudio({
   }, [clearTick, player]);
 
   useEffect(() => {
-    // Pasifken ortak vurgu deposuna dokunma — aktif olan cihaz sürücüsü.
+    // Stüdyo kaydı olmayan kitapta ortak vurgu deposuna hiç dokunma.
     if (!enabled) return;
     hardStop();
     // Yalnızca bölüm kimliği değişince sıfırla.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapter?.id, enabled]);
 
-  // Bölüm için stüdyo sesi hiç üretilmemişse beklenecek bir karar da yok.
-  const accessResolved = !enabled || signedQuery.isFetched;
+  /**
+   * "Dinle" ile gelindiğinde seslendirmeyi bir kez kendiliğinden başlatır.
+   *
+   * BU EFEKT EN SONDA DURUYOR ve bu bilinçli: yukarıdaki efekt bölüm
+   * değişiminde `hardStop()` çağırıyor. Efektler tanımlanma sırasına göre
+   * çalıştığı için, ikisinin aynı commit'te tetiklendiği durumda önce
+   * durdurma sonra başlatma oluyor. Ters sırada olsaydı otomatik başlatma
+   * hemen ardından susturulurdu.
+   *
+   * Koşullar `autoStartGate.ts` içinde ve testli — hangi koşulun neden
+   * gerekli olduğu orada yazılı.
+   */
+  const autoStartedRef = useRef(false);
 
-  return { toggle, pause, stop: hardStop, available, accessResolved };
+  // Ref YOK: bu nesne render sırasında kuruluyor ve `isAwaitingAutoStart`
+  // ona bakıyor. "Bir kez başlatıldı mı" bilgisi yalnızca efektin içinde,
+  // ref'ten okunuyor.
+  const readiness = {
+    requested: autoStart,
+    available,
+    timingsReady: timingsQuery.isSuccess,
+    playerLoaded: playerStatus.isLoaded,
+  };
+
+  useEffect(() => {
+    if (!shouldAutoStart(readiness, autoStartedRef.current)) return;
+    autoStartedRef.current = true;
+    toggle();
+    // `readiness` her render'da yeni bir nesne; bağımlılık olarak alanları
+    // veriliyor.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoStart, available, timingsQuery.isSuccess, playerStatus.isLoaded, toggle]);
+
+  // Bekleme göstergesi: istendi ama makine henüz hazır değil.
+  const isPreparing = isAwaitingAutoStart(readiness);
+
+  return { toggle, pause, stop: hardStop, available, isPreparing };
 }

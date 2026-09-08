@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View, Pressable } from "react-native";
 
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,6 +25,8 @@ interface ReaderHeaderProps {
    * düğme sadece yok.
    */
   canPlaySpeech: boolean;
+  /** "Dinle" ile gelindi, ses hazırlanıyor — düğme yerine göstergeç. */
+  isPreparingSpeech: boolean;
 }
 
 /** Top chrome: back button, chapter title, settings button — no progress
@@ -37,6 +39,7 @@ export function ReaderHeader({
   onToggleSpeech,
   isSpeaking,
   canPlaySpeech,
+  isPreparingSpeech,
 }: ReaderHeaderProps) {
   const { t } = useTranslation();
   const readerColors = useReaderThemeColors();
@@ -82,11 +85,15 @@ export function ReaderHeader({
             style={styles.iconButton}
             hitSlop={8}
           >
-            <Ionicons
-              name={isSpeaking ? "pause" : "volume-medium-outline"}
-              size={20}
-              color={readerColors.text}
-            />
+            {isPreparingSpeech ? (
+              <ActivityIndicator size="small" color={readerColors.text} />
+            ) : (
+              <Ionicons
+                name={isSpeaking ? "pause" : "volume-medium-outline"}
+                size={20}
+                color={readerColors.text}
+              />
+            )}
           </Pressable>
         ) : null}
 

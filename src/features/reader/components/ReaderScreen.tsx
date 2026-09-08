@@ -169,41 +169,16 @@ export function ReaderScreen({
     chapter,
     rate: settings.speechRate,
     enabled: hasStudioAudio,
+    // "Dinle" ile gelindi ve sayfalama bitti — sürücü kendi hazır olduğu
+    // anda başlatsın. Ne zaman hazır olduğuna KARAR VERMEK sürücünün işi:
+    // imzalı bağlantı, zaman işaretleri ve yüklenmiş oynatıcı yalnızca
+    // orada biliniyor. Bu ekran o üçünü bilmeye çalıştığında birini
+    // atladı ve düğme sessizce çalışmadı.
+    autoStart: autoStartSpeech && pagesReady,
   });
 
   const canPlayAudio = tts.available;
 
-  /**
-   * "Dinle" ile gelindiğinde seslendirmeyi bir kez kendiliğinden başlatır.
-   *
-   * ÜÇ KOŞUL BİRDEN gerekiyor ve üçü de gerçek bir hataya karşılık geliyor:
-   *  - `chapter`: metin gelmeden başlatacak bir şey yok.
-   *  - `pagesReady`: sayfalama bitmeden başlatmak, konuşma birimlerini
-   *    henüz ölçülmemiş bir sayfadan kurmaya çalışırdı.
-   *  - `accessResolved`: erişim kararı gelmeden `available` hâlâ false
-   *    olduğu için CİHAZ sesi çalardı — yani düğme, kullanıcının duymak
-   *    istemediği sesi çalmış olurdu.
-   *
-   * `toggle` bir ref üzerinden okunuyor: sürücü bulut/cihaz arasında
-   * değiştiğinde kimliği de değişiyor ve onu bağımlılığa koymak efekti
-   * yeniden çalıştırırdı.
-   */
-  const autoStartedRef = useRef(false);
-  const toggleRef = useRef(tts.toggle);
-
-  // Render sırasında ref'e yazmak SDK 57'nin react-hooks kuralına takılıyor.
-  // Bu efekt AŞAĞIDAKİNDEN ÖNCE tanımlı, yani aynı commit'te önce çalışıyor:
-  // otomatik başlatma her zaman güncel `toggle`'ı görüyor.
-  useEffect(() => {
-    toggleRef.current = tts.toggle;
-  }, [tts.toggle]);
-
-  useEffect(() => {
-    if (!autoStartSpeech || autoStartedRef.current) return;
-    if (!chapter || !pagesReady || !tts.accessResolved) return;
-    autoStartedRef.current = true;
-    toggleRef.current();
-  }, [autoStartSpeech, chapter, pagesReady, tts.accessResolved]);
   // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
   // `stop` konumu sıfırlıyor, yani kullanıcı sözlüğe bakıp geri döndüğünde
   // seslendirme sayfanın başından başlıyordu.
@@ -571,6 +546,7 @@ export function ReaderScreen({
         onToggleSpeech={tts.toggle}
         isSpeaking={isSpeaking}
         canPlaySpeech={canPlayAudio}
+        isPreparingSpeech={tts.isPreparing}
       />
 
       <View style={styles.readerWrap}>
