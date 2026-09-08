@@ -198,7 +198,7 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
         // Not used by useChapterPagination (WebView-only fields kept for
         // ReaderSettings shape compatibility); values are irrelevant here.
         pageTransitionMs: 0,
-        // Sayfalama ile ilgisi yok — sesli okuma hızı `useReaderTts`'e
+        // Sayfalama ile ilgisi yok — seslendirme hızı `useChapterAudio`'ya
         // doğrudan gidiyor. Burada yalnızca tip şeklini tamamlıyor.
         speechRate: 1,
         speechVoiceId: null,

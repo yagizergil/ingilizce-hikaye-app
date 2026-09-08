@@ -1,10 +1,12 @@
 import { getVoiceCatalog, resolveVoice } from "@/features/reader/tts/voiceCatalog";
 
 /**
- * Konuşma için kullanılacak sesin kimliği.
+ * KELİME TELAFFUZU için kullanılacak cihaz sesinin kimliği.
  *
- * Kelime telaffuzu (`WordSheet`) ve bölüm seslendirmesi (`useReaderTts`)
- * aynı sesi kullanıyor — iki farklı ses duymak tutarsız olurdu.
+ * Tek kullanıcısı `WordSheet`'teki hoparlör. Bölüm seslendirmesi bu yoldan
+ * GEÇMİYOR — o stüdyo kaydıyla yapılıyor (ADR-012) ve cihaz sesiyle hiçbir
+ * ilgisi yok. Eskiden ikisi aynı sesi paylaşıyordu; cihaz üstü bölüm
+ * seslendirmesi kaldırılınca (ADR-011 iptal) geriye yalnızca telaffuz kaldı.
  *
  * Sıralama ve kalite kademesi mantığı `voiceCatalog.ts` içinde; burası
  * yalnızca "kullanıcı bir ses seçtiyse onu, seçmediyse en iyisini ver"
