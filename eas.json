@@ -37,7 +37,8 @@
     "production": {
       "ios": {
         "language": "tr-TR",
-        "ascAppId": "6809447042"
+        "ascAppId": "6809447042",
+        "appleTeamId": "MY892GS275"
       }
     }
   }
