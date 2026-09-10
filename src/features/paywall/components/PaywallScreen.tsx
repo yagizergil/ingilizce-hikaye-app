@@ -216,7 +216,11 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      {/* Kaydırma göstergesi AÇIK. Kapalıydı ve bu, Apple reddinin (3.1.2(c),
+          2026-09-09) doğrudan sebebiydi: iPad'de içerik taşıyor, inceleyen
+          kişi kesilmiş bir düğme görüyor ve altta daha fazlası olduğuna dair
+          hiçbir işaret bulunmuyordu. */}
+      <ScrollView contentContainerStyle={styles.content}>
         <Text style={[type.display, { color: theme.text.primary }]}>{t("paywall.title")}</Text>
         <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
           {t("paywall.subtitle")}
@@ -263,20 +267,6 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
                 />
               ))}
             </View>
-
-            <Button
-              label={busy?.kind === "activating" ? t("paywall.activatingCta") : ctaLabel}
-              onPress={() => void handlePurchase()}
-              fullWidth
-              loading={busy?.kind === "purchase" || busy?.kind === "activating"}
-              disabled={isBusy || selected === null}
-            />
-
-            <PaywallLegal
-              priceString={selected?.pkg.product.priceString ?? null}
-              trialDays={selected?.trial?.days ?? null}
-              periodLabel={periodLabel}
-            />
           </>
         )}
 
@@ -295,6 +285,39 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
           />
         ) : null}
       </ScrollView>
+
+      {/* SABİT ALT BÖLÜM — kaydırmanın DIŞINDA ve bu bilinçli.
+       *
+       * Apple 1.0(6) sürümünü Guideline 3.1.2(c) ile reddetti: Kullanım
+       * Koşulları bağlantısını bulamadı. Bağlantı ekranda VARDI ama
+       * kaydırma alanının en altındaydı ve inceleme cihazında (iPad Air
+       * 11") içerik taştığı için hiç görünmedi.
+       *
+       * Kaydırmayı düzeltmek tek başına yetmez: aynı hata her yeni ekran
+       * boyutunda geri gelebilir. Bloğu kaydırmanın dışına almak sorunu
+       * sınıf olarak ortadan kaldırıyor — yasal bağlantılar ve satın alma
+       * düğmesi, cihaz ne olursa olsun her zaman ekranda.
+       *
+       * Yasal blok plan listesi boş olsa bile gösteriliyor: fiyat satırı o
+       * durumda çıkmıyor ama otomatik yenileme metni ve iki bağlantı
+       * duruyor — yani ekran hiçbir koşulda bağlantısız kalmıyor. */}
+      <View style={[styles.footer, { borderTopColor: theme.border.hairline }]}>
+        {isPurchasesAvailable && options.length > 0 ? (
+          <Button
+            label={busy?.kind === "activating" ? t("paywall.activatingCta") : ctaLabel}
+            onPress={() => void handlePurchase()}
+            fullWidth
+            loading={busy?.kind === "purchase" || busy?.kind === "activating"}
+            disabled={isBusy || selected === null}
+          />
+        ) : null}
+
+        <PaywallLegal
+          priceString={selected?.pkg.product.priceString ?? null}
+          trialDays={selected?.trial?.days ?? null}
+          periodLabel={periodLabel}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -318,5 +341,12 @@ const styles = StyleSheet.create({
   },
   notice: {
     textAlign: "center",
+  },
+  footer: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    gap: spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
 });

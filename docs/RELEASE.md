@@ -256,6 +256,55 @@ yalnızca Apple Search Ads hesabıyla görülebiliyor.
 
 ---
 
+## B6. Apple reddi 1.0(6) — App Store Connect'te yapılacak İKİ iş
+
+Apple 9 Eylül 2026'da 1.0(6) sürümünü iki gerekçeyle reddetti. **İkisi de
+uygulama kodunda değil, App Store Connect'te çözülüyor.** Koddaki payı
+düzeltildi (aşağıda), ama bu iki adım atılmadan yeniden gönderim yine
+reddedilir.
+
+### 1) Guideline 3.1.2(c) — EULA bağlantısı metadata'da yok
+
+Otomatik yenilenen abonelik sunan bir uygulamanın **App Store
+metadata'sında** Kullanım Koşulları (EULA) bağlantısı bulunmak zorunda.
+
+Apple'ın standart EULA'sı kullanıldığı için bağlantı **App Description**
+içine konuyor. `store/appstore-metinleri.txt` güncellendi; açıklamanın
+sonundaki şu blok App Store Connect'e AYNEN kopyalanmalı:
+
+```
+Premium otomatik yenilenen bir aboneliktir. Kullanım Koşulları (EULA):
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Gizlilik Politikası:
+https://yagizergil.github.io/ingilizce-hikaye-app/privacy.html
+```
+
+Ayrıca App Store Connect > App Information > **Privacy Policy URL** alanı
+dolu olmalı (aynı adres).
+
+**Uygulama içindeki kısım zaten vardı ama GÖRÜNMÜYORDU.** Yasal blok
+kaydırma alanının en altındaydı; inceleme cihazında (iPad Air 11") içerik
+taştığı ve kaydırma göstergesi kapalı olduğu için inceleyen kişi hiç
+görmedi. Düzeltildi: blok artık kaydırmanın DIŞINDA, sabit alt bölümde.
+
+### 2) Guideline 2.1(b) — abonelik ürünleri incelemeye gönderilmemiş
+
+Uygulama premium'dan bahsediyor ama abonelik ürünleri App Review'a hiç
+gönderilmemiş. App Store Connect > **Monetization > Subscriptions**:
+
+1. Her iki ürün için (aylık, yıllık) eksik alanları doldur: yerelleştirilmiş
+   görünen ad, açıklama, fiyat.
+2. **App Review Information > Screenshot** ZORUNLU — bu olmadan ürün
+   incelemeye gönderilemez. Hazır: `store/review-attachment.png`
+   (1284×2778, paywall ekranı).
+3. İsteğe bağlı promo görselleri: `store/iap-promo-monthly.png` ve
+   `store/iap-promo-yearly.png` (1024×1024).
+4. Ürünlerin durumu **"Ready to Submit"** olduktan sonra yeni sürümle
+   birlikte gönder — sürüm sayfasındaki **In-App Purchases** bölümünden
+   ikisini de bu sürüme EKLE. Eklenmezse Apple yine göremez.
+
+Entitlement adının tam olarak `premium` olduğunu da doğrula (bkz. ADR-009).
+
 ## Gönderim öncesi son kontrol listesi
 
 - [ ] A1–A5 tamamlandı, sandbox'ta bir satın alma `tier='premium'` yazdı

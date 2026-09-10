@@ -1,5 +1,5 @@
 APP STORE CONNECT — KOPYALANACAK METINLER
-Son guncelleme: 7 Eylul 2026
+Son guncelleme: 10 Eylul 2026
 
 ============================================================
 NAME (30)  — 28/30
@@ -17,10 +17,19 @@ KEYWORDS (100)  — 100/100
 okuma,defter,cümle,ezber,öykü,metin,klasik,türkçe,hikayeler,kitaplar,seviyeli,kolay,test,a1,a2,b1,b2
 
 ============================================================
-DESCRIPTION (4000)  — 1520/4000
-DIKKAT: Bu metin 2026-09-07'de duzeltildi. Icinde
-"Sonra B1 seviyesinde biraz daha uzun ozgun hikayelere"
-cumlesi OLMAMALI — B1'de ozgun hikaye yok (2.3.1 riski).
+DESCRIPTION (4000)
+DIKKAT 1 — EULA BAGLANTISI ZORUNLU. Apple 1.0(6) surumunu
+Guideline 3.1.2(c) ile reddetti (9 Eylul 2026): otomatik
+yenilenen abonelik sunan bir uygulamanin App Store
+METADATA'sinda Kullanim Kosullari (EULA) baglantisi olmak
+zorunda. Apple'in standart EULA'si kullaniliyor, o yuzden
+baglanti ACIKLAMANIN icine konuyor (alternatif: ASC'deki
+ozel EULA alani). Asagidaki son iki satiri SILME.
+
+DIKKAT 2 — sayilar 2026-09-10'da guncellendi: 119 kitap,
+63 ozgun hikaye (4 A1 / 35 A2 / 24 B1), 56 klasik.
+Artik B1'de ozgun hikaye VAR (24 tane); eski surumdeki
+"B1'de ozgun hikaye yok" uyarisi gecersiz.
 ============================================================
 Türkçe bilen biri için yazılmış bir İngilizce okuma uygulaması.
 Anlamadığın kelimeye dokun, Türkçe karşılığı anında açılsın.
@@ -28,10 +37,11 @@ Cümleye uzun bas, cümlenin tamamının çevirisini gör.
 
 SENİN SEVİYENDEN BAŞLA
 Yeni başlıyorsan A1 ve A2 seviyesinde, tek oturumda bitebilecek 39 kısa
-hikâye var — her biri 6-8 dakika, bu uygulama için yazıldı. Hazır
-hissettiğinde B1 ve üstünde dünya edebiyatının klasiklerine geçersin.
-Uygulama açılışta bir dakikalık bir kelime testiyle sana nereden
-başlayacağını söyler.
+hikâye var — her biri 6-8 dakika, bu uygulama için yazıldı. Sonra B1
+seviyesinde, bu uygulama için yazılmış 24 daha uzun hikâye geliyor
+(ortalama 20 dakika). Hazır hissettiğinde B1 ve üstünde dünya
+edebiyatının klasiklerine geçersin. Uygulama açılışta bir dakikalık bir
+kelime testiyle sana nereden başlayacağını söyler.
 
 OKURKEN ÖĞREN
 Bilmediğin kelimeye dokunduğunda Türkçe karşılığı açılır. Beğendiğin
@@ -44,14 +54,15 @@ Tüm kitaplar, tüm bölümler, sınırsız okuma. Reklam yok. Okuma ekranında
 hiçbir zaman kesinti, banner ya da abonelik teklifi görmezsin.
 
 PREMIUM NE EKLER
+- 63 özgün hikâyede stüdyo seslendirmesi — okunan kelime vurgulanarak
 - Sınırsız kelime kaydı (ücretsiz katmanda 100 kelime)
 - Aralıklı tekrar ile sınırsız kelime tekrarı
 - Günde 200 AI cümle çevirisi (ücretsiz katmanda 10)
 - Okuma süresi, seri ve seviye istatistikleri
 
 NELER VAR
-- 85 kitap ve hikâye
-- 39'u yeni başlayanlar için yazılmış kısa, seviyeli özgün hikâye
+- 119 kitap ve hikâye
+- 63'ü bu uygulama için yazılmış seviyeli özgün hikâye (A1, A2, B1)
 - 26.000 kelimelik İngilizce-Türkçe sözlük
 - Çevrimdışı okuma
 - Koyu tema, yazı tipi ve punto ayarı
@@ -60,16 +71,22 @@ Klasik eserler telif hakkı sona ermiş, herkesin serbestçe kullanabileceği
 kaynaklardan alınmıştır. Seviyeli hikâyeler İngilizce Hikaye Stüdyosu
 tarafından bu uygulama için yazılmıştır.
 
+Premium otomatik yenilenen bir aboneliktir. Kullanım Koşulları (EULA):
+https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Gizlilik Politikası:
+https://yagizergil.github.io/ingilizce-hikaye-app/privacy.html
+
 ============================================================
 PROMOTIONAL TEXT (170)  — 148/170
 ============================================================
-Yeni: A1 ve A2 seviyesinde, tek oturumda bitebilecek 39 özgün hikâye eklendi. Artık İngilizceye yeni başlayanlar da ilk günden okumaya başlayabilir.
+Yeni: A1'den B1'e 63 özgün hikâye ve stüdyo seslendirmesi. Dinlerken okunan kelime vurgulanıyor — İngilizceye yeni başlayanlar ilk günden başlayabilir.
 
 ============================================================
 WHAT'S NEW (4000)
 ============================================================
-İlk sürüm. 85 kitap, 26.000 kelimelik Türkçe sözlük ve yeni
-başlayanlar için yazılmış 39 kısa hikâye ile yayındayız.
+İlk sürüm. 119 kitap, 26.000 kelimelik Türkçe sözlük ve bu uygulama
+için yazılmış 63 seviyeli hikâye ile yayındayız. Özgün hikâyelerde
+stüdyo seslendirmesi var: okunan kelime metnin üzerinde vurgulanıyor.
 
 ============================================================
 COPYRIGHT (200)
