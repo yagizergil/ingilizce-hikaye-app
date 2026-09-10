@@ -24,11 +24,12 @@ interface ReaderWordProps {
  * (`spokenKey === wordKey`), yani kelime başına yalnızca İKİ bileşen render
  * ediliyor: vurgusu kalkan ve vurgusu gelen.
  *
- * NEDEN ACCENT DEĞİL: `useReaderThemeColors` içindeki kural açık — okuma
- * YÜZEYİNDE accent kullanılmaz, kelime vurguları dâhil. Vurgu bu yüzden
- * `readerColors.highlight` (secondaryMuted) ile yapılıyor; bu, WordSheet'in
- * cümle içinde kelimeyi öne çıkarmak için kullandığı rengin aynısı — aynı
- * anlam, aynı görsel dil.
+ * VURGU RENGİ: `readerColors.spokenHighlight` — saydam sarı (ürün sahibi
+ * kararı, 2026-09-10). Kendi token'ı var; önceden `highlight`
+ * (secondaryMuted) kullanılıyordu ama o renk WordSheet'te de kullanılıyor
+ * ve birini değiştirmek diğerini sessizce bozardı. Accent kuralı
+ * çiğnenmiyor: kural terracotta accent içindir, bu ayrı bir hue ve kalıcı
+ * bir işaret değil — sesin nerede olduğunu gösteren geçici bir imleç.
  *
  * KAYDEDİLMİŞ KELİME ALTI ÇİZİLİ KALIYOR: ürün sahibinin "highlight
  * olmayacak sadece altı çizili" kararı KAYDEDİLMİŞ kelimeler için verildi

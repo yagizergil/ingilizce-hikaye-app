@@ -208,6 +208,8 @@ export function ReaderScreen({
   const [activeSentence, setActiveSentence] = useState<SentenceSheetSentence | null>(null);
 
   const wordSheetRef = useRef<BottomSheetModal>(null);
+  /** Sözlük kapanınca seslendirme kaldığı yerden sürsün mü. */
+  const resumeAfterSheetRef = useRef(false);
   const sentenceSheetRef = useRef<BottomSheetModal>(null);
   const settingsSheetRef = useRef<BottomSheetModal>(null);
   // Tracks whether this chapter view has already reached the reader branch
@@ -289,8 +291,19 @@ export function ReaderScreen({
       // Sesli okumayı DURAKLAT (durdurma değil). İki sebep: (1) WordSheet'in
       // telaffuz düğmesi aynı `expo-speech` motorunu kullanıyor, iki konuşma
       // çakışırdı; (2) kullanıcı bir kelimeye baktığında metin akmaya devam
-      // etmemeli. Konum korunuyor, sözlükten dönünce kalınan yerden devam
-      // ediyor.
+      // etmemeli.
+      //
+      // SÖZLÜK KAPANINCA KENDİLİĞİNDEN DEVAM EDİYOR (kullanıcı isteği,
+      // 2026-09-10): "kelimeye bakmak" okumayı bitirmek değil, ona bir
+      // saniye ara vermek. Devam ettirmeyi kullanıcıya bıraktığımızda
+      // dinleme akışı her kelimede kesiliyordu.
+      //
+      // Durum ref'te tutuluyor ki YALNIZCA çalarken dokunulduğunda geri
+      // dönsün: kullanıcı sesi zaten kendisi duraklattıysa, bir kelimeye
+      // bakması onu tekrar başlatmamalı. `getState()` ile okunuyor —
+      // seçiciyle okumak bu geri çağrıyı her vurgu değişiminde yeniden
+      // kurardı.
+      resumeAfterSheetRef.current = useTtsStore.getState().status === "speaking";
       pauseSpeech();
 
       setActiveWord({
@@ -607,7 +620,14 @@ export function ReaderScreen({
         onUnsave={handleUnsaveWord}
         onMarkKnown={handleMarkKnown}
         onUnmarkKnown={handleUnmarkKnown}
-        onDismiss={() => setActiveWord(null)}
+        onDismiss={() => {
+          setActiveWord(null);
+          if (!resumeAfterSheetRef.current) return;
+          resumeAfterSheetRef.current = false;
+          // `toggle` duraklamışken devam ettirir; konumu `resumePosition.ts`
+          // koruyor, yani sayfanın başına dönmüyor.
+          tts.toggle();
+        }}
       />
       <SentenceSheet
         ref={sentenceSheetRef}

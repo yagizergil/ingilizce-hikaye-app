@@ -124,6 +124,19 @@ export interface ThemeColors {
    * `useReaderThemeColors`). Not a new hue: just `text.secondary` at the
    * same opacity step `accentMuted` uses on `accent`. */
   secondaryMuted: string;
+  /** Sesli okuma sırasında o an okunan kelimenin zemini.
+   *
+   * NEDEN AYRI BİR ROL: ürün sahibi bunun SARI olmasını istedi (2026-09-10).
+   * Önceden `secondaryMuted` kullanılıyordu ama o renk WordSheet'te cümle
+   * içindeki kelimeyi öne çıkarmak için de kullanılıyor — birini sarıya
+   * çevirmek diğerini de sessizce değiştirirdi.
+   *
+   * NEDEN ACCENT KURALINI ÇİĞNEMİYOR: colors.ts'in "okuma yüzeyinde accent
+   * kullanılmaz" kuralı accent (terracotta) içindir; bu ayrı bir hue ve
+   * kalıcı bir işaret değil, sesin nerede olduğunu gösteren geçici bir
+   * imleç. Alfa değerleri okunabilirliği koruyacak kadar düşük tutuldu:
+   * zemin görünür ama metnin kontrastını düşürmüyor. */
+  spokenHighlight: string;
   danger: string;
   dangerMuted: string;
   /** No mockup defines a modal/sheet backdrop scrim (Modal usage — e.g.
@@ -159,6 +172,7 @@ const light: ThemeColors = {
   highlight: "#F1E4C9",
   accentMuted: "rgba(166, 87, 46, 0.16)",
   secondaryMuted: "rgba(138, 131, 120, 0.16)", // inkSoft (#8A8378) @ 16%
+  spokenHighlight: "rgba(245, 197, 66, 0.38)", // krem zemin (#FAF8F4) üzerinde okunur sarı
   danger: semantic.danger,
   dangerMuted: "rgba(179, 69, 58, 0.16)",
   overlay: "rgba(0, 0, 0, 0.5)",
@@ -209,6 +223,7 @@ const sepia: ThemeColors = {
   highlight: "#F1E4C9",
   accentMuted: "rgba(166, 87, 46, 0.18)",
   secondaryMuted: "rgba(138, 115, 85, 0.18)", // sepia text.secondary (#8A7355) @ 18%
+  spokenHighlight: "rgba(240, 186, 52, 0.34)", // sepia zaten sıcak; alfa biraz düşük
   danger: semantic.danger,
   dangerMuted: "rgba(179, 69, 58, 0.18)",
   overlay: "rgba(0, 0, 0, 0.5)",
@@ -261,6 +276,7 @@ const dark: ThemeColors = {
   highlight: "#3A3020",
   accentMuted: "rgba(199, 123, 74, 0.2)",
   secondaryMuted: "rgba(155, 150, 140, 0.2)", // dark text.secondary (#9B968C) @ 20%
+  spokenHighlight: "rgba(247, 208, 96, 0.26)", // koyu zeminde açık metin okunur kalsın
   danger: "#D98A7E",
   dangerMuted: "rgba(217, 138, 126, 0.2)",
   overlay: "rgba(0, 0, 0, 0.6)",

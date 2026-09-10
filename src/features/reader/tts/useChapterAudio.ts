@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { trackError } from "@/lib/analytics";
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
 import { isAwaitingAutoStart, shouldAutoStart } from "@/features/reader/tts/autoStartGate";
+import { resumeSeekTarget } from "@/features/reader/tts/resumePosition";
 import {
   findWordIndexAtTime,
   mapTimingsToPage,
@@ -296,11 +297,17 @@ export function useChapterAudio({
 
     recomputePageWords();
 
-    // Sayfa değiştiyse ses de oraya atlamalı — kullanıcı okurken sayfa
-    // çevirmiş olabilir ve sesin baştan başlaması kafa karıştırıcı olurdu.
+    // Ses ekranda duran sayfada değilse oraya taşınıyor; aynı sayfadaysa
+    // OLDUĞU YERDE bırakılıyor. Kural ve neden mesafeye değil kapsamaya
+    // baktığı `resumePosition.ts` içinde ve testli.
     const first = pageWordsRef.current[0];
-    if (first && Math.abs(player.currentTime - first.time) > 1.5) {
-      void player.seekTo(first.time);
+    if (first) {
+      const target = resumeSeekTarget({
+        currentTime: player.currentTime,
+        pageStartTime: first.time,
+        pageEndTime: pageTurnAtRef.current,
+      });
+      if (target !== null) void player.seekTo(target);
     }
 
     try {

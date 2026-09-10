@@ -8,6 +8,8 @@ export interface ReaderThemeColors {
   text: string;
   textMuted: string;
   highlight: string;
+  /** Sesli okumada o an okunan kelimenin zemini (sarı, saydam). */
+  spokenHighlight: string;
   /** Okuma yüzeyi DIŞINDAKİ accent kullanımları (ilerleme, tamamlama). */
   accent: string;
   savedUnderline: string;
@@ -37,6 +39,7 @@ export function useReaderThemeColors(): ReaderThemeColors {
       text: theme.text.reading,
       textMuted: theme.text.secondary,
       highlight: theme.secondaryMuted,
+      spokenHighlight: theme.spokenHighlight,
       /**
        * Okuma ekranındaki accent kullanımları.
        *

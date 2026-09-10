@@ -200,7 +200,7 @@ export function ReaderPage({
               wordKey={wordKey(paragraph.id, segment.charStart, token.start)}
               isSaved={isSaved}
               savedUnderlineColor={readerColors.savedUnderline}
-              spokenBackground={readerColors.highlight}
+              spokenBackground={readerColors.spokenHighlight}
               onPress={() =>
                 onWordTap({
                   surface,
