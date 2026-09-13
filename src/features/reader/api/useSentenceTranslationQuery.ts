@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/analytics";
 
+import { fetchActiveLanguagePair } from "@/features/languagePair";
+
 interface TranslateSentenceResponse {
   status: "ok" | "unavailable";
   translation?: string;
@@ -31,9 +33,17 @@ export function useSentenceTranslationQuery(sentence: string | null) {
     queryFn: async (): Promise<SentenceTranslationResult> => {
       if (!sentence) throw new Error("sentence_translation_missing_sentence");
 
+      const pair = await fetchActiveLanguagePair();
+
       const { data, error } = await supabase.functions.invoke<TranslateSentenceResponse>(
         "translate-sentence",
-        { body: { sentence } },
+        {
+          body: {
+            sentence,
+            nativeLanguage: pair.nativeLanguage,
+            targetLanguage: pair.targetLanguage,
+          },
+        },
       );
 
       if (error) {

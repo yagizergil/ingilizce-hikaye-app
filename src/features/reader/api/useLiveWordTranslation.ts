@@ -2,6 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 
+import { fetchActiveLanguagePair } from "@/features/languagePair";
+
 export interface LiveWordTranslationParams {
   surface: string;
   lemma: string;
@@ -16,7 +18,7 @@ export interface LiveWordTranslationResult {
 
 interface TranslateLemmaResponse {
   status: "ok" | "unavailable";
-  tr_gloss?: string;
+  gloss?: string;
   pos?: string;
   reason?: string;
 }
@@ -32,6 +34,13 @@ interface TranslateLemmaResponse {
  * a miss vs. a fresh translation isn't meaningfully "stale" data to
  * re-serve from a query cache the way useGlobalLemmaLookup's hits are.
  *
+ * GENELLEŞTİRME (v2, 2026-09-13 — dil çiftleri): edge function artık
+ * herhangi bir (ana dil, hedef dil) çifti alıyor -- bkz.
+ * supabase/functions/translate-lemma. Bu hook aktif çifti okuyup isteğe
+ * ekliyor. `trGloss` alan adı DEĞİŞMEDİ (WordSheet'te "gösterilecek
+ * karşılık" anlamında dahili bir isim, artık Türkçe'ye özgü değil -- adı
+ * değiştirmek WordSheet'in her yerini dokunmak demek olurdu, faydası yok).
+ *
  * Never throws: the Edge Function always responds 200 with
  * `{ status: "unavailable", reason }` on rate-limit/provider/config
  * failures (never an opaque 500), and this hook mirrors that by resolving
@@ -43,16 +52,24 @@ export function useLiveWordTranslation() {
     mutationFn: async (
       params: LiveWordTranslationParams,
     ): Promise<LiveWordTranslationResult | null> => {
+      const pair = await fetchActiveLanguagePair();
+
       const { data, error } = await supabase.functions.invoke<TranslateLemmaResponse>(
         "translate-lemma",
-        { body: params },
+        {
+          body: {
+            ...params,
+            nativeLanguage: pair.nativeLanguage,
+            targetLanguage: pair.targetLanguage,
+          },
+        },
       );
 
-      if (error || !data || data.status !== "ok" || !data.tr_gloss || !data.pos) {
+      if (error || !data || data.status !== "ok" || !data.gloss || !data.pos) {
         return null;
       }
 
-      return { trGloss: data.tr_gloss, pos: data.pos };
+      return { trGloss: data.gloss, pos: data.pos };
     },
   });
 }

@@ -18,6 +18,7 @@
   },
   "common": {
     "back": "Geri",
+    "continue": "Devam et",
     "errorTitle": "Bir şeyler ters gitti",
     "retry": "Tekrar dene",
     "dismiss": "Kapat",
@@ -538,6 +539,7 @@
     "socialProof_other": "{{count}} HİKÂYE · A1'DEN C2'YE",
     "benefits": {
       "studioAudio": "63 hikâyede stüdyo seslendirmesi — okunan kelime vurgulanarak",
+      "secondLanguagePair": "İkinci bir dil çifti aç -- başka bir dilde de oku",
       "unlimitedWords": "Sınırsız kelime kaydı — defter sınırı kalkar",
       "spacedRepetition": "Aralıklı tekrar: her kelime unutmadan önce karşına çıkar",
       "aiSentences": "Günde {{premium}} AI cümle çevirisi (ücretsiz katmanda {{free}})",
@@ -619,5 +621,22 @@
     "upgradeTitle": "Bu kelimeler kalıcı olsun",
     "upgradeHint": "Premium ile sınırsız kelime defteri ve tekrar",
     "error": "Bu ekran yüklenemedi."
+  },
+  "languagePair": {
+    "nativeTitle": "Hangi dili konuşuyorsun?",
+    "nativeBody": "Uygulama arayüzü ve kelime karşılıkları bu dilde gösterilecek.",
+    "targetTitle": "Hangi dili okumak istiyorsun?",
+    "targetBody": "Hikayeler bu dilde olacak. İlk seçimin ücretsiz.",
+    "comingSoonLabel": "YAKINDA",
+    "comingSoonBadge": "Yakında",
+    "saveError": "Dil çifti kaydedilemedi. Lütfen tekrar dene.",
+    "unexpectedPremiumRequired": "Bu seçim için premium gerekiyor gibi görünüyor. Lütfen tekrar dene.",
+    "restartTitle": "Yeniden başlatma gerekiyor",
+    "restartBody": "Arapça için ekran yönü sağdan sola değişiyor. Bunun uygulanması için uygulamayı yeniden açman gerekiyor.",
+    "restartCta": "Yeniden başlat",
+    "manageTitle": "Dil çiftlerin",
+    "yourPairs": "OKUDUĞUN ÇİFTLER",
+    "addPair": "YENİ ÇİFT EKLE",
+    "activeBadge": "Aktif"
   }
 }

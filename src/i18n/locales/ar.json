@@ -1,0 +1,682 @@
+{
+  "app": {
+    "name": "İngilizce Hikaye"
+  },
+  "tabs": {
+    "home": "الرئيسية",
+    "library": "المكتبة",
+    "vocabulary": "كلماتي",
+    "profile": "حسابي"
+  },
+  "placeholder": {
+    "comingSoon": "قريبًا"
+  },
+  "notFound": {
+    "title": "غير موجود",
+    "message": "هذه الشاشة غير موجودة.",
+    "goHome": "العودة إلى الرئيسية"
+  },
+  "common": {
+    "back": "رجوع",
+    "continue": "متابعة",
+    "errorTitle": "حدث خطأ ما",
+    "retry": "إعادة المحاولة",
+    "dismiss": "إغلاق",
+    "crashTitle": "حدث خطأ ما",
+    "crashMessage": "تعذّر تحميل هذه الشاشة. إعادة المحاولة تحلّ المشكلة عادةً.",
+    "ok": "حسنًا"
+  },
+  "ui": {
+    "levelBadge": {
+      "accessibilityLabel": "المستوى {{level}}"
+    }
+  },
+  "home": {
+    "loading": "جارٍ تحميل الرئيسية",
+    "error": "تعذّر تحميل الرئيسية",
+    "empty": {
+      "title": "لم تبدأ أي كتاب بعد",
+      "description": "اختر كتابك الأول من المكتبة وابدأ القراءة.",
+      "cta": "استكشف المكتبة"
+    },
+    "books": {
+      "title": "الكتب",
+      "more": "الكل ←"
+    },
+    "book": {
+      "words": "{{value}} كلمة",
+      "chapters": "{{value}} فصل"
+    },
+    "shelves": {
+      "more": "الكل ←",
+      "forYou": "مختارة لك",
+      "shortReads": "قراءات قصيرة",
+      "byGenre": "حسب النوع",
+      "byAuthor": "حسب المؤلف",
+      "byTheme": "حسب الموضوع",
+      "favorites": "مفضّلاتك",
+      "continuingSeries": "سلاسل تتابعها",
+      "level": {
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدّم"
+      }
+    },
+    "seriesCard": {
+      "progress": "{{current}}/{{total}}"
+    },
+    "newBooks": {
+      "title": "كتب جديدة"
+    },
+    "currentlyReading": {
+      "title": "تقرأ الآن",
+      "percent": "{{percent}}%",
+      "remove": "إزالة من قائمة «تقرأ الآن»",
+      "removeAccessibilityLabel": "إزالة {{title}} من قائمة «تقرأ الآن»"
+    },
+    "categories": {
+      "title": "الأنواع والمواضيع",
+      "everyday": "الحياة اليومية",
+      "adventure": "مغامرة",
+      "fantasy": "الخيال والحكايات",
+      "mystery": "غموض",
+      "romance": "رومانسية ومجتمع",
+      "philosophy": "فلسفة",
+      "gothic": "قوطية وتشويق",
+      "comedy": "كوميديا",
+      "scifi": "خيال علمي"
+    },
+    "authorsAndSeries": {
+      "title": "المؤلفون والسلاسل"
+    },
+    "categoryTag": {
+      "count": "كتاب",
+      "accessibilityLabel": "{{label}}، {{count}} كتاب"
+    },
+    "levelGroups": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدّم",
+      "beginnerRange": "A1–A2",
+      "intermediateRange": "B1–B2",
+      "advancedRange": "C1–C2",
+      "count": "{{count}} كتاب",
+      "accessibilityLabel": "{{title}}، {{count}} كتاب"
+    },
+    "favoritesRead": {
+      "title": "المفضّلة والمقروءة",
+      "favoritesLabel": "المفضّلة",
+      "readLabel": "المقروءة",
+      "accessibilityLabel": "{{favoritesCount}} في المفضّلة، {{readCount}} كتاب مقروء"
+    },
+    "hero": {
+      "levelEyebrow": "مستواك · {{level}}",
+      "welcomeEyebrow": "أهلًا بك",
+      "title": "ماذا نقرأ اليوم؟",
+      "continueBody": "أنجزت {{percent}}%. تابع من حيث توقّفت.",
+      "startBody": "ابدأ بقصص قصيرة على مستواك — كل واحدة تُقرأ في جلسة واحدة.",
+      "continueAction": "متابعة القراءة",
+      "browseAction": "تصفّح الكتب"
+    },
+    "streak": {
+      "accessibilitySafe_zero": "سلسلة قراءة، أنجزت قراءة اليوم",
+      "accessibilitySafe_one": "سلسلة يوم واحد، أنجزت قراءة اليوم",
+      "accessibilitySafe_two": "سلسلة يومين، أنجزت قراءة اليوم",
+      "accessibilitySafe_few": "سلسلة {{count}} أيام، أنجزت قراءة اليوم",
+      "accessibilitySafe_many": "سلسلة {{count}} يومًا، أنجزت قراءة اليوم",
+      "accessibilitySafe_other": "سلسلة {{count}} يوم، أنجزت قراءة اليوم",
+      "accessibilityAtRisk_zero": "سلسلة قراءة، لم تقرأ اليوم بعد",
+      "accessibilityAtRisk_one": "سلسلة يوم واحد، لم تقرأ اليوم بعد",
+      "accessibilityAtRisk_two": "سلسلة يومين، لم تقرأ اليوم بعد",
+      "accessibilityAtRisk_few": "سلسلة {{count}} أيام، لم تقرأ اليوم بعد",
+      "accessibilityAtRisk_many": "سلسلة {{count}} يومًا، لم تقرأ اليوم بعد",
+      "accessibilityAtRisk_other": "سلسلة {{count}} يوم، لم تقرأ اليوم بعد"
+    }
+  },
+  "collections": {
+    "ozSeries": {
+      "title": "سلسلة أوز",
+      "description": "سلسلة الروايات الكلاسيكية التي كتبها L. Frank Baum في عالم أوز."
+    }
+  },
+  "library": {
+    "title": "المكتبة",
+    "loading": "جارٍ تحميل الكتب",
+    "error": "تعذّر تحميل الكتب",
+    "empty": {
+      "title": "لا توجد كتب",
+      "description": "جرّب بحثًا أو تصفية مختلفة."
+    },
+    "stats": {
+      "words": "كلمة",
+      "chapters": "فصل",
+      "minutes": "دقيقة"
+    },
+    "book": {
+      "accessibilityLabel": "{{title}}، {{author}}، المستوى {{level}}"
+    },
+    "search": {
+      "placeholder": "ابحث بالعنوان أو المؤلف أو النوع"
+    },
+    "sort": {
+      "recommended": "المقترحة",
+      "newest": "الأحدث",
+      "popular": "الأكثر قراءة",
+      "shortest": "من الأقصر"
+    },
+    "filters": {
+      "open": "فتح التصفية",
+      "button": "تصفية",
+      "level": "المستوى",
+      "levelAll": "الكل",
+      "levelGroup": {
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "advanced": "متقدّم"
+      },
+      "length": "الطول",
+      "lengthAny": "أي طول",
+      "lengthShort": "أقل من 90 دقيقة",
+      "lengthMedium": "أقل من 300 دقيقة",
+      "audioOnly": "الصوتية فقط",
+      "reset": "إعادة ضبط التصفية",
+      "apply": "تطبيق"
+    },
+    "viewMode": {
+      "toggle": "تغيير طريقة العرض",
+      "grid": "شبكة",
+      "list": "قائمة"
+    },
+    "card": {
+      "minutes": "{{count}} دقيقة",
+      "audio": "صوتي"
+    }
+  },
+  "bookDetail": {
+    "back": "← المكتبة",
+    "backAccessibilityLabel": "العودة إلى المكتبة",
+    "loading": "جارٍ تحميل الكتاب",
+    "error": "تعذّر تحميل الكتاب",
+    "chapters": "الفصول",
+    "cta": {
+      "start": "ابدأ القراءة",
+      "continue": "متابعة القراءة — الفصل {{index}}",
+      "listen": "استمع",
+      "listenAccessibilityLabel": "الاستماع إلى هذا الكتاب"
+    },
+    "stats": {
+      "words": "كلمة",
+      "minutes": "دقيقة",
+      "chapters": "فصل",
+      "completed": "أُنجز",
+      "completedValue": "{{percent}}%"
+    },
+    "chapterRow": {
+      "duration": "{{minutes}} دقيقة",
+      "done": "مكتمل",
+      "notDone": "غير مكتمل",
+      "accessibilityLabel": "الفصل {{index}}: {{title}}، {{status}}"
+    },
+    "empty": {
+      "title": "لا توجد فصول بعد",
+      "description": "ستُضاف فصول هذا الكتاب قريبًا."
+    },
+    "source": {
+      "title": "المصدر والترخيص",
+      "name": "المصدر",
+      "license": "الترخيص"
+    },
+    "series": {
+      "position": "الكتاب {{index}} من هذه السلسلة",
+      "nextBook": "الكتاب التالي: {{title}}",
+      "lastBook": "آخر كتاب في هذه السلسلة"
+    },
+    "audio": {
+      "label": "السرد الصوتي",
+      "unlocked": "هذه القصة مسجّلة بصوت استوديو، مع إبراز كل كلمة أثناء قراءتها.",
+      "upgradeCta": "استمع مع بريميوم",
+      "locked": "السرد بصوت الاستوديو جزء من بريميوم. استمع إلى هذه القصة بصوت طبيعي، مع إبراز كل كلمة أثناء قراءتها."
+    }
+  },
+  "reader": {
+    "header": {
+      "back": "رجوع",
+      "settings": "إعدادات القراءة",
+      "playSpeech": "استماع",
+      "pauseSpeech": "إيقاف الاستماع مؤقتًا"
+    },
+    "wordSheet": {
+      "pronounce": "استمع إلى النطق",
+      "noTranslation": "لا توجد ترجمة لهذه الكلمة",
+      "lookingUpTranslation": "جارٍ البحث عن الترجمة…",
+      "save": "حفظ",
+      "saved": "محفوظة",
+      "savedRemove": "محفوظة ✓ — إزالة",
+      "know": "أعرفها",
+      "knownUndo": "معروفة ✓ — تراجع",
+      "senseWithPos": "{{pos}} {{gloss}}",
+      "pos": {
+        "noun": "(اسم)",
+        "verb": "(فعل)",
+        "adjective": "(صفة)",
+        "adverb": "(ظرف)",
+        "preposition": "(حرف جر)",
+        "determiner": "(أداة تعريف)",
+        "pronoun": "(ضمير)",
+        "conjunction": "(حرف عطف)",
+        "interjection": "(تعجّب)",
+        "other": ""
+      }
+    },
+    "sentenceTranslation": {
+      "toggle": "عرض ترجمة الجملة",
+      "loading": "جارٍ الترجمة…",
+      "error": "تعذّر جلب ترجمة الجملة، حاول مرة أخرى"
+    },
+    "sentenceSheet": {
+      "explainGrammar": "اشرح القواعد",
+      "premiumNotice": "ترجمة الجمل وشرح القواعد قادمان قريبًا عبر الذكاء الاصطناعي."
+    },
+    "settings": {
+      "fontSize": "حجم الخط",
+      "increaseFontSize": "تكبير الخط",
+      "decreaseFontSize": "تصغير الخط",
+      "fontFamily": "نوع الخط",
+      "fontFamilyOptions": {
+        "serif": "مُذيّل",
+        "sans": "غير مُذيّل"
+      },
+      "theme": "المظهر",
+      "themeOptions": {
+        "light": "فاتح",
+        "sepia": "بُنّي",
+        "dark": "داكن",
+        "system": "حسب النظام"
+      },
+      "margin": "الهوامش",
+      "decreaseMargin": "تصغير الهوامش",
+      "increaseMargin": "توسيع الهوامش",
+      "highlights": "إبراز الكلمات غير المعروفة",
+      "speechRate": "سرعة القراءة",
+      "speechRateOptions": {
+        "0.8": "بطيئة",
+        "1": "عادية",
+        "1.2": "سريعة"
+      },
+      "voice": "صوت نطق الكلمات",
+      "voiceTier": {
+        "premium": "جودة عالية",
+        "enhanced": "محسّن"
+      },
+      "voiceUpgradeHint": "هذا صوت الجهاز الذي ينطق كلمات القاموس. للحصول على صوت أكثر طبيعية: الإعدادات > تسهيلات الاستخدام > المحتوى المنطوق > الأصوات > الإنجليزية، ثم نزّل صوتًا. مجاني ولمرة واحدة. (سرد الفصول شيء منفصل — يعتمد على تسجيل استوديو.)"
+    },
+    "chapterComplete": {
+      "title": "انتهى الفصل",
+      "nextChapter": "الفصل التالي",
+      "bookFinished": "أنهيت الكتاب. أحسنت!",
+      "eyebrow": "الفصل {{number}}",
+      "wordsLabel": "الكلمات",
+      "minutesLabel": "الدقائق",
+      "minutesValue": "{{count}} دقيقة",
+      "backToBook": "العودة إلى الكتاب",
+      "finishBook": "إنهاء الكتاب"
+    },
+    "error": {
+      "loadFailed": "تعذّر تحميل الفصل. حاول مرة أخرى.",
+      "progressNotSaved": "تعذّر حفظ تقدّمك، تحقّق من اتصالك بالإنترنت.",
+      "saveWordFailed": "تعذّر حفظ الكلمة، تحقّق من اتصالك بالإنترنت.",
+      "unsaveWordFailed": "تعذّرت إزالة الكلمة، تحقّق من اتصالك بالإنترنت.",
+      "markKnownFailed": "تعذّر تعليم الكلمة كمعروفة، تحقّق من اتصالك بالإنترنت.",
+      "unmarkKnownFailed": "تعذّر التراجع، تحقّق من اتصالك بالإنترنت.",
+      "notSignedIn": "تحتاج إلى تسجيل الدخول مرة أخرى للقيام بذلك.",
+      "savedWordLimitTitle": "دفتر كلماتك ممتلئ",
+      "savedWordLimitBody": "تتّسع الخطة المجانية لـ 100 كلمة. علّم الكلمات التي تعلّمتها في «كلماتي» لتوفير مساحة."
+    },
+    "wordAlreadySaved": "هذه الكلمة محفوظة بالفعل.",
+    "footer": {
+      "nextChapter": "الفصل التالي",
+      "finishBook": "إنهاء الكتاب"
+    }
+  },
+  "auth": {
+    "title": "أنشئ حسابك",
+    "subtitle": "سجّل حتى لا تفقد تقدّمك وكلماتك المحفوظة. يمكنك أيضًا متابعة الاستخدام كضيف.",
+    "google": "المتابعة عبر Google",
+    "skip": "ليس الآن",
+    "email": {
+      "placeholder": "بريدك الإلكتروني",
+      "send": "إرسال الرابط",
+      "sentTitle": "تم إرسال الرابط",
+      "sentBody": "افتح الرابط الذي أرسلناه إلى بريدك لإتمام تسجيل الدخول."
+    },
+    "error": {
+      "generic": "تعذّر تسجيل الدخول، حاول مرة أخرى.",
+      "invalidEmail": "أدخل بريدًا إلكترونيًا صحيحًا."
+    }
+  },
+  "profile": {
+    "title": "حسابي",
+    "hero": {
+      "guest": "ضيف",
+      "anonymous": "تقرأ كضيف",
+      "memberSince": "عضو منذ {{date}}"
+    },
+    "streak": {
+      "currentLabel": "سلسلة الأيام",
+      "longestLabel": "أطول سلسلة",
+      "weekAccessibilityLabel": "قرأت {{count}} يومًا هذا الأسبوع",
+      "keepGoing": "اقرأ قليلًا اليوم للحفاظ على سلسلتك ({{count}} يومًا).",
+      "startToday": "اقرأ بضع صفحات اليوم لتبدأ سلسلتك.",
+      "days": {
+        "mon": "إث",
+        "tue": "ثل",
+        "wed": "أر",
+        "thu": "خم",
+        "fri": "جم",
+        "sat": "سب",
+        "sun": "أح"
+      }
+    },
+    "week": {
+      "title": "هذا الأسبوع",
+      "totalMinutes": "{{count}} دقيقة",
+      "dayAccessibilityLabel": "{{day}}: {{count}} دقيقة",
+      "empty": "لا قراءة هذا الأسبوع بعد."
+    },
+    "loading": "جارٍ تحميل الملف الشخصي",
+    "error": "تعذّر تحميل الملف الشخصي",
+    "stats": {
+      "savedWordsLabel": "الكلمات المحفوظة",
+      "completedBooksLabel": "الكتب المنتهية",
+      "readingTime": {
+        "hoursMinutes": "{{hours}} س {{minutes}} د",
+        "minutesOnly": "{{minutes}} د"
+      },
+      "sectionTitle": "الإجمالي",
+      "totalTimeLabel": "إجمالي القراءة",
+      "totalActiveDaysLabel": "أيام القراءة"
+    },
+    "account": {
+      "sectionTitle": "الحساب",
+      "subscription": "الاشتراك",
+      "subscriptionFree": "مجاني",
+      "subscriptionPremium": "بريميوم",
+      "fontSize": "حجم خط القراءة",
+      "fontSizeValue": "{{percent}}%",
+      "theme": "المظهر",
+      "language": "اللغة",
+      "languageTr": "التركية",
+      "languageEn": "الإنجليزية",
+      "signUp": "إنشاء حساب",
+      "signOut": "تسجيل الخروج",
+      "signOutError": "تعذّر تسجيل الخروج، حاول مرة أخرى.",
+      "deleteAccount": "حذف حسابي"
+    },
+    "footer": "{{name}} — الإصدار {{version}}"
+  },
+  "vocabulary": {
+    "title": "الدفتر",
+    "loading": "جارٍ تحميل الكلمات",
+    "error": "تعذّر تحميل الكلمات",
+    "summary": "{{total}} كلمة · {{due}} للمراجعة اليوم",
+    "filters": {
+      "all": "الكل",
+      "due": "للمراجعة",
+      "known": "تم تعلّمها"
+    },
+    "due": {
+      "today": "اليوم",
+      "tomorrow": "غدًا",
+      "days": "بعد {{count}} يوم",
+      "weeks": "بعد {{count}} أسبوع",
+      "none": "—"
+    },
+    "pos": {
+      "noun": "اسم",
+      "verb": "فعل",
+      "adjective": "صفة",
+      "adverb": "ظرف",
+      "preposition": "حرف جر",
+      "determiner": "أداة تعريف",
+      "pronoun": "ضمير",
+      "other": "أخرى"
+    },
+    "word": {
+      "accessibilityLabel": "{{lemma}}، {{gloss}}"
+    },
+    "empty": {
+      "noWords": {
+        "title": "دفترك فارغ",
+        "description": "أثناء القراءة، المس أي كلمة لا تعرفها لتُحفظ هنا للمراجعة."
+      },
+      "noMatch": {
+        "title": "لا كلمات تطابق هذه التصفية",
+        "description": "جرّب تصفية مختلفة."
+      }
+    }
+  },
+  "browse": {
+    "loading": "جارٍ تحميل الكتب",
+    "error": "تعذّر تحميل الكتب",
+    "empty": {
+      "title": "لا توجد كتب",
+      "description": "لا توجد كتب في هذه الفئة بعد."
+    },
+    "fallbackTitle": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدّم"
+    }
+  },
+  "favorites": {
+    "toast": {
+      "added": "أُضيف إلى المفضّلة",
+      "removed": "أُزيل من المفضّلة"
+    },
+    "action": {
+      "add": "إضافة إلى المفضّلة",
+      "remove": "إزالة من المفضّلة"
+    },
+    "screen": {
+      "title": "المفضّلة والمقروءة",
+      "loading": "جارٍ التحميل",
+      "error": "تعذّر التحميل",
+      "favoritesSection": "المفضّلة",
+      "readSection": "المقروءة",
+      "emptyFavorites": {
+        "title": "لا مفضّلات بعد",
+        "description": "المس القلب في صفحة الكتاب لإضافة الكتب التي تعجبك."
+      },
+      "emptyRead": {
+        "title": "لم تبدأ أي كتاب بعد",
+        "description": "الكتب التي تفتحها ستظهر هنا."
+      },
+      "emptyBoth": {
+        "title": "لا شيء هنا بعد",
+        "description": "الكتب التي تضيفها إلى المفضّلة أو تبدأ قراءتها ستظهر هنا."
+      }
+    }
+  },
+  "account": {
+    "delete": {
+      "title": "حذف حسابك",
+      "body": "لا يمكن التراجع عن هذا الإجراء. حذف حسابك يزيل نهائيًا:",
+      "listTitle": "ما الذي سيُحذف",
+      "item1": "كلماتك المحفوظة",
+      "item2": "تقدّمك في القراءة وإحصاءاتك",
+      "item3": "بطاقات المراجعة المتباعدة (SRS)",
+      "item4": "معلومات ملفك الشخصي",
+      "confirmLabel": "أفهم أنه لا يمكن التراجع عن هذا.",
+      "confirmButton": "احذف حسابي نهائيًا",
+      "error": "تعذّر حذف حسابك، حاول مرة أخرى."
+    }
+  },
+  "srs": {
+    "loadError": "تعذّر تحميل بطاقات المراجعة.",
+    "revealHint": "المس لرؤية المعنى",
+    "noGloss": "لا توجد ترجمة",
+    "ratingAgain": "مرة أخرى",
+    "ratingHard": "صعبة",
+    "ratingEasy": "سهلة",
+    "doneTitle": "انتهت مراجعة اليوم",
+    "doneMessage": "راجعت {{count}} كلمة.",
+    "emptyTitle": "لا شيء للمراجعة",
+    "emptyMessage": "احفظ الكلمات أثناء القراءة وستتجمّع بطاقات المراجعة هنا.",
+    "startButton": "ابدأ المراجعة",
+    "dueBadge": "{{count}} كلمة جاهزة"
+  },
+  "onboarding": {
+    "introTitle": "لنحدّد مستواك",
+    "introBody": "سنعرض عليك بضع كلمات إنجليزية. أخبرنا عن كل واحدة إن كنت تعرفها أو لست متأكدًا أو لا تعرفها، ثم نقترح عليك الكتب المناسبة.",
+    "introDuration": "نحو دقيقة واحدة",
+    "start": "لنبدأ",
+    "skip": "ليس الآن",
+    "answerKnown": "أعرفها",
+    "answerUnsure": "لست متأكدًا",
+    "answerUnknown": "لا أعرفها",
+    "resultEyebrow": "ابدأ القراءة من هنا",
+    "resultSize": "تعرف نحو {{count}} كلمة.",
+    "adjustHint": "غيّرها إن لم تبدُ صحيحة",
+    "finish": "إلى الكتب",
+    "loadError": "تعذّر تحميل كلمات الاختبار."
+  },
+  "paywall": {
+    "title": "اجعل ما تقرأه يبقى في ذاكرتك",
+    "subtitle": "القصص مجانية دائمًا. بريميوم يساعدك على الاحتفاظ بما تتعلّمه.",
+    "socialProof_zero": "قصص · من A1 إلى C2",
+    "socialProof_one": "قصة واحدة · من A1 إلى C2",
+    "socialProof_two": "قصتان · من A1 إلى C2",
+    "socialProof_few": "{{count}} قصص · من A1 إلى C2",
+    "socialProof_many": "{{count}} قصة · من A1 إلى C2",
+    "socialProof_other": "{{count}} قصة · من A1 إلى C2",
+    "benefits": {
+      "studioAudio": "سرد بصوت الاستوديو لـ 63 قصة — مع إبراز كل كلمة أثناء قراءتها",
+      "secondLanguagePair": "افتح زوج لغات ثانٍ -- اقرأ بلغة أخرى أيضًا",
+      "unlimitedWords": "كلمات محفوظة بلا حدود — بلا سقف للدفتر",
+      "spacedRepetition": "مراجعة متباعدة: كل كلمة تعود إليك قبل أن تنساها",
+      "aiSentences": "{{premium}} ترجمة جملة بالذكاء الاصطناعي يوميًا (الخطة المجانية: {{free}})",
+      "aiSentencesGeneric": "حصة يومية أكبر بكثير لترجمة الجمل بالذكاء الاصطناعي",
+      "stats": "إحصاءات وقت القراءة والسلسلة والمستوى"
+    },
+    "plan": {
+      "annual": "سنوي",
+      "monthly": "شهري",
+      "savings": "وفّر {{percent}}%",
+      "perMonth": "{{price}}/شهر",
+      "trialDays_zero": "بدون فترة مجانية",
+      "trialDays_one": "يوم واحد مجانًا",
+      "trialDays_two": "يومان مجانًا",
+      "trialDays_few": "{{count}} أيام مجانًا",
+      "trialDays_many": "{{count}} يومًا مجانًا",
+      "trialDays_other": "{{count}} يوم مجانًا",
+      "periodYear": "سنة",
+      "periodMonth": "شهر"
+    },
+    "ctaTrial_zero": "ابدأ الآن",
+    "ctaTrial_one": "جرّبه مجانًا ليوم واحد",
+    "ctaTrial_two": "جرّبه مجانًا ليومين",
+    "ctaTrial_few": "جرّبه مجانًا {{count}} أيام",
+    "ctaTrial_many": "جرّبه مجانًا {{count}} يومًا",
+    "ctaTrial_other": "جرّبه مجانًا {{count}} يوم",
+    "ctaSubscribe": "اشترك في بريميوم",
+    "legal": {
+      "trialThenPrice_zero": "{{price}}/{{period}}.",
+      "trialThenPrice_one": "مجانًا ليوم واحد، ثم {{price}}/{{period}}.",
+      "trialThenPrice_two": "مجانًا ليومين، ثم {{price}}/{{period}}.",
+      "trialThenPrice_few": "مجانًا لمدة {{count}} أيام، ثم {{price}}/{{period}}.",
+      "trialThenPrice_many": "مجانًا لمدة {{count}} يومًا، ثم {{price}}/{{period}}.",
+      "trialThenPrice_other": "مجانًا لمدة {{count}} يوم، ثم {{price}}/{{period}}.",
+      "price": "{{price}}/{{period}}.",
+      "autoRenew": "يتجدّد اشتراكك تلقائيًا ما لم تُلغِه قبل 24 ساعة على الأقل من نهاية الفترة. يمكنك الإلغاء من إعدادات Apple ID.",
+      "terms": "شروط الاستخدام",
+      "privacy": "سياسة الخصوصية",
+      "privacyMissing": "لم يُضبط رابط سياسة الخصوصية"
+    },
+    "freeAlwaysNote": "كل الكتب تبقى مجانية دائمًا",
+    "restore": "استعادة المشتريات",
+    "purchaseError": "تعذّر إتمام عملية الشراء. حاول مرة أخرى.",
+    "notEntitledTitle": "الاشتراك لم يظهر بعد",
+    "notEntitledBody": "تمّت عملية الدفع لكن الاشتراك لم يُفعّل بعد. جرّب «استعادة المشتريات» بعد بضع دقائق؛ وإن استمرّت المشكلة تواصل معنا.",
+    "activatingCta": "جارٍ التفعيل…",
+    "activatingTitle": "جارٍ تفعيل اشتراكك",
+    "activatingBody": "اكتمل شراؤك. سيُفتح بريميوم خلال دقائق؛ وإن لم يحدث ذلك، استخدم «استعادة المشتريات» للتحديث.",
+    "restoreFoundTitle": "تمت استعادة الاشتراك",
+    "restoreFoundBody": "عادت ميزات بريميوم للعمل.",
+    "restoreEmptyTitle": "لم يُعثر على اشتراك",
+    "restoreEmptyBody": "لا يوجد اشتراك فعّال على حساب Apple هذا.",
+    "noPackages": "تعذّر تحميل خيارات الاشتراك.",
+    "retryPackages": "حاول مرة أخرى",
+    "unavailableInExpoGo": "الشراء يعمل فقط في نسخة مُجمَّعة من التطبيق",
+    "upgradeRow": "بريميوم",
+    "wordListFull": "دفتر كلماتك ممتلئ بنسبة {{count}}/{{limit}}"
+  },
+  "reminders": {
+    "settingsLabel": "التذكيرات",
+    "settingsHint": "للمراجعات والقصص غير المكتملة وسلسلتك",
+    "permissionBlockedTitle": "الإشعارات مغلقة",
+    "permissionBlockedBody": "تحتاج التذكيرات إلى إذن الإشعارات. يمكنك تفعيل إشعارات İngilizce Hikaye من إعدادات iPhone.",
+    "openSettings": "فتح الإعدادات",
+    "permissionDeniedTitle": "لم تُفعَّل التذكيرات",
+    "permissionDeniedBody": "لم يُمنح إذن الإشعارات. يمكنك تفعيله في أي وقت من الإعدادات.",
+    "streakRescue": {
+      "title_zero": "سلسلتك في خطر",
+      "title_one": "سلسلة اليوم الواحد في خطر",
+      "title_two": "سلسلة اليومين في خطر",
+      "title_few": "سلسلة {{count}} أيام في خطر",
+      "title_many": "سلسلة {{count}} يومًا في خطر",
+      "title_other": "سلسلة {{count}} يوم في خطر",
+      "body": "اقرأ بضع دقائق اليوم وستستمر السلسلة."
+    },
+    "reviewDue": {
+      "title_zero": "لا كلمات بانتظار المراجعة",
+      "title_one": "كلمة واحدة بانتظار المراجعة",
+      "title_two": "كلمتان بانتظار المراجعة",
+      "title_few": "{{count}} كلمات بانتظار المراجعة",
+      "title_many": "{{count}} كلمة بانتظار المراجعة",
+      "title_other": "{{count}} كلمة بانتظار المراجعة",
+      "body": "نراجعها سريعًا قبل أن تنساها؟"
+    },
+    "continueReading": {
+      "title": "لديك قصة لم تُكملها",
+      "body": "«{{title}}» بانتظارك."
+    }
+  },
+  "completion": {
+    "eyebrow_zero": "أنهيت كتابًا",
+    "eyebrow_one": "أنهيت كتابك الأول",
+    "eyebrow_two": "أنهيت كتابك الثاني",
+    "eyebrow_few": "أنهيت الكتاب رقم {{count}}",
+    "eyebrow_many": "أنهيت الكتاب رقم {{count}}",
+    "eyebrow_other": "أنهيت الكتاب رقم {{count}}",
+    "wordsLabel": "كلمة محفوظة",
+    "minutesValue_zero": "0 دقيقة",
+    "minutesValue_one": "دقيقة واحدة",
+    "minutesValue_two": "دقيقتان",
+    "minutesValue_few": "{{count}} دقائق",
+    "minutesValue_many": "{{count}} دقيقة",
+    "minutesValue_other": "{{count}} دقيقة",
+    "minutesLabel": "وقت القراءة",
+    "reviewWords": "راجع هذه الكلمات",
+    "findNextBook": "ابحث عن قصتك التالية",
+    "upgradeTitle": "اجعل هذه الكلمات تبقى",
+    "upgradeHint": "بريميوم يفتح حفظ الكلمات والمراجعة بلا حدود",
+    "error": "تعذّر تحميل هذه الشاشة."
+  },
+  "languagePair": {
+    "nativeTitle": "ما هي لغتك؟",
+    "nativeBody": "سيظهر التطبيق وترجمات الكلمات بهذه اللغة.",
+    "targetTitle": "ما اللغة التي تريد قراءتها؟",
+    "targetBody": "ستكون القصص بهذه اللغة. اختيارك الأول مجاني.",
+    "comingSoonLabel": "قريبًا",
+    "comingSoonBadge": "قريبًا",
+    "saveError": "تعذّر حفظ زوج اللغات. حاول مرة أخرى.",
+    "unexpectedPremiumRequired": "يبدو أن هذا الاختيار يتطلب بريميوم. حاول مرة أخرى.",
+    "restartTitle": "إعادة التشغيل مطلوبة",
+    "restartBody": "تغيّر اللغة العربية اتجاه الشاشة إلى من اليمين إلى اليسار. أعد فتح التطبيق لتطبيق هذا التغيير.",
+    "restartCta": "إعادة التشغيل",
+    "manageTitle": "أزواج لغاتك",
+    "yourPairs": "أزواجك",
+    "addPair": "أضف زوجًا",
+    "activeBadge": "نشط"
+  }
+}

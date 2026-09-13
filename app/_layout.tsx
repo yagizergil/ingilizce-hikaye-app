@@ -67,6 +67,7 @@ export default function RootLayout() {
                     <Stack.Screen name="browse" />
                     <Stack.Screen name="review" />
                     <Stack.Screen name="paywall" options={{ presentation: "modal" }} />
+                    <Stack.Screen name="language-settings" options={{ presentation: "modal" }} />
                     {/*
                       Kitap bitirme kutlaması. Modal DEĞİL: reader'dan
                       `replace` ile geliniyor, yani bu ekran okuma akışının

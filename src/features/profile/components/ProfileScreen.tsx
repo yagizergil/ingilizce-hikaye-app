@@ -14,6 +14,8 @@ import { useVocabularyQuery } from "@/features/vocabulary";
 import { useReaderSettings } from "@/features/reader";
 import { useOnboardingStatusQuery } from "@/features/onboarding";
 import { ReminderSettingsRow } from "@/features/reminders";
+import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { getLanguage } from "@/lib/languages";
 
 import { useProfileAuthStatus } from "@/features/profile/api/useProfileAuthStatus";
 import { useProfileStatsQuery } from "@/features/profile/api/useProfileStatsQuery";
@@ -60,6 +62,7 @@ export function ProfileScreen() {
   const vocabularyQuery = useVocabularyQuery();
   const subscriptionQuery = useSubscriptionStatusQuery();
   const onboardingQuery = useOnboardingStatusQuery();
+  const languagePairQuery = useActiveLanguagePairQuery();
 
   useEffect(() => {
     trackEvent("profile_viewed");
@@ -131,7 +134,8 @@ export function ProfileScreen() {
     [t, stats, savedWordCount],
   );
 
-  const isLoading = statsQuery.isLoading || vocabularyQuery.isLoading || subscriptionQuery.isLoading;
+  const isLoading =
+    statsQuery.isLoading || vocabularyQuery.isLoading || subscriptionQuery.isLoading;
   const isError = statsQuery.isError || vocabularyQuery.isError || subscriptionQuery.isError;
 
   const languageCode = i18n.language.startsWith("tr") ? "tr" : "en";
@@ -148,7 +152,10 @@ export function ProfileScreen() {
       ) : isError || !stats ? (
         <ErrorState message={t("profile.error")} onRetry={handleRetry} />
       ) : (
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           <ProfileHero
             displayName={displayName}
             email={email}
@@ -191,7 +198,9 @@ export function ProfileScreen() {
             <Hairline />
             <ProfileAccountRow
               label={t("profile.account.fontSize")}
-              value={t("profile.account.fontSizeValue", { percent: Math.round(fontScalePercent * 100) })}
+              value={t("profile.account.fontSizeValue", {
+                percent: Math.round(fontScalePercent * 100),
+              })}
             />
             <Hairline />
             <ProfileAccountRow
@@ -201,14 +210,22 @@ export function ProfileScreen() {
             <Hairline />
             <ProfileAccountRow
               label={t("profile.account.language")}
-              value={t(`profile.account.language${languageCode === "tr" ? "Tr" : "En"}`)}
+              value={
+                languagePairQuery.data
+                  ? `${getLanguage(languagePairQuery.data.nativeLanguage)?.nativeName ?? languagePairQuery.data.nativeLanguage} → ${getLanguage(languagePairQuery.data.targetLanguage)?.nativeName ?? languagePairQuery.data.targetLanguage}`
+                  : t(`profile.account.language${languageCode === "tr" ? "Tr" : "En"}`)
+              }
+              onPress={() => router.push("/language-settings")}
             />
             <Hairline />
 
             {isAnonymous ? (
               <ProfileAccountRow label={t("profile.account.signUp")} onPress={handleSignUp} />
             ) : (
-              <ProfileAccountRow label={t("profile.account.signOut")} onPress={() => void handleSignOut()} />
+              <ProfileAccountRow
+                label={t("profile.account.signOut")}
+                onPress={() => void handleSignOut()}
+              />
             )}
             <Hairline />
             <ProfileAccountRow

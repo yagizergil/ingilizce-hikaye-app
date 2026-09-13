@@ -28,12 +28,21 @@ type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
  * (migration 032 + `chapter-audio`) ve ücretsiz katmanda karşılığı yok.
  * Yani bu sefer madde, çalışan bir özelliği anlatıyor.
  *
+ * `secondLanguagePair` 2026-09-13'te eklendi (v2, dil çiftleri): kural yine
+ * aynı -- `set_language_pair()` (migration 033) bugün gerçekten çalışıyor,
+ * premium bir kullanıcı gerçekten ikinci bir (ana dil, hedef dil) çifti
+ * açıp mevcut 119 kitabı o dilden okuyabiliyor (karşılıklar
+ * `translate-lemma`/`translate-sentence` ile anında üretiliyor). Hedef dil
+ * sayısı bugün ikiyle (en, tr) sınırlı olsa da VAAT EDİLEN şey ("ikinci bir
+ * dil çifti aç") tam olarak budur, fazlası değil.
+ *
  * BURAYA BİR MADDE EKLEMEDEN ÖNCE: o özellik üründe çalışıyor mu ve
  * ücretsiz katmandan gerçekten farklı mı? İkisi de evet değilse madde
  * yanıltıcı metadatadır (Guideline 2.3.1).
  */
 const BENEFITS: { icon: IoniconName; key: string }[] = [
   { icon: "headset-outline", key: "studioAudio" },
+  { icon: "language-outline", key: "secondLanguagePair" },
   { icon: "bookmarks-outline", key: "unlimitedWords" },
   { icon: "repeat-outline", key: "spacedRepetition" },
   { icon: "sparkles-outline", key: "aiSentences" },

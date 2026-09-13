@@ -1,0 +1,642 @@
+{
+  "app": {
+    "name": "İngilizce Hikaye"
+  },
+  "tabs": {
+    "home": "首页",
+    "library": "书库",
+    "vocabulary": "我的单词",
+    "profile": "我的"
+  },
+  "placeholder": {
+    "comingSoon": "敬请期待"
+  },
+  "notFound": {
+    "title": "页面不存在",
+    "message": "找不到这个页面。",
+    "goHome": "回到首页"
+  },
+  "common": {
+    "back": "返回",
+    "continue": "继续",
+    "errorTitle": "出了点问题",
+    "retry": "重试",
+    "dismiss": "关闭",
+    "crashTitle": "出了点问题",
+    "crashMessage": "这个页面没能加载出来，重试一下通常就好了。",
+    "ok": "好"
+  },
+  "ui": {
+    "levelBadge": {
+      "accessibilityLabel": "{{level}} 级"
+    }
+  },
+  "home": {
+    "loading": "正在加载首页",
+    "error": "首页加载失败",
+    "empty": {
+      "title": "你还没有开始读书",
+      "description": "去书库挑一本书，开始阅读吧。",
+      "cta": "去书库看看"
+    },
+    "books": {
+      "title": "书籍",
+      "more": "全部 →"
+    },
+    "book": {
+      "words": "{{value}} 词",
+      "chapters": "{{value}} 章"
+    },
+    "shelves": {
+      "more": "全部 →",
+      "forYou": "为你推荐",
+      "shortReads": "短篇速读",
+      "byGenre": "按类型",
+      "byAuthor": "按作者",
+      "byTheme": "按主题",
+      "favorites": "我的收藏",
+      "continuingSeries": "在读系列",
+      "level": {
+        "beginner": "入门",
+        "intermediate": "中级",
+        "advanced": "高级"
+      }
+    },
+    "seriesCard": {
+      "progress": "{{current}}/{{total}}"
+    },
+    "newBooks": {
+      "title": "最新上架"
+    },
+    "currentlyReading": {
+      "title": "正在阅读",
+      "percent": "{{percent}}%",
+      "remove": "从正在阅读中移除",
+      "removeAccessibilityLabel": "把《{{title}}》从正在阅读中移除"
+    },
+    "categories": {
+      "title": "类型与主题",
+      "everyday": "日常生活",
+      "adventure": "冒险",
+      "fantasy": "奇幻与童话",
+      "mystery": "悬疑推理",
+      "romance": "爱情与社会",
+      "philosophy": "思想哲理",
+      "gothic": "哥特与惊悚",
+      "comedy": "幽默",
+      "scifi": "科幻"
+    },
+    "authorsAndSeries": {
+      "title": "作者与系列"
+    },
+    "categoryTag": {
+      "count": "本书",
+      "accessibilityLabel": "{{label}}，{{count}} 本书"
+    },
+    "levelGroups": {
+      "beginner": "入门",
+      "intermediate": "中级",
+      "advanced": "高级",
+      "beginnerRange": "A1–A2",
+      "intermediateRange": "B1–B2",
+      "advancedRange": "C1–C2",
+      "count": "{{count}} 本书",
+      "accessibilityLabel": "{{title}}，{{count}} 本书"
+    },
+    "favoritesRead": {
+      "title": "收藏与已读",
+      "favoritesLabel": "收藏",
+      "readLabel": "已读",
+      "accessibilityLabel": "{{favoritesCount}} 本收藏，{{readCount}} 本已读"
+    },
+    "hero": {
+      "levelEyebrow": "你的等级 · {{level}}",
+      "welcomeEyebrow": "欢迎",
+      "title": "今天读点什么？",
+      "continueBody": "已读 {{percent}}%，接着上次的地方继续吧。",
+      "startBody": "从适合你等级的短篇开始，每篇一次就能读完。",
+      "continueAction": "继续阅读",
+      "browseAction": "浏览书籍"
+    },
+    "streak": {
+      "accessibilitySafe_one": "连续阅读 {{count}} 天，今天已完成",
+      "accessibilitySafe_other": "连续阅读 {{count}} 天，今天已完成",
+      "accessibilityAtRisk_one": "连续阅读 {{count}} 天，今天还没读",
+      "accessibilityAtRisk_other": "连续阅读 {{count}} 天，今天还没读"
+    }
+  },
+  "collections": {
+    "ozSeries": {
+      "title": "绿野仙踪系列",
+      "description": "L. Frank Baum 以奥兹国为舞台的经典小说系列。"
+    }
+  },
+  "library": {
+    "title": "书库",
+    "loading": "正在加载书籍",
+    "error": "书籍加载失败",
+    "empty": {
+      "title": "没有找到书籍",
+      "description": "换个关键词或筛选条件试试。"
+    },
+    "stats": {
+      "words": "词数",
+      "chapters": "章数",
+      "minutes": "分钟"
+    },
+    "book": {
+      "accessibilityLabel": "{{title}}，{{author}}，{{level}} 级"
+    },
+    "search": {
+      "placeholder": "搜索书名、作者或类型"
+    },
+    "sort": {
+      "recommended": "推荐",
+      "newest": "最新",
+      "popular": "热门",
+      "shortest": "由短到长"
+    },
+    "filters": {
+      "open": "打开筛选",
+      "button": "筛选",
+      "level": "等级",
+      "levelAll": "全部",
+      "levelGroup": {
+        "beginner": "入门",
+        "intermediate": "中级",
+        "advanced": "高级"
+      },
+      "length": "长度",
+      "lengthAny": "不限",
+      "lengthShort": "90 分钟以内",
+      "lengthMedium": "300 分钟以内",
+      "audioOnly": "仅看有声书",
+      "reset": "重置筛选",
+      "apply": "应用"
+    },
+    "viewMode": {
+      "toggle": "切换视图",
+      "grid": "网格",
+      "list": "列表"
+    },
+    "card": {
+      "minutes": "{{count}} 分钟",
+      "audio": "有声"
+    }
+  },
+  "bookDetail": {
+    "back": "← 书库",
+    "backAccessibilityLabel": "返回书库",
+    "loading": "正在加载书籍",
+    "error": "书籍加载失败",
+    "chapters": "章节",
+    "cta": {
+      "start": "开始阅读",
+      "continue": "继续阅读 — 第 {{index}} 章",
+      "listen": "收听",
+      "listenAccessibilityLabel": "收听这本书"
+    },
+    "stats": {
+      "words": "词数",
+      "minutes": "分钟",
+      "chapters": "章数",
+      "completed": "完成度",
+      "completedValue": "{{percent}}%"
+    },
+    "chapterRow": {
+      "duration": "{{minutes}} 分钟",
+      "done": "已读完",
+      "notDone": "未读完",
+      "accessibilityLabel": "第 {{index}} 章：{{title}}，{{status}}"
+    },
+    "empty": {
+      "title": "暂无章节",
+      "description": "这本书的章节很快就会加上。"
+    },
+    "source": {
+      "title": "来源与授权",
+      "name": "来源",
+      "license": "授权"
+    },
+    "series": {
+      "position": "本系列第 {{index}} 册",
+      "nextBook": "下一册：{{title}}",
+      "lastBook": "本系列的最后一册"
+    },
+    "audio": {
+      "label": "朗读",
+      "unlocked": "这个故事由录音棚配音朗读，逐词高亮跟读。",
+      "upgradeCta": "开通会员收听",
+      "locked": "录音棚朗读属于会员功能。用自然的人声听这个故事，读到哪个词就高亮哪个词。"
+    }
+  },
+  "reader": {
+    "header": {
+      "back": "返回",
+      "settings": "阅读设置",
+      "playSpeech": "朗读",
+      "pauseSpeech": "暂停朗读"
+    },
+    "wordSheet": {
+      "pronounce": "发音",
+      "noTranslation": "没有找到这个词的释义",
+      "lookingUpTranslation": "正在查释义…",
+      "save": "收藏",
+      "saved": "已收藏",
+      "savedRemove": "已收藏 ✓ — 取消",
+      "know": "我认识",
+      "knownUndo": "已掌握 ✓ — 撤销",
+      "senseWithPos": "{{pos}} {{gloss}}",
+      "pos": {
+        "noun": "（名）",
+        "verb": "（动）",
+        "adjective": "（形）",
+        "adverb": "（副）",
+        "preposition": "（介）",
+        "determiner": "（限定）",
+        "pronoun": "（代）",
+        "conjunction": "（连）",
+        "interjection": "（叹）",
+        "other": ""
+      }
+    },
+    "sentenceTranslation": {
+      "toggle": "显示整句翻译",
+      "loading": "正在翻译…",
+      "error": "没能取到整句翻译，请再试一次"
+    },
+    "sentenceSheet": {
+      "explainGrammar": "讲解语法",
+      "premiumNotice": "整句翻译和语法讲解将由 AI 提供，即将上线。"
+    },
+    "settings": {
+      "fontSize": "字号",
+      "increaseFontSize": "放大字号",
+      "decreaseFontSize": "缩小字号",
+      "fontFamily": "字体",
+      "fontFamilyOptions": {
+        "serif": "衬线",
+        "sans": "无衬线"
+      },
+      "theme": "主题",
+      "themeOptions": {
+        "light": "浅色",
+        "sepia": "护眼",
+        "dark": "深色",
+        "system": "跟随系统"
+      },
+      "margin": "页边距",
+      "decreaseMargin": "减小页边距",
+      "increaseMargin": "增大页边距",
+      "highlights": "高亮生词",
+      "speechRate": "朗读速度",
+      "speechRateOptions": {
+        "0.8": "慢",
+        "1": "正常",
+        "1.2": "快"
+      },
+      "voice": "单词发音音色",
+      "voiceTier": {
+        "premium": "高品质",
+        "enhanced": "增强版"
+      },
+      "voiceUpgradeHint": "朗读词典单词用的是设备自带语音。想听得更自然：设置 > 辅助功能 > 朗读内容 > 声音 > 英语，下载一个语音包即可，免费且只需一次。（章节朗读是另一回事，用的是录音棚配音。）"
+    },
+    "chapterComplete": {
+      "title": "本章读完了",
+      "nextChapter": "下一章",
+      "bookFinished": "整本书都读完了，太棒了！",
+      "eyebrow": "第 {{number}} 章",
+      "wordsLabel": "词数",
+      "minutesLabel": "分钟",
+      "minutesValue": "{{count}} 分钟",
+      "backToBook": "回到书籍页",
+      "finishBook": "读完这本书"
+    },
+    "error": {
+      "loadFailed": "章节没能加载出来，请再试一次。",
+      "progressNotSaved": "进度没能保存，检查一下网络连接。",
+      "saveWordFailed": "单词没能收藏，检查一下网络连接。",
+      "unsaveWordFailed": "单词没能移除，检查一下网络连接。",
+      "markKnownFailed": "没能把这个词标记为已掌握，检查一下网络连接。",
+      "unmarkKnownFailed": "操作没能撤销，检查一下网络连接。",
+      "notSignedIn": "需要重新登录才能进行这个操作。",
+      "savedWordLimitTitle": "生词本已满",
+      "savedWordLimitBody": "免费版最多可存 100 个单词。在「我的单词」里把已学会的词标记出来，就能腾出位置。"
+    },
+    "wordAlreadySaved": "这个词已经收藏过了。",
+    "footer": {
+      "nextChapter": "下一章",
+      "finishBook": "读完本书"
+    }
+  },
+  "auth": {
+    "title": "创建你的账号",
+    "subtitle": "注册后，阅读进度和收藏的单词就不会丢失。你也可以先以访客身份继续使用。",
+    "google": "使用 Google 继续",
+    "skip": "暂时不用",
+    "email": {
+      "placeholder": "你的邮箱地址",
+      "send": "发送链接",
+      "sentTitle": "链接已发送",
+      "sentBody": "点击我们发到你邮箱的链接，完成登录。"
+    },
+    "error": {
+      "generic": "登录失败，请再试一次。",
+      "invalidEmail": "请输入有效的邮箱地址。"
+    }
+  },
+  "profile": {
+    "title": "我的",
+    "hero": {
+      "guest": "访客",
+      "anonymous": "正在以访客身份阅读",
+      "memberSince": "{{date}} 加入"
+    },
+    "streak": {
+      "currentLabel": "连续天数",
+      "longestLabel": "最长纪录",
+      "weekAccessibilityLabel": "本周阅读了 {{count}} 天",
+      "keepGoing": "今天也读一点，保住 {{count}} 天的连续纪录。",
+      "startToday": "今天读几页，开启你的连续纪录。",
+      "days": {
+        "mon": "一",
+        "tue": "二",
+        "wed": "三",
+        "thu": "四",
+        "fri": "五",
+        "sat": "六",
+        "sun": "日"
+      }
+    },
+    "week": {
+      "title": "本周",
+      "totalMinutes": "{{count}} 分钟",
+      "dayAccessibilityLabel": "{{day}}：{{count}} 分钟",
+      "empty": "本周还没有阅读记录。"
+    },
+    "loading": "正在加载资料",
+    "error": "资料加载失败",
+    "stats": {
+      "savedWordsLabel": "收藏单词",
+      "completedBooksLabel": "读完的书",
+      "readingTime": {
+        "hoursMinutes": "{{hours}} 小时 {{minutes}} 分",
+        "minutesOnly": "{{minutes}} 分"
+      },
+      "sectionTitle": "累计",
+      "totalTimeLabel": "总阅读时长",
+      "totalActiveDaysLabel": "阅读天数"
+    },
+    "account": {
+      "sectionTitle": "账号",
+      "subscription": "订阅",
+      "subscriptionFree": "免费版",
+      "subscriptionPremium": "会员",
+      "fontSize": "阅读字号",
+      "fontSizeValue": "{{percent}}%",
+      "theme": "主题",
+      "language": "语言",
+      "languageTr": "土耳其语",
+      "languageEn": "英语",
+      "signUp": "注册",
+      "signOut": "退出登录",
+      "signOutError": "退出登录失败，请再试一次。",
+      "deleteAccount": "删除我的账号"
+    },
+    "footer": "{{name}} — 版本 {{version}}"
+  },
+  "vocabulary": {
+    "title": "生词本",
+    "loading": "正在加载单词",
+    "error": "单词加载失败",
+    "summary": "{{total}} 个词 · 今天待复习 {{due}} 个",
+    "filters": {
+      "all": "全部",
+      "due": "待复习",
+      "known": "已学会"
+    },
+    "due": {
+      "today": "今天",
+      "tomorrow": "明天",
+      "days": "{{count}} 天后",
+      "weeks": "{{count}} 周后",
+      "none": "—"
+    },
+    "pos": {
+      "noun": "名词",
+      "verb": "动词",
+      "adjective": "形容词",
+      "adverb": "副词",
+      "preposition": "介词",
+      "determiner": "限定词",
+      "pronoun": "代词",
+      "other": "其他"
+    },
+    "word": {
+      "accessibilityLabel": "{{lemma}}，{{gloss}}"
+    },
+    "empty": {
+      "noWords": {
+        "title": "生词本还是空的",
+        "description": "阅读时点一下不认识的词就能存到这里，之后慢慢复习。"
+      },
+      "noMatch": {
+        "title": "这个筛选下没有单词",
+        "description": "换个筛选条件试试。"
+      }
+    }
+  },
+  "browse": {
+    "loading": "正在加载书籍",
+    "error": "书籍加载失败",
+    "empty": {
+      "title": "没有找到书籍",
+      "description": "这个分类下还没有书。"
+    },
+    "fallbackTitle": {
+      "beginner": "入门",
+      "intermediate": "中级",
+      "advanced": "高级"
+    }
+  },
+  "favorites": {
+    "toast": {
+      "added": "已加入收藏",
+      "removed": "已取消收藏"
+    },
+    "action": {
+      "add": "加入收藏",
+      "remove": "取消收藏"
+    },
+    "screen": {
+      "title": "收藏与已读",
+      "loading": "加载中",
+      "error": "加载失败",
+      "favoritesSection": "收藏",
+      "readSection": "已读",
+      "emptyFavorites": {
+        "title": "还没有收藏",
+        "description": "在书籍页点一下爱心，就能收藏喜欢的书。"
+      },
+      "emptyRead": {
+        "title": "你还没有开始读任何书",
+        "description": "打开过的书都会列在这里。"
+      },
+      "emptyBoth": {
+        "title": "这里还是空的",
+        "description": "你收藏的和开始阅读的书都会列在这里。"
+      }
+    }
+  },
+  "account": {
+    "delete": {
+      "title": "删除你的账号",
+      "body": "此操作无法撤销。删除账号会永久清除以下内容：",
+      "listTitle": "将被删除的内容",
+      "item1": "你收藏的单词",
+      "item2": "你的阅读进度和统计",
+      "item3": "你的间隔复习（SRS）卡片",
+      "item4": "你的个人资料",
+      "confirmLabel": "我明白这个操作无法撤销。",
+      "confirmButton": "永久删除我的账号",
+      "error": "账号删除失败，请再试一次。"
+    }
+  },
+  "srs": {
+    "loadError": "复习卡片加载失败。",
+    "revealHint": "点一下看释义",
+    "noGloss": "没有找到释义",
+    "ratingAgain": "不会",
+    "ratingHard": "有点难",
+    "ratingEasy": "很简单",
+    "doneTitle": "今天的复习完成了",
+    "doneMessage": "你复习了 {{count}} 个单词。",
+    "emptyTitle": "暂时没有要复习的词",
+    "emptyMessage": "阅读时收藏单词，复习卡片就会在这里攒起来。",
+    "startButton": "开始复习",
+    "dueBadge": "{{count}} 个词待复习"
+  },
+  "onboarding": {
+    "introTitle": "先来测测你的等级",
+    "introBody": "我们会给你看几个英文单词。每个词告诉我们你认识、不确定，还是不认识，我们据此为你推荐合适的书。",
+    "introDuration": "大约 1 分钟",
+    "start": "开始吧",
+    "skip": "暂时不用",
+    "answerKnown": "我认识",
+    "answerUnsure": "不确定",
+    "answerUnknown": "不认识",
+    "resultEyebrow": "从这里开始读",
+    "resultSize": "你大约认识 {{count}} 个单词。",
+    "adjustHint": "如果觉得不准，可以调整",
+    "finish": "去看书",
+    "loadError": "测试单词加载失败。"
+  },
+  "paywall": {
+    "title": "让读过的词真正记住",
+    "subtitle": "故事永远免费。会员帮你把学到的东西留下来。",
+    "socialProof_one": "{{count}} 个故事 · A1 到 C2",
+    "socialProof_other": "{{count}} 个故事 · A1 到 C2",
+    "benefits": {
+      "studioAudio": "63 个故事的录音棚朗读 — 读到哪个词就高亮哪个词",
+      "secondLanguagePair": "解锁第二个语言组合——也能用另一种语言阅读",
+      "unlimitedWords": "单词收藏不限量 — 生词本没有上限",
+      "spacedRepetition": "间隔复习：每个词都在你忘记之前再次出现",
+      "aiSentences": "每天 {{premium}} 次 AI 整句翻译（免费版 {{free}} 次）",
+      "aiSentencesGeneric": "AI 整句翻译的每日额度大幅提升",
+      "stats": "阅读时长、连续天数与等级统计"
+    },
+    "plan": {
+      "annual": "包年",
+      "monthly": "包月",
+      "savings": "省 {{percent}}%",
+      "perMonth": "{{price}}/月",
+      "trialDays_one": "免费 {{count}} 天",
+      "trialDays_other": "免费 {{count}} 天",
+      "periodYear": "年",
+      "periodMonth": "月"
+    },
+    "ctaTrial_one": "免费试用 {{count}} 天",
+    "ctaTrial_other": "免费试用 {{count}} 天",
+    "ctaSubscribe": "开通会员",
+    "legal": {
+      "trialThenPrice_one": "前 {{count}} 天免费，之后 {{price}}/{{period}}。",
+      "trialThenPrice_other": "前 {{count}} 天免费，之后 {{price}}/{{period}}。",
+      "price": "{{price}}/{{period}}。",
+      "autoRenew": "如未在当期结束前至少 24 小时取消，订阅将自动续期。你可以在 Apple ID 设置中取消。",
+      "terms": "使用条款",
+      "privacy": "隐私政策",
+      "privacyMissing": "尚未配置隐私政策链接"
+    },
+    "freeAlwaysNote": "所有书籍永远免费",
+    "restore": "恢复购买",
+    "purchaseError": "购买没能完成，请再试一次。",
+    "notEntitledTitle": "订阅还没显示出来",
+    "notEntitledBody": "付款已完成，但订阅还没生效。过几分钟试试「恢复购买」；如果一直这样，请联系我们。",
+    "activatingCta": "正在开通…",
+    "activatingTitle": "正在开通你的订阅",
+    "activatingBody": "购买已完成。会员权益会在几分钟内开通；如果没有，用「恢复购买」刷新一下。",
+    "restoreFoundTitle": "订阅已恢复",
+    "restoreFoundBody": "会员功能重新开通了。",
+    "restoreEmptyTitle": "没有找到订阅",
+    "restoreEmptyBody": "这个 Apple 账号下没有生效中的订阅。",
+    "noPackages": "订阅选项加载失败。",
+    "retryPackages": "再试一次",
+    "unavailableInExpoGo": "购买功能仅在编译版本中可用",
+    "upgradeRow": "会员",
+    "wordListFull": "生词本已用 {{count}}/{{limit}}"
+  },
+  "reminders": {
+    "settingsLabel": "提醒",
+    "settingsHint": "用于复习、未读完的故事和连续天数",
+    "permissionBlockedTitle": "通知已关闭",
+    "permissionBlockedBody": "提醒需要通知权限。你可以在 iPhone 设置里为 İngilizce Hikaye 打开通知。",
+    "openSettings": "打开设置",
+    "permissionDeniedTitle": "提醒没有开启",
+    "permissionDeniedBody": "没有获得通知权限。你随时可以在设置里打开。",
+    "streakRescue": {
+      "title_one": "你 {{count}} 天的连续纪录快断了",
+      "title_other": "你 {{count}} 天的连续纪录快断了",
+      "body": "今天读几分钟，纪录就能保住。"
+    },
+    "reviewDue": {
+      "title_one": "有 {{count}} 个词等着复习",
+      "title_other": "有 {{count}} 个词等着复习",
+      "body": "趁还没忘，快速过一遍？"
+    },
+    "continueReading": {
+      "title": "你有一个故事还没读完",
+      "body": "《{{title}}》在等你。"
+    }
+  },
+  "completion": {
+    "eyebrow_one": "你读完了第 {{count}} 本书",
+    "eyebrow_other": "你读完了第 {{count}} 本书",
+    "wordsLabel": "个收藏单词",
+    "minutesValue_one": "{{count}} 分钟",
+    "minutesValue_other": "{{count}} 分钟",
+    "minutesLabel": "阅读时长",
+    "reviewWords": "复习这些单词",
+    "findNextBook": "找下一个故事",
+    "upgradeTitle": "让这些词留下来",
+    "upgradeHint": "会员解锁不限量的单词收藏与复习",
+    "error": "这个页面没能加载出来。"
+  },
+  "languagePair": {
+    "nativeTitle": "你说什么语言？",
+    "nativeBody": "应用界面和词语翻译将以这种语言显示。",
+    "targetTitle": "你想阅读什么语言？",
+    "targetBody": "故事将以这种语言呈现。你的第一次选择是免费的。",
+    "comingSoonLabel": "即将推出",
+    "comingSoonBadge": "即将推出",
+    "saveError": "无法保存你的语言组合，请重试。",
+    "unexpectedPremiumRequired": "此选择似乎需要高级会员，请重试。",
+    "restartTitle": "需要重启",
+    "restartBody": "阿拉伯语会将屏幕布局切换为从右到左。重新打开应用即可应用此更改。",
+    "restartCta": "重启",
+    "manageTitle": "你的语言组合",
+    "yourPairs": "你的组合",
+    "addPair": "添加组合",
+    "activeBadge": "当前使用"
+  }
+}

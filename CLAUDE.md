@@ -347,6 +347,46 @@ düşülecek bir cihaz sesi olmadığı için bu ayrım eskisinden daha önemli 
 yutulan geçici bir hata, ödeyen kullanıcı için sesin tamamen kaybolması
 demek olurdu.
 
+### ADR-013: Dil çiftleri v2 — "N hedef dil" ≠ "N×N çift"
+
+**Karar (2026-09-13):** Uygulama tek dil çiftinden (İngilizce içerik,
+Türkçe arayüz) 11 dilin (en, de, fr, ru, zh, ja, it, uk, tr, ar, es)
+herhangi ikisi arasında çalışan bir sisteme geçiyor. Tam tasarım ve
+gerekçe: `docs/plans/2026-09-13-dil-ciftleri-v2-tasarim.md`. İçerik
+kaynağı/maliyet araştırması: `docs/research/2026-09-13-cok-dilli-icerik-arastirmasi.md`.
+
+**Temel ayrım:** bir kitabın hangi dilde YAZILDIĞI (`books.target_language`)
+ile bir kelimenin hangi dile ÇEVRİLDİĞİ (`lemma_translations`) bilinçli
+olarak ayrı sorunlar. Birincisi dil başına haftalarca süren bir pipeline
+işi (spaCy modeli, kelime frekans listesi, kamu malı tarama, TTS ses
+envanteri); ikincisi zaten var olan runtime LLM fallback'in ("Türkçe"
+sabiti yerine parametre) ANINDA genellenmesiyle çözüldü. Sonuç: hedef dil
+sayısı bugün ARTMADAN (hâlâ yalnızca en, tr) çift sayısı 110'a çıktı —
+bir Alman kullanıcı bugün İngilizce okuyup karşılıkları Almanca alabilir.
+
+**Şema (migration 033):** `languages` (11 dilin statik referansı),
+`books.target_language`, `lemma_translations` (genel target×native
+karşılık önbelleği — `lemmas` tablosuna DOKUNULMADI, o hâlâ en→tr'nin
+birincil kaynağı), `user_language_pairs` + `set_language_pair()` RPC.
+
+**Ücretsiz/premium kuralı:** ilk çift her zaman ücretsiz (onboarding),
+her YENİ ek çift premium gerektiriyor, sahip olunan çiftler arasında
+geçiş her zaman ücretsiz. Kural `set_language_pair()` içinde
+(SECURITY DEFINER), `user_language_pairs`'ta insert/update policy YOK —
+ADR-009'daki "tek yazar" deseninin aynısı.
+
+**Cihaz-içi lemmatizer (ADR-008) genellenmedi, genellenemez.** Rusça
+çekim, Arapça kök-kalıp morfolojisi, Japonca/Çince kelime sınırı
+belirsizliği — hiçbiri İngilizce'ye özgü ek-kuralı yaklaşımıyla
+çözülemez. Yeni bir HEDEF dil eklenirse (bu round'da eklenmedi)
+lemmatizasyon sunucu tarafında (pipeline, ADR-008'in "gelecek yol" olarak
+bıraktığı `book_surface_lemmas`) yapılmalı.
+
+**Kapsam dışı bırakılan (bilinçli):** yeni bir hedef dilde gerçek kitap
+içeriği, seviye testinin dile göre genellenmesi, RTL'nin tam görsel QA'sı.
+Detaylar ve önerilen içerik yol haritası (Senaryo A: 4 dil ~$2.600/6-10
+hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
+
 ## Kod Konvansiyonları
 
 **Dosya adlandırma**
@@ -441,10 +481,10 @@ demek olurdu.
 
 ## Mevcut Durum ve Sonraki Adımlar
 
-> Son güncelleme: 2026-09-08 (stüdyo sesi + B2 üretimi oturumu). Bu bölüm her
-> önemli oturumdan sonra güncellenir. `docs/ROADMAP.md` ve `docs/STATE.md`
-> çok daha eski; çelişki olursa burası geçerlidir. Yayın adımlarının tamamı
-> ve dağıtım komutları `docs/RELEASE.md` içinde.
+> Son güncelleme: 2026-09-13 (dil çiftleri v2 mimarisi). Bu bölüm her önemli
+> oturumdan sonra güncellenir. `docs/ROADMAP.md` ve `docs/STATE.md` çok
+> daha eski; çelişki olursa burası geçerlidir. Yayın adımlarının tamamı ve
+> dağıtım komutları `docs/RELEASE.md` içinde.
 
 **Çalışan:** Expo SDK 57 üzerinde tam bir okuma + öğrenme + gelir döngüsü.
 
@@ -471,14 +511,22 @@ demek olurdu.
 - **Store:** ikon/açılış görselleri marka sisteminden üretildi, `eas.json`
   yazıldı, App Store metinleri karakter sayılarıyla hazır, paywall mockup'ı
   eklendi (`mockups/paywall.html`).
+- **Dil çiftleri (v2, 2026-09-13):** mimari kuruldu (bkz. ADR-013). 11 dil
+  (en, de, fr, ru, zh, ja, it, uk, tr, ar, es) arayüzde tam çevirili;
+  herhangi bir ana dil bugünkü İngilizce içeriği okuyabiliyor (karşılıklar
+  runtime LLM ile üretiliyor). İlk çift ücretsiz, ek çiftler premium.
+  Yeni bir hedef dilde GERÇEK kitap içeriği henüz yok — bkz. tasarım
+  dokümanındaki içerik yol haritası.
 
-32 migration versiyonlanmış, tüm tablolarda RLS aktif. Üç Edge Function
-dağıtıldı (`revenuecat-webhook`, `chapter-audio`, `sync-entitlement`).
-i18n tam (tr + en, eşit anahtar — artık testle zorlanıyor). 186 test
-geçiyor, typecheck ve lint temiz. Supabase güvenlik denetçisinde gerçek
-bulgu yok: `SECURITY DEFINER` uyarılarının tamamı bilerek istemciye açılan
-RPC'ler (hepsi `auth.uid()` kapsamlı, `search_path` kilitli), "anonim
-erişim" uyarıları uygulamanın anonim oturum kullanmasının doğal sonucu, ve
+33 migration versiyonlanmış, tüm tablolarda RLS aktif. Beş Edge Function
+dağıtıldı (`revenuecat-webhook`, `chapter-audio`, `sync-entitlement`,
+`translate-lemma`, `translate-sentence`). i18n 11 dile genellendi (eşit
+anahtar + interpolasyon + çoğul tutarlılığı testle zorlanıyor, bkz.
+`src/i18n/__tests__/localeParity.test.ts`). 248 test geçiyor, typecheck ve
+lint temiz. Supabase güvenlik denetçisinde gerçek bulgu yok:
+`SECURITY DEFINER` uyarılarının tamamı bilerek istemciye açılan RPC'ler
+(hepsi `auth.uid()` kapsamlı, `search_path` kilitli), "anonim erişim"
+uyarıları uygulamanın anonim oturum kullanmasının doğal sonucu, ve
 "sızmış parola koruması" bu uygulamada konusuz — parola ile giriş yok
 (anonim + Apple/Google kimlik jetonu + e-posta OTP).
 

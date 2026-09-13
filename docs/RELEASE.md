@@ -43,11 +43,12 @@ npx supabase db push
 
 Uygulanacak iki yeni migration:
 
-| Migration                 | Ne yapıyor                                                                                                                                                                                                                                    |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `028_entitlement_webhook` | `user_entitlements`'a denetim/idempotans alanları (`product_id`, `store`, `rc_event_id`, `rc_event_ms`, `is_trial`) ve `apply_entitlement_event()` fonksiyonu. RLS'ye DOKUNMUYOR — yazma yolu yalnızca service_role.                          |
-| `029_ai_tier_limits`      | AI cümle çevirisi kotasını katmana bağlar: ücretsiz 10/gün, premium 200/gün. Öncesinde herkes için 30'du. `my_ai_sentence_quota()` ile istemci de kotayı okuyabiliyor.                                                                        |
-| `031_audio_access`        | Stüdyo seslendirmesine erişim: `audio_taster_grants` (kullanıcı başına BİR ücretsiz hikâye — sınır şemada, birincil anahtar `user_id`), `claim_audio_taster()`, `can_play_book_audio()` ve `book-audio` deposunu **public olmaktan çıkarır**. |
+| Migration                 | Ne yapıyor                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `028_entitlement_webhook` | `user_entitlements`'a denetim/idempotans alanları (`product_id`, `store`, `rc_event_id`, `rc_event_ms`, `is_trial`) ve `apply_entitlement_event()` fonksiyonu. RLS'ye DOKUNMUYOR — yazma yolu yalnızca service_role.                                                                                                                                         |
+| `029_ai_tier_limits`      | AI cümle çevirisi kotasını katmana bağlar: ücretsiz 10/gün, premium 200/gün. Öncesinde herkes için 30'du. `my_ai_sentence_quota()` ile istemci de kotayı okuyabiliyor.                                                                                                                                                                                       |
+| `031_audio_access`        | Stüdyo seslendirmesine erişim: `audio_taster_grants` (kullanıcı başına BİR ücretsiz hikâye — sınır şemada, birincil anahtar `user_id`), `claim_audio_taster()`, `can_play_book_audio()` ve `book-audio` deposunu **public olmaktan çıkarır**.                                                                                                                |
+| `033_language_pairs`      | Dil çiftleri v2 (ADR-013): `languages` (11 dil), `books.target_language`, `lemma_translations` (genel karşılık önbelleği), `user_language_pairs` + `set_language_pair()` (ilk çift ücretsiz, sonrakiler premium). **Canlıya 2026-09-13'te doğrudan uygulandı** — bu satır belgeleme amaçlı, tekrar uygulamaya gerek yok (`db push` idempotent, no-op geçer). |
 
 > **031 canlı davranışı değiştiriyor:** `book-audio` deposu private oluyor.
 > Bu migration uygulandıktan sonra `chapter-audio` fonksiyonu dağıtılmadan
@@ -77,6 +78,15 @@ npx supabase functions deploy sync-entitlement
 ```bash
 npx supabase functions deploy chapter-audio
 ```
+
+```bash
+npx supabase functions deploy translate-lemma
+```
+
+`translate-lemma` ve `translate-sentence` artık `nativeLanguage`/
+`targetLanguage` alıyor (ADR-013, dil çiftleri v2). **İkisi de 2026-09-13'te
+canlıya doğrudan dağıtıldı** — bu satırlar belgeleme amaçlı, `deploy`
+komutu aynı kodu tekrar yükler (zararsız), atlamak da mümkün.
 
 `sync-entitlement` bir ONARIM yolu: kaçan bir RevenueCat webhook'u eskiden
 yetkinin kalıcı kaybı demekti (2026-09-07'de gerçekten yaşandı — ayrıntı

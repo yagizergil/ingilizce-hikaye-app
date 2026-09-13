@@ -1,0 +1,11 @@
+-- 033_language_pairs_noop.sql
+--
+-- Bu dosya BILEREK bos. Migration gecmisinde 20260913181459 versiyonu
+-- olarak kayitli olan bir hatayi belgeliyor: dil ciftleri semasini canliya
+-- uygularken ilk cagri yanlislikla yer tutucu bir SQL yorumuyla (sifir
+-- etki) gonderildi, gercek icerik hemen ardindan 20260913181754 olarak
+-- uygulandi (bkz. 20260913181754_033_language_pairs.sql).
+--
+-- Silinmiyor: migration gecmisi Supabase'de zaten iki ayri versiyon olarak
+-- kayitli, bu dosya olmadan yerel repo ile uzak gecmis birbirini
+-- tutmazdi. Ic gorunmez bir hata degil, seffaf bir kayit.

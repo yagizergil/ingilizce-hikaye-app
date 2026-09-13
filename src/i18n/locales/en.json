@@ -18,6 +18,7 @@
   },
   "common": {
     "back": "Back",
+    "continue": "Continue",
     "errorTitle": "Something went wrong",
     "retry": "Retry",
     "dismiss": "Dismiss",
@@ -538,6 +539,7 @@
     "socialProof_other": "{{count}} STORIES · A1 TO C2",
     "benefits": {
       "studioAudio": "Studio narration for 63 stories — each word highlighted as it's read",
+      "secondLanguagePair": "Unlock a second language pair -- read in another language too",
       "unlimitedWords": "Unlimited saved words — no notebook limit",
       "spacedRepetition": "Spaced repetition: every word returns before you forget it",
       "aiSentences": "{{premium}} AI sentence translations a day (free tier: {{free}})",
@@ -619,5 +621,22 @@
     "upgradeTitle": "Make these words stick",
     "upgradeHint": "Premium unlocks unlimited saved words and review",
     "error": "This screen could not be loaded."
+  },
+  "languagePair": {
+    "nativeTitle": "What language do you speak?",
+    "nativeBody": "The app and word translations will show in this language.",
+    "targetTitle": "What language do you want to read?",
+    "targetBody": "Stories will be in this language. Your first pick is free.",
+    "comingSoonLabel": "COMING SOON",
+    "comingSoonBadge": "Coming soon",
+    "saveError": "Couldn't save your language pair. Please try again.",
+    "unexpectedPremiumRequired": "This selection unexpectedly requires Premium. Please try again.",
+    "restartTitle": "Restart needed",
+    "restartBody": "Arabic switches the screen layout to right-to-left. Reopening the app applies this change.",
+    "restartCta": "Restart",
+    "manageTitle": "Your language pairs",
+    "yourPairs": "YOUR PAIRS",
+    "addPair": "ADD A PAIR",
+    "activeBadge": "Active"
   }
 }

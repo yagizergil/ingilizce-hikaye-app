@@ -1,0 +1,642 @@
+{
+  "app": {
+    "name": "İngilizce Hikaye"
+  },
+  "tabs": {
+    "home": "Home",
+    "library": "Libreria",
+    "vocabulary": "Le mie parole",
+    "profile": "Profilo"
+  },
+  "placeholder": {
+    "comingSoon": "Presto disponibile"
+  },
+  "notFound": {
+    "title": "Non trovato",
+    "message": "Questa schermata non esiste.",
+    "goHome": "Vai alla home"
+  },
+  "common": {
+    "back": "Indietro",
+    "continue": "Continua",
+    "errorTitle": "Qualcosa è andato storto",
+    "retry": "Riprova",
+    "dismiss": "Chiudi",
+    "crashTitle": "Qualcosa è andato storto",
+    "crashMessage": "Questa schermata non si è caricata. Di solito basta riprovare.",
+    "ok": "OK"
+  },
+  "ui": {
+    "levelBadge": {
+      "accessibilityLabel": "Livello {{level}}"
+    }
+  },
+  "home": {
+    "loading": "Caricamento della home",
+    "error": "Impossibile caricare la home",
+    "empty": {
+      "title": "Non hai ancora iniziato un libro",
+      "description": "Scegli il tuo primo libro in libreria e inizia a leggere.",
+      "cta": "Esplora la libreria"
+    },
+    "books": {
+      "title": "Libri",
+      "more": "TUTTI →"
+    },
+    "book": {
+      "words": "{{value}} parole",
+      "chapters": "{{value}} capitoli"
+    },
+    "shelves": {
+      "more": "TUTTI →",
+      "forYou": "Per te",
+      "shortReads": "Letture brevi",
+      "byGenre": "Per genere",
+      "byAuthor": "Per autore",
+      "byTheme": "Per tema",
+      "favorites": "I tuoi preferiti",
+      "continuingSeries": "Serie in corso",
+      "level": {
+        "beginner": "Principiante",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzato"
+      }
+    },
+    "seriesCard": {
+      "progress": "{{current}}/{{total}}"
+    },
+    "newBooks": {
+      "title": "Novità"
+    },
+    "currentlyReading": {
+      "title": "In lettura",
+      "percent": "{{percent}}%",
+      "remove": "Rimuovi da «In lettura»",
+      "removeAccessibilityLabel": "Rimuovi {{title}} da «In lettura»"
+    },
+    "categories": {
+      "title": "Generi e temi",
+      "everyday": "Vita quotidiana",
+      "adventure": "Avventura",
+      "fantasy": "Fantasy e fiabe",
+      "mystery": "Giallo",
+      "romance": "Amore e società",
+      "philosophy": "Filosofia",
+      "gothic": "Gotico e suspense",
+      "comedy": "Commedia",
+      "scifi": "Fantascienza"
+    },
+    "authorsAndSeries": {
+      "title": "Autori e serie"
+    },
+    "categoryTag": {
+      "count": "libri",
+      "accessibilityLabel": "{{label}}, {{count}} libri"
+    },
+    "levelGroups": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzato",
+      "beginnerRange": "A1–A2",
+      "intermediateRange": "B1–B2",
+      "advancedRange": "C1–C2",
+      "count": "{{count}} libri",
+      "accessibilityLabel": "{{title}}, {{count}} libri"
+    },
+    "favoritesRead": {
+      "title": "Preferiti e letti",
+      "favoritesLabel": "Preferiti",
+      "readLabel": "Letti",
+      "accessibilityLabel": "{{favoritesCount}} preferiti, {{readCount}} libri letti"
+    },
+    "hero": {
+      "levelEyebrow": "IL TUO LIVELLO · {{level}}",
+      "welcomeEyebrow": "BENVENUTO",
+      "title": "Cosa leggiamo oggi?",
+      "continueBody": "{{percent}}% completato. Riprendi da dove eri rimasto.",
+      "startBody": "Inizia con storie brevi al tuo livello — ognuna si legge tutta d'un fiato.",
+      "continueAction": "Continua a leggere",
+      "browseAction": "Sfoglia i libri"
+    },
+    "streak": {
+      "accessibilitySafe_one": "Serie di {{count}} giorno, per oggi è fatta",
+      "accessibilitySafe_other": "Serie di {{count}} giorni, per oggi è fatta",
+      "accessibilityAtRisk_one": "Serie di {{count}} giorno, oggi non hai ancora letto",
+      "accessibilityAtRisk_other": "Serie di {{count}} giorni, oggi non hai ancora letto"
+    }
+  },
+  "collections": {
+    "ozSeries": {
+      "title": "La serie di Oz",
+      "description": "La classica serie di romanzi di L. Frank Baum ambientata nel mondo di Oz."
+    }
+  },
+  "library": {
+    "title": "Libreria",
+    "loading": "Caricamento dei libri",
+    "error": "Impossibile caricare i libri",
+    "empty": {
+      "title": "Nessun libro trovato",
+      "description": "Prova con un'altra ricerca o un altro filtro."
+    },
+    "stats": {
+      "words": "Parole",
+      "chapters": "Capitoli",
+      "minutes": "Minuti"
+    },
+    "book": {
+      "accessibilityLabel": "{{title}}, {{author}}, livello {{level}}"
+    },
+    "search": {
+      "placeholder": "Cerca titolo, autore o genere"
+    },
+    "sort": {
+      "recommended": "Consigliati",
+      "newest": "Più recenti",
+      "popular": "Popolari",
+      "shortest": "Corto→Lungo"
+    },
+    "filters": {
+      "open": "Apri i filtri",
+      "button": "Filtra",
+      "level": "Livello",
+      "levelAll": "Tutti",
+      "levelGroup": {
+        "beginner": "Principiante",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzato"
+      },
+      "length": "Durata",
+      "lengthAny": "Qualsiasi",
+      "lengthShort": "Meno di 90 min",
+      "lengthMedium": "Meno di 300 min",
+      "audioOnly": "Solo con audio",
+      "reset": "Azzera i filtri",
+      "apply": "Applica"
+    },
+    "viewMode": {
+      "toggle": "Cambia vista",
+      "grid": "Griglia",
+      "list": "Elenco"
+    },
+    "card": {
+      "minutes": "{{count}} min",
+      "audio": "Audio"
+    }
+  },
+  "bookDetail": {
+    "back": "← Libreria",
+    "backAccessibilityLabel": "Torna alla libreria",
+    "loading": "Caricamento del libro",
+    "error": "Impossibile caricare il libro",
+    "chapters": "Capitoli",
+    "cta": {
+      "start": "Inizia a leggere",
+      "continue": "Continua — capitolo {{index}}",
+      "listen": "Ascolta",
+      "listenAccessibilityLabel": "Ascolta questo libro"
+    },
+    "stats": {
+      "words": "Parole",
+      "minutes": "Minuti",
+      "chapters": "Capitoli",
+      "completed": "Completato",
+      "completedValue": "{{percent}}%"
+    },
+    "chapterRow": {
+      "duration": "{{minutes}} min",
+      "done": "letto",
+      "notDone": "non ancora letto",
+      "accessibilityLabel": "Capitolo {{index}}: {{title}}, {{status}}"
+    },
+    "empty": {
+      "title": "Ancora nessun capitolo",
+      "description": "I capitoli di questo libro arriveranno presto."
+    },
+    "source": {
+      "title": "Fonte e licenza",
+      "name": "Fonte",
+      "license": "Licenza"
+    },
+    "series": {
+      "position": "Libro {{index}} di questa serie",
+      "nextBook": "Prossimo libro: {{title}}",
+      "lastBook": "Ultimo libro di questa serie"
+    },
+    "audio": {
+      "label": "NARRAZIONE",
+      "unlocked": "Questa storia è narrata con voce da studio, con ogni parola evidenziata mentre viene letta.",
+      "upgradeCta": "Ascolta con Premium",
+      "locked": "La narrazione in studio fa parte di Premium. Ascolta questa storia con una voce naturale, con ogni parola evidenziata mentre viene letta."
+    }
+  },
+  "reader": {
+    "header": {
+      "back": "Indietro",
+      "settings": "Impostazioni di lettura",
+      "playSpeech": "Leggi ad alta voce",
+      "pauseSpeech": "Metti in pausa la lettura"
+    },
+    "wordSheet": {
+      "pronounce": "Pronuncia",
+      "noTranslation": "Nessuna traduzione trovata per questa parola",
+      "lookingUpTranslation": "Cerco la traduzione…",
+      "save": "Salva",
+      "saved": "Salvata",
+      "savedRemove": "Salvata ✓ — rimuovi",
+      "know": "La conosco",
+      "knownUndo": "Conosciuta ✓ — annulla",
+      "senseWithPos": "{{pos}} {{gloss}}",
+      "pos": {
+        "noun": "(s.)",
+        "verb": "(v.)",
+        "adjective": "(agg.)",
+        "adverb": "(avv.)",
+        "preposition": "(prep.)",
+        "determiner": "(det.)",
+        "pronoun": "(pron.)",
+        "conjunction": "(cong.)",
+        "interjection": "(inter.)",
+        "other": ""
+      }
+    },
+    "sentenceTranslation": {
+      "toggle": "Mostra la traduzione della frase",
+      "loading": "Traduzione in corso…",
+      "error": "Non è stato possibile tradurre la frase, riprova"
+    },
+    "sentenceSheet": {
+      "explainGrammar": "Spiega la grammatica",
+      "premiumNotice": "La traduzione delle frasi e le spiegazioni grammaticali arriveranno presto con l'IA."
+    },
+    "settings": {
+      "fontSize": "Dimensione del testo",
+      "increaseFontSize": "Aumenta la dimensione del testo",
+      "decreaseFontSize": "Riduci la dimensione del testo",
+      "fontFamily": "Carattere",
+      "fontFamilyOptions": {
+        "serif": "Serif",
+        "sans": "Sans"
+      },
+      "theme": "Tema",
+      "themeOptions": {
+        "light": "Chiaro",
+        "sepia": "Seppia",
+        "dark": "Scuro",
+        "system": "Sistema"
+      },
+      "margin": "Margini",
+      "decreaseMargin": "Riduci i margini",
+      "increaseMargin": "Aumenta i margini",
+      "highlights": "Evidenzia le parole sconosciute",
+      "speechRate": "Velocità di lettura",
+      "speechRateOptions": {
+        "0.8": "Lenta",
+        "1": "Normale",
+        "1.2": "Veloce"
+      },
+      "voice": "Voce per la pronuncia delle parole",
+      "voiceTier": {
+        "premium": "alta qualità",
+        "enhanced": "migliorata"
+      },
+      "voiceUpgradeHint": "La voce del dispositivo che legge le parole del dizionario. Per un suono più naturale: Impostazioni > Accessibilità > Contenuto letto > Voci > Inglese, quindi scarica una voce. È gratis e si fa una volta sola. (La narrazione dei capitoli è un'altra cosa — arriva da una registrazione in studio.)"
+    },
+    "chapterComplete": {
+      "title": "Capitolo completato",
+      "nextChapter": "Capitolo successivo",
+      "bookFinished": "Hai finito il libro. Ottimo lavoro!",
+      "eyebrow": "CAPITOLO {{number}}",
+      "wordsLabel": "PAROLE",
+      "minutesLabel": "MINUTI",
+      "minutesValue": "{{count}} min",
+      "backToBook": "Torna al libro",
+      "finishBook": "Concludi il libro"
+    },
+    "error": {
+      "loadFailed": "Non è stato possibile caricare il capitolo. Riprova.",
+      "progressNotSaved": "I tuoi progressi non sono stati salvati, controlla la connessione.",
+      "saveWordFailed": "La parola non è stata salvata, controlla la connessione.",
+      "unsaveWordFailed": "La parola non è stata rimossa, controlla la connessione.",
+      "markKnownFailed": "Non è stato possibile segnare la parola come conosciuta, controlla la connessione.",
+      "unmarkKnownFailed": "Non è stato possibile annullare, controlla la connessione.",
+      "notSignedIn": "Per farlo devi accedere di nuovo.",
+      "savedWordLimitTitle": "Il tuo elenco di parole è pieno",
+      "savedWordLimitBody": "La versione gratuita arriva a 100 parole. Segna qualche parola come appresa in «Le mie parole» per fare spazio."
+    },
+    "wordAlreadySaved": "Questa parola è già salvata.",
+    "footer": {
+      "nextChapter": "CAPITOLO SUCCESSIVO",
+      "finishBook": "CONCLUDI IL LIBRO"
+    }
+  },
+  "auth": {
+    "title": "Crea il tuo account",
+    "subtitle": "Registrati per non perdere i progressi e le parole salvate. Puoi anche continuare come ospite.",
+    "google": "Continua con Google",
+    "skip": "Non ora",
+    "email": {
+      "placeholder": "Il tuo indirizzo e-mail",
+      "send": "Invia il link",
+      "sentTitle": "Link inviato",
+      "sentBody": "Tocca il link che ti abbiamo inviato via e-mail per completare l'accesso."
+    },
+    "error": {
+      "generic": "Accesso non riuscito, riprova.",
+      "invalidEmail": "Inserisci un indirizzo e-mail valido."
+    }
+  },
+  "profile": {
+    "title": "Profilo",
+    "hero": {
+      "guest": "Ospite",
+      "anonymous": "Stai leggendo come ospite",
+      "memberSince": "Iscritto dal {{date}}"
+    },
+    "streak": {
+      "currentLabel": "GIORNI DI FILA",
+      "longestLabel": "SERIE PIÙ LUNGA",
+      "weekAccessibilityLabel": "Questa settimana hai letto in {{count}} giorni",
+      "keepGoing": "Leggi un po' oggi per tenere viva la serie di {{count}} giorni.",
+      "startToday": "Leggi qualche pagina oggi e inizia una serie.",
+      "days": {
+        "mon": "Lun",
+        "tue": "Mar",
+        "wed": "Mer",
+        "thu": "Gio",
+        "fri": "Ven",
+        "sat": "Sab",
+        "sun": "Dom"
+      }
+    },
+    "week": {
+      "title": "QUESTA SETTIMANA",
+      "totalMinutes": "{{count}} min",
+      "dayAccessibilityLabel": "{{day}}: {{count}} minuti",
+      "empty": "Questa settimana non hai ancora letto."
+    },
+    "loading": "Caricamento del profilo",
+    "error": "Impossibile caricare il profilo",
+    "stats": {
+      "savedWordsLabel": "Parole salvate",
+      "completedBooksLabel": "Libri finiti",
+      "readingTime": {
+        "hoursMinutes": "{{hours}} h {{minutes}} min",
+        "minutesOnly": "{{minutes}} min"
+      },
+      "sectionTitle": "Da sempre",
+      "totalTimeLabel": "Tempo di lettura totale",
+      "totalActiveDaysLabel": "Giorni di lettura"
+    },
+    "account": {
+      "sectionTitle": "Account",
+      "subscription": "Abbonamento",
+      "subscriptionFree": "Gratuito",
+      "subscriptionPremium": "Premium",
+      "fontSize": "Dimensione del testo in lettura",
+      "fontSizeValue": "{{percent}}%",
+      "theme": "Tema",
+      "language": "Lingua",
+      "languageTr": "Turco",
+      "languageEn": "Inglese",
+      "signUp": "Registrati",
+      "signOut": "Esci",
+      "signOutError": "Non è stato possibile uscire, riprova.",
+      "deleteAccount": "Elimina il mio account"
+    },
+    "footer": "{{name}} — versione {{version}}"
+  },
+  "vocabulary": {
+    "title": "Quaderno",
+    "loading": "Caricamento delle parole",
+    "error": "Impossibile caricare le parole",
+    "summary": "{{total}} parole · {{due}} da ripassare oggi",
+    "filters": {
+      "all": "TUTTE",
+      "due": "DA RIPASSARE",
+      "known": "APPRESE"
+    },
+    "due": {
+      "today": "Oggi",
+      "tomorrow": "Domani",
+      "days": "{{count}} giorni",
+      "weeks": "{{count}} settimane",
+      "none": "—"
+    },
+    "pos": {
+      "noun": "Sostantivo",
+      "verb": "Verbo",
+      "adjective": "Aggettivo",
+      "adverb": "Avverbio",
+      "preposition": "Preposizione",
+      "determiner": "Determinante",
+      "pronoun": "Pronome",
+      "other": "Altro"
+    },
+    "word": {
+      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+    },
+    "empty": {
+      "noWords": {
+        "title": "Il tuo quaderno è vuoto",
+        "description": "Mentre leggi, tocca una parola che non conosci per salvarla qui e ripassarla."
+      },
+      "noMatch": {
+        "title": "Nessuna parola corrisponde a questo filtro",
+        "description": "Prova un altro filtro."
+      }
+    }
+  },
+  "browse": {
+    "loading": "Caricamento dei libri",
+    "error": "Impossibile caricare i libri",
+    "empty": {
+      "title": "Nessun libro trovato",
+      "description": "In questa categoria non ci sono ancora libri."
+    },
+    "fallbackTitle": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzato"
+    }
+  },
+  "favorites": {
+    "toast": {
+      "added": "Aggiunto ai preferiti",
+      "removed": "Rimosso dai preferiti"
+    },
+    "action": {
+      "add": "Aggiungi ai preferiti",
+      "remove": "Rimuovi dai preferiti"
+    },
+    "screen": {
+      "title": "Preferiti e letti",
+      "loading": "Caricamento",
+      "error": "Caricamento non riuscito",
+      "favoritesSection": "Preferiti",
+      "readSection": "Letti",
+      "emptyFavorites": {
+        "title": "Ancora nessun preferito",
+        "description": "Tocca il cuore nella pagina di un libro per aggiungere quelli che ti piacciono."
+      },
+      "emptyRead": {
+        "title": "Non hai ancora iniziato nessun libro",
+        "description": "I libri che aprirai compariranno qui."
+      },
+      "emptyBoth": {
+        "title": "Qui non c'è ancora niente",
+        "description": "I libri che aggiungi ai preferiti o inizi a leggere compariranno qui."
+      }
+    }
+  },
+  "account": {
+    "delete": {
+      "title": "Elimina il tuo account",
+      "body": "Questa azione non è reversibile. Eliminando l'account si cancellano definitivamente:",
+      "listTitle": "Cosa viene eliminato",
+      "item1": "Le tue parole salvate",
+      "item2": "I tuoi progressi e le statistiche di lettura",
+      "item3": "Le tue carte di ripasso (SRS)",
+      "item4": "I dati del tuo profilo",
+      "confirmLabel": "Ho capito che non è reversibile.",
+      "confirmButton": "Elimina definitivamente il mio account",
+      "error": "Non è stato possibile eliminare il tuo account, riprova."
+    }
+  },
+  "srs": {
+    "loadError": "Non è stato possibile caricare le carte di ripasso.",
+    "revealHint": "Tocca per vedere il significato",
+    "noGloss": "Nessuna traduzione trovata",
+    "ratingAgain": "DI NUOVO",
+    "ratingHard": "DIFFICILE",
+    "ratingEasy": "FACILE",
+    "doneTitle": "Per oggi hai finito",
+    "doneMessage": "Hai ripassato {{count}} parole.",
+    "emptyTitle": "Niente da ripassare",
+    "emptyMessage": "Salva le parole mentre leggi: le tue carte di ripasso si raccoglieranno qui.",
+    "startButton": "Inizia il ripasso",
+    "dueBadge": "{{count}} parole pronte"
+  },
+  "onboarding": {
+    "introTitle": "Troviamo il tuo livello",
+    "introBody": "Ti mostriamo qualche parola inglese. Per ognuna dicci se la conosci, se non sei sicuro o se non la conosci. Useremo le risposte per consigliarti i libri giusti.",
+    "introDuration": "CIRCA 1 MINUTO",
+    "start": "Iniziamo",
+    "skip": "Non ora",
+    "answerKnown": "La conosco",
+    "answerUnsure": "Non sono sicuro",
+    "answerUnknown": "Non la conosco",
+    "resultEyebrow": "INIZIA A LEGGERE DA QUI",
+    "resultSize": "Conosci circa {{count}} parole.",
+    "adjustHint": "CAMBIALO SE NON TI SEMBRA GIUSTO",
+    "finish": "Vai ai libri",
+    "loadError": "Non è stato possibile caricare le parole del test."
+  },
+  "paywall": {
+    "title": "Fai restare le parole che leggi",
+    "subtitle": "Le storie sono sempre gratuite. Premium ti aiuta a non perdere quello che impari.",
+    "socialProof_one": "{{count}} STORIA · DA A1 A C2",
+    "socialProof_other": "{{count}} STORIE · DA A1 A C2",
+    "benefits": {
+      "studioAudio": "Narrazione in studio per 63 storie — ogni parola evidenziata mentre viene letta",
+      "secondLanguagePair": "Sblocca una seconda coppia di lingue -- leggi anche in un'altra lingua",
+      "unlimitedWords": "Parole salvate illimitate — nessun limite nel quaderno",
+      "spacedRepetition": "Ripetizione dilazionata: ogni parola torna prima che tu la dimentichi",
+      "aiSentences": "{{premium}} traduzioni di frasi con l'IA al giorno (versione gratuita: {{free}})",
+      "aiSentencesGeneric": "Una quota giornaliera molto più alta per la traduzione di frasi con l'IA",
+      "stats": "Statistiche su tempo di lettura, serie e livello"
+    },
+    "plan": {
+      "annual": "Annuale",
+      "monthly": "Mensile",
+      "savings": "RISPARMI IL {{percent}}%",
+      "perMonth": "{{price}}/mese",
+      "trialDays_one": "{{count}} giorno gratis",
+      "trialDays_other": "{{count}} giorni gratis",
+      "periodYear": "anno",
+      "periodMonth": "mese"
+    },
+    "ctaTrial_one": "Prova gratis per {{count}} giorno",
+    "ctaTrial_other": "Prova gratis per {{count}} giorni",
+    "ctaSubscribe": "Passa a Premium",
+    "legal": {
+      "trialThenPrice_one": "Gratis per {{count}} giorno, poi {{price}}/{{period}}.",
+      "trialThenPrice_other": "Gratis per {{count}} giorni, poi {{price}}/{{period}}.",
+      "price": "{{price}}/{{period}}.",
+      "autoRenew": "L'abbonamento si rinnova automaticamente se non lo disdici almeno 24 ore prima della fine del periodo. Puoi disdire dalle impostazioni del tuo ID Apple.",
+      "terms": "Termini di utilizzo",
+      "privacy": "Informativa sulla privacy",
+      "privacyMissing": "Il link all'informativa sulla privacy non è configurato"
+    },
+    "freeAlwaysNote": "TUTTI I LIBRI RESTANO GRATIS, PER SEMPRE",
+    "restore": "Ripristina gli acquisti",
+    "purchaseError": "Non è stato possibile completare l'acquisto. Riprova.",
+    "notEntitledTitle": "L'abbonamento non si vede ancora",
+    "notEntitledBody": "Il pagamento è andato a buon fine ma l'abbonamento non risulta ancora attivo. Tra qualche minuto prova con «Ripristina gli acquisti»; se il problema continua, scrivici.",
+    "activatingCta": "Attivazione…",
+    "activatingTitle": "Stiamo attivando il tuo abbonamento",
+    "activatingBody": "L'acquisto è completo. Premium si sbloccherà entro pochi minuti; se non succede, usa «Ripristina gli acquisti» per aggiornare.",
+    "restoreFoundTitle": "Abbonamento ripristinato",
+    "restoreFoundBody": "Le funzioni Premium sono di nuovo attive.",
+    "restoreEmptyTitle": "Nessun abbonamento trovato",
+    "restoreEmptyBody": "Su questo account Apple non c'è un abbonamento attivo.",
+    "noPackages": "Non è stato possibile caricare le opzioni di abbonamento.",
+    "retryPackages": "Riprova",
+    "unavailableInExpoGo": "GLI ACQUISTI FUNZIONANO SOLO IN UNA BUILD COMPILATA",
+    "upgradeRow": "Premium",
+    "wordListFull": "Il tuo quaderno è pieno a {{count}}/{{limit}}"
+  },
+  "reminders": {
+    "settingsLabel": "Promemoria",
+    "settingsHint": "Per i ripassi, le storie lasciate a metà e la tua serie",
+    "permissionBlockedTitle": "Le notifiche sono disattivate",
+    "permissionBlockedBody": "I promemoria hanno bisogno del permesso per le notifiche. Puoi attivarle per İngilizce Hikaye nelle Impostazioni dell'iPhone.",
+    "openSettings": "Apri Impostazioni",
+    "permissionDeniedTitle": "Promemoria non attivati",
+    "permissionDeniedBody": "Il permesso per le notifiche non è stato concesso. Puoi attivarlo quando vuoi dalle Impostazioni.",
+    "streakRescue": {
+      "title_one": "La tua serie di {{count}} giorno è a rischio",
+      "title_other": "La tua serie di {{count}} giorni è a rischio",
+      "body": "Leggi qualche minuto oggi e continua."
+    },
+    "reviewDue": {
+      "title_one": "{{count}} parola aspetta il ripasso",
+      "title_other": "{{count}} parole aspettano il ripasso",
+      "body": "Le ripassiamo prima di dimenticarle?"
+    },
+    "continueReading": {
+      "title": "Hai una storia lasciata a metà",
+      "body": "«{{title}}» ti sta aspettando."
+    }
+  },
+  "completion": {
+    "eyebrow_one": "HAI FINITO IL TUO {{count}}° LIBRO",
+    "eyebrow_other": "HAI FINITO IL TUO {{count}}° LIBRO",
+    "wordsLabel": "parole salvate",
+    "minutesValue_one": "{{count}} min",
+    "minutesValue_other": "{{count}} min",
+    "minutesLabel": "tempo di lettura",
+    "reviewWords": "Ripassa queste parole",
+    "findNextBook": "Trova la prossima storia",
+    "upgradeTitle": "Fai restare queste parole",
+    "upgradeHint": "Premium sblocca parole e ripassi illimitati",
+    "error": "Non è stato possibile caricare questa schermata."
+  },
+  "languagePair": {
+    "nativeTitle": "Che lingua parli?",
+    "nativeBody": "L'app e le traduzioni delle parole verranno mostrate in questa lingua.",
+    "targetTitle": "Che lingua vuoi leggere?",
+    "targetBody": "Le storie saranno in questa lingua. La tua prima scelta è gratuita.",
+    "comingSoonLabel": "PRESTO",
+    "comingSoonBadge": "Presto",
+    "saveError": "Non è stato possibile salvare la tua coppia di lingue. Riprova.",
+    "unexpectedPremiumRequired": "Questa selezione richiede inaspettatamente Premium. Riprova.",
+    "restartTitle": "Riavvio necessario",
+    "restartBody": "L'arabo cambia il layout dello schermo da destra a sinistra. Riavvia l'app per applicare questa modifica.",
+    "restartCta": "Riavvia",
+    "manageTitle": "Le tue coppie di lingue",
+    "yourPairs": "LE TUE COPPIE",
+    "addPair": "AGGIUNGI UNA COPPIA",
+    "activeBadge": "Attiva"
+  }
+}

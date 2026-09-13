@@ -1,0 +1,662 @@
+{
+  "app": {
+    "name": "İngilizce Hikaye"
+  },
+  "tabs": {
+    "home": "Главная",
+    "library": "Библиотека",
+    "vocabulary": "Мои слова",
+    "profile": "Профиль"
+  },
+  "placeholder": {
+    "comingSoon": "Скоро появится"
+  },
+  "notFound": {
+    "title": "Не найдено",
+    "message": "Такого экрана нет.",
+    "goHome": "На главную"
+  },
+  "common": {
+    "back": "Назад",
+    "continue": "Продолжить",
+    "errorTitle": "Что-то пошло не так",
+    "retry": "Повторить",
+    "dismiss": "Закрыть",
+    "crashTitle": "Что-то пошло не так",
+    "crashMessage": "Экран не загрузился. Обычно помогает повторная попытка.",
+    "ok": "ОК"
+  },
+  "ui": {
+    "levelBadge": {
+      "accessibilityLabel": "Уровень {{level}}"
+    }
+  },
+  "home": {
+    "loading": "Загружаем главную",
+    "error": "Не удалось загрузить главную",
+    "empty": {
+      "title": "Вы ещё не начали ни одной книги",
+      "description": "Выберите первую книгу в библиотеке и начните читать.",
+      "cta": "Открыть библиотеку"
+    },
+    "books": {
+      "title": "Книги",
+      "more": "ВСЕ →"
+    },
+    "book": {
+      "words": "{{value}} слов",
+      "chapters": "{{value}} глав"
+    },
+    "shelves": {
+      "more": "ВСЕ →",
+      "forYou": "Для вас",
+      "shortReads": "Короткое чтение",
+      "byGenre": "По жанрам",
+      "byAuthor": "По авторам",
+      "byTheme": "По темам",
+      "favorites": "Избранное",
+      "continuingSeries": "Серии, которые вы читаете",
+      "level": {
+        "beginner": "Начальный",
+        "intermediate": "Средний",
+        "advanced": "Продвинутый"
+      }
+    },
+    "seriesCard": {
+      "progress": "{{current}}/{{total}}"
+    },
+    "newBooks": {
+      "title": "Новые книги"
+    },
+    "currentlyReading": {
+      "title": "Сейчас читаете",
+      "percent": "{{percent}} %",
+      "remove": "Убрать из «Сейчас читаете»",
+      "removeAccessibilityLabel": "Убрать «{{title}}» из списка «Сейчас читаете»"
+    },
+    "categories": {
+      "title": "Жанры и темы",
+      "everyday": "Повседневная жизнь",
+      "adventure": "Приключения",
+      "fantasy": "Фэнтези и сказки",
+      "mystery": "Детектив",
+      "romance": "Любовь и общество",
+      "philosophy": "Философия",
+      "gothic": "Готика и саспенс",
+      "comedy": "Юмор",
+      "scifi": "Научная фантастика"
+    },
+    "authorsAndSeries": {
+      "title": "Авторы и серии"
+    },
+    "categoryTag": {
+      "count": "книг",
+      "accessibilityLabel": "{{label}}, книг: {{count}}"
+    },
+    "levelGroups": {
+      "beginner": "Начальный",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый",
+      "beginnerRange": "A1–A2",
+      "intermediateRange": "B1–B2",
+      "advancedRange": "C1–C2",
+      "count": "{{count}} книг",
+      "accessibilityLabel": "{{title}}, книг: {{count}}"
+    },
+    "favoritesRead": {
+      "title": "Избранное и прочитанное",
+      "favoritesLabel": "В избранном",
+      "readLabel": "Прочитано",
+      "accessibilityLabel": "В избранном: {{favoritesCount}}, прочитано книг: {{readCount}}"
+    },
+    "hero": {
+      "levelEyebrow": "ВАШ УРОВЕНЬ · {{level}}",
+      "welcomeEyebrow": "ДОБРО ПОЖАЛОВАТЬ",
+      "title": "Что почитаем сегодня?",
+      "continueBody": "Пройдено {{percent}} %. Продолжите с того места, где остановились.",
+      "startBody": "Начните с коротких историй своего уровня — каждую можно прочитать за один раз.",
+      "continueAction": "Продолжить чтение",
+      "browseAction": "Посмотреть книги"
+    },
+    "streak": {
+      "accessibilitySafe_one": "Серия {{count}} день, на сегодня всё выполнено",
+      "accessibilitySafe_few": "Серия {{count}} дня, на сегодня всё выполнено",
+      "accessibilitySafe_many": "Серия {{count}} дней, на сегодня всё выполнено",
+      "accessibilitySafe_other": "Серия {{count}} дня, на сегодня всё выполнено",
+      "accessibilityAtRisk_one": "Серия {{count}} день, сегодня вы ещё не читали",
+      "accessibilityAtRisk_few": "Серия {{count}} дня, сегодня вы ещё не читали",
+      "accessibilityAtRisk_many": "Серия {{count}} дней, сегодня вы ещё не читали",
+      "accessibilityAtRisk_other": "Серия {{count}} дня, сегодня вы ещё не читали"
+    }
+  },
+  "collections": {
+    "ozSeries": {
+      "title": "Серия об Изумрудном городе",
+      "description": "Классическая серия романов Л. Фрэнка Баума о волшебной стране Оз."
+    }
+  },
+  "library": {
+    "title": "Библиотека",
+    "loading": "Загружаем книги",
+    "error": "Не удалось загрузить книги",
+    "empty": {
+      "title": "Книги не найдены",
+      "description": "Попробуйте другой запрос или фильтр."
+    },
+    "stats": {
+      "words": "Слова",
+      "chapters": "Главы",
+      "minutes": "Минуты"
+    },
+    "book": {
+      "accessibilityLabel": "{{title}}, {{author}}, уровень {{level}}"
+    },
+    "search": {
+      "placeholder": "Поиск по названию, автору или жанру"
+    },
+    "sort": {
+      "recommended": "Рекомендуем",
+      "newest": "Новые",
+      "popular": "Популярные",
+      "shortest": "Короткие→Длинные"
+    },
+    "filters": {
+      "open": "Открыть фильтры",
+      "button": "Фильтры",
+      "level": "Уровень",
+      "levelAll": "Все",
+      "levelGroup": {
+        "beginner": "Начальный",
+        "intermediate": "Средний",
+        "advanced": "Продвинутый"
+      },
+      "length": "Объём",
+      "lengthAny": "Любой",
+      "lengthShort": "До 90 мин",
+      "lengthMedium": "До 300 мин",
+      "audioOnly": "Только с озвучкой",
+      "reset": "Сбросить фильтры",
+      "apply": "Применить"
+    },
+    "viewMode": {
+      "toggle": "Сменить вид",
+      "grid": "Плитка",
+      "list": "Список"
+    },
+    "card": {
+      "minutes": "{{count}} мин",
+      "audio": "Озвучка"
+    }
+  },
+  "bookDetail": {
+    "back": "← Библиотека",
+    "backAccessibilityLabel": "Вернуться в библиотеку",
+    "loading": "Загружаем книгу",
+    "error": "Не удалось загрузить книгу",
+    "chapters": "Главы",
+    "cta": {
+      "start": "Начать читать",
+      "continue": "Продолжить чтение — глава {{index}}",
+      "listen": "Слушать",
+      "listenAccessibilityLabel": "Слушать эту книгу"
+    },
+    "stats": {
+      "words": "Слова",
+      "minutes": "Минуты",
+      "chapters": "Главы",
+      "completed": "Прочитано",
+      "completedValue": "{{percent}} %"
+    },
+    "chapterRow": {
+      "duration": "{{minutes}} мин",
+      "done": "прочитано",
+      "notDone": "не прочитано",
+      "accessibilityLabel": "Глава {{index}}: {{title}}, {{status}}"
+    },
+    "empty": {
+      "title": "Глав пока нет",
+      "description": "Главы этой книги появятся в ближайшее время."
+    },
+    "source": {
+      "title": "Источник и лицензия",
+      "name": "Источник",
+      "license": "Лицензия"
+    },
+    "series": {
+      "position": "Книга {{index}} в этой серии",
+      "nextBook": "Следующая книга: {{title}}",
+      "lastBook": "Последняя книга в серии"
+    },
+    "audio": {
+      "label": "ОЗВУЧКА",
+      "unlocked": "Эту историю читает студийный голос, каждое слово подсвечивается по ходу чтения.",
+      "upgradeCta": "Слушать с премиумом",
+      "locked": "Студийная озвучка входит в премиум. Слушайте историю живым голосом, а каждое слово будет подсвечиваться по ходу чтения."
+    }
+  },
+  "reader": {
+    "header": {
+      "back": "Назад",
+      "settings": "Настройки чтения",
+      "playSpeech": "Читать вслух",
+      "pauseSpeech": "Приостановить чтение вслух"
+    },
+    "wordSheet": {
+      "pronounce": "Произнести",
+      "noTranslation": "Перевод для этого слова не найден",
+      "lookingUpTranslation": "Ищем перевод…",
+      "save": "Сохранить",
+      "saved": "Сохранено",
+      "savedRemove": "Сохранено ✓ — убрать",
+      "know": "Я знаю это слово",
+      "knownUndo": "Знаете ✓ — отменить",
+      "senseWithPos": "{{pos}} {{gloss}}",
+      "pos": {
+        "noun": "(сущ.)",
+        "verb": "(гл.)",
+        "adjective": "(прил.)",
+        "adverb": "(нареч.)",
+        "preposition": "(предл.)",
+        "determiner": "(детерм.)",
+        "pronoun": "(мест.)",
+        "conjunction": "(союз)",
+        "interjection": "(межд.)",
+        "other": ""
+      }
+    },
+    "sentenceTranslation": {
+      "toggle": "Показать перевод предложения",
+      "loading": "Переводим…",
+      "error": "Не удалось получить перевод предложения, попробуйте ещё раз"
+    },
+    "sentenceSheet": {
+      "explainGrammar": "Разобрать грамматику",
+      "premiumNotice": "Перевод предложений и разбор грамматики скоро появятся с помощью ИИ."
+    },
+    "settings": {
+      "fontSize": "Размер шрифта",
+      "increaseFontSize": "Увеличить шрифт",
+      "decreaseFontSize": "Уменьшить шрифт",
+      "fontFamily": "Шрифт",
+      "fontFamilyOptions": {
+        "serif": "С засечками",
+        "sans": "Без засечек"
+      },
+      "theme": "Тема",
+      "themeOptions": {
+        "light": "Светлая",
+        "sepia": "Сепия",
+        "dark": "Тёмная",
+        "system": "Как в системе"
+      },
+      "margin": "Поля",
+      "decreaseMargin": "Уменьшить поля",
+      "increaseMargin": "Увеличить поля",
+      "highlights": "Подсвечивать незнакомые слова",
+      "speechRate": "Скорость чтения",
+      "speechRateOptions": {
+        "0.8": "Медленно",
+        "1": "Обычно",
+        "1.2": "Быстро"
+      },
+      "voice": "Голос для произношения слов",
+      "voiceTier": {
+        "premium": "высокое качество",
+        "enhanced": "улучшенный"
+      },
+      "voiceUpgradeHint": "Системный голос, который произносит слова из словаря. Чтобы звучало естественнее: Настройки > Универсальный доступ > Устный контент > Голоса > English — и скачайте голос. Бесплатно и один раз. (Озвучка глав — это другое: там студийная запись.)"
+    },
+    "chapterComplete": {
+      "title": "Глава прочитана",
+      "nextChapter": "Следующая глава",
+      "bookFinished": "Вы дочитали книгу. Отлично!",
+      "eyebrow": "ГЛАВА {{number}}",
+      "wordsLabel": "СЛОВА",
+      "minutesLabel": "МИНУТЫ",
+      "minutesValue": "{{count}} мин",
+      "backToBook": "Вернуться к книге",
+      "finishBook": "Завершить книгу"
+    },
+    "error": {
+      "loadFailed": "Не удалось загрузить главу. Попробуйте ещё раз.",
+      "progressNotSaved": "Не удалось сохранить прогресс, проверьте подключение.",
+      "saveWordFailed": "Не удалось сохранить слово, проверьте подключение.",
+      "unsaveWordFailed": "Не удалось убрать слово, проверьте подключение.",
+      "markKnownFailed": "Не удалось отметить слово как знакомое, проверьте подключение.",
+      "unmarkKnownFailed": "Не удалось отменить действие, проверьте подключение.",
+      "notSignedIn": "Для этого нужно войти в аккаунт заново.",
+      "savedWordLimitTitle": "Список слов заполнен",
+      "savedWordLimitBody": "На бесплатном тарифе помещается до 100 слов. Отметьте выученные слова в разделе «Мои слова», чтобы освободить место."
+    },
+    "wordAlreadySaved": "Это слово уже сохранено.",
+    "footer": {
+      "nextChapter": "СЛЕДУЮЩАЯ ГЛАВА",
+      "finishBook": "ЗАВЕРШИТЬ КНИГУ"
+    }
+  },
+  "auth": {
+    "title": "Создайте аккаунт",
+    "subtitle": "Зарегистрируйтесь, чтобы не потерять прогресс и сохранённые слова. Можно и дальше пользоваться приложением как гость.",
+    "google": "Продолжить с Google",
+    "skip": "Не сейчас",
+    "email": {
+      "placeholder": "Ваш адрес эл. почты",
+      "send": "Отправить ссылку",
+      "sentTitle": "Ссылка отправлена",
+      "sentBody": "Откройте ссылку из письма, чтобы завершить вход."
+    },
+    "error": {
+      "generic": "Не удалось войти, попробуйте ещё раз.",
+      "invalidEmail": "Введите корректный адрес эл. почты."
+    }
+  },
+  "profile": {
+    "title": "Профиль",
+    "hero": {
+      "guest": "Гость",
+      "anonymous": "Вы читаете как гость",
+      "memberSince": "С нами с {{date}}"
+    },
+    "streak": {
+      "currentLabel": "СЕРИЯ ДНЕЙ",
+      "longestLabel": "САМАЯ ДЛИННАЯ СЕРИЯ",
+      "weekAccessibilityLabel": "На этой неделе вы читали {{count}} дн.",
+      "keepGoing": "Почитайте немного сегодня, чтобы сохранить серию из {{count}} дн.",
+      "startToday": "Прочитайте пару страниц сегодня — и серия начнётся.",
+      "days": {
+        "mon": "Пн",
+        "tue": "Вт",
+        "wed": "Ср",
+        "thu": "Чт",
+        "fri": "Пт",
+        "sat": "Сб",
+        "sun": "Вс"
+      }
+    },
+    "week": {
+      "title": "НА ЭТОЙ НЕДЕЛЕ",
+      "totalMinutes": "{{count}} мин",
+      "dayAccessibilityLabel": "{{day}}: {{count}} мин",
+      "empty": "На этой неделе вы ещё не читали."
+    },
+    "loading": "Загружаем профиль",
+    "error": "Не удалось загрузить профиль",
+    "stats": {
+      "savedWordsLabel": "Сохранённые слова",
+      "completedBooksLabel": "Прочитанные книги",
+      "readingTime": {
+        "hoursMinutes": "{{hours}} ч {{minutes}} мин",
+        "minutesOnly": "{{minutes}} мин"
+      },
+      "sectionTitle": "За всё время",
+      "totalTimeLabel": "Всего чтения",
+      "totalActiveDaysLabel": "Дней с чтением"
+    },
+    "account": {
+      "sectionTitle": "Аккаунт",
+      "subscription": "Подписка",
+      "subscriptionFree": "Бесплатно",
+      "subscriptionPremium": "Премиум",
+      "fontSize": "Размер шрифта при чтении",
+      "fontSizeValue": "{{percent}} %",
+      "theme": "Тема",
+      "language": "Язык",
+      "languageTr": "Турецкий",
+      "languageEn": "Английский",
+      "signUp": "Зарегистрироваться",
+      "signOut": "Выйти",
+      "signOutError": "Не удалось выйти, попробуйте ещё раз.",
+      "deleteAccount": "Удалить аккаунт"
+    },
+    "footer": "{{name}} — версия {{version}}"
+  },
+  "vocabulary": {
+    "title": "Словарик",
+    "loading": "Загружаем слова",
+    "error": "Не удалось загрузить слова",
+    "summary": "{{total}} слов · сегодня на повтор: {{due}}",
+    "filters": {
+      "all": "ВСЕ",
+      "due": "НА ПОВТОР",
+      "known": "ВЫУЧЕНО"
+    },
+    "due": {
+      "today": "Сегодня",
+      "tomorrow": "Завтра",
+      "days": "{{count}} дн.",
+      "weeks": "{{count}} нед.",
+      "none": "—"
+    },
+    "pos": {
+      "noun": "Существительное",
+      "verb": "Глагол",
+      "adjective": "Прилагательное",
+      "adverb": "Наречие",
+      "preposition": "Предлог",
+      "determiner": "Детерминатив",
+      "pronoun": "Местоимение",
+      "other": "Другое"
+    },
+    "word": {
+      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+    },
+    "empty": {
+      "noWords": {
+        "title": "Словарик пока пуст",
+        "description": "Во время чтения коснитесь незнакомого слова — оно сохранится сюда для повторения."
+      },
+      "noMatch": {
+        "title": "По этому фильтру слов нет",
+        "description": "Попробуйте другой фильтр."
+      }
+    }
+  },
+  "browse": {
+    "loading": "Загружаем книги",
+    "error": "Не удалось загрузить книги",
+    "empty": {
+      "title": "Книги не найдены",
+      "description": "В этой категории пока нет книг."
+    },
+    "fallbackTitle": {
+      "beginner": "Начальный",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый"
+    }
+  },
+  "favorites": {
+    "toast": {
+      "added": "Добавлено в избранное",
+      "removed": "Убрано из избранного"
+    },
+    "action": {
+      "add": "Добавить в избранное",
+      "remove": "Убрать из избранного"
+    },
+    "screen": {
+      "title": "Избранное и прочитанное",
+      "loading": "Загружаем",
+      "error": "Не удалось загрузить",
+      "favoritesSection": "Избранное",
+      "readSection": "Прочитанное",
+      "emptyFavorites": {
+        "title": "В избранном пока пусто",
+        "description": "Коснитесь сердечка на странице книги, чтобы добавить её в избранное."
+      },
+      "emptyRead": {
+        "title": "Вы ещё не начали ни одной книги",
+        "description": "Книги, которые вы откроете, появятся здесь."
+      },
+      "emptyBoth": {
+        "title": "Здесь пока пусто",
+        "description": "Книги, которые вы добавите в избранное или начнёте читать, появятся здесь."
+      }
+    }
+  },
+  "account": {
+    "delete": {
+      "title": "Удаление аккаунта",
+      "body": "Это действие нельзя отменить. При удалении аккаунта безвозвратно удаляются:",
+      "listTitle": "Что будет удалено",
+      "item1": "Сохранённые слова",
+      "item2": "Прогресс чтения и статистика",
+      "item3": "Карточки интервального повторения (SRS)",
+      "item4": "Данные профиля",
+      "confirmLabel": "Я понимаю, что это действие нельзя отменить.",
+      "confirmButton": "Удалить аккаунт навсегда",
+      "error": "Не удалось удалить аккаунт, попробуйте ещё раз."
+    }
+  },
+  "srs": {
+    "loadError": "Не удалось загрузить карточки для повторения.",
+    "revealHint": "Коснитесь, чтобы увидеть значение",
+    "noGloss": "Перевод не найден",
+    "ratingAgain": "НЕ ЗНАЮ",
+    "ratingHard": "СЛОЖНО",
+    "ratingEasy": "ЛЕГКО",
+    "doneTitle": "На сегодня всё",
+    "doneMessage": "Вы повторили {{count}} слов.",
+    "emptyTitle": "Повторять нечего",
+    "emptyMessage": "Сохраняйте слова во время чтения — карточки для повторения будут собираться здесь.",
+    "startButton": "Начать повторение",
+    "dueBadge": "{{count}} слов готово"
+  },
+  "onboarding": {
+    "introTitle": "Определим ваш уровень",
+    "introBody": "Мы покажем несколько английских слов. Для каждого отметьте, знаете вы его, сомневаетесь или не знаете. По ответам подберём подходящие книги.",
+    "introDuration": "ОКОЛО 1 МИНУТЫ",
+    "start": "Начнём",
+    "skip": "Не сейчас",
+    "answerKnown": "Знаю",
+    "answerUnsure": "Не уверен",
+    "answerUnknown": "Не знаю",
+    "resultEyebrow": "НАЧНИТЕ ЧИТАТЬ ОТСЮДА",
+    "resultSize": "Вы знаете примерно {{count}} слов.",
+    "adjustHint": "ИЗМЕНИТЕ, ЕСЛИ НЕ ПОХОЖЕ НА ПРАВДУ",
+    "finish": "Перейти к книгам",
+    "loadError": "Не удалось загрузить слова для теста."
+  },
+  "paywall": {
+    "title": "Пусть прочитанные слова останутся с вами",
+    "subtitle": "Истории всегда бесплатны. Премиум помогает удержать то, что вы выучили.",
+    "socialProof_one": "{{count}} ИСТОРИЯ · ОТ A1 ДО C2",
+    "socialProof_few": "{{count}} ИСТОРИИ · ОТ A1 ДО C2",
+    "socialProof_many": "{{count}} ИСТОРИЙ · ОТ A1 ДО C2",
+    "socialProof_other": "{{count}} ИСТОРИИ · ОТ A1 ДО C2",
+    "benefits": {
+      "studioAudio": "Студийная озвучка 63 историй — каждое слово подсвечивается по ходу чтения",
+      "secondLanguagePair": "Откройте вторую языковую пару -- читайте и на другом языке",
+      "unlimitedWords": "Без ограничений на сохранённые слова — лимит словарика снимается",
+      "spacedRepetition": "Интервальное повторение: каждое слово вернётся раньше, чем вы его забудете",
+      "aiSentences": "{{premium}} переводов предложений с ИИ в день (на бесплатном тарифе: {{free}})",
+      "aiSentencesGeneric": "Гораздо более высокая дневная квота на перевод предложений с ИИ",
+      "stats": "Статистика времени чтения, серии и уровня"
+    },
+    "plan": {
+      "annual": "Годовая",
+      "monthly": "Месячная",
+      "savings": "ВЫГОДА {{percent}} %",
+      "perMonth": "{{price}}/мес.",
+      "trialDays_one": "{{count}} день бесплатно",
+      "trialDays_few": "{{count}} дня бесплатно",
+      "trialDays_many": "{{count}} дней бесплатно",
+      "trialDays_other": "{{count}} дня бесплатно",
+      "periodYear": "год",
+      "periodMonth": "мес."
+    },
+    "ctaTrial_one": "Попробовать бесплатно {{count}} день",
+    "ctaTrial_few": "Попробовать бесплатно {{count}} дня",
+    "ctaTrial_many": "Попробовать бесплатно {{count}} дней",
+    "ctaTrial_other": "Попробовать бесплатно {{count}} дня",
+    "ctaSubscribe": "Перейти на Премиум",
+    "legal": {
+      "trialThenPrice_one": "Бесплатно {{count}} день, затем {{price}}/{{period}}.",
+      "trialThenPrice_few": "Бесплатно {{count}} дня, затем {{price}}/{{period}}.",
+      "trialThenPrice_many": "Бесплатно {{count}} дней, затем {{price}}/{{period}}.",
+      "trialThenPrice_other": "Бесплатно {{count}} дня, затем {{price}}/{{period}}.",
+      "price": "{{price}}/{{period}}.",
+      "autoRenew": "Подписка продлевается автоматически, если её не отменить не позднее чем за 24 часа до конца периода. Отменить можно в настройках Apple ID.",
+      "terms": "Условия использования",
+      "privacy": "Политика конфиденциальности",
+      "privacyMissing": "Ссылка на политику конфиденциальности не настроена"
+    },
+    "freeAlwaysNote": "ВСЕ КНИГИ ОСТАЮТСЯ БЕСПЛАТНЫМИ, ВСЕГДА",
+    "restore": "Восстановить покупки",
+    "purchaseError": "Не удалось завершить покупку. Попробуйте ещё раз.",
+    "notEntitledTitle": "Подписка пока не видна",
+    "notEntitledBody": "Оплата прошла, но подписка ещё не активна. Через несколько минут нажмите «Восстановить покупки»; если не поможет, напишите нам.",
+    "activatingCta": "Активируем…",
+    "activatingTitle": "Активируем вашу подписку",
+    "activatingBody": "Покупка завершена. Премиум откроется в течение нескольких минут; если этого не произойдёт, нажмите «Восстановить покупки».",
+    "restoreFoundTitle": "Подписка восстановлена",
+    "restoreFoundBody": "Премиум-возможности снова доступны.",
+    "restoreEmptyTitle": "Подписка не найдена",
+    "restoreEmptyBody": "На этом аккаунте Apple нет активной подписки.",
+    "noPackages": "Не удалось загрузить варианты подписки.",
+    "retryPackages": "Повторить",
+    "unavailableInExpoGo": "ПОКУПКИ РАБОТАЮТ ТОЛЬКО В СОБРАННОЙ ВЕРСИИ",
+    "upgradeRow": "Премиум",
+    "wordListFull": "Словарик заполнен на {{count}}/{{limit}}"
+  },
+  "reminders": {
+    "settingsLabel": "Напоминания",
+    "settingsHint": "О повторениях, недочитанных историях и вашей серии",
+    "permissionBlockedTitle": "Уведомления отключены",
+    "permissionBlockedBody": "Для напоминаний нужно разрешение на уведомления. Включить их для İngilizce Hikaye можно в Настройках iPhone.",
+    "openSettings": "Открыть настройки",
+    "permissionDeniedTitle": "Напоминания не включены",
+    "permissionDeniedBody": "Разрешение на уведомления не выдано. Его можно включить в любой момент в Настройках.",
+    "streakRescue": {
+      "title_one": "Ваша серия из {{count}} дня под угрозой",
+      "title_few": "Ваша серия из {{count}} дней под угрозой",
+      "title_many": "Ваша серия из {{count}} дней под угрозой",
+      "title_other": "Ваша серия из {{count}} дней под угрозой",
+      "body": "Почитайте несколько минут сегодня — и серия продолжится."
+    },
+    "reviewDue": {
+      "title_one": "{{count}} слово ждёт повторения",
+      "title_few": "{{count}} слова ждут повторения",
+      "title_many": "{{count}} слов ждут повторения",
+      "title_other": "{{count}} слова ждут повторения",
+      "body": "Пробежимся по ним, пока не забылись?"
+    },
+    "continueReading": {
+      "title": "У вас есть недочитанная история",
+      "body": "«{{title}}» ждёт вас."
+    }
+  },
+  "completion": {
+    "eyebrow_one": "ВЫ ДОЧИТАЛИ {{count}}-Ю КНИГУ",
+    "eyebrow_few": "ВЫ ДОЧИТАЛИ {{count}}-Ю КНИГУ",
+    "eyebrow_many": "ВЫ ДОЧИТАЛИ {{count}}-Ю КНИГУ",
+    "eyebrow_other": "ВЫ ДОЧИТАЛИ {{count}}-Ю КНИГУ",
+    "wordsLabel": "слов сохранено",
+    "minutesValue_one": "{{count}} мин",
+    "minutesValue_few": "{{count}} мин",
+    "minutesValue_many": "{{count}} мин",
+    "minutesValue_other": "{{count}} мин",
+    "minutesLabel": "время чтения",
+    "reviewWords": "Повторить эти слова",
+    "findNextBook": "Найти следующую историю",
+    "upgradeTitle": "Пусть эти слова останутся",
+    "upgradeHint": "Премиум снимает лимит на сохранённые слова и повторения",
+    "error": "Не удалось загрузить этот экран."
+  },
+  "languagePair": {
+    "nativeTitle": "На каком языке вы говорите?",
+    "nativeBody": "Приложение и переводы слов будут показаны на этом языке.",
+    "targetTitle": "Какой язык вы хотите читать?",
+    "targetBody": "Истории будут на этом языке. Первый выбор бесплатный.",
+    "comingSoonLabel": "СКОРО",
+    "comingSoonBadge": "Скоро",
+    "saveError": "Не удалось сохранить языковую пару. Попробуйте ещё раз.",
+    "unexpectedPremiumRequired": "Для этого выбора неожиданно требуется Премиум. Попробуйте ещё раз.",
+    "restartTitle": "Требуется перезапуск",
+    "restartBody": "Арабский язык переключает экран на направление справа налево. Перезапустите приложение, чтобы применить изменение.",
+    "restartCta": "Перезапустить",
+    "manageTitle": "Ваши языковые пары",
+    "yourPairs": "ВАШИ ПАРЫ",
+    "addPair": "ДОБАВИТЬ ПАРУ",
+    "activeBadge": "Активна"
+  }
+}

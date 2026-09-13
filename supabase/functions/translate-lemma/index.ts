@@ -1,7 +1,19 @@
 // Task 4 (3. seviye fallback) — cihazda hem book_lemmas hem lemma_canonical
 // karşılığı bulunamayan NADİR bir lemma için çalışma zamanında LLM ile tek
-// kelimelik bağlamsal Türkçe çeviri üretir, `lemmas` tablosuna
-// source='runtime' olarak yazar ve sonucu çağırana döner.
+// kelimelik bağlamsal çeviri üretir ve sonucu çağırana döner.
+//
+// GENELLEŞTİRME (v2, 2026-09-13 — dil çiftleri): eskiden hedef HER ZAMAN
+// İngilizce, ana dil HER ZAMAN Türkçe idi ve sonuç `lemmas.tr_gloss`'a
+// yazılıyordu. Artık `nativeLanguage`/`targetLanguage` istekte geliyor.
+//
+// NEDEN `lemmas` TABLOSU DEĞİŞMEDİ: (targetLanguage="en", nativeLanguage=
+// "tr") -- yani bugüne kadarki TEK yol -- hâlâ `lemmas` tablosuna, hâlâ
+// aynı şemayla yazıyor. 26.100 kelimelik bu tablo üretimde kanıtlanmış;
+// onu değiştirmenin hiçbir Türkçe kullanıcıya faydası yok, sadece riski
+// var. Diğer 9 ana dil (ya da ileride başka bir hedef dil) için sonuç
+// `lemma_translations` tablosuna yazılıyor -- migration 033'te tanımlı
+// genel (target_language, lemma, pos, native_language) önbelleği.
+// Böylece mevcut yol satır satır aynı kalıyor, yeni yol ONA EK.
 //
 // Provider seçimi: pipeline (pipeline/src/lemmas.py, pipeline/.env.example)
 // tr_gloss üretimi için zaten Anthropic Claude kullanıyor
@@ -30,15 +42,43 @@ const DAILY_LIMIT = 30;
 // bulundu. Model kimligi bu yuzden tek bir sabitte ve yorumlu duruyor.
 const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001";
 
+/** Eski istemcilerle (build 9 ve öncesi) geriye dönük uyumluluk için varsayılanlar. */
+const DEFAULT_NATIVE_LANGUAGE = "tr";
+const DEFAULT_TARGET_LANGUAGE = "en";
+
+/**
+ * Prompt'ta okunabilir dil adı için. `languages` tablosunun `name_en`
+ * sütunuyla aynı değerler -- burada sabit tutuluyor çünkü bu fonksiyon
+ * her çağrıda ekstra bir DB round-trip yapmadan çalışmalı ve liste zaten
+ * sabit (yeni dil eklemek zaten bir migration + deploy gerektiriyor).
+ */
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  tr: "Turkish",
+  de: "German",
+  fr: "French",
+  ru: "Russian",
+  zh: "Chinese",
+  ja: "Japanese",
+  it: "Italian",
+  uk: "Ukrainian",
+  ar: "Arabic",
+  es: "Spanish",
+};
+
 interface RequestBody {
   surface: string;
   lemma: string;
   contextSentence: string;
   cefrHint?: string;
+  /** Kelimenin çevrileceği dil. Varsayılan "tr" (eski istemci uyumu). */
+  nativeLanguage?: string;
+  /** Kelimenin AİT OLDUĞU metnin dili. Varsayılan "en". */
+  targetLanguage?: string;
 }
 
 interface LlmGlossResult {
-  tr_gloss: string;
+  gloss: string;
   pos: string;
 }
 
@@ -56,7 +96,9 @@ function isRequestBody(value: unknown): value is RequestBody {
     typeof record.surface === "string" &&
     typeof record.lemma === "string" &&
     typeof record.contextSentence === "string" &&
-    (record.cefrHint === undefined || typeof record.cefrHint === "string")
+    (record.cefrHint === undefined || typeof record.cefrHint === "string") &&
+    (record.nativeLanguage === undefined || typeof record.nativeLanguage === "string") &&
+    (record.targetLanguage === undefined || typeof record.targetLanguage === "string")
   );
 }
 
@@ -73,20 +115,27 @@ const ALLOWED_POS = new Set([
   "other",
 ]);
 
-/** Calls Claude for a single-word-in-context Turkish gloss. Returns null
- * (never throws) on any parse/API failure so the caller can uniformly
- * treat "no result" as "unavailable". */
+/**
+ * Claude'dan bağlam içinde tek kelimelik bir karşılık ister. Herhangi bir
+ * ayrıştırma/API hatasında null döner (asla fırlatmaz) — çağıran "sonuç
+ * yok"u tek tip ele alabilsin.
+ */
 async function requestLlmGloss(
   apiKey: string,
   body: RequestBody,
+  nativeLanguage: string,
+  targetLanguage: string,
 ): Promise<LlmGlossResult | null> {
+  const targetName = LANGUAGE_NAMES[targetLanguage] ?? targetLanguage;
+  const nativeName = LANGUAGE_NAMES[nativeLanguage] ?? nativeLanguage;
+
   const prompt =
-    `English word: "${body.lemma}" (as it appears: "${body.surface}")\n` +
+    `${targetName} word: "${body.lemma}" (as it appears: "${body.surface}")\n` +
     `Sentence: "${body.contextSentence}"\n\n` +
-    "Give the best short Turkish translation (gloss) for this specific word " +
-    "AS USED in this sentence, and its part of speech. Respond with ONLY a " +
-    "compact JSON object, no markdown fences, no extra text, in exactly " +
-    'this shape: {"tr_gloss":"...","pos":"noun|verb|adjective|adverb|' +
+    `Give the best short ${nativeName} translation (gloss) for this specific ` +
+    `word AS USED in this sentence, and its part of speech. Respond with ` +
+    "ONLY a compact JSON object, no markdown fences, no extra text, in " +
+    'exactly this shape: {"gloss":"...","pos":"noun|verb|adjective|adverb|' +
     'preposition|determiner|pronoun|conjunction|interjection|other"}';
 
   let response: Response;
@@ -138,10 +187,19 @@ async function requestLlmGloss(
   }
 
   const record = parsed as Record<string, unknown>;
-  if (typeof record.tr_gloss !== "string" || record.tr_gloss.length === 0) return null;
+  // Eski prompt sürümüyle konuşan bir modelin `tr_gloss` döndürme ihtimaline
+  // karşı ikisine de bakılıyor -- prompt'u kontrol eden biziz ama model
+  // çıktısı üzerinde garanti yok.
+  const gloss =
+    typeof record.gloss === "string"
+      ? record.gloss
+      : typeof record.tr_gloss === "string"
+        ? record.tr_gloss
+        : null;
+  if (!gloss || gloss.length === 0) return null;
   const pos = typeof record.pos === "string" && ALLOWED_POS.has(record.pos) ? record.pos : "other";
 
-  return { tr_gloss: record.tr_gloss, pos };
+  return { gloss, pos };
 }
 
 Deno.serve(async (req: Request) => {
@@ -188,6 +246,14 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ status: "unavailable", reason: "provider_not_configured" }, 200);
   }
 
+  const nativeLanguage = body.nativeLanguage ?? DEFAULT_NATIVE_LANGUAGE;
+  const targetLanguage = body.targetLanguage ?? DEFAULT_TARGET_LANGUAGE;
+  // Bilinmeyen bir dil kodu prompt'ta çöp üretir ve sessizce yanlış
+  // karşılık döner -- bu, boş sonuçtan daha kötü, o yüzden erken reddediliyor.
+  if (!(nativeLanguage in LANGUAGE_NAMES) || !(targetLanguage in LANGUAGE_NAMES)) {
+    return jsonResponse({ status: "unavailable", reason: "invalid_body" }, 400);
+  }
+
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -210,7 +276,7 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ status: "unavailable", reason: "invalid_body" }, 400);
   }
 
-  const result = await requestLlmGloss(anthropicApiKey, body);
+  const result = await requestLlmGloss(anthropicApiKey, body, nativeLanguage, targetLanguage);
 
   // Log the attempt either way so the daily counter reflects real usage,
   // including failed calls (a failing provider shouldn't let a user retry
@@ -227,26 +293,50 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ status: "unavailable", reason: "provider_error" }, 200);
   }
 
-  const { error: upsertError } = await adminClient.from("lemmas").upsert(
-    {
-      lemma,
-      pos: result.pos,
-      tr_gloss: result.tr_gloss,
-      source: "runtime",
-    },
-    { onConflict: "lemma,pos" },
-  );
+  // BUGÜNE KADARKİ TEK YOL (en->tr): AYNEN eskisi gibi `lemmas` tablosuna
+  // yazılıyor. Şema, sütun adları, onConflict hedefi -- hiçbiri değişmedi.
+  if (targetLanguage === DEFAULT_TARGET_LANGUAGE && nativeLanguage === DEFAULT_NATIVE_LANGUAGE) {
+    const { error: upsertError } = await adminClient.from("lemmas").upsert(
+      {
+        lemma,
+        pos: result.pos,
+        tr_gloss: result.gloss,
+        source: "runtime",
+      },
+      { onConflict: "lemma,pos" },
+    );
 
-  if (upsertError) {
-    // Translation succeeded but persisting it failed -- still return the
-    // gloss to the caller (better than surfacing "unavailable" for a
-    // result we actually have), the write-back is a nice-to-have, not a
-    // precondition for showing the user something useful right now.
+    if (upsertError) {
+      return jsonResponse(
+        { status: "ok", gloss: result.gloss, pos: result.pos, persisted: false },
+        200,
+      );
+    }
     return jsonResponse(
-      { status: "ok", tr_gloss: result.tr_gloss, pos: result.pos, persisted: false },
+      { status: "ok", gloss: result.gloss, pos: result.pos, persisted: true },
       200,
     );
   }
 
-  return jsonResponse({ status: "ok", tr_gloss: result.tr_gloss, pos: result.pos, persisted: true }, 200);
+  // YENİ YOL (v2): herhangi bir (hedef dil, ana dil) çifti -- migration
+  // 033'teki genel önbelleğe yazılıyor, `lemmas` tablosuna DOKUNULMUYOR.
+  const { error: upsertError } = await adminClient.from("lemma_translations").upsert(
+    {
+      target_language: targetLanguage,
+      lemma,
+      pos: result.pos,
+      native_language: nativeLanguage,
+      gloss: result.gloss,
+      source: "runtime",
+    },
+    { onConflict: "target_language,lemma,pos,native_language" },
+  );
+
+  if (upsertError) {
+    return jsonResponse(
+      { status: "ok", gloss: result.gloss, pos: result.pos, persisted: false },
+      200,
+    );
+  }
+  return jsonResponse({ status: "ok", gloss: result.gloss, pos: result.pos, persisted: true }, 200);
 });

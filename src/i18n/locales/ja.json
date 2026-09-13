@@ -1,0 +1,642 @@
+{
+  "app": {
+    "name": "İngilizce Hikaye"
+  },
+  "tabs": {
+    "home": "ホーム",
+    "library": "ライブラリ",
+    "vocabulary": "単語帳",
+    "profile": "マイページ"
+  },
+  "placeholder": {
+    "comingSoon": "近日公開"
+  },
+  "notFound": {
+    "title": "見つかりません",
+    "message": "この画面は存在しません。",
+    "goHome": "ホームに戻る"
+  },
+  "common": {
+    "back": "戻る",
+    "continue": "続ける",
+    "errorTitle": "問題が発生しました",
+    "retry": "再試行",
+    "dismiss": "閉じる",
+    "crashTitle": "問題が発生しました",
+    "crashMessage": "この画面を読み込めませんでした。もう一度試すとたいてい直ります。",
+    "ok": "OK"
+  },
+  "ui": {
+    "levelBadge": {
+      "accessibilityLabel": "レベル {{level}}"
+    }
+  },
+  "home": {
+    "loading": "ホームを読み込んでいます",
+    "error": "ホームを読み込めませんでした",
+    "empty": {
+      "title": "まだ本を始めていません",
+      "description": "ライブラリから最初の一冊を選んで読み始めましょう。",
+      "cta": "ライブラリを見る"
+    },
+    "books": {
+      "title": "本",
+      "more": "すべて →"
+    },
+    "book": {
+      "words": "{{value}} 語",
+      "chapters": "{{value}} 章"
+    },
+    "shelves": {
+      "more": "すべて →",
+      "forYou": "あなたにおすすめ",
+      "shortReads": "短編",
+      "byGenre": "ジャンル別",
+      "byAuthor": "著者別",
+      "byTheme": "テーマ別",
+      "favorites": "お気に入り",
+      "continuingSeries": "読みかけのシリーズ",
+      "level": {
+        "beginner": "初級",
+        "intermediate": "中級",
+        "advanced": "上級"
+      }
+    },
+    "seriesCard": {
+      "progress": "{{current}}/{{total}}"
+    },
+    "newBooks": {
+      "title": "新着の本"
+    },
+    "currentlyReading": {
+      "title": "読書中",
+      "percent": "{{percent}}%",
+      "remove": "読書中から外す",
+      "removeAccessibilityLabel": "「{{title}}」を読書中から外す"
+    },
+    "categories": {
+      "title": "ジャンルとテーマ",
+      "everyday": "日常",
+      "adventure": "冒険",
+      "fantasy": "ファンタジー・童話",
+      "mystery": "ミステリー",
+      "romance": "恋愛・社会",
+      "philosophy": "思想・哲学",
+      "gothic": "ゴシック・サスペンス",
+      "comedy": "コメディ",
+      "scifi": "SF"
+    },
+    "authorsAndSeries": {
+      "title": "著者とシリーズ"
+    },
+    "categoryTag": {
+      "count": "冊",
+      "accessibilityLabel": "{{label}}、{{count}} 冊"
+    },
+    "levelGroups": {
+      "beginner": "初級",
+      "intermediate": "中級",
+      "advanced": "上級",
+      "beginnerRange": "A1–A2",
+      "intermediateRange": "B1–B2",
+      "advancedRange": "C1–C2",
+      "count": "{{count}} 冊",
+      "accessibilityLabel": "{{title}}、{{count}} 冊"
+    },
+    "favoritesRead": {
+      "title": "お気に入りと読んだ本",
+      "favoritesLabel": "お気に入り",
+      "readLabel": "読んだ本",
+      "accessibilityLabel": "お気に入り {{favoritesCount}} 冊、読んだ本 {{readCount}} 冊"
+    },
+    "hero": {
+      "levelEyebrow": "あなたのレベル · {{level}}",
+      "welcomeEyebrow": "ようこそ",
+      "title": "今日は何を読みましょう？",
+      "continueBody": "{{percent}}% 完了。続きから読みましょう。",
+      "startBody": "レベルに合った短編から始めましょう。どれも一度で読み切れます。",
+      "continueAction": "続きを読む",
+      "browseAction": "本を探す"
+    },
+    "streak": {
+      "accessibilitySafe_one": "{{count}} 日連続、今日は達成済み",
+      "accessibilitySafe_other": "{{count}} 日連続、今日は達成済み",
+      "accessibilityAtRisk_one": "{{count}} 日連続、今日はまだ読んでいません",
+      "accessibilityAtRisk_other": "{{count}} 日連続、今日はまだ読んでいません"
+    }
+  },
+  "collections": {
+    "ozSeries": {
+      "title": "オズ・シリーズ",
+      "description": "L. Frank Baum が描いたオズの国を舞台にした古典シリーズです。"
+    }
+  },
+  "library": {
+    "title": "ライブラリ",
+    "loading": "本を読み込んでいます",
+    "error": "本を読み込めませんでした",
+    "empty": {
+      "title": "本が見つかりません",
+      "description": "別のキーワードや絞り込みを試してみてください。"
+    },
+    "stats": {
+      "words": "語数",
+      "chapters": "章数",
+      "minutes": "分"
+    },
+    "book": {
+      "accessibilityLabel": "{{title}}、{{author}}、レベル {{level}}"
+    },
+    "search": {
+      "placeholder": "タイトル・著者・ジャンルで検索"
+    },
+    "sort": {
+      "recommended": "おすすめ",
+      "newest": "新着",
+      "popular": "人気",
+      "shortest": "短い順"
+    },
+    "filters": {
+      "open": "絞り込みを開く",
+      "button": "絞り込み",
+      "level": "レベル",
+      "levelAll": "すべて",
+      "levelGroup": {
+        "beginner": "初級",
+        "intermediate": "中級",
+        "advanced": "上級"
+      },
+      "length": "長さ",
+      "lengthAny": "指定なし",
+      "lengthShort": "90 分未満",
+      "lengthMedium": "300 分未満",
+      "audioOnly": "音声ありのみ",
+      "reset": "絞り込みをリセット",
+      "apply": "適用"
+    },
+    "viewMode": {
+      "toggle": "表示を切り替える",
+      "grid": "グリッド",
+      "list": "リスト"
+    },
+    "card": {
+      "minutes": "{{count}} 分",
+      "audio": "音声"
+    }
+  },
+  "bookDetail": {
+    "back": "← ライブラリ",
+    "backAccessibilityLabel": "ライブラリに戻る",
+    "loading": "本を読み込んでいます",
+    "error": "本を読み込めませんでした",
+    "chapters": "章",
+    "cta": {
+      "start": "読み始める",
+      "continue": "続きを読む — 第 {{index}} 章",
+      "listen": "聴く",
+      "listenAccessibilityLabel": "この本を聴く"
+    },
+    "stats": {
+      "words": "語数",
+      "minutes": "分",
+      "chapters": "章数",
+      "completed": "完了",
+      "completedValue": "{{percent}}%"
+    },
+    "chapterRow": {
+      "duration": "{{minutes}} 分",
+      "done": "読了",
+      "notDone": "未読",
+      "accessibilityLabel": "第 {{index}} 章：{{title}}、{{status}}"
+    },
+    "empty": {
+      "title": "まだ章がありません",
+      "description": "この本の章はまもなく追加されます。"
+    },
+    "source": {
+      "title": "出典とライセンス",
+      "name": "出典",
+      "license": "ライセンス"
+    },
+    "series": {
+      "position": "このシリーズの {{index}} 冊目",
+      "nextBook": "次の本：{{title}}",
+      "lastBook": "このシリーズの最後の本です"
+    },
+    "audio": {
+      "label": "ナレーション",
+      "unlocked": "この物語はスタジオ収録の音声で、単語ごとにハイライトされながら読まれます。",
+      "upgradeCta": "プレミアムで聴く",
+      "locked": "スタジオ・ナレーションはプレミアムの機能です。自然な声で、読んでいる単語がハイライトされながら物語を聴けます。"
+    }
+  },
+  "reader": {
+    "header": {
+      "back": "戻る",
+      "settings": "読書設定",
+      "playSpeech": "音声で読む",
+      "pauseSpeech": "読み上げを一時停止"
+    },
+    "wordSheet": {
+      "pronounce": "発音を聞く",
+      "noTranslation": "この単語の訳が見つかりませんでした",
+      "lookingUpTranslation": "訳を調べています…",
+      "save": "保存",
+      "saved": "保存済み",
+      "savedRemove": "保存済み ✓ — 解除",
+      "know": "知っている",
+      "knownUndo": "習得済み ✓ — 取り消す",
+      "senseWithPos": "{{pos}} {{gloss}}",
+      "pos": {
+        "noun": "（名）",
+        "verb": "（動）",
+        "adjective": "（形）",
+        "adverb": "（副）",
+        "preposition": "（前）",
+        "determiner": "（限定）",
+        "pronoun": "（代）",
+        "conjunction": "（接）",
+        "interjection": "（間投）",
+        "other": ""
+      }
+    },
+    "sentenceTranslation": {
+      "toggle": "文の訳を表示",
+      "loading": "翻訳しています…",
+      "error": "文の訳を取得できませんでした。もう一度お試しください"
+    },
+    "sentenceSheet": {
+      "explainGrammar": "文法を解説",
+      "premiumNotice": "文の翻訳と文法解説は、AI による機能として近日公開します。"
+    },
+    "settings": {
+      "fontSize": "文字サイズ",
+      "increaseFontSize": "文字を大きく",
+      "decreaseFontSize": "文字を小さく",
+      "fontFamily": "書体",
+      "fontFamilyOptions": {
+        "serif": "明朝",
+        "sans": "ゴシック"
+      },
+      "theme": "テーマ",
+      "themeOptions": {
+        "light": "ライト",
+        "sepia": "セピア",
+        "dark": "ダーク",
+        "system": "システム"
+      },
+      "margin": "余白",
+      "decreaseMargin": "余白を狭く",
+      "increaseMargin": "余白を広く",
+      "highlights": "知らない単語をハイライト",
+      "speechRate": "読み上げ速度",
+      "speechRateOptions": {
+        "0.8": "ゆっくり",
+        "1": "ふつう",
+        "1.2": "速い"
+      },
+      "voice": "単語発音の音声",
+      "voiceTier": {
+        "premium": "高品質",
+        "enhanced": "拡張"
+      },
+      "voiceUpgradeHint": "辞書の単語を読み上げるのは端末の音声です。より自然な声にするには、設定 > アクセシビリティ > 読み上げコンテンツ > 声 > 英語 から音声をダウンロードしてください。無料で一度きりの作業です。（章のナレーションは別で、スタジオ収録の音声を使います。）"
+    },
+    "chapterComplete": {
+      "title": "この章を読み終えました",
+      "nextChapter": "次の章",
+      "bookFinished": "一冊読み終えました。お見事です！",
+      "eyebrow": "第 {{number}} 章",
+      "wordsLabel": "語数",
+      "minutesLabel": "分",
+      "minutesValue": "{{count}} 分",
+      "backToBook": "本のページに戻る",
+      "finishBook": "この本を読み終える"
+    },
+    "error": {
+      "loadFailed": "章を読み込めませんでした。もう一度お試しください。",
+      "progressNotSaved": "進捗を保存できませんでした。通信状況をご確認ください。",
+      "saveWordFailed": "単語を保存できませんでした。通信状況をご確認ください。",
+      "unsaveWordFailed": "単語を削除できませんでした。通信状況をご確認ください。",
+      "markKnownFailed": "単語を習得済みにできませんでした。通信状況をご確認ください。",
+      "unmarkKnownFailed": "操作を取り消せませんでした。通信状況をご確認ください。",
+      "notSignedIn": "この操作にはもう一度ログインが必要です。",
+      "savedWordLimitTitle": "単語帳がいっぱいです",
+      "savedWordLimitBody": "無料プランでは 100 語まで保存できます。「単語帳」で覚えた単語を習得済みにすると空きができます。"
+    },
+    "wordAlreadySaved": "この単語はすでに保存されています。",
+    "footer": {
+      "nextChapter": "次の章",
+      "finishBook": "読み終える"
+    }
+  },
+  "auth": {
+    "title": "アカウントを作成",
+    "subtitle": "登録しておくと、進捗と保存した単語が失われません。ゲストのまま使い続けることもできます。",
+    "google": "Google で続ける",
+    "skip": "あとで",
+    "email": {
+      "placeholder": "メールアドレス",
+      "send": "リンクを送る",
+      "sentTitle": "リンクを送りました",
+      "sentBody": "メールに届いたリンクを開いてログインを完了してください。"
+    },
+    "error": {
+      "generic": "ログインできませんでした。もう一度お試しください。",
+      "invalidEmail": "有効なメールアドレスを入力してください。"
+    }
+  },
+  "profile": {
+    "title": "マイページ",
+    "hero": {
+      "guest": "ゲスト",
+      "anonymous": "ゲストとして利用中",
+      "memberSince": "{{date}} から利用中"
+    },
+    "streak": {
+      "currentLabel": "連続日数",
+      "longestLabel": "最長記録",
+      "weekAccessibilityLabel": "今週は {{count}} 日読みました",
+      "keepGoing": "{{count}} 日の連続記録を続けるために、今日も少し読みましょう。",
+      "startToday": "今日数ページ読んで、連続記録を始めましょう。",
+      "days": {
+        "mon": "月",
+        "tue": "火",
+        "wed": "水",
+        "thu": "木",
+        "fri": "金",
+        "sat": "土",
+        "sun": "日"
+      }
+    },
+    "week": {
+      "title": "今週",
+      "totalMinutes": "{{count}} 分",
+      "dayAccessibilityLabel": "{{day}}：{{count}} 分",
+      "empty": "今週はまだ読書記録がありません。"
+    },
+    "loading": "プロフィールを読み込んでいます",
+    "error": "プロフィールを読み込めませんでした",
+    "stats": {
+      "savedWordsLabel": "保存した単語",
+      "completedBooksLabel": "読み終えた本",
+      "readingTime": {
+        "hoursMinutes": "{{hours}} 時間 {{minutes}} 分",
+        "minutesOnly": "{{minutes}} 分"
+      },
+      "sectionTitle": "累計",
+      "totalTimeLabel": "総読書時間",
+      "totalActiveDaysLabel": "読書した日数"
+    },
+    "account": {
+      "sectionTitle": "アカウント",
+      "subscription": "サブスクリプション",
+      "subscriptionFree": "無料プラン",
+      "subscriptionPremium": "プレミアム",
+      "fontSize": "本文の文字サイズ",
+      "fontSizeValue": "{{percent}}%",
+      "theme": "テーマ",
+      "language": "言語",
+      "languageTr": "トルコ語",
+      "languageEn": "英語",
+      "signUp": "登録する",
+      "signOut": "ログアウト",
+      "signOutError": "ログアウトできませんでした。もう一度お試しください。",
+      "deleteAccount": "アカウントを削除"
+    },
+    "footer": "{{name}} — バージョン {{version}}"
+  },
+  "vocabulary": {
+    "title": "単語帳",
+    "loading": "単語を読み込んでいます",
+    "error": "単語を読み込めませんでした",
+    "summary": "{{total}} 語 · 今日の復習 {{due}} 語",
+    "filters": {
+      "all": "すべて",
+      "due": "復習",
+      "known": "習得済み"
+    },
+    "due": {
+      "today": "今日",
+      "tomorrow": "明日",
+      "days": "{{count}} 日後",
+      "weeks": "{{count}} 週間後",
+      "none": "—"
+    },
+    "pos": {
+      "noun": "名詞",
+      "verb": "動詞",
+      "adjective": "形容詞",
+      "adverb": "副詞",
+      "preposition": "前置詞",
+      "determiner": "限定詞",
+      "pronoun": "代名詞",
+      "other": "その他"
+    },
+    "word": {
+      "accessibilityLabel": "{{lemma}}、{{gloss}}"
+    },
+    "empty": {
+      "noWords": {
+        "title": "単語帳はまだ空です",
+        "description": "読書中に知らない単語をタップすると、復習用にここへ保存されます。"
+      },
+      "noMatch": {
+        "title": "この条件に合う単語はありません",
+        "description": "別の絞り込みを試してみてください。"
+      }
+    }
+  },
+  "browse": {
+    "loading": "本を読み込んでいます",
+    "error": "本を読み込めませんでした",
+    "empty": {
+      "title": "本が見つかりません",
+      "description": "このカテゴリにはまだ本がありません。"
+    },
+    "fallbackTitle": {
+      "beginner": "初級",
+      "intermediate": "中級",
+      "advanced": "上級"
+    }
+  },
+  "favorites": {
+    "toast": {
+      "added": "お気に入りに追加しました",
+      "removed": "お気に入りから外しました"
+    },
+    "action": {
+      "add": "お気に入りに追加",
+      "remove": "お気に入りから外す"
+    },
+    "screen": {
+      "title": "お気に入りと読んだ本",
+      "loading": "読み込み中",
+      "error": "読み込めませんでした",
+      "favoritesSection": "お気に入り",
+      "readSection": "読んだ本",
+      "emptyFavorites": {
+        "title": "まだお気に入りがありません",
+        "description": "本のページでハートをタップすると、気に入った本をお気に入りに追加できます。"
+      },
+      "emptyRead": {
+        "title": "まだ本を読み始めていません",
+        "description": "開いた本はここに表示されます。"
+      },
+      "emptyBoth": {
+        "title": "ここはまだ空です",
+        "description": "お気に入りにした本や読み始めた本がここに表示されます。"
+      }
+    }
+  },
+  "account": {
+    "delete": {
+      "title": "アカウントを削除",
+      "body": "この操作は取り消せません。アカウントを削除すると、次のデータが完全に失われます：",
+      "listTitle": "削除されるもの",
+      "item1": "保存した単語",
+      "item2": "読書の進捗と統計",
+      "item3": "間隔反復（SRS）のカード",
+      "item4": "プロフィール情報",
+      "confirmLabel": "この操作が取り消せないことを理解しました。",
+      "confirmButton": "アカウントを完全に削除する",
+      "error": "アカウントを削除できませんでした。もう一度お試しください。"
+    }
+  },
+  "srs": {
+    "loadError": "復習カードを読み込めませんでした。",
+    "revealHint": "タップして意味を見る",
+    "noGloss": "訳が見つかりませんでした",
+    "ratingAgain": "もう一度",
+    "ratingHard": "むずかしい",
+    "ratingEasy": "かんたん",
+    "doneTitle": "今日の復習は完了です",
+    "doneMessage": "{{count}} 語を復習しました。",
+    "emptyTitle": "復習する単語はありません",
+    "emptyMessage": "読書中に単語を保存すると、復習カードがここに貯まっていきます。",
+    "startButton": "復習を始める",
+    "dueBadge": "{{count}} 語が復習待ち"
+  },
+  "onboarding": {
+    "introTitle": "あなたのレベルを調べましょう",
+    "introBody": "英単語をいくつか表示します。それぞれについて、知っている・自信がない・知らない を選んでください。その結果からぴったりの本をおすすめします。",
+    "introDuration": "所要時間 約 1 分",
+    "start": "始めましょう",
+    "skip": "あとで",
+    "answerKnown": "知っている",
+    "answerUnsure": "自信がない",
+    "answerUnknown": "知らない",
+    "resultEyebrow": "ここから読み始めましょう",
+    "resultSize": "およそ {{count}} 語を知っています。",
+    "adjustHint": "違うと感じたら変更できます",
+    "finish": "本を見る",
+    "loadError": "テスト用の単語を読み込めませんでした。"
+  },
+  "paywall": {
+    "title": "読んだ言葉を、記憶に残す",
+    "subtitle": "物語はいつでも無料。プレミアムは、覚えたことを定着させます。",
+    "socialProof_one": "{{count}} の物語 · A1 から C2 まで",
+    "socialProof_other": "{{count}} の物語 · A1 から C2 まで",
+    "benefits": {
+      "studioAudio": "63 作品のスタジオ・ナレーション — 読まれる単語が順にハイライト",
+      "secondLanguagePair": "2つ目の言語ペアを解放 -- 別の言語でも読める",
+      "unlimitedWords": "保存できる単語は無制限 — 単語帳の上限なし",
+      "spacedRepetition": "間隔反復：忘れる前にすべての単語が再び出てきます",
+      "aiSentences": "1 日 {{premium}} 回の AI 文翻訳（無料プランは {{free}} 回）",
+      "aiSentencesGeneric": "AI 文翻訳の 1 日あたりの回数が大幅アップ",
+      "stats": "読書時間・連続日数・レベルの統計"
+    },
+    "plan": {
+      "annual": "年額",
+      "monthly": "月額",
+      "savings": "{{percent}}% おトク",
+      "perMonth": "月あたり {{price}}",
+      "trialDays_one": "{{count}} 日間無料",
+      "trialDays_other": "{{count}} 日間無料",
+      "periodYear": "年",
+      "periodMonth": "月"
+    },
+    "ctaTrial_one": "{{count}} 日間無料で試す",
+    "ctaTrial_other": "{{count}} 日間無料で試す",
+    "ctaSubscribe": "プレミアムにする",
+    "legal": {
+      "trialThenPrice_one": "最初の {{count}} 日間は無料、その後 {{price}}/{{period}}。",
+      "trialThenPrice_other": "最初の {{count}} 日間は無料、その後 {{price}}/{{period}}。",
+      "price": "{{price}}/{{period}}。",
+      "autoRenew": "期間終了の 24 時間前までに解約しない場合、サブスクリプションは自動更新されます。解約は Apple ID の設定から行えます。",
+      "terms": "利用規約",
+      "privacy": "プライバシーポリシー",
+      "privacyMissing": "プライバシーポリシーのリンクが設定されていません"
+    },
+    "freeAlwaysNote": "すべての本は、これからもずっと無料",
+    "restore": "購入を復元",
+    "purchaseError": "購入を完了できませんでした。もう一度お試しください。",
+    "notEntitledTitle": "サブスクリプションがまだ反映されていません",
+    "notEntitledBody": "お支払いは完了していますが、サブスクリプションがまだ有効になっていません。数分後に「購入を復元」をお試しください。解決しない場合はご連絡ください。",
+    "activatingCta": "有効化しています…",
+    "activatingTitle": "サブスクリプションを有効化しています",
+    "activatingBody": "購入は完了しました。プレミアムは数分以内に利用できるようになります。ならない場合は「購入を復元」で更新してください。",
+    "restoreFoundTitle": "サブスクリプションを復元しました",
+    "restoreFoundBody": "プレミアム機能が再び使えます。",
+    "restoreEmptyTitle": "サブスクリプションが見つかりません",
+    "restoreEmptyBody": "この Apple アカウントに有効なサブスクリプションはありません。",
+    "noPackages": "サブスクリプションのプランを読み込めませんでした。",
+    "retryPackages": "もう一度試す",
+    "unavailableInExpoGo": "購入はビルド済みアプリでのみ動作します",
+    "upgradeRow": "プレミアム",
+    "wordListFull": "単語帳は {{count}}/{{limit}} 使用中"
+  },
+  "reminders": {
+    "settingsLabel": "リマインダー",
+    "settingsHint": "復習・読みかけの物語・連続日数のお知らせ",
+    "permissionBlockedTitle": "通知がオフになっています",
+    "permissionBlockedBody": "リマインダーには通知の許可が必要です。iPhone の設定から İngilizce Hikaye の通知をオンにできます。",
+    "openSettings": "設定を開く",
+    "permissionDeniedTitle": "リマインダーは有効になっていません",
+    "permissionDeniedBody": "通知が許可されませんでした。設定からいつでもオンにできます。",
+    "streakRescue": {
+      "title_one": "{{count}} 日の連続記録が途切れそうです",
+      "title_other": "{{count}} 日の連続記録が途切れそうです",
+      "body": "今日数分読めば、記録は続きます。"
+    },
+    "reviewDue": {
+      "title_one": "{{count}} 語が復習を待っています",
+      "title_other": "{{count}} 語が復習を待っています",
+      "body": "忘れないうちに、さっと見ておきませんか？"
+    },
+    "continueReading": {
+      "title": "読みかけの物語があります",
+      "body": "「{{title}}」が待っています。"
+    }
+  },
+  "completion": {
+    "eyebrow_one": "{{count}} 冊目を読み終えました",
+    "eyebrow_other": "{{count}} 冊目を読み終えました",
+    "wordsLabel": "語を保存",
+    "minutesValue_one": "{{count}} 分",
+    "minutesValue_other": "{{count}} 分",
+    "minutesLabel": "読書時間",
+    "reviewWords": "この単語を復習する",
+    "findNextBook": "次の物語を探す",
+    "upgradeTitle": "この単語を記憶に残す",
+    "upgradeHint": "プレミアムなら単語の保存も復習も無制限",
+    "error": "この画面を読み込めませんでした。"
+  },
+  "languagePair": {
+    "nativeTitle": "話す言語を選んでください",
+    "nativeBody": "アプリの表示と単語の意味はこの言語で表示されます。",
+    "targetTitle": "読みたい言語を選んでください",
+    "targetBody": "物語はこの言語になります。最初の選択は無料です。",
+    "comingSoonLabel": "近日公開",
+    "comingSoonBadge": "近日公開",
+    "saveError": "言語の組み合わせを保存できませんでした。もう一度お試しください。",
+    "unexpectedPremiumRequired": "この選択にはプレミアムが必要なようです。もう一度お試しください。",
+    "restartTitle": "再起動が必要です",
+    "restartBody": "アラビア語では画面のレイアウトが右から左に変わります。アプリを再起動すると適用されます。",
+    "restartCta": "再起動",
+    "manageTitle": "あなたの言語ペア",
+    "yourPairs": "あなたのペア",
+    "addPair": "ペアを追加",
+    "activeBadge": "使用中"
+  }
+}

@@ -1,10 +1,16 @@
 // Cümle çevirisi (Google Translate benzeri) — WordSheet'te örnek cümlenin
-// altında bir toggle ile açılan Türkçe çeviri. `translate-lemma`'nın
-// auth/rate-limit desenini birebir izler (bkz. o dosyanın yorumları) --
-// tek fark: sonuç DB'ye YAZILMAZ. Kelime çevirisinin aksine cümle çevirisi
-// cümleye özgüdür ve tekrar kullanılabilirliği düşüktür, bu yüzden burada
-// bir `lemmas`/`book_surface_lemmas` benzeri kalıcı tablo eklemek gereksiz
+// altında bir toggle ile açılan çeviri. `translate-lemma`'nın auth/rate-limit
+// desenini birebir izler (bkz. o dosyanın yorumları) -- tek fark: sonuç DB'ye
+// YAZILMAZ. Kelime çevirisinin aksine cümle çevirisi cümleye özgüdür ve
+// tekrar kullanılabilirliği düşüktür, bu yüzden burada bir
+// `lemmas`/`book_surface_lemmas` benzeri kalıcı tablo eklemek gereksiz
 // kapsam genişlemesi olurdu (CLAUDE.md "Basitlik önce gelir").
+//
+// GENELLEŞTİRME (v2, 2026-09-13 — dil çiftleri): istek artık isteğe bağlı
+// `nativeLanguage`/`targetLanguage` alıyor (varsayılan tr/en, eski istemci
+// uyumu için). Sonuç DB'ye yazılmadığından (yukarıdaki paragraf) bu tablo
+// tarafında hiçbir şey değişmiyor -- tek değişiklik prompt'taki sabit
+// "Türkçe"nin parametreye dönmesi.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 // Gunluk kota artik burada SABIT DEGIL: katmana gore migration 029'daki
@@ -32,9 +38,32 @@ interface AiQuota {
 // bulundu. Model kimligi bu yuzden tek bir sabitte ve yorumlu duruyor.
 const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001";
 
+/** Eski istemcilerle (build 9 ve öncesi) geriye dönük uyumluluk için varsayılanlar. */
+const DEFAULT_NATIVE_LANGUAGE = "tr";
+const DEFAULT_TARGET_LANGUAGE = "en";
+
+/** translate-lemma ile aynı sabit liste -- bkz. o dosyadaki gerekçe. */
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English",
+  tr: "Turkish",
+  de: "German",
+  fr: "French",
+  ru: "Russian",
+  zh: "Chinese",
+  ja: "Japanese",
+  it: "Italian",
+  uk: "Ukrainian",
+  ar: "Arabic",
+  es: "Spanish",
+};
+
 interface RequestBody {
   sentence: string;
   bookId?: string;
+  /** Cümlenin çevrileceği dil. Varsayılan "tr". */
+  nativeLanguage?: string;
+  /** Cümlenin AİT OLDUĞU metnin dili. Varsayılan "en". */
+  targetLanguage?: string;
 }
 
 function jsonResponse(body: unknown, status: number): Response {
@@ -49,7 +78,9 @@ function isRequestBody(value: unknown): value is RequestBody {
   const record = value as Record<string, unknown>;
   return (
     typeof record.sentence === "string" &&
-    (record.bookId === undefined || typeof record.bookId === "string")
+    (record.bookId === undefined || typeof record.bookId === "string") &&
+    (record.nativeLanguage === undefined || typeof record.nativeLanguage === "string") &&
+    (record.targetLanguage === undefined || typeof record.targetLanguage === "string")
   );
 }
 
@@ -74,16 +105,22 @@ interface LlmSentenceResult {
   diagDetail: string;
 }
 
-/** Calls Claude for a natural, fluent Turkish translation of one English
- * sentence. Returns null (never throws) on any parse/API failure so the
- * caller can uniformly treat "no result" as "unavailable". */
+/** Calls Claude for a natural, fluent translation of one sentence into the
+ * requested native language. Returns null (never throws) on any parse/API
+ * failure so the caller can uniformly treat "no result" as "unavailable". */
 async function requestLlmSentenceTranslation(
   apiKey: string,
   sentence: string,
+  nativeLanguage: string,
+  targetLanguage: string,
 ): Promise<LlmSentenceResult> {
+  const targetName = LANGUAGE_NAMES[targetLanguage] ?? targetLanguage;
+  const nativeName = LANGUAGE_NAMES[nativeLanguage] ?? nativeLanguage;
+
   const prompt =
-    `Aşağıdaki İngilizce cümleyi doğal, akıcı Türkçeye çevir, sadece çeviriyi döndür, ` +
-    `başka hiçbir açıklama veya tırnak işareti ekleme.\n\nCümle: "${sentence}"`;
+    `Translate the following ${targetName} sentence into natural, fluent ` +
+    `${nativeName}. Return ONLY the translation, no explanation and no ` +
+    `surrounding quotation marks.\n\nSentence: "${sentence}"`;
 
   let response: Response;
   try {
@@ -168,6 +205,12 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ status: "unavailable", reason: "invalid_body" }, 400);
   }
 
+  const nativeLanguage = body.nativeLanguage ?? DEFAULT_NATIVE_LANGUAGE;
+  const targetLanguage = body.targetLanguage ?? DEFAULT_TARGET_LANGUAGE;
+  if (!(nativeLanguage in LANGUAGE_NAMES) || !(targetLanguage in LANGUAGE_NAMES)) {
+    return jsonResponse({ status: "unavailable", reason: "invalid_body" }, 400);
+  }
+
   if (!anthropicApiKey) {
     // Secret not provisioned yet — a clear, non-throwing "unavailable" so
     // the client shows a specific error instead of an opaque 500.
@@ -223,9 +266,15 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  const { text: translation, diagCode, diagDetail } = await requestLlmSentenceTranslation(
+  const {
+    text: translation,
+    diagCode,
+    diagDetail,
+  } = await requestLlmSentenceTranslation(
     anthropicApiKey,
     sentence,
+    nativeLanguage,
+    targetLanguage,
   );
 
   if (!translation) {
