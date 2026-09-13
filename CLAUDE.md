@@ -481,10 +481,60 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 
 ## Mevcut Durum ve Sonraki Adımlar
 
-> Son güncelleme: 2026-09-13 (dil çiftleri v2 mimarisi). Bu bölüm her önemli
-> oturumdan sonra güncellenir. `docs/ROADMAP.md` ve `docs/STATE.md` çok
-> daha eski; çelişki olursa burası geçerlidir. Yayın adımlarının tamamı ve
-> dağıtım komutları `docs/RELEASE.md` içinde.
+> Son güncelleme: 2026-09-13 (i18n bootstrap regresyon testi + `ozSeries`
+> etiket hatası düzeltmesi). Bu bölüm her önemli oturumdan sonra güncellenir.
+> `docs/ROADMAP.md` ve `docs/STATE.md` çok daha eski; çelişki olursa burası
+> geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
+> içinde.
+
+### Bu oturumda kapatılanlar (2026-09-13, devam oturumu)
+
+1. **i18n bootstrap regresyon testi eklendi**
+   (`src/i18n/__tests__/bootstrap.test.ts`). Önceki oturumda düzeltilen
+   `resources` sarmalama hatası (`{ translation: ... }`) `localeParity.test.ts`
+   tarafından YAKALANAMIYORDU çünkü o test yalnızca JSON dosyalarını
+   karşılaştırıyor, gerçek `i18next.t()` çağrısını hiç çalıştırmıyor. Yeni
+   test gerçek `src/i18n/index.ts`'i import edip 11 dilin HEPSİNDE
+   `i18n.t("app.name")`'in ham anahtar DÖNMEDİĞİNİ doğruluyor. Bunu mümkün
+   kılmak için `jest.config.js`'e `transformIgnorePatterns` eklendi
+   (jest-expo'nun varsayılanına `@formatjs` ailesini ekleyerek — o paketler
+   saf ESM ve polyfill zincirinin (`intl-pluralrules` →
+   `intl-localematcher` → `fast-memoize`) transform edilmesi gerekiyordu).
+   Testin regresyonu gerçekten yakaladığı doğrulandı (hata geçici olarak
+   geri getirilip test kırmızıya döndü, sonra düzeltme geri konup yeşile
+   döndü). 249 test geçiyor (was 248), typecheck/lint temiz.
+2. **Gerçek bulgu: "Yazarlar ve Seriler" rafında ham anahtar görünüyordu**
+   (`collections.ozSeries.title` ekranda aynen yazıyordu, "Oz Serisi" yerine).
+   Sebep `src/features/home/api/useHomeExtrasQuery.ts`'deki
+   `fetchSeriesTags()`: `collections.title_key` sütunu (DB) bir i18n anahtar
+   yolu taşıyor (`"collections.ozSeries.title"`, JSON dosyalarındaki yapıyla
+   birebir eşleşiyor) ama `CategoryTag`'e `label` alanına atanıyordu —
+   `label` ÇEVRİLMEDEN gösteriliyor (`CategoryTagCard.tsx`daki
+   `labelKey ? t(labelKey) : label` mantığına bakınca `labelKey` YOKSA ham
+   metin basılıyor). Düzeltme: aynı satırda `labelKey: collection.title_key`
+   de eklendi. Bu, CLAUDE.md'nin "hardcoded string / t() zorunluluğu"
+   kuralının veritabanı-kaynaklı bir varyantıydı — kod içinde hardcode
+   yoktu, ama DB'deki anahtar hiç `t()`'ye verilmiyordu.
+3. **Uygulama `expo start --web` üzerinden gözle test edildi** (kullanıcının
+   zaten çalışan `expo-web` launch config'i, port 8082). Dil seçici
+   ekranları (native → target) görsel olarak doğru: 11 dil kendi
+   alfabesinde render ediliyor, hedef dil ekranında yalnızca İngilizce
+   aktif, diğerleri "Yakında" (ADR-013 ile tutarlı). **Doğrulanamayan:**
+   dil çifti seçimi sonrası seviye testine geçiş — web preview'da
+   `https://<proje>.supabase.co/auth/v1/user` isteği CORS'a takılıyor
+   (`Access-Control-Allow-Origin` yok), bu native (iOS/Android) ortamında
+   OLMAYAN bir web-preview kısıtlaması olabilir (fetch'in CORS'a tabi
+   olması yalnızca tarayıcıya özgü). `set_language_pair` RPC'sinin kendisi
+   başarıyla dönüyordu (`result: ok`, analytics doğruladı); sorun akışın
+   ondan SONRAKİ bir adımında. **Gerçek cihazda/simülatörde bu akışın
+   uçtan uca (dil seçimi → seviye testi → ana sayfa) doğrulanması hâlâ
+   YAPILMADI** — bir sonraki oturumun önceliği bu olmalı, CORS'un gerçekten
+   yalnızca web'e özgü olduğunu (yoksa `chapter-audio`/`translate-lemma`
+   gibi başka edge function çağrılarını da etkileyen gerçek bir CORS
+   yapılandırma sorunu olup olmadığını) doğrulamak için.
+4. **Diğer devir maddeleri (RTL yeniden başlatma, `WordSheet` çevirisi,
+   içerik yol haritası, Android RevenueCat) bu oturumda ELE ALINMADI** —
+   yukarıdaki CORS engeli web preview'ı bu testler için güvenilmez kıldı.
 
 **Çalışan:** Expo SDK 57 üzerinde tam bir okuma + öğrenme + gelir döngüsü.
 

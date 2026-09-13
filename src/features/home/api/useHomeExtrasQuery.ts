@@ -7,7 +7,12 @@ import { CATEGORY_DEFINITIONS, categoryImageUrl } from "@/features/home/category
 import { LEVEL_GROUP_LEVELS, LEVEL_GROUPS } from "@/features/library/types";
 
 import type { Book, LevelGroup } from "@/features/library/types";
-import type { CategoryTag, FavoritesReadCounts, HomeExtras, LevelGroupCounts } from "@/features/home/types";
+import type {
+  CategoryTag,
+  FavoritesReadCounts,
+  HomeExtras,
+  LevelGroupCounts,
+} from "@/features/home/types";
 
 /** "Yeni Kitaplar" shelf size. */
 const NEW_BOOKS_COUNT = 10;
@@ -103,7 +108,8 @@ function buildAuthorTags(books: Book[]): CategoryTag[] {
   for (const book of books) {
     if (!book.author) continue;
     countByAuthor.set(book.author, (countByAuthor.get(book.author) ?? 0) + 1);
-    if (book.coverUrl && !coverByAuthor.has(book.author)) coverByAuthor.set(book.author, book.coverUrl);
+    if (book.coverUrl && !coverByAuthor.has(book.author))
+      coverByAuthor.set(book.author, book.coverUrl);
   }
 
   return [...countByAuthor.entries()]
@@ -162,6 +168,7 @@ async function fetchSeriesTags(books: Book[]): Promise<CategoryTag[]> {
     tags.push({
       key: `series:${collection.id}`,
       label: collection.title_key,
+      labelKey: collection.title_key,
       count: bookIds.length,
       navTarget: { kind: "book", bookId: firstBookId },
       coverUrl: coverByBookId.get(firstBookId) ?? null,
@@ -193,15 +200,19 @@ function buildLevelGroupCounts(books: Book[]): LevelGroupCounts {
 async function fetchFavoritesReadCounts(userId: string | undefined): Promise<FavoritesReadCounts> {
   if (!userId) return { favoritesCount: 0, readCount: 0 };
 
-  const [{ data: favoriteRows, error: favoritesError }, { data: progressRows, error: progressError }] =
-    await Promise.all([
-      supabase.from("user_favorites").select("book_id").eq("user_id", userId),
-      supabase.from("user_book_progress").select("book_id").eq("user_id", userId),
-    ]);
+  const [
+    { data: favoriteRows, error: favoritesError },
+    { data: progressRows, error: progressError },
+  ] = await Promise.all([
+    supabase.from("user_favorites").select("book_id").eq("user_id", userId),
+    supabase.from("user_book_progress").select("book_id").eq("user_id", userId),
+  ]);
   if (favoritesError) throw favoritesError;
   if (progressError) throw progressError;
 
-  const readBookIds = new Set(((progressRows as RawProgressBookIdRow[] | null) ?? []).map((row) => row.book_id));
+  const readBookIds = new Set(
+    ((progressRows as RawProgressBookIdRow[] | null) ?? []).map((row) => row.book_id),
+  );
 
   return {
     favoritesCount: (favoriteRows ?? []).length,

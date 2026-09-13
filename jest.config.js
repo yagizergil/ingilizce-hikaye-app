@@ -13,4 +13,14 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
+  // @formatjs/intl-pluralrules (ve onun transitive'leri intl-localematcher,
+  // fast-memoize, bigdecimal) saf ESM paketler — jest-expo'nun varsayılan
+  // transformIgnorePatterns'ı bunları node_modules'ta olduğu için atlıyor
+  // ve `import`/`export` sentaksında patlıyordu. src/i18n/index.ts bu
+  // polyfill'i gerçekten import ettiği için (i18n.ts'yi gerçek t() ile test
+  // etmek istiyorsak) bu paketlerin de transform edilmesi gerekiyor.
+  transformIgnorePatterns: [
+    "/node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@expo-google-fonts|react-navigation|@react-navigation|@sentry/react-native|native-base|standard-navigation|@formatjs))",
+    "/node_modules/react-native-reanimated/plugin/",
+  ],
 };
