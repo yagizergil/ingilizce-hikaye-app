@@ -38,8 +38,29 @@ import ja from "@/i18n/locales/ja.json";
  * Gerçek seçim `LanguagePairScreen`'de (onboarding) kullanıcıdan alınıyor
  * ve `i18n.changeLanguage()` ile burada değil ORADA tetikleniyor -- bu
  * dosya yalnızca AÇILIŞTAKİ ilk tahmini kuruyor.
+ *
+ * NEDEN HER DİL `{ translation: ... }` İÇİNDE SARILI: i18next varsayılan
+ * ad alanı (namespace) "translation" -- `t("home.empty.title")` gerçekte
+ * `resources[lng].translation.home.empty.title`'a bakıyor. Bu sarmalama
+ * olmadan (v2'nin ilk sürümünde OLMADIĞI gibi) her arama boşa çıkıyor ve
+ * i18next hiçbir çeviri bulamadığında ANAHTARIN KENDİSİNİ ekrana basıyor
+ * ("home.empty.title" gibi) -- tam olarak bu regresyon yaşandı ve 11
+ * dilin TAMAMINI etkiledi (İngilizce'de "gerçek İngilizce metin" gibi
+ * görünmediği için en belirgin oydu).
  */
-const resources = { tr, en, de, fr, it, es, ru, uk, ar, zh, ja };
+const resources = {
+  tr: { translation: tr },
+  en: { translation: en },
+  de: { translation: de },
+  fr: { translation: fr },
+  it: { translation: it },
+  es: { translation: es },
+  ru: { translation: ru },
+  uk: { translation: uk },
+  ar: { translation: ar },
+  zh: { translation: zh },
+  ja: { translation: ja },
+};
 
 const deviceLocale = getLocales()[0]?.languageCode ?? "tr";
 const initialLanguage = (UI_LANGUAGE_CODES as string[]).includes(deviceLocale)
