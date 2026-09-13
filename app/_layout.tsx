@@ -13,14 +13,8 @@ import {
   Fraunces_500Medium_Italic,
   Fraunces_600SemiBold,
 } from "@expo-google-fonts/fraunces";
-import {
-  Literata_400Regular,
-  Literata_400Regular_Italic,
-} from "@expo-google-fonts/literata";
-import {
-  IBMPlexMono_400Regular,
-  IBMPlexMono_500Medium,
-} from "@expo-google-fonts/ibm-plex-mono";
+import { Literata_400Regular, Literata_400Regular_Italic } from "@expo-google-fonts/literata";
+import { IBMPlexMono_400Regular, IBMPlexMono_500Medium } from "@expo-google-fonts/ibm-plex-mono";
 
 import { queryClient } from "@/lib/queryClient";
 import { useTheme } from "@/theme/useTheme";
@@ -47,11 +41,9 @@ export default function RootLayout() {
   // kuyruğu boşaltır. Dönüş değeri aboneliği kaldırıyor.
   useEffect(() => initAnalytics(), []);
 
-  // RevenueCat'i açılışta kur ve kullanıcıyı eşleştir. Expo Go'da sessizce
-  // hiçbir şey yapmıyor (bkz. src/lib/revenuecat.ts).
-  useEffect(() => {
-    void configurePurchases();
-  }, []);
+  // RevenueCat'i açılışta kur; oturum açılınca/değişince kullanıcıyı yeniden
+  // eşleştir. Expo Go'da sessizce hiçbir şey yapmıyor (bkz. src/lib/revenuecat.ts).
+  useEffect(() => configurePurchases(), []);
 
   // Ses oturumunu "playback" kategorisine al: telaffuz, telefon sessiz
   // moddayken de duyulsun (bkz. src/lib/audioSession.ts).

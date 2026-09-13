@@ -20,5 +20,9 @@ export function useOfferingsQuery() {
     // Expo Go'da native modül yok; sorguyu hiç çalıştırmıyoruz.
     enabled: isPurchasesAvailable,
     staleTime: 10 * 60 * 1000,
+    // StoreKit'in ürünleri ilk açılışta geç vermesi olağan; üç deneme,
+    // 1-2-4 sn arayla. Sonrasında paywall "Tekrar dene" düğmesi gösteriyor.
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 4000),
   });
 }

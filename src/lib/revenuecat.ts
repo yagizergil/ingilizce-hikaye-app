@@ -32,7 +32,15 @@ export const isPurchasesAvailable =
 type PurchasesModule = typeof import("react-native-purchases").default;
 
 let cachedModule: PurchasesModule | null = null;
-let configured = false;
+
+/**
+ * Kurulum tek seferlik ve paylaşılan bir söz.
+ *
+ * NEDEN SÖZ, BAYRAK DEĞİL: eskiden `configured` bayrağı vardı. Kullanıcı
+ * paywall'a kurulum bitmeden ulaşırsa satın alma çağrısı yapılandırılmamış
+ * SDK'ya giderdi. Söz ile her çağıran aynı kurulumu BEKLİYOR.
+ */
+let configurePromise: Promise<PurchasesModule | null> | null = null;
 
 /**
  * Native modülü tembel yükler. Expo Go'da ve modül bulunamadığında null
@@ -54,41 +62,125 @@ async function loadPurchases(): Promise<PurchasesModule | null> {
   }
 }
 
+async function currentSupabaseUserId(): Promise<string | null> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.user.id ?? null;
+}
+
+/**
+ * RevenueCat kimliğini Supabase kullanıcısıyla EŞİTLER.
+ *
+ * NEDEN HER SATIN ALMADAN ÖNCE (Apple incelemesi, 2026-09-11): SDK açılışta
+ * `app/_layout.tsx` içinde kuruluyor, anonim Supabase oturumu ise AYNI ANDA
+ * `useAuthBootstrap` içinde açılıyor. Taze kurulumda kurulum oturumdan önce
+ * bitiyor, SDK kimliksiz (`$RCAnonymousID`) yapılandırılıyor ve sonra
+ * hiçbir şey `logIn` çağırmıyordu. İnceleme cihazı her zaman taze kurulum
+ * olduğu için bu yarışı HER SEFERİNDE kaybediyordu:
+ *
+ *   - satın alma anonim RevenueCat kimliğine yazıldı,
+ *   - webhook kimliği uuid olarak çözemedi (yok sayıldı),
+ *   - `sync-entitlement` uuid ile sordu, RevenueCat boş abone döndü,
+ *   - kullanıcı ödedi, premium açılmadı.
+ *
+ * Telemetri kanıtı: satın alma 14:27:34'te tamamlandı; RevenueCat'te o
+ * uuid'nin kaydı ilk kez 14:27:38'de — onarım sorgusuyla — oluştu.
+ *
+ * Yarışı zamanlamayla "kazanmaya" çalışmak yerine burada KESİN garanti
+ * veriyoruz: kimlik farklıysa `logIn`. `logIn` anonim kimlikteki satın
+ * almaları da yeni kimliğe taşıyor, yani daha önce kaybolmuş bir satın alma
+ * bir sonraki geri yüklemede geri geliyor.
+ */
+async function ensureIdentity(purchases: PurchasesModule): Promise<void> {
+  const userId = await currentSupabaseUserId();
+  if (!userId) return;
+
+  try {
+    const current = await purchases.getAppUserID();
+    if (current !== userId) {
+      await purchases.logIn(userId);
+      trackEvent("revenuecat_identity_linked", {
+        from_anonymous: current.startsWith("$RCAnonymousID"),
+      });
+    }
+  } catch (error) {
+    // Kimlik eşitlenemezse satın alma yine denenir; geri yükleme ve
+    // onarım yolu daha sonra düzeltebilir. Yutulmuyor, kaydediliyor.
+    trackError("revenuecat.identity", error);
+  }
+}
+
+/**
+ * SDK'yı kurar (bir kez) ve kimliği eşitler. Kurulamıyorsa null.
+ *
+ * Satın alma, geri yükleme ve teklif okuma bunu çağırıyor; açılıştaki
+ * çağrı yalnızca işi erkene almak için.
+ */
+async function readyPurchases(): Promise<PurchasesModule | null> {
+  if (!configurePromise) {
+    configurePromise = (async () => {
+      const purchases = await loadPurchases();
+      if (!purchases) return null;
+
+      // Şimdilik yalnızca iOS anahtarı tanımlı; Android'e çıkarken buraya
+      // platforma göre anahtar seçimi eklenecek.
+      const apiKey = Platform.OS === "ios" ? env.revenueCatApiKeyIos : "";
+      if (!apiKey) {
+        // Anahtarsız bir build'de paywall "paket yok" der. Bunu sessiz
+        // bırakmak bir inceleme reddini teşhis edilemez yapardı.
+        trackError("revenuecat.configure", new Error("missing_ios_api_key"));
+        return null;
+      }
+
+      try {
+        const appUserId = await currentSupabaseUserId();
+        purchases.configure({ apiKey, appUserID: appUserId });
+        return purchases;
+      } catch (error) {
+        trackError("revenuecat.configure", error);
+        configurePromise = null; // Bir sonraki çağrı yeniden denesin.
+        return null;
+      }
+    })();
+  }
+
+  const purchases = await configurePromise;
+  if (purchases) await ensureIdentity(purchases);
+  return purchases;
+}
+
 /**
  * SDK'yı kurar ve RevenueCat kullanıcısını Supabase kullanıcısıyla
- * eşleştirir.
+ * eşleştirir; oturum sonradan açılır ya da değişirse (anonim → Apple ile
+ * giriş) eşleştirmeyi tekrarlar.
  *
  * Eşleştirme şart: anonim kullanıcı sonradan hesap açtığında aboneliğinin
  * onunla taşınması gerekiyor (migration 011'deki hesap birleştirmenin
  * abonelik tarafı).
+ *
+ * @returns Aboneliği kaldıran fonksiyon.
  */
-export async function configurePurchases(): Promise<void> {
-  const purchases = await loadPurchases();
-  if (!purchases) return;
+export function configurePurchases(): () => void {
+  void readyPurchases();
 
-  // Şimdilik yalnızca iOS anahtarı tanımlı; Android'e çıkarken buraya
-  // platforma göre anahtar seçimi eklenecek.
-  const apiKey = Platform.OS === "ios" ? env.revenueCatApiKeyIos : "";
-  if (!apiKey) return;
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+    if (!session?.user.id) return;
+    void readyPurchases();
+  });
 
-  try {
-    const { data } = await supabase.auth.getUser();
-    const appUserId = data.user?.id;
-
-    if (!configured) {
-      await purchases.configure({ apiKey, appUserID: appUserId ?? null });
-      configured = true;
-    } else if (appUserId) {
-      await purchases.logIn(appUserId);
-    }
-  } catch (error) {
-    trackError("revenuecat.configure", error);
-  }
+  return () => data.subscription.unsubscribe();
 }
 
-/** Satın alınabilir paketleri döndürür. Kullanılamıyorsa boş dizi. */
+/**
+ * Satın alınabilir paketleri döndürür.
+ *
+ * HATA ARTIK YUTULMUYOR (Apple reddi 1.0(8), Guideline 2.1(b)): eskiden
+ * StoreKit hatası boş diziye çevriliyordu. Sonuç, inceleme cihazında tek
+ * bir geçici hatanın kalıcı "paket yok" ekranına dönüşmesiydi — ne yeniden
+ * deneme vardı ne de düğme. Şimdi hata fırlıyor; TanStack Query geri
+ * çekilmeyle yeniden deniyor ve paywall "Tekrar dene" gösteriyor.
+ */
 export async function fetchOfferingPackages(): Promise<PurchasesPackage[]> {
-  const purchases = await loadPurchases();
+  const purchases = await readyPurchases();
   if (!purchases) return [];
 
   try {
@@ -97,7 +189,7 @@ export async function fetchOfferingPackages(): Promise<PurchasesPackage[]> {
     return current?.availablePackages ?? [];
   } catch (error) {
     trackError("revenuecat.offerings", error);
-    return [];
+    throw error;
   }
 }
 
@@ -158,7 +250,7 @@ export async function purchasePackage(
   pkg: PurchasesPackage,
   context?: PurchaseContext,
 ): Promise<PurchaseOutcome> {
-  const purchases = await loadPurchases();
+  const purchases = await readyPurchases();
   if (!purchases) return { status: "error" };
 
   try {
@@ -189,7 +281,7 @@ export async function purchasePackage(
 
 /** Önceki satın alımları geri yükler (App Store için zorunlu). */
 export async function restorePurchases(): Promise<boolean> {
-  const purchases = await loadPurchases();
+  const purchases = await readyPurchases();
   if (!purchases) return false;
 
   try {
@@ -205,7 +297,7 @@ export async function restorePurchases(): Promise<boolean> {
 
 /** Güncel abonelik durumunu okur. */
 export async function fetchCustomerInfo(): Promise<CustomerInfo | null> {
-  const purchases = await loadPurchases();
+  const purchases = await readyPurchases();
   if (!purchases) return null;
 
   try {

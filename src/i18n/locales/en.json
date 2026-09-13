@@ -578,7 +578,8 @@
     "restoreFoundBody": "Premium features are unlocked again.",
     "restoreEmptyTitle": "No subscription found",
     "restoreEmptyBody": "There is no active subscription on this Apple account.",
-    "noPackages": "No purchasable package is available right now.",
+    "noPackages": "Subscription options could not be loaded.",
+    "retryPackages": "Try again",
     "unavailableInExpoGo": "PURCHASES ONLY WORK IN A COMPILED BUILD",
     "upgradeRow": "Premium",
     "wordListFull": "Your notebook is {{count}}/{{limit}} full"

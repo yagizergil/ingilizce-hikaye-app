@@ -578,7 +578,8 @@
     "restoreFoundBody": "Premium özellikler yeniden açıldı.",
     "restoreEmptyTitle": "Abonelik bulunamadı",
     "restoreEmptyBody": "Bu Apple hesabında aktif bir abonelik yok.",
-    "noPackages": "Şu anda satın alınabilir bir paket yok.",
+    "noPackages": "Abonelik seçenekleri yüklenemedi.",
+    "retryPackages": "Tekrar dene",
     "unavailableInExpoGo": "SATIN ALMA YALNIZCA DERLENMİŞ UYGULAMADA ÇALIŞIR",
     "upgradeRow": "Premium",
     "wordListFull": "Kelime defterin {{count}}/{{limit}} dolu"

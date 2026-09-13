@@ -52,7 +52,7 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const queryClient = useQueryClient();
-  const { data: packages, isLoading } = useOfferingsQuery();
+  const { data: packages, isLoading, isFetching, refetch } = useOfferingsQuery();
   const { data: facts } = usePaywallFactsQuery();
 
   const [busy, setBusy] = useState<Busy>(null);
@@ -244,9 +244,21 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
         ) : isLoading ? (
           <LoadingState />
         ) : options.length === 0 ? (
-          <Text style={[monoType.label, styles.notice, { color: theme.text.secondary }]}>
-            {t("paywall.noPackages")}
-          </Text>
+          <View style={styles.plans}>
+            <Text style={[monoType.label, styles.notice, { color: theme.text.secondary }]}>
+              {t("paywall.noPackages")}
+            </Text>
+            <Button
+              label={t("paywall.retryPackages")}
+              variant="secondary"
+              onPress={() => {
+                trackEvent("paywall_packages_retry", { source });
+                void refetch();
+              }}
+              loading={isFetching}
+              fullWidth
+            />
+          </View>
         ) : (
           <>
             <View style={styles.plans} accessibilityRole="radiogroup">
