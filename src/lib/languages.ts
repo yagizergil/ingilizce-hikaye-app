@@ -33,13 +33,6 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   { code: "de", nameEn: "German", nativeName: "Deutsch", isRtl: false, isContentTarget: false },
   { code: "ja", nameEn: "Japanese", nativeName: "日本語", isRtl: false, isContentTarget: false },
   { code: "it", nameEn: "Italian", nativeName: "Italiano", isRtl: false, isContentTarget: false },
-  {
-    code: "uk",
-    nameEn: "Ukrainian",
-    nativeName: "Українська",
-    isRtl: false,
-    isContentTarget: false,
-  },
 ] as const;
 
 const BY_CODE = new Map(LANGUAGES.map((language) => [language.code, language]));

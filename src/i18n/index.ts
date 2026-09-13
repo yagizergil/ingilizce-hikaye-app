@@ -11,7 +11,6 @@ import "@formatjs/intl-pluralrules/locale-data/fr.js";
 import "@formatjs/intl-pluralrules/locale-data/it.js";
 import "@formatjs/intl-pluralrules/locale-data/es.js";
 import "@formatjs/intl-pluralrules/locale-data/ru.js";
-import "@formatjs/intl-pluralrules/locale-data/uk.js";
 import "@formatjs/intl-pluralrules/locale-data/ar.js";
 import "@formatjs/intl-pluralrules/locale-data/zh.js";
 import "@formatjs/intl-pluralrules/locale-data/ja.js";
@@ -25,7 +24,6 @@ import fr from "@/i18n/locales/fr.json";
 import it from "@/i18n/locales/it.json";
 import es from "@/i18n/locales/es.json";
 import ru from "@/i18n/locales/ru.json";
-import uk from "@/i18n/locales/uk.json";
 import ar from "@/i18n/locales/ar.json";
 import zh from "@/i18n/locales/zh.json";
 import ja from "@/i18n/locales/ja.json";
@@ -56,7 +54,6 @@ const resources = {
   it: { translation: it },
   es: { translation: es },
   ru: { translation: ru },
-  uk: { translation: uk },
   ar: { translation: ar },
   zh: { translation: zh },
   ja: { translation: ja },

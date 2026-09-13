@@ -11,7 +11,6 @@ import fr from "@/i18n/locales/fr.json";
 import itLocale from "@/i18n/locales/it.json";
 import es from "@/i18n/locales/es.json";
 import ru from "@/i18n/locales/ru.json";
-import uk from "@/i18n/locales/uk.json";
 import ar from "@/i18n/locales/ar.json";
 import zh from "@/i18n/locales/zh.json";
 import ja from "@/i18n/locales/ja.json";
@@ -27,7 +26,7 @@ import ja from "@/i18n/locales/ja.json";
  * arayüzde ham anahtar metninin görünmesi: "paywall.legal.autoRenew".
  *
  * GENELLEŞTİRME (v2, 2026-09-13 — dil çiftleri): eskiden yalnızca tr/en
- * kontrol ediliyordu. Uygulama artık 11 arayüz dili taşıyor (bkz.
+ * kontrol ediliyordu. Uygulama artık 10 arayüz dili taşıyor (bkz.
  * src/lib/languages.ts, src/i18n/index.ts); bu test dosyası da genellendi
  * ki yeni dillerin HİÇBİRİ "sessizce eksik anahtar" durumuna düşmesin --
  * tam da yukarıdaki paragrafın anlattığı hatanın 9 dilde tekrarı olurdu.
@@ -52,7 +51,6 @@ const LOCALES: Record<string, Json> = {
   it: itLocale as unknown as Json,
   es: es as unknown as Json,
   ru: ru as unknown as Json,
-  uk: uk as unknown as Json,
   ar: ar as unknown as Json,
   zh: zh as unknown as Json,
   ja: ja as unknown as Json,
