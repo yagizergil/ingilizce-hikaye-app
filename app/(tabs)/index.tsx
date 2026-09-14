@@ -11,6 +11,7 @@ import { trackEvent } from "@/lib/analytics";
 import { ErrorState, Skeleton } from "@/components/ui";
 import {
   BookShelf,
+  useFinishedBookIdsQuery,
   CategoryShelf,
   CollectionShelf,
   CurrentlyReadingShelf,
@@ -55,6 +56,8 @@ export default function HomeScreen() {
     refetch: refetchExtras,
   } = useHomeExtrasQuery();
   const { data: currentlyReading, refetch: refetchCurrentlyReading } = useCurrentlyReadingQuery();
+  // Kapaklardaki "okundu" etiketi (referans: referance1.jpeg).
+  const { data: finishedBookIds } = useFinishedBookIdsQuery();
   const removeFromCurrentlyReadingMutation = useRemoveFromCurrentlyReadingMutation();
 
   useEffect(() => {
@@ -187,6 +190,7 @@ export default function HomeScreen() {
               title={t("home.newBooks.title")}
               books={newBooks}
               onPressBook={handleOpenBook}
+              finishedBookIds={finishedBookIds}
             />
 
             <CurrentlyReadingShelf

@@ -151,7 +151,8 @@
       "minutes": "分钟"
     },
     "book": {
-      "accessibilityLabel": "{{title}}，{{author}}，{{level}} 级"
+      "accessibilityLabel": "{{title}}，{{author}}，{{level}} 级",
+      "finishedTag": "已读"
     },
     "search": {
       "placeholder": "搜索书名、作者或类型"

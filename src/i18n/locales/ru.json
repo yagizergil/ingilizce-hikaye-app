@@ -155,7 +155,8 @@
       "minutes": "Минуты"
     },
     "book": {
-      "accessibilityLabel": "{{title}}, {{author}}, уровень {{level}}"
+      "accessibilityLabel": "{{title}}, {{author}}, уровень {{level}}",
+      "finishedTag": "прочитано"
     },
     "search": {
       "placeholder": "Поиск по названию, автору или жанру"

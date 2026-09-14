@@ -151,7 +151,8 @@
       "minutes": "Dakika"
     },
     "book": {
-      "accessibilityLabel": "{{title}}, {{author}}, seviye {{level}}"
+      "accessibilityLabel": "{{title}}, {{author}}, seviye {{level}}",
+      "finishedTag": "okundu"
     },
     "search": {
       "placeholder": "Başlık, yazar veya tür ara"

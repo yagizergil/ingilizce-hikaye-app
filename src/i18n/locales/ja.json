@@ -151,7 +151,8 @@
       "minutes": "分"
     },
     "book": {
-      "accessibilityLabel": "{{title}}、{{author}}、レベル {{level}}"
+      "accessibilityLabel": "{{title}}、{{author}}、レベル {{level}}",
+      "finishedTag": "読了"
     },
     "search": {
       "placeholder": "タイトル・著者・ジャンルで検索"

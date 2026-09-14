@@ -226,6 +226,33 @@ export const monoType = {
     letterSpacing: 0.5,
     textTransform: "uppercase",
   },
+  /**
+   * Kapak üstündeki seviye rozeti (A1..C2).
+   *
+   * ÖLÇÜ REFERANSTAN (docs/reference/referance1.jpeg): büyük harf
+   * yüksekliği 22 px / 2.4046 = ~9 pt, yani ~13 pt kalın gövde. `badge`
+   * (10 pt, harf aralıklı) referanstakinin belirgin şekilde altındaydı;
+   * kapağın üstünde okunmuyordu. Harf aralığı 0: iki karakterlik bir
+   * etikette aralık, ortalamayı bozmaktan başka bir şey yapmıyor.
+   */
+  levelBadge: {
+    fontFamily: fontFamily.nunitoBold,
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: "700",
+    letterSpacing: 0,
+  },
+  /**
+   * Kapak üstündeki "okundu" etiketi -- referansta seviye rozetiyle AYNI
+   * büyük harf yüksekliğinde (22 px), yani aynı gövde ölçüsü.
+   */
+  coverTag: {
+    fontFamily: fontFamily.nunitoBold,
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: "700",
+    letterSpacing: 0,
+  },
   percent: {
     fontFamily: fontFamily.nunitoMedium,
     fontSize: 11,

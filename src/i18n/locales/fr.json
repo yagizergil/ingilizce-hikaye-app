@@ -151,7 +151,8 @@
       "minutes": "Minutes"
     },
     "book": {
-      "accessibilityLabel": "{{title}}, {{author}}, niveau {{level}}"
+      "accessibilityLabel": "{{title}}, {{author}}, niveau {{level}}",
+      "finishedTag": "lu"
     },
     "search": {
       "placeholder": "Rechercher un titre, un auteur ou un genre"

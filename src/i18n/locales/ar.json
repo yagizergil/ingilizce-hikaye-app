@@ -159,7 +159,8 @@
       "minutes": "دقيقة"
     },
     "book": {
-      "accessibilityLabel": "{{title}}، {{author}}، المستوى {{level}}"
+      "accessibilityLabel": "{{title}}، {{author}}، المستوى {{level}}",
+      "finishedTag": "مقروء"
     },
     "search": {
       "placeholder": "ابحث بالعنوان أو المؤلف أو النوع"

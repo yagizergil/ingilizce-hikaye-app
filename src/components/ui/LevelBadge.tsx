@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { badgePadding, levelAccent, monoType, onLevelAccent, radius } from "@/theme";
+import { levelAccent, monoType, onLevelAccent } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
 interface LevelBadgeProps {
@@ -44,16 +44,33 @@ export function LevelBadge({ level }: LevelBadgeProps) {
       accessibilityRole="text"
       accessibilityLabel={t("ui.levelBadge.accessibilityLabel", { level })}
     >
-      <Text style={[monoType.badge, { color: known ? onLevelAccent : theme.text.primary }]}>{level}</Text>
+      <Text style={[monoType.levelBadge, { color: known ? onLevelAccent : theme.text.primary }]}>{level}</Text>
     </View>
   );
 }
 
+/**
+ * ÖLÇÜLER REFERANSTAN (docs/reference/referance1.jpeg, 945 px genişlik,
+ * 1pt = 2.4046px):
+ *   rozet 70x71 px -> 30x30 pt kare
+ *   köşe yarıçapı ~19 px -> 8 pt
+ *   etiket büyük harf yüksekliği 22 px -> ~13 pt gövde, kalın
+ *
+ * Eskiden rozet metne göre büyüyen küçük bir etiketti (10 pt yazı,
+ * 2x6 pt iç boşluk) ve kapağın üstünde kaybolyordu. Referansta rozet SABİT
+ * KARE ve iri -- kapağa bakan kişi seviyeyi okumadan önce rengiyle
+ * tanıyor. Sabit kare aynı zamanda bütün kapaklarda aynı yerde aynı
+ * boyutta durmasını garantiliyor.
+ */
+const BADGE_SIZE = 30;
+
 const styles = StyleSheet.create({
   badge: {
-    borderRadius: radius.sm,
-    paddingVertical: badgePadding.vertical,
-    paddingHorizontal: badgePadding.horizontal,
+    width: BADGE_SIZE,
+    height: BADGE_SIZE,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
     alignSelf: "flex-start",
   },
   fallbackBadge: {

@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
 
 import { spacing, type } from "@/theme";
+import { levelAccent } from "@/theme/tokens/colors";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
@@ -235,6 +236,8 @@ export function ProfileScreen() {
 
           <Card style={styles.rows} bordered>
             <ProfileAccountRow
+              icon="star"
+              iconColor={levelAccent.B1}
               label={t("profile.account.subscription")}
               value={t(
                 subscriptionTier === "free"
@@ -247,6 +250,8 @@ export function ProfileScreen() {
             <ReminderSettingsRow />
             <Hairline />
             <ProfileAccountRow
+              icon="text"
+              iconColor={levelAccent.A1}
               label={t("profile.account.fontSize")}
               value={t("profile.account.fontSizeValue", {
                 percent: Math.round(fontScalePercent * 100),
@@ -254,11 +259,15 @@ export function ProfileScreen() {
             />
             <Hairline />
             <ProfileAccountRow
+              icon="moon"
+              iconColor={levelAccent.C2}
               label={t("profile.account.theme")}
               value={t(`reader.settings.themeOptions.${themeName}`)}
             />
             <Hairline />
             <ProfileAccountRow
+              icon="globe"
+              iconColor={levelAccent.A1}
               label={t("profile.account.language")}
               value={
                 languagePairQuery.data

@@ -23,6 +23,8 @@ interface ShelfBookCardProps {
   /** e.g. "2/5" — the "continuing series" shelf's series-position badge.
    * Undefined for every other shelf, which renders no badge at all. */
   progressLabel?: string;
+  /** Kullanıcı bu kitabı bitirdiyse kapağa "okundu" etiketi konuyor. */
+  finished?: boolean;
 }
 
 /**
@@ -34,7 +36,7 @@ interface ShelfBookCardProps {
  * altında da "kitap | kulaklık" ikon şeridi var (referanstaki pill-şeklinde
  * aksiyon şeridi) -- kulaklık yalnızca `book.hasAudio` true ise gösteriliyor.
  */
-function ShelfBookCard({ book, onPress, progressLabel }: ShelfBookCardProps) {
+function ShelfBookCard({ book, onPress, progressLabel, finished = false }: ShelfBookCardProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -56,7 +58,19 @@ function ShelfBookCard({ book, onPress, progressLabel }: ShelfBookCardProps) {
         width={coverColumnWidth.shelf}
         height={coverColumnHeight.shelf}
         overlay={
-          <View style={styles.badgeOverlay}>
+          <>
+            {/* "okundu" etiketi kapağın SAĞ ÜSTÜNDE, seviye rozetinin
+                karşısında -- referanstaki (referance1.jpeg) yerleşim.
+                Ölçüler: yükseklik 38 px -> 16 pt, yatay iç boşluk 32 px ->
+                13 pt, kapak üstünden 20 px -> 8 pt. */}
+            {finished ? (
+              <View style={[styles.readTag, { backgroundColor: theme.text.primary }]}>
+                <Text style={[monoType.coverTag, { color: theme.bg.primary }]}>
+                  {t("library.book.finishedTag")}
+                </Text>
+              </View>
+            ) : null}
+            <View style={styles.badgeOverlay}>
             <LevelBadge level={book.level} />
             {progressLabel ? (
               <View
@@ -70,7 +84,8 @@ function ShelfBookCard({ book, onPress, progressLabel }: ShelfBookCardProps) {
                 <Text style={[monoType.badge, { color: theme.text.primary }]}>{progressLabel}</Text>
               </View>
             ) : null}
-          </View>
+            </View>
+          </>
         }
       />
       <View style={[styles.actionPill, { backgroundColor: theme.bg.surface }]}>
@@ -95,6 +110,8 @@ interface BookShelfProps {
   /** e.g. "2/5" per book id — only the "continuing series" shelf passes
    * this today. */
   progressLabels?: Record<string, string>;
+  /** Bitirilen kitapların kimlikleri -- kapağa "okundu" etiketi koyuyor. */
+  finishedBookIds?: Set<string>;
 }
 
 /** Reusable horizontal shelf: `SectionHeader` (Fraunces title + mono
@@ -109,9 +126,15 @@ export function BookShelf({
   books,
   onPressBook,
   progressLabels,
+  finishedBookIds,
 }: BookShelfProps) {
   const renderItem: ListRenderItem<Book> = ({ item }) => (
-    <ShelfBookCard book={item} onPress={onPressBook} progressLabel={progressLabels?.[item.id]} />
+    <ShelfBookCard
+      book={item}
+      onPress={onPressBook}
+      progressLabel={progressLabels?.[item.id]}
+      finished={finishedBookIds?.has(item.id) ?? false}
+    />
   );
 
   return (
@@ -161,6 +184,24 @@ const styles = StyleSheet.create({
     left: spacing.xs,
     flexDirection: "row",
     gap: spacing.xxs,
+  },
+  /**
+   * "okundu" etiketi -- ölçüler referanstan (referance1.jpeg):
+   * yükseklik 38 px -> 16 pt, yatay iç boşluk 32 px -> 13 pt,
+   * kapağın üstünden 20 px -> 8 pt, sağ kenardan 8 pt.
+   */
+  readTag: {
+    position: "absolute",
+    top: spacing.xs,
+    right: spacing.xs,
+    // Ölçüm 38 px -> 15.8 pt; RN'de 13 pt kalın metnin satır kutusu bunu
+    // birkaç ondalık aşıp metni kırpıyor, o yüzden 18 pt. Görünen fark yok,
+    // kırpılma riski yok.
+    height: 18,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radius.full,
+    alignItems: "center",
+    justifyContent: "center",
   },
   seriesBadge: {
     borderRadius: radius.sm,

@@ -9,6 +9,7 @@ export { useFavoritesReadListsQuery } from "@/features/home/api/useFavoritesRead
 export type { FavoritesReadLists } from "@/features/home/api/useFavoritesReadListsQuery";
 export { useToggleFavoriteMutation } from "@/features/home/api/useToggleFavoriteMutation";
 export { useFavoritedBookIdsQuery } from "@/features/home/api/useFavoritedBookIdsQuery";
+export { useFinishedBookIdsQuery } from "@/features/home/api/useFinishedBookIdsQuery";
 export { BookShelf } from "@/features/home/components/BookShelf";
 export { CollectionShelf } from "@/features/home/components/CollectionShelf";
 export type { CollectionCardData } from "@/features/home/components/CollectionCard";
