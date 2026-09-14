@@ -723,6 +723,10 @@
         "title": "Dinlediğini anlama",
         "body": "Stüdyo kaydıyla seslendirilmiş hikâyeleri, okunan kelime vurgulanarak dinle."
       },
+      "unlimitedLookups": {
+        "title": "Sınırsız kelime çevirisi",
+        "body": "Ücretsiz katmanda günde {{count}} kelime; premium'da sınır yok."
+      },
       "aiSentences": {
         "title": "Takıldığın cümleyi çöz",
         "body": "Günde {{premium}} AI cümle çevirisi — ücretsiz katmanda {{free}}.",

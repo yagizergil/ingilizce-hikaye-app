@@ -723,6 +723,10 @@
         "title": "Ascolta e capisci",
         "body": "Narrazione registrata in studio, con la parola pronunciata evidenziata."
       },
+      "unlimitedLookups": {
+        "title": "Traduzioni di parole illimitate",
+        "body": "{{count}} parole al giorno nel piano gratuito; nessun limite con Premium."
+      },
       "aiSentences": {
         "title": "Sblocca ogni frase",
         "body": "{{premium}} traduzioni di frasi con AI al giorno — {{free}} nel piano gratuito.",

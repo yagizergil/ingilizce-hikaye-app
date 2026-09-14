@@ -723,6 +723,10 @@
         "title": "聴いて理解する",
         "body": "スタジオ音声。読み上げ中の単語がその場でハイライトされます。"
       },
+      "unlimitedLookups": {
+        "title": "単語翻訳が無制限",
+        "body": "無料プランは1日 {{count}} 語；Premium は無制限。"
+      },
       "aiSentences": {
         "title": "詰まった文を解く",
         "body": "1日 {{premium}} 回のAI文翻訳 — 無料プランは {{free}} 回。",

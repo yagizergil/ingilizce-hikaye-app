@@ -723,6 +723,10 @@
         "title": "Listen and understand",
         "body": "Studio-recorded narration with the spoken word highlighted as you read."
       },
+      "unlimitedLookups": {
+        "title": "Unlimited word translations",
+        "body": "{{count}} words a day on the free tier; no limit on premium."
+      },
       "aiSentences": {
         "title": "Unstick any sentence",
         "body": "{{premium}} AI sentence translations a day — {{free}} on the free tier.",

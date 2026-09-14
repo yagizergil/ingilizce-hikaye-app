@@ -9,6 +9,12 @@ export interface PaywallFacts {
   aiFreeLimit: number;
   /** Premium'un günlük AI cümle çevirisi kotası. */
   aiPremiumLimit: number;
+  /**
+   * Ücretsiz katmanın günlük KELİME çevirisi kotası (migration 038).
+   * Aynı gerekçe: sınır sunucuda tanımlı, paywall metni onu okuyor --
+   * çeviri dosyasına yazılsaydı sınır iki yerde yaşardı.
+   */
+  freeWordLookups: number;
 }
 
 interface QuotaShape {
@@ -37,19 +43,22 @@ export function usePaywallFactsQuery() {
   return useQuery({
     queryKey: ["paywall", "facts"],
     queryFn: async (): Promise<PaywallFacts> => {
-      const [books, quota] = await Promise.all([
+      const [books, quota, wordQuota] = await Promise.all([
         supabase.from("books").select("id", { count: "exact", head: true }).eq("status", "published"),
         supabase.rpc("my_ai_sentence_quota"),
+        supabase.rpc("my_word_lookup_quota"),
       ]);
 
       if (books.error) throw books.error;
 
       const shape = (quota.data ?? {}) as QuotaShape;
+      const wordShape = (wordQuota.data ?? {}) as QuotaShape;
 
       return {
         bookCount: books.count ?? 0,
         aiFreeLimit: typeof shape.freeLimit === "number" ? shape.freeLimit : 0,
         aiPremiumLimit: typeof shape.premiumLimit === "number" ? shape.premiumLimit : 0,
+        freeWordLookups: typeof wordShape.freeLimit === "number" ? wordShape.freeLimit : 0,
       };
     },
     staleTime: 60 * 60 * 1000,

@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { collectionColors, monoType, onLevelAccent, radius, spacing } from "@/theme";
+import { monoType, onLevelAccent, radius, spacing } from "@/theme";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 
 interface ReaderHeaderProps {
@@ -27,9 +27,17 @@ interface ReaderHeaderProps {
   canPlaySpeech: boolean;
   /** "Dinle" ile gelindi, ses hazırlanıyor — düğme yerine göstergeç. */
   isPreparingSpeech: boolean;
-  /** Bugün kalan AI cümle çevirisi hakkı -- `null` iken (henüz
-   * yüklenmedi/hata) rozet hiç gösterilmiyor, "0" ile karıştırılmasın. */
-  aiQuotaRemaining: number | null;
+  /**
+   * Bugün kalan KELİME ÇEVİRİSİ hakkı (migration 038).
+   *
+   * `null` iken rozet hiç gösterilmiyor. İki ayrı durum için de doğru:
+   * henüz yüklenmedi (sayıyı bilmiyoruz, "0" ile karıştırılmamalı) ve
+   * premium (sınır yok -- olmayan bir sınırı ima eden sayaç göstermek
+   * yanlış olurdu).
+   */
+  wordQuotaRemaining: number | null;
+  /** Rozete dokunulduğunda -- paywall'ı açıyor. */
+  onPressQuota: () => void;
   /** Reader'ı kapatıp geri döner. */
   onClose: () => void;
 }
@@ -53,7 +61,8 @@ export function ReaderHeader({
   isSpeaking,
   canPlaySpeech,
   isPreparingSpeech,
-  aiQuotaRemaining,
+  wordQuotaRemaining,
+  onPressQuota,
   onClose,
 }: ReaderHeaderProps) {
   const { t } = useTranslation();
@@ -134,16 +143,24 @@ export function ReaderHeader({
         </View>
 
         <View style={styles.rightGroup}>
-          {aiQuotaRemaining !== null ? (
-            <View
-              style={[styles.quotaBadge, { backgroundColor: collectionColors.audiobooks }]}
-              accessibilityRole="text"
-              accessibilityLabel={t("reader.header.quotaRemaining", { count: aiQuotaRemaining })}
+          {/* Kalan kelime çevirisi hakkı. Renk vurgu rengi (turuncu):
+              referansta da sayaç ekranın tek turuncu öğesi ve "bu bir
+              sınır" demek. Dokunulabilir -- sınırı merak eden kullanıcıyı
+              anlatan tek ekrana götürüyor. */}
+          {wordQuotaRemaining !== null ? (
+            <Pressable
+              onPress={onPressQuota}
+              accessibilityRole="button"
+              accessibilityLabel={t("reader.header.quotaRemaining", {
+                count: wordQuotaRemaining,
+              })}
+              style={[styles.quotaBadge, { backgroundColor: readerColors.accent }]}
+              hitSlop={8}
             >
               <Text style={[monoType.badge, styles.quotaText, { color: onLevelAccent }]}>
-                {aiQuotaRemaining}
+                {wordQuotaRemaining}
               </Text>
-            </View>
+            </Pressable>
           ) : null}
 
           <Pressable

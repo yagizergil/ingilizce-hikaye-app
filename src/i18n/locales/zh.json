@@ -723,6 +723,10 @@
         "title": "边听边懂",
         "body": "录音室朗读，正在读到的词会同步高亮。"
       },
+      "unlimitedLookups": {
+        "title": "单词翻译无限制",
+        "body": "免费版每天 {{count}} 个词；Premium 无限制。"
+      },
       "aiSentences": {
         "title": "读懂卡住的句子",
         "body": "每天 {{premium}} 次 AI 句子翻译 —— 免费版 {{free}} 次。",

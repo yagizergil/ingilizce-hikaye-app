@@ -723,6 +723,10 @@
         "title": "Écouter et comprendre",
         "body": "Narration enregistrée en studio, le mot prononcé surligné au fil du texte."
       },
+      "unlimitedLookups": {
+        "title": "Traductions de mots illimitées",
+        "body": "{{count}} mots par jour en version gratuite ; sans limite avec Premium."
+      },
       "aiSentences": {
         "title": "Débloquer une phrase",
         "body": "{{premium}} traductions de phrases par IA par jour — {{free}} en version gratuite.",

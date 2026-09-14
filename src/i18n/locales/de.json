@@ -723,6 +723,10 @@
         "title": "Hören und verstehen",
         "body": "Studio-Vertonung, bei der das gesprochene Wort mitlaufend hervorgehoben wird."
       },
+      "unlimitedLookups": {
+        "title": "Unbegrenzte Wortübersetzungen",
+        "body": "{{count}} Wörter pro Tag in der Gratisversion; mit Premium ohne Limit."
+      },
       "aiSentences": {
         "title": "Jeden Satz knacken",
         "body": "{{premium}} KI-Satzübersetzungen pro Tag — {{free}} in der Gratisversion.",

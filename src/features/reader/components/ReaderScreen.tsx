@@ -6,7 +6,9 @@ import { useTranslation } from "react-i18next";
 
 import { spacing } from "@/theme";
 import { ErrorState, LoadingState } from "@/components/ui";
-import { trackEvent } from "@/lib/analytics";
+import { router } from "expo-router";
+
+import { trackEvent, trackError } from "@/lib/analytics";
 import { useChapterQuery } from "@/features/reader/api/useChapterQuery";
 import { usePrefetchNextChapter } from "@/features/reader/api/usePrefetchNextChapter";
 import { useReadingSession } from "@/features/reader/api/useReadingSession";
@@ -39,7 +41,10 @@ import { ReaderSettingsSheet } from "@/features/reader/components/ReaderSettings
 import { ChapterListSheet } from "@/features/reader/components/ChapterListSheet";
 import { BookWordsSheet } from "@/features/reader/components/BookWordsSheet";
 import { ChapterCompleteCard } from "@/features/reader/components/ChapterCompleteCard";
-import { useAiSentenceQuotaQuery } from "@/features/reader/api/useAiSentenceQuotaQuery";
+import {
+  useConsumeWordLookupMutation,
+  useWordLookupQuotaQuery,
+} from "@/features/reader/api/useWordLookupQuota";
 
 import type {
   PaginatedPageChangePayload,
@@ -193,10 +198,21 @@ export function ReaderScreen({
   // sayının kendisi (15) sabit -- kelime çevirisi kullanım sayacı
   // kurulunca burası gerçek "kalan" değerini okuyacak şekilde
   // değiştirilecek.
-  const FREE_DAILY_WORD_TRANSLATIONS = 15;
-  const aiQuota = useAiSentenceQuotaQuery();
-  const aiQuotaRemaining =
-    aiQuota.data == null ? null : aiQuota.data.isPremium ? null : FREE_DAILY_WORD_TRANSLATIONS;
+  /**
+   * Günlük kelime çevirisi kotası -- ARTIK GERÇEK (migration 038).
+   *
+   * Buradaki sayı daha önce koda gömülü sabit bir 15'ti ve hiçbir şeyi
+   * saymıyordu: rozet her kullanıcıda 15 yazıyor, hiçbir zaman azalmıyor,
+   * dolayısıyla paywall da hiç tetiklenmiyordu. Sayaç artık sunucuda
+   * (`my_word_lookup_quota` / `consume_word_lookup`) -- istemcide saymak,
+   * uygulamayı kapatıp açmakla sıfırlanabilen bir "sınır" demekti.
+   *
+   * Premium'da `remaining` null geliyor ve rozet HİÇ gösterilmiyor: sınırı
+   * olmayan birine sayaç göstermek, olmayan bir sınırı ima etmek olurdu.
+   */
+  const wordQuota = useWordLookupQuotaQuery();
+  const consumeWordLookup = useConsumeWordLookupMutation();
+  const wordQuotaRemaining = wordQuota.data?.remaining ?? null;
 
   // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
   // `stop` konumu sıfırlıyor, yani kullanıcı sözlüğe bakıp geri döndüğünde
@@ -326,17 +342,59 @@ export function ReaderScreen({
       resumeAfterSheetRef.current = useTtsStore.getState().status === "speaking";
       pauseSpeech();
 
-      setActiveWord({
-        surface: payload.surface,
-        lemma: payload.lemma,
-        sentenceText: payload.sentenceText,
-        paragraphId: payload.paragraphId ?? "",
-        sentenceCharOffset: payload.sentenceCharOffset,
-        anchorY: payload.anchorY,
-      });
+      const openSheet = () =>
+        setActiveWord({
+          surface: payload.surface,
+          lemma: payload.lemma,
+          sentenceText: payload.sentenceText,
+          paragraphId: payload.paragraphId ?? "",
+          sentenceCharOffset: payload.sentenceCharOffset,
+          anchorY: payload.anchorY,
+        });
+
+      /**
+       * KOTA ÖNCE TÜKETİLİYOR, SÖZLÜK SONRA AÇILIYOR.
+       *
+       * Sıra önemli: sözlüğü açıp sonra "hakkın bitti" demek, kullanıcıya
+       * karşılığı gösterip geri almak olurdu. Karar sunucudan geliyor
+       * (`consume_word_lookup`), istemci yalnızca uyguluyor -- istemcide
+       * karar vermek, sınırı istemciyi değiştirebilen herkes için
+       * kaldırmak demekti.
+       *
+       * AĞ HATASINDA AÇIK KALIYOR: çağrı başarısız olursa sözlük yine
+       * açılıyor ve hak DÜŞMÜYOR. Bir bağlantı kesintisinin okumayı
+       * durdurması, bir kullanıcının birkaç bedava çeviri almasından çok
+       * daha kötü.
+       */
+      void consumeWordLookup
+        .mutateAsync()
+        .then((result) => {
+          if (result.allowed) {
+            openSheet();
+            return;
+          }
+          trackEvent("paywall_opened", { source: "word_quota_exhausted" });
+          router.push("/paywall?source=word_quota");
+        })
+        .catch((error) => {
+          trackError("reader.wordQuota", error);
+          openSheet();
+        });
     },
-    [pauseSpeech],
+    [pauseSpeech, consumeWordLookup],
   );
+
+  /**
+   * Sayaç rozetine dokunmak paywall'ı açıyor.
+   *
+   * Rozet zaten "kalan hakkın" demek; ona dokunan kullanıcı sınırı merak
+   * ediyor demektir. Sınırın ne olduğunu ve nasıl kalkacağını anlatan tek
+   * ekran paywall.
+   */
+  const handleOpenPaywallFromQuota = useCallback(() => {
+    trackEvent("paywall_opened", { source: "word_quota_badge" });
+    router.push("/paywall?source=word_quota_badge");
+  }, []);
 
   const handleSentenceLongPress = useCallback(
     (payload: { sentenceText: string; paragraphId: string }) => {
@@ -580,7 +638,8 @@ export function ReaderScreen({
         isSpeaking={isSpeaking}
         canPlaySpeech={canPlayAudio}
         isPreparingSpeech={tts.isPreparing}
-        aiQuotaRemaining={aiQuotaRemaining}
+        wordQuotaRemaining={wordQuotaRemaining}
+        onPressQuota={handleOpenPaywallFromQuota}
         onClose={onBack}
       />
 

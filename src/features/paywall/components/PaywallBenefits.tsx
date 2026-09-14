@@ -33,6 +33,10 @@ type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
  */
 const BENEFITS: { icon: IoniconName; key: string; tint: string }[] = [
   { icon: "headset", key: "studioAudio", tint: levelAccent.C1 },
+  // Ücretsiz katmanda günlük kelime çevirisi sınırı var (migration 038);
+  // bu madde o sınırın kalkmasını anlatıyor ve paywall'ın en sık
+  // tetiklendiği yer de orası.
+  { icon: "flash", key: "unlimitedLookups", tint: levelAccent.B2 },
   { icon: "sparkles", key: "aiSentences", tint: levelAccent.B1 },
   { icon: "bookmarks", key: "unlimitedWords", tint: levelAccent.A1 },
   { icon: "repeat", key: "spacedRepetition", tint: levelAccent.A2 },
@@ -48,9 +52,15 @@ interface PaywallBenefitsProps {
    */
   aiFreeLimit: number;
   aiPremiumLimit: number;
+  /** Ücretsiz katmanın günlük kelime çevirisi sınırı (migration 038). */
+  freeWordLookups: number;
 }
 
-export function PaywallBenefits({ aiFreeLimit, aiPremiumLimit }: PaywallBenefitsProps) {
+export function PaywallBenefits({
+  aiFreeLimit,
+  aiPremiumLimit,
+  freeWordLookups,
+}: PaywallBenefitsProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -74,7 +84,9 @@ export function PaywallBenefits({ aiFreeLimit, aiPremiumLimit }: PaywallBenefits
                 {t(`paywall.benefits.${benefit.key}.title`)}
               </Text>
               <Text style={[paywallType.benefitBody, { color: theme.text.secondary }]}>
-                {benefit.key === "aiSentences"
+                {benefit.key === "unlimitedLookups"
+                  ? t("paywall.benefits.unlimitedLookups.body", { count: freeWordLookups })
+                  : benefit.key === "aiSentences"
                   ? hasQuotas
                     ? t("paywall.benefits.aiSentences.body", {
                         premium: aiPremiumLimit,
@@ -83,7 +95,7 @@ export function PaywallBenefits({ aiFreeLimit, aiPremiumLimit }: PaywallBenefits
                     : /* Kotalar okunamadıysa rakamsız hâli -- yanlış bir
                          sayı göstermektense hiç göstermemek. */
                       t("paywall.benefits.aiSentences.bodyGeneric")
-                  : t(`paywall.benefits.${benefit.key}.body`)}
+                    : t(`paywall.benefits.${benefit.key}.body`)}
               </Text>
             </View>
           </View>

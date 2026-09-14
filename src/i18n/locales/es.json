@@ -723,6 +723,10 @@
         "title": "Escucha y entiende",
         "body": "Narración de estudio con la palabra hablada resaltada mientras lees."
       },
+      "unlimitedLookups": {
+        "title": "Traducciones de palabras sin límite",
+        "body": "{{count}} palabras al día en el plan gratuito; sin límite con Premium."
+      },
       "aiSentences": {
         "title": "Desatasca cualquier frase",
         "body": "{{premium}} traducciones de frases con IA al día — {{free}} en el plan gratuito.",

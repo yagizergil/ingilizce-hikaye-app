@@ -299,6 +299,7 @@ export function PaywallScreen({ onClose, source, intro }: PaywallScreenProps) {
         <PaywallBenefits
           aiFreeLimit={facts?.aiFreeLimit ?? 0}
           aiPremiumLimit={facts?.aiPremiumLimit ?? 0}
+          freeWordLookups={facts?.freeWordLookups ?? 0}
         />
 
         {facts && facts.bookCount > 0 ? (
