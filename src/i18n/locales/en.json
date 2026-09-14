@@ -661,16 +661,30 @@
     },
     "path": {
       "title": "Your path",
-      "subtitle": "Where you are and what comes next.",
-      "subtitleWithGoal_one": "The steps ahead at {{count}} minute a day.",
-      "subtitleWithGoal_other": "The steps ahead at {{count}} minutes a day.",
-      "youAreHere": "You are here",
-      "next": "Next step",
+      "subtitle": "Where you are and the steps ahead.",
+      "subtitleWithGoal": "{{from}} to {{to}}: {{hours}} hours of reading over 6 months.",
+      "milestones": {
+        "0": "Now",
+        "1": "Month 3",
+        "2": "Month 6"
+      },
       "features": {
-        "audio": "Studio narration",
-        "vocabulary": "Word list and review",
-        "ai": "AI sentence translation",
-        "offline": "Offline reading"
+        "daily": {
+          "title": "Daily reading",
+          "body": "Your own goal"
+        },
+        "audio": {
+          "title": "Studio narration",
+          "body": "Word-by-word tracking"
+        },
+        "ai": {
+          "title": "AI sentence translation",
+          "body": "Right where you get stuck"
+        },
+        "review": {
+          "title": "Spaced repetition",
+          "body": "So words stick"
+        }
       }
     },
     "plan": {
@@ -682,6 +696,29 @@
         "favorites": "Building your shelf",
         "profile": "Saving your profile"
       }
+    },
+    "trial": {
+      "heading": "How the free trial works",
+      "rows": {
+        "today": {
+          "title": "Today",
+          "body": "Everything unlocks right away."
+        },
+        "reminder": {
+          "title": "Day {{day}}",
+          "body": "We remind you before it ends."
+        },
+        "charge": {
+          "title": "Day {{day}}",
+          "body": "Trial ends and payment starts."
+        }
+      }
+    },
+    "success": {
+      "title": "You're all set!",
+      "bodyPremium": "Everything is ready. Premium is on — start reading.",
+      "bodyFree": "Everything is ready. Every book is free — start reading.",
+      "cta": "Start reading"
     }
   },
   "paywall": {

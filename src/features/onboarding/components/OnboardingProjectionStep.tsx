@@ -3,9 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 
-import { monoType, radius, spacing, type } from "@/theme";
-import { levelAccent, onLevelAccent } from "@/theme/tokens/colors";
+import { monoType, radius, spacing } from "@/theme";
+import { levelAccent } from "@/theme/tokens/colors";
 import { useTheme } from "@/theme/useTheme";
 
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
@@ -17,31 +18,52 @@ import type { ComponentProps } from "react";
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
 /**
- * "Yolun" ekranı (referans: `bookvo-11-ilerleme-grafigi.jpeg`).
+ * "Nereye gidiyorsun" ekranı (referans:
+ * `docs/reference/bookvo-11-ilerleme-grafigi.jpeg`).
  *
- * REFERANSTAN BİLEREK AYRILAN YER: referans "6 ayda yaklaşık 2.700 yeni
- * kelime -- A1'den B1'e" diye SAYISAL BİR VAAT veriyor. Bizim böyle bir
- * ölçümümüz yok; uydurulmuş bir sayı hem yanıltıcı olur hem de App Store
- * Guideline 2.3.1 kapsamına girer (paywall kuralımızın aynısı: bir şey
- * önce doğru olmalı, sonra yazılmalı).
+ * DÜZEN REFERANSIN AYNISI: yükselen bir eğri, eğri üzerinde üç düğüm, her
+ * düğümün üstünde kesikli bir çizgiyle bağlanan seviye baloncuğu, altında
+ * zaman etiketi ("Şimdi / 3. ay / 6. ay"); altta 2x2 özellik kutucukları;
+ * en altta pill düğme.
  *
- * Aynı duyguyu VEREN ama doğru olan şey: kullanıcının seviye merdivenindeki
- * yeri ve bundan sonraki basamaklar. Bu katalogda gerçekten var olan bir
- * yapı, vaat değil yol tarifi.
+ * TEK İÇERİK FARKI VE NEDENİ: referansın alt başlığı "6 ayda yaklaşık
+ * 2.700 yeni kelime" diye SAYISAL BİR VAAT veriyor. Bizim böyle bir
+ * ölçümümüz yok ve uydurulmuş bir sayı, paywall'da uyguladığımız kuralın
+ * (bir fayda önce doğru olmalı, sonra yazılmalı -- Guideline 2.3.1)
+ * ihlali olurdu. Yerine ARİTMETİK olarak doğru bir ifade kullanılıyor:
+ * kullanıcının kendi seçtiği günlük süre x 6 ay = toplam okuma saati.
+ * Bu bir vaat değil, kendi hedefinin toplamı.
  *
- * Alt kutucuklar da yalnızca BUGÜN ÇALIŞAN özellikler: stüdyo seslendirmesi
- * (ADR-012), kelime defteri + aralıklı tekrar, AI cümle çevirisi, çevrimdışı
- * okuma. Referanstaki "Shadowing + Oyunlar" ve "Videolar" bizde YOK, o
- * yüzden yazılmadı.
+ * Kutucuklar da yalnızca bugün çalışan özellikler; referanstaki
+ * "Shadowing + Oyunlar" ve "Videolar" bizde YOK, o yüzden yazılmadı.
  */
 const LADDER: CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
-const FEATURES: { icon: IoniconName; key: string }[] = [
-  { icon: "headset-outline", key: "audio" },
-  { icon: "bookmarks-outline", key: "vocabulary" },
-  { icon: "sparkles-outline", key: "ai" },
-  { icon: "cloud-offline-outline", key: "offline" },
+const FEATURES: { icon: IoniconName; key: string; tint: string }[] = [
+  { icon: "flame-outline", key: "daily", tint: levelAccent.A1 },
+  { icon: "headset-outline", key: "audio", tint: levelAccent.A2 },
+  { icon: "sparkles-outline", key: "ai", tint: levelAccent.B1 },
+  { icon: "repeat-outline", key: "review", tint: levelAccent.C1 },
 ];
+
+/** Grafik kartının iç ölçüleri (referansta kart ~230pt yüksekliğinde). */
+const CHART_HEIGHT = 230;
+const CHART_VIEWBOX_WIDTH = 320;
+const CHART_VIEWBOX_HEIGHT = 160;
+
+/**
+ * Eğrinin düğüm noktaları (viewBox koordinatı). Referansta eğri soldan
+ * sağa yükseliyor ve düğümler eşit aralıklı DEĞİL -- son düğüm sağ üstte,
+ * ilk düğüm sol altta.
+ */
+const NODES = [
+  { x: 40, y: 128 },
+  { x: 160, y: 84 },
+  { x: 272, y: 40 },
+] as const;
+
+/** Düğümlerden geçen yumuşak eğri. */
+const CURVE = `M 8 144 C 24 140, 30 132, ${NODES[0].x} ${NODES[0].y} S 120 96, ${NODES[1].x} ${NODES[1].y} S 236 48, ${NODES[2].x} ${NODES[2].y} S 306 26, 316 22`;
 
 interface OnboardingProjectionStepProps {
   progress: number;
@@ -63,51 +85,75 @@ export function OnboardingProjectionStep({
   const path = useMemo(() => {
     const start = level ? LADDER.indexOf(level) : 0;
     const safeStart = start < 0 ? 0 : start;
-    return LADDER.slice(safeStart, Math.min(safeStart + 3, LADDER.length));
+    const slice = LADDER.slice(safeStart, safeStart + 3);
+    // Merdivenin sonundaysa geriye doğru tamamlanıyor ki grafik hep üç
+    // düğümlü kalsın.
+    while (slice.length < 3 && slice.length > 0) {
+      slice.unshift(LADDER[Math.max(0, LADDER.indexOf(slice[0] as CefrLevel) - 1)] as CefrLevel);
+    }
+    return slice;
   }, [level]);
+
+  /** 6 ayda toplam okuma saati -- aritmetik, vaat değil. */
+  const totalHours = dailyGoalMinutes ? Math.round((dailyGoalMinutes * 180) / 60) : null;
 
   return (
     <OnboardingScaffold
       progress={progress}
       title={t("onboarding.path.title")}
       subtitle={
-        dailyGoalMinutes
-          ? t("onboarding.path.subtitleWithGoal", { count: dailyGoalMinutes })
+        totalHours
+          ? t("onboarding.path.subtitleWithGoal", {
+              hours: totalHours,
+              from: path[0],
+              to: path[path.length - 1],
+            })
           : t("onboarding.path.subtitle")
       }
       footer={<OnboardingFooterButton label={t("common.continue")} onPress={onContinue} />}
     >
       <View style={styles.body}>
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
-          ]}
-        >
-          {path.map((step, index) => (
-            <View key={step} style={styles.step}>
-              <View style={styles.stepLeft}>
-                <View style={[styles.badge, { backgroundColor: levelAccent[step] }]}>
-                  <Text style={[monoType.label, { color: onLevelAccent, letterSpacing: 0 }]}>
+        <View style={[styles.chartCard, { backgroundColor: theme.bg.surface }]}>
+          <Svg
+            width="100%"
+            height="100%"
+            viewBox={`0 0 ${CHART_VIEWBOX_WIDTH} ${CHART_VIEWBOX_HEIGHT}`}
+            style={StyleSheet.absoluteFill}
+          >
+            <Defs>
+              <LinearGradient id="curve" x1="0" y1="1" x2="1" y2="0">
+                <Stop offset="0" stopColor={levelAccent.A1} />
+                <Stop offset="1" stopColor={theme.accent} />
+              </LinearGradient>
+            </Defs>
+            <Path d={CURVE} stroke="url(#curve)" strokeWidth={5} fill="none" strokeLinecap="round" />
+          </Svg>
+
+          {NODES.map((node, index) => {
+            const left: `${number}%` = `${(node.x / CHART_VIEWBOX_WIDTH) * 100}%`;
+            const top: `${number}%` = `${(node.y / CHART_VIEWBOX_HEIGHT) * 100}%`;
+            const step = path[index];
+            return (
+              <View key={step ?? index} style={[styles.nodeGroup, { left, top }]}>
+                {/* Baloncuk -- düğümün ÜSTÜNDE, kesikli çizgiyle bağlı. */}
+                <View
+                  style={[
+                    styles.bubble,
+                    { backgroundColor: theme.bg.primary, borderColor: levelAccent[step as CefrLevel] },
+                  ]}
+                >
+                  <Text style={[monoType.label, { color: levelAccent[step as CefrLevel], letterSpacing: 0 }]}>
                     {step}
                   </Text>
                 </View>
-                {index < path.length - 1 ? (
-                  <View style={[styles.connector, { backgroundColor: theme.border.hairline }]} />
-                ) : null}
-              </View>
-              <View style={styles.stepText}>
-                <Text style={[type.chapterRowTitle, { color: theme.text.primary }]}>
-                  {t(`onboarding.level.options.${step}.title`)}
-                </Text>
-                <Text style={[monoType.meta, { color: theme.text.secondary }]}>
-                  {index === 0
-                    ? t("onboarding.path.youAreHere")
-                    : t("onboarding.path.next")}
+                <View style={[styles.dashed, { borderColor: theme.border.hairline }]} />
+                <View style={[styles.node, { borderColor: theme.accent, backgroundColor: theme.bg.primary }]} />
+                <Text style={[monoType.meta, styles.nodeLabel, { color: theme.text.secondary }]}>
+                  {t(`onboarding.path.milestones.${index}`)}
                 </Text>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         <View style={styles.features}>
@@ -119,10 +165,19 @@ export function OnboardingProjectionStep({
                 { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
               ]}
             >
-              <Ionicons name={feature.icon} size={20} color={theme.accent} />
-              <Text style={[monoType.meta, { color: theme.text.primary }]}>
-                {t(`onboarding.path.features.${feature.key}`)}
-              </Text>
+              <View style={[styles.featureBadge, { backgroundColor: `${feature.tint}22` }]}>
+                <Ionicons name={feature.icon} size={20} color={feature.tint} />
+              </View>
+              <View style={styles.featureText}>
+                <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+                  {feature.key === "daily" && dailyGoalMinutes
+                    ? t("onboarding.goal.minutes", { count: dailyGoalMinutes })
+                    : t(`onboarding.path.features.${feature.key}.title`)}
+                </Text>
+                <Text style={[monoType.meta, { color: theme.text.secondary }]}>
+                  {t(`onboarding.path.features.${feature.key}.body`)}
+                </Text>
+              </View>
             </View>
           ))}
         </View>
@@ -137,34 +192,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     gap: spacing.md,
   },
-  card: {
-    padding: spacing.md,
-    borderRadius: radius.cover,
-    borderWidth: StyleSheet.hairlineWidth,
+  chartCard: {
+    height: CHART_HEIGHT,
+    borderRadius: radius.lg,
+    overflow: "hidden",
   },
-  step: {
-    flexDirection: "row",
-    gap: spacing.md,
-  },
-  stepLeft: {
+  /** Düğüm grubu, eğrinin üzerindeki noktaya göre konumlanıyor. */
+  nodeGroup: {
+    position: "absolute",
     alignItems: "center",
+    // Grup, düğüm noktası merkezde kalacak şekilde kaydırılıyor.
+    marginLeft: -30,
+    marginTop: -64,
+    width: 60,
   },
-  badge: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
+  bubble: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.full,
+    borderWidth: 3,
     alignItems: "center",
     justifyContent: "center",
   },
-  connector: {
-    width: 2,
-    flex: 1,
-    minHeight: 20,
+  dashed: {
+    width: 1,
+    height: 12,
+    borderLeftWidth: 1,
+    borderStyle: "dashed",
   },
-  stepText: {
-    flex: 1,
-    paddingBottom: spacing.md,
-    gap: spacing.xxs,
+  node: {
+    width: 16,
+    height: 16,
+    borderRadius: radius.full,
+    borderWidth: 4,
+  },
+  nodeLabel: {
+    paddingTop: spacing.xxs,
   },
   features: {
     flexDirection: "row",
@@ -174,10 +237,22 @@ const styles = StyleSheet.create({
   feature: {
     flexBasis: "48%",
     flexGrow: 1,
-    alignItems: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
     gap: spacing.xs,
-    padding: spacing.md,
+    padding: spacing.sm,
     borderRadius: radius.md,
     borderWidth: StyleSheet.hairlineWidth,
+  },
+  featureBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.sm,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  featureText: {
+    flex: 1,
+    gap: spacing.xxs,
   },
 });

@@ -661,16 +661,30 @@
     },
     "path": {
       "title": "あなたの道のり",
-      "subtitle": "今いる場所と、この先の段階。",
-      "subtitleWithGoal_one": "1 日 {{count}} 分で進める段階です。",
-      "subtitleWithGoal_other": "1 日 {{count}} 分で進める段階です。",
-      "youAreHere": "現在地",
-      "next": "次の段階",
+      "subtitle": "今いる場所と、次のステップ。",
+      "subtitleWithGoal": "{{from}} から {{to}} へ：6か月で合計 {{hours}} 時間の読書。",
+      "milestones": {
+        "0": "今",
+        "1": "3か月目",
+        "2": "6か月目"
+      },
       "features": {
-        "audio": "スタジオ音声",
-        "vocabulary": "単語帳と復習",
-        "ai": "AI 文章翻訳",
-        "offline": "オフラインで読む"
+        "daily": {
+          "title": "毎日の読書",
+          "body": "あなたの目標"
+        },
+        "audio": {
+          "title": "スタジオ音声",
+          "body": "単語ごとに追える"
+        },
+        "ai": {
+          "title": "AIによる文の翻訳",
+          "body": "つまずいた文で"
+        },
+        "review": {
+          "title": "間隔反復",
+          "body": "単語を定着させる"
+        }
       }
     },
     "plan": {
@@ -682,6 +696,29 @@
         "favorites": "本棚を作成中",
         "profile": "プロフィールを保存中"
       }
+    },
+    "trial": {
+      "heading": "無料トライアルの流れ",
+      "rows": {
+        "today": {
+          "title": "今日",
+          "body": "すべてすぐに使えます。"
+        },
+        "reminder": {
+          "title": "{{day}}日目",
+          "body": "終わる前にお知らせします。"
+        },
+        "charge": {
+          "title": "{{day}}日目",
+          "body": "トライアルが終わり、課金が始まります。"
+        }
+      }
+    },
+    "success": {
+      "title": "準備完了！",
+      "bodyPremium": "すべて整いました。Premiumが有効です。読み始めましょう。",
+      "bodyFree": "すべて整いました。すべての本が無料です。読み始めましょう。",
+      "cta": "読み始める"
     }
   },
   "paywall": {

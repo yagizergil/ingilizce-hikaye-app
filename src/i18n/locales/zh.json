@@ -662,15 +662,29 @@
     "path": {
       "title": "你的路径",
       "subtitle": "你现在的位置和接下来的台阶。",
-      "subtitleWithGoal_one": "每天 {{count}} 分钟能走到的台阶。",
-      "subtitleWithGoal_other": "每天 {{count}} 分钟能走到的台阶。",
-      "youAreHere": "你在这里",
-      "next": "下一级",
+      "subtitleWithGoal": "从 {{from}} 到 {{to}}：6 个月共 {{hours}} 小时阅读。",
+      "milestones": {
+        "0": "现在",
+        "1": "第 3 个月",
+        "2": "第 6 个月"
+      },
       "features": {
-        "audio": "录音室朗读",
-        "vocabulary": "生词本与复习",
-        "ai": "AI 句子翻译",
-        "offline": "离线阅读"
+        "daily": {
+          "title": "每日阅读",
+          "body": "你自己的目标"
+        },
+        "audio": {
+          "title": "录音室朗读",
+          "body": "逐词跟读"
+        },
+        "ai": {
+          "title": "AI 句子翻译",
+          "body": "卡住的那一句"
+        },
+        "review": {
+          "title": "间隔重复",
+          "body": "让单词留下来"
+        }
       }
     },
     "plan": {
@@ -682,6 +696,29 @@
         "favorites": "正在搭建你的书架",
         "profile": "正在保存你的资料"
       }
+    },
+    "trial": {
+      "heading": "免费试用如何运作",
+      "rows": {
+        "today": {
+          "title": "今天",
+          "body": "立即解锁全部内容。"
+        },
+        "reminder": {
+          "title": "第 {{day}} 天",
+          "body": "结束前会提醒你。"
+        },
+        "charge": {
+          "title": "第 {{day}} 天",
+          "body": "试用结束，开始扣费。"
+        }
+      }
+    },
+    "success": {
+      "title": "太棒了！",
+      "bodyPremium": "一切就绪。Premium 已开启，开始阅读吧。",
+      "bodyFree": "一切就绪。所有书籍免费，开始阅读吧。",
+      "cta": "开始阅读"
     }
   },
   "paywall": {

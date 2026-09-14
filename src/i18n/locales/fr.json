@@ -661,16 +661,30 @@
     },
     "path": {
       "title": "Ton parcours",
-      "subtitle": "Où tu en es et ce qui vient ensuite.",
-      "subtitleWithGoal_one": "Les étapes à venir avec {{count}} minute par jour.",
-      "subtitleWithGoal_other": "Les étapes à venir avec {{count}} minutes par jour.",
-      "youAreHere": "Tu es ici",
-      "next": "Étape suivante",
+      "subtitle": "Où tu en es et les étapes à venir.",
+      "subtitleWithGoal": "De {{from}} à {{to}} : {{hours}} heures de lecture en 6 mois.",
+      "milestones": {
+        "0": "Maintenant",
+        "1": "Mois 3",
+        "2": "Mois 6"
+      },
       "features": {
-        "audio": "Narration studio",
-        "vocabulary": "Carnet de mots et révision",
-        "ai": "Traduction de phrases par IA",
-        "offline": "Lecture hors ligne"
+        "daily": {
+          "title": "Lecture quotidienne",
+          "body": "Ton propre objectif"
+        },
+        "audio": {
+          "title": "Narration studio",
+          "body": "Suivi mot à mot"
+        },
+        "ai": {
+          "title": "Traduction IA des phrases",
+          "body": "Là où tu bloques"
+        },
+        "review": {
+          "title": "Répétition espacée",
+          "body": "Pour retenir les mots"
+        }
       }
     },
     "plan": {
@@ -682,6 +696,29 @@
         "favorites": "Construction de ton étagère",
         "profile": "Enregistrement de ton profil"
       }
+    },
+    "trial": {
+      "heading": "Comment fonctionne l'essai gratuit",
+      "rows": {
+        "today": {
+          "title": "Aujourd'hui",
+          "body": "Tout est débloqué immédiatement."
+        },
+        "reminder": {
+          "title": "Jour {{day}}",
+          "body": "On te prévient avant la fin."
+        },
+        "charge": {
+          "title": "Jour {{day}}",
+          "body": "L'essai se termine, le paiement commence."
+        }
+      }
+    },
+    "success": {
+      "title": "Parfait !",
+      "bodyPremium": "Tout est prêt. Premium est activé — bonne lecture.",
+      "bodyFree": "Tout est prêt. Tous les livres sont gratuits — bonne lecture.",
+      "cta": "Commencer à lire"
     }
   },
   "paywall": {

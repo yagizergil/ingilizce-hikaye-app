@@ -31,7 +31,22 @@ export function useAuthBootstrap(): AuthStatus {
         // chapter loading -- useUserLemmaStatesForBook needs a real
         // session and has no other way to recover from this).
         const { error: userCheckError } = await supabase.auth.getUser();
-        if (userCheckError) {
+
+        // YALNIZCA sunucu oturumu REDDETTİYSE sıfırlanıyor (401/403).
+        //
+        // NEDEN AYRIM ŞART: oturum artık Keychain'de yaşıyor ve uygulama
+        // silinip yeniden kurulsa bile duruyor (bkz. src/lib/authStorage.ts).
+        // Her hatada signOut etmek, AĞ hatasını da oturumun geçersizliği
+        // saymak demekti: uçak modunda ya da zayıf bağlantıda açılan
+        // uygulama kullanıcının tek ve kalıcı anonim hesabını siler,
+        // yerine yenisini açardı -- kitapları, kelimeleri ve serisi
+        // erişilemez hâle gelirdi. Ağ hatasında oturuma DOKUNMUYORUZ;
+        // sonraki açılışta ya da bağlantı gelince kendi kendine düzeliyor.
+        const rejectedByServer =
+          userCheckError !== null &&
+          (userCheckError.status === 401 || userCheckError.status === 403);
+
+        if (rejectedByServer) {
           await supabase.auth.signOut();
           needsAnonymousSignIn = true;
         }

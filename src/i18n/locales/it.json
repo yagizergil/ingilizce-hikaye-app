@@ -661,16 +661,30 @@
     },
     "path": {
       "title": "Il tuo percorso",
-      "subtitle": "Dove sei e cosa viene dopo.",
-      "subtitleWithGoal_one": "I prossimi gradini con {{count}} minuto al giorno.",
-      "subtitleWithGoal_other": "I prossimi gradini con {{count}} minuti al giorno.",
-      "youAreHere": "Sei qui",
-      "next": "Prossimo gradino",
+      "subtitle": "Dove sei e i prossimi passi.",
+      "subtitleWithGoal": "Da {{from}} a {{to}}: {{hours}} ore di lettura in 6 mesi.",
+      "milestones": {
+        "0": "Adesso",
+        "1": "Mese 3",
+        "2": "Mese 6"
+      },
       "features": {
-        "audio": "Narrazione in studio",
-        "vocabulary": "Quaderno e ripasso",
-        "ai": "Traduzione frasi con IA",
-        "offline": "Lettura offline"
+        "daily": {
+          "title": "Lettura quotidiana",
+          "body": "Il tuo obiettivo"
+        },
+        "audio": {
+          "title": "Narrazione in studio",
+          "body": "Parola per parola"
+        },
+        "ai": {
+          "title": "Traduzione AI delle frasi",
+          "body": "Proprio dove ti blocchi"
+        },
+        "review": {
+          "title": "Ripetizione dilazionata",
+          "body": "Perché le parole restino"
+        }
       }
     },
     "plan": {
@@ -682,6 +696,29 @@
         "favorites": "Creazione dello scaffale",
         "profile": "Salvataggio del profilo"
       }
+    },
+    "trial": {
+      "heading": "Come funziona la prova gratuita",
+      "rows": {
+        "today": {
+          "title": "Oggi",
+          "body": "Tutto si sblocca subito."
+        },
+        "reminder": {
+          "title": "Giorno {{day}}",
+          "body": "Ti avvisiamo prima che finisca."
+        },
+        "charge": {
+          "title": "Giorno {{day}}",
+          "body": "La prova finisce e parte il pagamento."
+        }
+      }
+    },
+    "success": {
+      "title": "Fantastico!",
+      "bodyPremium": "Tutto pronto. Premium è attivo: inizia a leggere.",
+      "bodyFree": "Tutto pronto. Tutti i libri sono gratuiti: inizia a leggere.",
+      "cta": "Inizia a leggere"
     }
   },
   "paywall": {

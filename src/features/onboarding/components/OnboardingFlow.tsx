@@ -3,13 +3,13 @@ import { Alert } from "react-native";
 
 import { useTranslation } from "react-i18next";
 import { getLocales } from "expo-localization";
-import { router } from "expo-router";
 
 import i18n from "@/i18n";
 import { LANGUAGES } from "@/lib/languages";
 import { trackEvent } from "@/lib/analytics";
 
 import { useSetLanguagePairMutation } from "@/features/languagePair";
+import { PaywallScreen, useSubscriptionQuery, useTrialDays } from "@/features/paywall";
 import { useCompleteOnboardingMutation } from "@/features/onboarding/api/useCompleteOnboardingMutation";
 import { useOnboardingContentQuery } from "@/features/onboarding/api/useOnboardingContentQuery";
 import { useOnboardingGlossesQuery } from "@/features/onboarding/api/useOnboardingGlossesQuery";
@@ -24,6 +24,8 @@ import { OnboardingPlanStep } from "@/features/onboarding/components/OnboardingP
 import { OnboardingProjectionStep } from "@/features/onboarding/components/OnboardingProjectionStep";
 import { OnboardingQuizStep } from "@/features/onboarding/components/OnboardingQuizStep";
 import { OnboardingSplashScreen } from "@/features/onboarding/components/OnboardingSplashScreen";
+import { OnboardingSuccessStep } from "@/features/onboarding/components/OnboardingSuccessStep";
+import { OnboardingTrialTimeline } from "@/features/onboarding/components/OnboardingTrialTimeline";
 import { OnboardingWelcomeScreen } from "@/features/onboarding/components/OnboardingWelcomeScreen";
 import { OnboardingWordsCelebrationStep } from "@/features/onboarding/components/OnboardingWordsCelebrationStep";
 
@@ -57,7 +59,9 @@ type Step =
   | "celebrate"
   | "goal"
   | "path"
-  | "plan";
+  | "plan"
+  | "paywall"
+  | "success";
 
 /** İlerleme çubuğu gösteren adımlar, sırayla. */
 const PROGRESS_STEPS: Step[] = [
@@ -86,6 +90,8 @@ interface OnboardingFlowProps {
 export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const { t } = useTranslation();
   const setPair = useSetLanguagePairMutation();
+  const trialDays = useTrialDays();
+  const subscription = useSubscriptionQuery();
   const completeOnboarding = useCompleteOnboardingMutation();
   const saveFavorites = useSaveOnboardingFavoritesMutation();
 
@@ -201,15 +207,25 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   }, [level, likedBookIds, dailyGoal, saveFavorites, completeOnboarding, t]);
 
   /**
-   * Plan ekranı bitince paywall'a geçiliyor (referansın son adımı), sonra
-   * uygulamaya. Paywall'ı burada YENİDEN YAZMIYORUZ -- uygulamanın kendi
-   * paywall'ı zaten var ve App Store gereklerini (Guideline 3.1.2) o
-   * karşılıyor.
+   * Plan ekranı bitince paywall AKIŞIN İÇİNDE açılıyor (referansın son iki
+   * ekranı: teklif, sonra "Harika!").
+   *
+   * NEDEN `router.push` DEĞİL -- VE BU BİR HATA DÜZELTMESİYDİ: onboarding
+   * gösterilirken `OnboardingGate` `children` yerine bu akışı render
+   * ediyor, yani ekranda mount edilmiş bir `Stack` YOK. `router.push`
+   * hiçbir şeye gidemiyordu ve kullanıcı "yolun hazırlanıyor" ekranında
+   * sonsuza kadar kalıyordu. Paywall'ı bir ADIM yapmak, akışın kendi
+   * dışına çıkmadan bitmesini sağlıyor.
+   *
+   * Paywall'ın KENDİSİ yeniden yazılmadı: uygulamanın paywall'ı
+   * kullanılıyor (fiyat, plan seçimi, geri yükleme ve Guideline 3.1.2
+   * yasal bloğu tek yerde), üstüne yalnızca referansın deneme takvimi
+   * kartı ekleniyor.
    */
-  const handlePlanDone = useCallback(() => {
-    onDone();
-    router.push("/paywall?source=onboarding");
-  }, [onDone]);
+  const handlePlanDone = useCallback(() => setStep("paywall"), []);
+
+  /** Satın alsa da almasa da akış "Harika!" ekranıyla bitiyor. */
+  const handlePaywallClosed = useCallback(() => setStep("success"), []);
 
   if (step === "splash") return <OnboardingSplashScreen onDone={() => setStep("welcome")} />;
   if (step === "welcome") return <OnboardingWelcomeScreen onStart={() => setStep("native")} />;
@@ -337,7 +353,26 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
     );
   }
 
+  if (step === "plan") {
+    return (
+      <OnboardingPlanStep progress={progressOf("plan")} tasks={planTasks} onDone={handlePlanDone} />
+    );
+  }
+
+  if (step === "paywall") {
+    return (
+      <PaywallScreen
+        source="onboarding"
+        onClose={handlePaywallClosed}
+        intro={<OnboardingTrialTimeline trialDays={trialDays} />}
+      />
+    );
+  }
+
   return (
-    <OnboardingPlanStep progress={progressOf("plan")} tasks={planTasks} onDone={handlePlanDone} />
+    <OnboardingSuccessStep
+      premium={subscription.data?.isPremium ?? false}
+      onContinue={onDone}
+    />
   );
 }

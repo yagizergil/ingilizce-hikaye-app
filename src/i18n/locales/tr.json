@@ -662,15 +662,29 @@
     "path": {
       "title": "Yolun",
       "subtitle": "Bulunduğun yer ve sıradaki basamaklar.",
-      "subtitleWithGoal_one": "Günde {{count}} dakikayla çıkacağın basamaklar.",
-      "subtitleWithGoal_other": "Günde {{count}} dakikayla çıkacağın basamaklar.",
-      "youAreHere": "Şu an buradasın",
-      "next": "Sıradaki basamak",
+      "subtitleWithGoal": "{{from}}'den {{to}}'ye: 6 ayda toplam {{hours}} saat okuma.",
+      "milestones": {
+        "0": "Şimdi",
+        "1": "3. ay",
+        "2": "6. ay"
+      },
       "features": {
-        "audio": "Stüdyo seslendirmesi",
-        "vocabulary": "Kelime defteri ve tekrar",
-        "ai": "AI cümle çevirisi",
-        "offline": "Çevrimdışı okuma"
+        "daily": {
+          "title": "Günlük okuma",
+          "body": "Kendi hedefin"
+        },
+        "audio": {
+          "title": "Stüdyo seslendirmesi",
+          "body": "Kelime kelime takip"
+        },
+        "ai": {
+          "title": "AI cümle çevirisi",
+          "body": "Takıldığın cümlede"
+        },
+        "review": {
+          "title": "Aralıklı tekrar",
+          "body": "Kelimeler kalıcı olsun"
+        }
       }
     },
     "plan": {
@@ -682,6 +696,29 @@
         "favorites": "Rafın oluşturuluyor",
         "profile": "Profilin kaydediliyor"
       }
+    },
+    "trial": {
+      "heading": "Ücretsiz deneme nasıl işliyor",
+      "rows": {
+        "today": {
+          "title": "Bugün",
+          "body": "Her şey anında açılıyor."
+        },
+        "reminder": {
+          "title": "{{day}}. gün",
+          "body": "Bitmeden önce hatırlatıyoruz."
+        },
+        "charge": {
+          "title": "{{day}}. gün",
+          "body": "Deneme bitiyor, ücret o zaman alınıyor."
+        }
+      }
+    },
+    "success": {
+      "title": "Harika!",
+      "bodyPremium": "Her şey hazır. Premium açık, okumaya başlayabilirsin.",
+      "bodyFree": "Her şey hazır. Bütün kitaplar ücretsiz, okumaya başlayabilirsin.",
+      "cta": "Okumaya başla"
     }
   },
   "paywall": {

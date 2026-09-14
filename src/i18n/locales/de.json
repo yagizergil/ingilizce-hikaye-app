@@ -662,15 +662,29 @@
     "path": {
       "title": "Dein Weg",
       "subtitle": "Wo du stehst und was als Nächstes kommt.",
-      "subtitleWithGoal_one": "Die nächsten Stufen bei {{count}} Minute am Tag.",
-      "subtitleWithGoal_other": "Die nächsten Stufen bei {{count}} Minuten am Tag.",
-      "youAreHere": "Hier stehst du",
-      "next": "Nächste Stufe",
+      "subtitleWithGoal": "{{from}} bis {{to}}: {{hours}} Stunden Lesen in 6 Monaten.",
+      "milestones": {
+        "0": "Jetzt",
+        "1": "Monat 3",
+        "2": "Monat 6"
+      },
       "features": {
-        "audio": "Studio-Vertonung",
-        "vocabulary": "Wortliste und Wiederholung",
-        "ai": "KI-Satzübersetzung",
-        "offline": "Offline lesen"
+        "daily": {
+          "title": "Tägliches Lesen",
+          "body": "Dein eigenes Ziel"
+        },
+        "audio": {
+          "title": "Studio-Vertonung",
+          "body": "Wort für Wort"
+        },
+        "ai": {
+          "title": "KI-Satzübersetzung",
+          "body": "Genau dort, wo es hakt"
+        },
+        "review": {
+          "title": "Verteilte Wiederholung",
+          "body": "Damit Wörter bleiben"
+        }
       }
     },
     "plan": {
@@ -682,6 +696,29 @@
         "favorites": "Dein Regal wird gebaut",
         "profile": "Dein Profil wird gespeichert"
       }
+    },
+    "trial": {
+      "heading": "So funktioniert die kostenlose Testphase",
+      "rows": {
+        "today": {
+          "title": "Heute",
+          "body": "Alles ist sofort freigeschaltet."
+        },
+        "reminder": {
+          "title": "Tag {{day}}",
+          "body": "Wir erinnern dich vor dem Ende."
+        },
+        "charge": {
+          "title": "Tag {{day}}",
+          "body": "Die Testphase endet, die Zahlung beginnt."
+        }
+      }
+    },
+    "success": {
+      "title": "Fertig!",
+      "bodyPremium": "Alles bereit. Premium ist aktiv — los geht's.",
+      "bodyFree": "Alles bereit. Alle Bücher sind kostenlos — los geht's.",
+      "cta": "Lesen beginnen"
     }
   },
   "paywall": {

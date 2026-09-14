@@ -21,10 +21,21 @@ import { PaywallLegal } from "@/features/paywall/components/PaywallLegal";
 import { PlanOptionRow } from "@/features/paywall/components/PlanOptionRow";
 import { buildPlanOptions } from "@/features/paywall/planModel";
 
+import type { ReactNode } from "react";
+
 interface PaywallScreenProps {
   onClose: () => void;
   /** Paywall'un nereden açıldığı — dönüşüm analizi için. */
   source: string;
+  /**
+   * Başlığın hemen altına giren ekstra blok (onboarding'in deneme takvimi).
+   *
+   * NEDEN AYRI BİR PAYWALL YAZILMADI: fiyat, plan seçimi, geri yükleme ve
+   * yasal blok tek yerde kalmalı. Apple reddi (3.1.2(c)) tam olarak bu
+   * bloğun görünürlüğüyle ilgiliydi; ikinci bir kopya, düzeltmenin yalnızca
+   * birinde yaşaması demek olurdu.
+   */
+  intro?: ReactNode;
 }
 
 /** Ekranın o anda hangi işi yaptığı. */
@@ -48,7 +59,7 @@ type Busy = null | { kind: "purchase"; id: string } | { kind: "restore" } | { ki
  * sunucu 'premium' demeden ekranı kapatmak kullanıcıyı ödediği hâlde
  * sınırlı bir duruma bırakırdı.
  */
-export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
+export function PaywallScreen({ onClose, source, intro }: PaywallScreenProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const queryClient = useQueryClient();
@@ -225,6 +236,8 @@ export function PaywallScreen({ onClose, source }: PaywallScreenProps) {
         <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
           {t("paywall.subtitle")}
         </Text>
+
+        {intro}
 
         {facts && facts.bookCount > 0 ? (
           <Text style={[monoType.eyebrow, { color: theme.accent }]}>

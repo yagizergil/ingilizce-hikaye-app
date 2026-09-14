@@ -55,6 +55,11 @@ const config: ExpoConfig = {
     "expo-router",
     "expo-web-browser",
     "expo-apple-authentication",
+    // Oturum anahtarlari Keychain'de tutuluyor: iOS'ta Keychain kaydi
+    // uygulama SILINSE BILE cihazda kaliyor, yani kullanici uygulamayi
+    // silip yeniden kurdugunda ayni anonim hesabina donuyor ve
+    // onboarding'i bastan yapmiyor (bkz. src/lib/storage.ts).
+    "expo-secure-store",
     // Kelime telaffuzu (expo-speech) iOS'ta AVAudioSession uzerinden
     // calisiyor; sessiz moda ragmen duyulmasi icin oturum kategorisinin
     // "playback" olmasi gerekiyor. Bunu ayarlayan API expo-audio'da —
