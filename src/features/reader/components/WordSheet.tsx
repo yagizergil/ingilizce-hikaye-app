@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import {
+  Animated,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -223,24 +231,72 @@ export function WordSheet({
     if (!word) lastLiveRequestedLemmaRef.current = null;
   }, [word]);
 
-  const liveEntry: BookLemmaEntry | undefined = liveTranslation.data
-    ? {
-        pos: liveTranslation.data.pos,
-        cefrLevel: null,
-        trGloss: liveTranslation.data.trGloss,
-        ipa: null,
-        audioUrl: null,
-        isPhrasal: false,
-        falseFriendNoteTr: null,
-      }
-    : undefined;
+  /**
+   * ÖNCEKİ KELİMENİN ANLAMI GÖRÜNÜYORDU -- sebebi ve çözümü.
+   *
+   * `liveTranslation` bir MUTATION; `data`sı sorgu önbelleği gibi anahtara
+   * bağlı değil, son başarılı çağrının sonucunu TUTMAYA devam ediyor.
+   * Kullanıcı B kelimesine dokunduğunda A'nın karşılığı hâlâ oradaydı ve
+   * yeni çağrı dönene kadar ekranda B'nin altında A'nın anlamı yazıyordu.
+   *
+   * İki kat koruma: (1) mutation kelime değişince sıfırlanıyor,
+   * (2) `variables` ile veri HANGİ kelimeye ait olduğu doğrulanıyor --
+   * sıfırlama ile yeni sonucun gelmesi arasındaki kareler için.
+   */
+  useEffect(() => {
+    liveTranslation.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mutation nesnesi bilerek dışarıda (her render'da yeniden çalışırdı)
+  }, [word?.lemma]);
+
+  const liveBelongsToWord =
+    word !== null && liveTranslation.variables?.lemma === word.lemma;
+
+  const liveEntry: BookLemmaEntry | undefined =
+    liveTranslation.data && liveBelongsToWord
+      ? {
+          pos: liveTranslation.data.pos,
+          cefrLevel: null,
+          trGloss: liveTranslation.data.trGloss,
+          ipa: null,
+          audioUrl: null,
+          isPhrasal: false,
+          falseFriendNoteTr: null,
+        }
+      : undefined;
 
   const entry = bookEntry ?? globalEntry ?? pairEntry ?? liveEntry;
+
+  /**
+   * "ARANIYOR" İLE "BULUNAMADI" ARASINDA ZIPLAMA VARDI -- sebebi ve çözümü.
+   *
+   * Eski koşul her katmanın `isLoading`/`isPending` bayrağını OR'luyordu.
+   * O bayraklar katmanlar ARASINDA kısa süre hep birden false oluyor:
+   * genel sözlük cevabı döndü, çift sorgusu daha etkinleşmedi; ya da çift
+   * sorgusu bitti, AI çağrısını başlatan effect henüz çalışmadı (effect'ler
+   * render'dan SONRA koşuyor). O karelerde ne karşılık var ne de "aranıyor"
+   * -- ekran "karşılık bulunamadı" yazıp hemen ardından yer tutucuya
+   * dönüyordu. Kullanıcının gördüğü glitch tam olarak buydu.
+   *
+   * Yeni hesap bayraklara değil, SIRANIN NEREDE OLDUĞUNA bakıyor: her
+   * katman ya cevabını verdi (`isFetched`) ya da sıra henüz ona gelmedi.
+   * Sıra bitmeden "bulunamadı" yazılmıyor, dolayısıyla arada boşluk yok.
+   */
+  const globalSettled = !bookMissed || globalLookup.isFetched;
+  const pairSettled = !globalMissed || pairLookup.isFetched;
+  // AI adımı yalnızca çağrı BU kelime için başlayıp bittiğinde tamamlanmış
+  // sayılıyor; effect çalışmadan önceki kareler de "devam ediyor" sayılsın.
+  const liveSettled = !bothMissed || (liveBelongsToWord && !liveTranslation.isPending);
+
+  /**
+   * Karşılık geldiğinde yumuşak bir belirme.
+   *
+   * `useRef(new Animated.Value(...)).current` render sırasında okunamıyor
+   * (react-hooks/refs); lazy initializer aynı "bir kez üret" davranışında.
+   */
+  const [glossFade] = useState(() => new Animated.Value(0));
+
   const isResolvingTranslation =
-    bookMissed &&
-    (globalLookup.isLoading ||
-      (globalMissed && pairLookup.isLoading) ||
-      (bothMissed && liveTranslation.isPending));
+    word !== null && !entry && !(globalSettled && pairSettled && liveSettled);
 
   /**
    * Gösterilecek anlam(lar).
@@ -263,6 +319,19 @@ export function WordSheet({
   const primarySense = (hint && senses.find((sense) => sense.pos === hint)) || null;
   const primaryGloss = primarySense?.trGloss ?? entry?.trGloss ?? null;
   const otherSenses = senses.filter((sense) => sense.trGloss && sense.trGloss !== primaryGloss);
+
+  useEffect(() => {
+    // Yeni kelimede sıfırdan başlıyor; karşılık geldiğinde 1'e gidiyor.
+    glossFade.setValue(0);
+    if (!primaryGloss) return;
+    const animation = Animated.timing(glossFade, {
+      toValue: 1,
+      duration: 220,
+      useNativeDriver: true,
+    });
+    animation.start();
+    return () => animation.stop();
+  }, [primaryGloss, glossFade]);
 
   const segments = useMemo(
     () =>
@@ -391,20 +460,27 @@ export function WordSheet({
 
               <View style={styles.wordBlock}>
                 {primaryGloss ? (
-                  <Text style={[type.wordLemma, styles.wordText, { color: readerColors.text }]}>
+                  /* Karşılık BELİRİYOR, bir anda basılmıyor: yer tutucudan
+                     metne geçiş sert bir takas gibi görünüyordu. */
+                  <Animated.Text
+                    style={[
+                      type.wordLemma,
+                      styles.wordText,
+                      { color: readerColors.text, opacity: glossFade },
+                    ]}
+                  >
                     {primaryGloss}
-                  </Text>
+                  </Animated.Text>
                 ) : isResolvingTranslation ? (
                   /* Metin yerine yer tutucu: bekleme cümlesi gelecek olan
                      şeyin YERİNİ tutmuyordu, karşılık gelince kart
-                     zıplıyordu. Yer tutucu karşılığın boyutunda duruyor ve
-                     her dilde aynı. */
+                     zıplıyordu. Yer tutucu karşılığın SATIR YÜKSEKLİĞİNDE
+                     (25 pt) duruyor, yani geçişte hiçbir şey kaymıyor. */
                   <View
                     style={styles.wordSkeleton}
                     accessibilityLabel={t("reader.wordSheet.lookingUpTranslation")}
                   >
-                    <Skeleton width={148} height={22} borderRadius={radius.sm} />
-                    <Skeleton width={96} height={14} borderRadius={radius.sm} />
+                    <Skeleton width={156} height={25} borderRadius={radius.sm} />
                   </View>
                 ) : (
                   <Text
@@ -609,7 +685,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   wordSkeleton: {
-    gap: spacing.xs,
     alignItems: "center",
   },
   wordBlock: {
