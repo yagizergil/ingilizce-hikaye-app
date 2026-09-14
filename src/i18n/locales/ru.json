@@ -396,7 +396,9 @@
       },
       "sectionTitle": "За всё время",
       "totalTimeLabel": "Всего чтения",
-      "totalActiveDaysLabel": "Дней с чтением"
+      "totalActiveDaysLabel": "Дней с чтением",
+      "screenTitle": "Моя статистика",
+      "rowValue": "{{minutes}} мин · серия {{streak}} дн."
     },
     "account": {
       "sectionTitle": "Аккаунт",

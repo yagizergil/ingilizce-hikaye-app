@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { Alert, DevSettings, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,11 +23,7 @@ import { getLanguage } from "@/lib/languages";
 import { useProfileAuthStatus } from "@/features/profile/api/useProfileAuthStatus";
 import { useProfileStatsQuery } from "@/features/profile/api/useProfileStatsQuery";
 import { useSubscriptionStatusQuery } from "@/features/profile/api/useSubscriptionStatusQuery";
-import { formatReadingTime } from "@/features/profile/api/formatReadingTime";
 import { ProfileHero } from "@/features/profile/components/ProfileHero";
-import { StreakCard } from "@/features/profile/components/StreakCard";
-import { WeeklyMinutesChart } from "@/features/profile/components/WeeklyMinutesChart";
-import { ProfileStatsGrid } from "@/features/profile/components/ProfileStatsGrid";
 import { ProfileAccountRow } from "@/features/profile/components/ProfileAccountRow";
 import { ProfileFooter } from "@/features/profile/components/ProfileFooter";
 
@@ -151,39 +147,18 @@ export function ProfileScreen() {
 
   // Paywall'un açıldığı üç yerden biri (diğerleri: Kelimelerim şeridi ve
   // kitap bitirme ekranı). Hepsi okuma akışının DIŞINDA -- ürün ilkesi #1.
+  const handleOpenStatistics = useCallback(() => {
+    trackEvent("profile_statistics_opened");
+    router.push("/statistics");
+  }, []);
+
   const handleOpenPaywall = useCallback(() => {
     trackEvent("paywall_opened", { source: "profile" });
     router.push("/paywall?source=profile");
   }, []);
 
   const stats = statsQuery.data;
-  const savedWordCount = vocabularyQuery.data?.summary.totalCount ?? 0;
 
-  const statItems = useMemo(
-    () => [
-      {
-        key: "totalTime",
-        label: t("profile.stats.totalTimeLabel"),
-        value: formatReadingTime(t, stats?.totalMinutes ?? 0),
-      },
-      {
-        key: "savedWords",
-        label: t("profile.stats.savedWordsLabel"),
-        value: String(savedWordCount),
-      },
-      {
-        key: "completedBooks",
-        label: t("profile.stats.completedBooksLabel"),
-        value: String(stats?.completedBookCount ?? 0),
-      },
-      {
-        key: "activeDays",
-        label: t("profile.stats.totalActiveDaysLabel"),
-        value: String(stats?.totalActiveDays ?? 0),
-      },
-    ],
-    [t, stats, savedWordCount],
-  );
 
   const isLoading =
     statsQuery.isLoading || vocabularyQuery.isLoading || subscriptionQuery.isLoading;
@@ -215,22 +190,25 @@ export function ProfileScreen() {
             memberSince={memberSince}
           />
 
-          <View style={styles.stack}>
-            <StreakCard
-              currentStreak={stats.currentStreak}
-              longestStreak={stats.longestStreak}
-              readToday={stats.readToday}
-              weekDays={stats.weekDays}
-            />
-
-            <WeeklyMinutesChart
-              weekDays={stats.weekDays}
-              totalMinutesThisWeek={stats.readingMinutesThisWeek}
-            />
-          </View>
-
+          {/* İSTATİSTİKLER ARTIK AYRI BİR EKRAN (bkz. StatisticsScreen).
+              Seri kartı, haftalık grafik ve dört sayı burada, ayarların en
+              üstünde duruyordu; "dili değiştir" için gelen kullanıcı
+              aradığı satıra ulaşmadan önce üç blok istatistik geçiyordu.
+              Şimdi ayarlarda tek satır, içerik kendi sayfasında. */}
           <SectionHeader title={t("profile.stats.sectionTitle")} style={styles.sectionHeader} />
-          <ProfileStatsGrid items={statItems} />
+
+          <Card style={styles.rows} bordered>
+            <ProfileAccountRow
+              icon="stats-chart"
+              iconColor={levelAccent.A2}
+              label={t("profile.stats.screenTitle")}
+              value={t("profile.stats.rowValue", {
+                minutes: stats.totalMinutes,
+                streak: stats.currentStreak,
+              })}
+              onPress={handleOpenStatistics}
+            />
+          </Card>
 
           <SectionHeader title={t("profile.account.sectionTitle")} style={styles.sectionHeader} />
 

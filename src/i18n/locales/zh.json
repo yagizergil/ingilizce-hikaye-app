@@ -392,7 +392,9 @@
       },
       "sectionTitle": "累计",
       "totalTimeLabel": "总阅读时长",
-      "totalActiveDaysLabel": "阅读天数"
+      "totalActiveDaysLabel": "阅读天数",
+      "screenTitle": "我的统计",
+      "rowValue": "{{minutes}} 分钟 · 连续 {{streak}} 天"
     },
     "account": {
       "sectionTitle": "账号",

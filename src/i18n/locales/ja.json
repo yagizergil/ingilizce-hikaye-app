@@ -392,7 +392,9 @@
       },
       "sectionTitle": "累計",
       "totalTimeLabel": "総読書時間",
-      "totalActiveDaysLabel": "読書した日数"
+      "totalActiveDaysLabel": "読書した日数",
+      "screenTitle": "統計",
+      "rowValue": "{{minutes}} 分 · {{streak}}日連続"
     },
     "account": {
       "sectionTitle": "アカウント",

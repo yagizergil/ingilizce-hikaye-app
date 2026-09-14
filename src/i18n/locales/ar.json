@@ -400,7 +400,9 @@
       },
       "sectionTitle": "الإجمالي",
       "totalTimeLabel": "إجمالي القراءة",
-      "totalActiveDaysLabel": "أيام القراءة"
+      "totalActiveDaysLabel": "أيام القراءة",
+      "screenTitle": "إحصائياتي",
+      "rowValue": "{{minutes}} د · سلسلة {{streak}} يوم"
     },
     "account": {
       "sectionTitle": "الحساب",

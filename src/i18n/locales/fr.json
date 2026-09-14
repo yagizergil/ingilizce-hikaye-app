@@ -392,7 +392,9 @@
       },
       "sectionTitle": "Depuis le début",
       "totalTimeLabel": "Temps de lecture total",
-      "totalActiveDaysLabel": "Jours de lecture"
+      "totalActiveDaysLabel": "Jours de lecture",
+      "screenTitle": "Mes statistiques",
+      "rowValue": "{{minutes}} min · série de {{streak}} jours"
     },
     "account": {
       "sectionTitle": "Compte",

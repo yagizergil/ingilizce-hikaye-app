@@ -392,7 +392,9 @@
       },
       "sectionTitle": "Tüm Zamanlar",
       "totalTimeLabel": "Toplam Okuma",
-      "totalActiveDaysLabel": "Okunan Gün"
+      "totalActiveDaysLabel": "Okunan Gün",
+      "screenTitle": "İstatistiklerim",
+      "rowValue": "{{minutes}} dk · {{streak}} gün seri"
     },
     "account": {
       "sectionTitle": "Hesap",

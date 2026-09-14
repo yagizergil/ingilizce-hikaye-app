@@ -392,7 +392,9 @@
       },
       "sectionTitle": "Insgesamt",
       "totalTimeLabel": "Gesamte Lesezeit",
-      "totalActiveDaysLabel": "Lesetage"
+      "totalActiveDaysLabel": "Lesetage",
+      "screenTitle": "Meine Statistik",
+      "rowValue": "{{minutes}} Min · {{streak}} Tage Serie"
     },
     "account": {
       "sectionTitle": "Konto",
