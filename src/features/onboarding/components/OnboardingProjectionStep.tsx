@@ -63,10 +63,22 @@ const FEATURES: { icon: IoniconName; key: string }[] = [
 ];
 
 const PLOT_HEIGHT = 200;
-const BUBBLE_SIZE = 44;
 const DOT_SIZE = 14;
 /** Baloncuğun altı ile düğüm noktası arasındaki boşluk. */
 const BUBBLE_GAP = 10;
+
+/**
+ * Baloncuk artık DAİRE DEĞİL, hap (pill) -- ve içinde CEFR kodu değil
+ * seviyenin ADI yazıyor.
+ *
+ * NEDEN: "A1/B2" ölçeği Avrupa dillerine ait; uygulama on arayüz diliyle
+ * çalışıyor ve Çince okuyan birine "C1" hiçbir şey söylemiyor. Seviye
+ * seçim ekranında kodları zaten kaldırmıştık, bu grafik son kalan yerdi.
+ * Ad bir daireye sığmadığı için şekil hapa döndü; genişlik sabit bir
+ * yuvayla sınırlı, yani komşu baloncuklar hâlâ üst üste binemiyor.
+ */
+const SLOT_WIDTH = 98;
+const BUBBLE_HEIGHT = 26;
 
 const VB_WIDTH = 300;
 const VB_HEIGHT = 200;
@@ -76,10 +88,9 @@ const DASH_LENGTH = 720;
 /**
  * Düğümler üç eşit sütunun merkezinde (1/6, 3/6, 5/6).
  *
- * En üstteki düğümün y'si 63 pt'den KÜÇÜK OLAMAZ: baloncuk düğümün
- * üstünde duruyor ve yüksekliği + boşluğu tam olarak o kadar. Daha yukarı
- * çıkarsa baloncuk kartın dışına taşar -- ilk sürümde B2 soldan, C2
- * yukarıdan kırpılıyordu, sebebi buydu.
+ * En üstteki düğümün y'si baloncuk yüksekliği + boşluk + noktanın
+ * yarısından KÜÇÜK OLAMAZ; daha yukarı çıkarsa baloncuk kartın dışına
+ * taşar -- ilk sürümde B2 soldan, C2 yukarıdan kırpılıyordu, sebebi buydu.
  */
 const NODES = [
   { x: 50, y: 158 },
@@ -180,8 +191,8 @@ export function OnboardingProjectionStep({
         totalHours
           ? t("onboarding.path.subtitleWithGoal", {
               hours: totalHours,
-              from: path[0],
-              to: path[path.length - 1],
+              from: t(`onboarding.path.levels.${path[0]}`),
+              to: t(`onboarding.path.levels.${path[path.length - 1]}`),
             })
           : t("onboarding.path.subtitle")
       }
@@ -261,8 +272,13 @@ export function OnboardingProjectionStep({
                       { backgroundColor: theme.bg.primary, borderColor: levelAccent[step] },
                     ]}
                   >
-                    <Text style={[monoType.label, { color: levelAccent[step], letterSpacing: 0 }]}>
-                      {step}
+                    <Text
+                      style={[monoType.metaTight, { color: levelAccent[step] }]}
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.8}
+                    >
+                      {t(`onboarding.path.levels.${step}`)}
                     </Text>
                   </View>
                 </Animated.View>
@@ -336,14 +352,16 @@ const styles = StyleSheet.create({
    */
   bubbleSlot: {
     position: "absolute",
-    width: BUBBLE_SIZE,
-    marginLeft: -BUBBLE_SIZE / 2,
-    marginTop: -(BUBBLE_SIZE + BUBBLE_GAP + DOT_SIZE / 2),
+    width: SLOT_WIDTH,
+    marginLeft: -SLOT_WIDTH / 2,
+    marginTop: -(BUBBLE_HEIGHT + BUBBLE_GAP + DOT_SIZE / 2),
     alignItems: "center",
   },
   bubble: {
-    width: BUBBLE_SIZE,
-    height: BUBBLE_SIZE,
+    // Genişlik içeriğe göre; yuva sabit olduğu için taşma riski yok.
+    maxWidth: SLOT_WIDTH,
+    height: BUBBLE_HEIGHT,
+    paddingHorizontal: spacing.xs,
     borderRadius: radius.full,
     borderWidth: 2,
     alignItems: "center",

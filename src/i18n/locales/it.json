@@ -643,7 +643,7 @@
     "path": {
       "title": "Il tuo percorso",
       "subtitle": "Dove sei e i prossimi passi.",
-      "subtitleWithGoal": "Da {{from}} a {{to}}: {{hours}} ore di lettura in 6 mesi.",
+      "subtitleWithGoal": "{{from}} → {{to}}: {{hours}} ore di lettura in 6 mesi.",
       "milestones": {
         "0": "Adesso",
         "1": "Mese 3",
@@ -666,6 +666,14 @@
           "title": "Ripetizione dilazionata",
           "body": "Perché le parole restino"
         }
+      },
+      "levels": {
+        "A1": "Principiante",
+        "A2": "Elementare",
+        "B1": "Intermedio",
+        "B2": "Inter. alto",
+        "C1": "Avanzato",
+        "C2": "Padronanza"
       }
     },
     "plan": {

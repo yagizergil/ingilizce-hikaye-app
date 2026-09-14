@@ -643,7 +643,7 @@
     "path": {
       "title": "Your path",
       "subtitle": "Where you are and the steps ahead.",
-      "subtitleWithGoal": "{{from}} to {{to}}: {{hours}} hours of reading over 6 months.",
+      "subtitleWithGoal": "{{from}} → {{to}}: {{hours}} hours of reading over 6 months.",
       "milestones": {
         "0": "Now",
         "1": "Month 3",
@@ -666,6 +666,14 @@
           "title": "Spaced repetition",
           "body": "So words stick"
         }
+      },
+      "levels": {
+        "A1": "Beginner",
+        "A2": "Elementary",
+        "B1": "Intermediate",
+        "B2": "Upper-inter.",
+        "C1": "Advanced",
+        "C2": "Mastery"
       }
     },
     "plan": {

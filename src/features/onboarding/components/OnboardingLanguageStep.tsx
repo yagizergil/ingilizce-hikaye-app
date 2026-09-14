@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 
+import { getLocales } from "expo-localization";
 import { useTranslation } from "react-i18next";
 
 import { spacing } from "@/theme";
@@ -48,10 +49,29 @@ export function OnboardingLanguageStep({
 }: OnboardingLanguageStepProps) {
   const { t } = useTranslation();
 
-  const options = useMemo(
-    () => LANGUAGES.filter((language) => language.code !== excludeCode),
-    [excludeCode],
-  );
+  /**
+   * Sıralama: (1) ana dil adımında CİHAZIN dili en üstte, (2) sonra
+   * popülerlik.
+   *
+   * NEDEN: liste on satır ve alfabetik/dosya sırası kullanıcının aradığı
+   * dili rastgele bir yere koyuyordu. Cihazın dili ana dil sorusunun çoğu
+   * kullanıcı için zaten doğru cevabı; onu ilk satıra almak bu adımı tek
+   * dokunuşa indiriyor. Hedef dil adımında böyle bir tahmin YOK -- orada
+   * cihazın dili büyük ihtimalle kullanıcının ana dili, yani okumak
+   * istediği dil değil; o yüzden yalnızca popülerlik sırası uygulanıyor.
+   */
+  const deviceLanguage = getLocales()[0]?.languageCode ?? null;
+
+  const options = useMemo(() => {
+    const visible = LANGUAGES.filter((language) => language.code !== excludeCode);
+    const preferred = mode === "native" ? deviceLanguage : null;
+
+    return [...visible].sort((a, b) => {
+      if (a.code === preferred) return -1;
+      if (b.code === preferred) return 1;
+      return a.popularity - b.popularity;
+    });
+  }, [excludeCode, mode, deviceLanguage]);
 
   return (
     <OnboardingScaffold

@@ -46,11 +46,24 @@ export interface LanguageInfo {
    * yüklenemezse yedek olarak duruyor.
    */
   flagCode: string;
+  /**
+   * Seçici listelerindeki sıra -- küçük sayı önce. Alfabetik ya da dosya
+   * sırası DEĞİL: on satırlık bir listede kullanıcının aradığı dil
+   * genellikle ilk üçte olur, o yüzden dünyada en çok konuşulan/öğrenilen
+   * diller yukarı alındı. Ana dil adımında cihazın dili bu sıralamanın da
+   * ÜSTÜNE çıkıyor (bkz. OnboardingLanguageStep) -- ilk satır çoğu
+   * kullanıcı için zaten doğru cevap.
+   *
+   * Sıra editoryal bir karar; veri bütünlüğüyle ilgisi yok, istenirse tek
+   * yerden değiştirilir.
+   */
+  popularity: number;
 }
 
 export const LANGUAGES: readonly LanguageInfo[] = [
   {
     code: "en",
+    popularity: 1,
     flagCode: "gb",
     nameEn: "English",
     nativeName: "English",
@@ -60,6 +73,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "es",
+    popularity: 2,
     flagCode: "es",
     nameEn: "Spanish",
     nativeName: "Español",
@@ -69,6 +83,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "zh",
+    popularity: 3,
     flagCode: "cn",
     nameEn: "Chinese",
     nativeName: "中文",
@@ -78,6 +93,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ar",
+    popularity: 5,
     flagCode: "sa",
     nameEn: "Arabic",
     nativeName: "العربية",
@@ -87,6 +103,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "fr",
+    popularity: 4,
     flagCode: "fr",
     nameEn: "French",
     nativeName: "Français",
@@ -96,6 +113,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ru",
+    popularity: 6,
     flagCode: "ru",
     nameEn: "Russian",
     nativeName: "Русский",
@@ -105,6 +123,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "tr",
+    popularity: 10,
     flagCode: "tr",
     nameEn: "Turkish",
     nativeName: "Türkçe",
@@ -114,6 +133,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "de",
+    popularity: 7,
     flagCode: "de",
     nameEn: "German",
     nativeName: "Deutsch",
@@ -123,6 +143,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ja",
+    popularity: 8,
     flagCode: "jp",
     nameEn: "Japanese",
     nativeName: "日本語",
@@ -132,6 +153,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "it",
+    popularity: 9,
     flagCode: "it",
     nameEn: "Italian",
     nativeName: "Italiano",

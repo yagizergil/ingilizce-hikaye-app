@@ -643,7 +643,7 @@
     "path": {
       "title": "Dein Weg",
       "subtitle": "Wo du stehst und was als Nächstes kommt.",
-      "subtitleWithGoal": "{{from}} bis {{to}}: {{hours}} Stunden Lesen in 6 Monaten.",
+      "subtitleWithGoal": "{{from}} → {{to}}: {{hours}} Stunden Lesen in 6 Monaten.",
       "milestones": {
         "0": "Jetzt",
         "1": "Monat 3",
@@ -666,6 +666,14 @@
           "title": "Verteilte Wiederholung",
           "body": "Damit Wörter bleiben"
         }
+      },
+      "levels": {
+        "A1": "Anfänger",
+        "A2": "Grundstufe",
+        "B1": "Mittelstufe",
+        "B2": "Obere Mitte",
+        "C1": "Fortgeschr.",
+        "C2": "Meisterhaft"
       }
     },
     "plan": {

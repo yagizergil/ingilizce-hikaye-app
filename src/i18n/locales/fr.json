@@ -643,7 +643,7 @@
     "path": {
       "title": "Ton parcours",
       "subtitle": "Où tu en es et les étapes à venir.",
-      "subtitleWithGoal": "De {{from}} à {{to}} : {{hours}} heures de lecture en 6 mois.",
+      "subtitleWithGoal": "{{from}} → {{to}} : {{hours}} heures de lecture en 6 mois.",
       "milestones": {
         "0": "Maintenant",
         "1": "Mois 3",
@@ -666,6 +666,14 @@
           "title": "Répétition espacée",
           "body": "Pour retenir les mots"
         }
+      },
+      "levels": {
+        "A1": "Débutant",
+        "A2": "Élémentaire",
+        "B1": "Intermédiaire",
+        "B2": "Inter. sup.",
+        "C1": "Avancé",
+        "C2": "Maîtrise"
       }
     },
     "plan": {

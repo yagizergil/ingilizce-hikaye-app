@@ -643,7 +643,7 @@
     "path": {
       "title": "Tu camino",
       "subtitle": "Dónde estás y los siguientes pasos.",
-      "subtitleWithGoal": "De {{from}} a {{to}}: {{hours}} horas de lectura en 6 meses.",
+      "subtitleWithGoal": "{{from}} → {{to}}: {{hours}} horas de lectura en 6 meses.",
       "milestones": {
         "0": "Ahora",
         "1": "Mes 3",
@@ -666,6 +666,14 @@
           "title": "Repaso espaciado",
           "body": "Para que las palabras se queden"
         }
+      },
+      "levels": {
+        "A1": "Principiante",
+        "A2": "Elemental",
+        "B1": "Intermedio",
+        "B2": "Inter. alto",
+        "C1": "Avanzado",
+        "C2": "Dominio"
       }
     },
     "plan": {
