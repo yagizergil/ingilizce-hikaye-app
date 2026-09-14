@@ -353,7 +353,7 @@
     }
   },
   "profile": {
-    "title": "我的",
+    "title": "设置",
     "hero": {
       "guest": "访客",
       "anonymous": "正在以访客身份阅读",

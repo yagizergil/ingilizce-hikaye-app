@@ -353,7 +353,7 @@
     }
   },
   "profile": {
-    "title": "Profile",
+    "title": "Settings",
     "hero": {
       "guest": "Guest",
       "anonymous": "Reading as a guest",
