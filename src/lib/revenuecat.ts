@@ -179,14 +179,27 @@ export function configurePurchases(): () => void {
  * deneme vardı ne de düğme. Şimdi hata fırlıyor; TanStack Query geri
  * çekilmeyle yeniden deniyor ve paywall "Tekrar dene" gösteriyor.
  */
-export async function fetchOfferingPackages(): Promise<PurchasesPackage[]> {
+export async function fetchOfferingPackages(
+  offeringId?: string | null,
+): Promise<PurchasesPackage[]> {
   const purchases = await readyPurchases();
   if (!purchases) return [];
 
   try {
     const offerings = await purchases.getOfferings();
-    const current: PurchasesOffering | null = offerings.current;
-    return current?.availablePackages ?? [];
+
+    /**
+     * İSTENEN OFFERING YOKSA VARSAYILANA DÜŞÜLÜYOR.
+     *
+     * Onboarding'de ayrı bir teklif (örn. "onboarding") gösterilmek
+     * isteniyor ama o teklifin RevenueCat'te tanımlı olup olmadığına
+     * uygulama karar veremez -- mağaza tarafında kurulmamışsa paywall'ın
+     * BOŞ açılması, hiç açılmamasından daha kötü olurdu. Tanımlıysa o
+     * kullanılıyor, değilse güncel teklif.
+     */
+    const requested = offeringId ? offerings.all[offeringId] : null;
+    const chosen: PurchasesOffering | null = requested ?? offerings.current;
+    return chosen?.availablePackages ?? [];
   } catch (error) {
     trackError("revenuecat.offerings", error);
     throw error;

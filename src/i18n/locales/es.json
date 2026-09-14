@@ -355,6 +355,12 @@
       "history": "Historial",
       "emptyFavorites": "No hay palabras en favoritos",
       "emptyHistory": "Aún no hay palabras"
+    },
+    "audioBar": {
+      "play": "Iniciar la narración",
+      "pause": "Pausar la narración",
+      "previousWord": "Palabra anterior",
+      "nextWord": "Palabra siguiente"
     }
   },
   "profile": {
@@ -795,7 +801,8 @@
     "unavailableInExpoGo": "LAS COMPRAS SOLO FUNCIONAN EN UNA VERSIÓN COMPILADA",
     "upgradeRow": "Premium",
     "wordListFull": "Tu cuaderno está {{count}}/{{limit}} lleno",
-    "benefitsSectionTitle": "LO QUE AÑADE PREMIUM"
+    "benefitsSectionTitle": "LO QUE AÑADE PREMIUM",
+    "introOffer": "PARA TI: AHORRA UN {{percent}} % EN EL ANUAL"
   },
   "reminders": {
     "settingsLabel": "Recordatorios",

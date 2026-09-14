@@ -33,6 +33,7 @@ import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColo
 import { ReaderHeader } from "@/features/reader/components/ReaderHeader";
 import { useChapterAudio } from "@/features/reader/tts/useChapterAudio";
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
+import { ReaderAudioBar } from "@/features/reader/components/ReaderAudioBar";
 import { ReaderFooter } from "@/features/reader/components/ReaderFooter";
 import { PaginatedReaderView } from "@/features/reader/components/PaginatedReaderView";
 import { WordSheet } from "@/features/reader/components/WordSheet";
@@ -684,6 +685,18 @@ export function ReaderScreen({
           </View>
         ) : null}
       </View>
+
+      {/* Ses kontrol çubuğu YALNIZCA seslendirmesi olan ve erişimi açık
+          kitaplarda. Kilitli bir çubuk göstermek okuma ekranına premium
+          promosyonu sokmak olurdu (Ürün İlkesi #1, ADR-012). */}
+      {canPlayAudio ? (
+        <ReaderAudioBar
+          isSpeaking={isSpeaking}
+          isPreparing={tts.isPreparing}
+          onToggle={tts.toggle}
+          onSkipWord={tts.skipWord}
+        />
+      ) : null}
 
       <ReaderFooter
         progress={progress}

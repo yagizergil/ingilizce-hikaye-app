@@ -363,6 +363,12 @@
       "history": "السجل",
       "emptyFavorites": "لم تتم إضافة كلمات إلى المفضلة",
       "emptyHistory": "لا توجد كلمات بعد"
+    },
+    "audioBar": {
+      "play": "تشغيل السرد",
+      "pause": "إيقاف السرد مؤقتًا",
+      "previousWord": "الكلمة السابقة",
+      "nextWord": "الكلمة التالية"
     }
   },
   "profile": {
@@ -835,7 +841,8 @@
     "unavailableInExpoGo": "الشراء يعمل فقط في نسخة مُجمَّعة من التطبيق",
     "upgradeRow": "بريميوم",
     "wordListFull": "دفتر كلماتك ممتلئ بنسبة {{count}}/{{limit}}",
-    "benefitsSectionTitle": "ما الذي يضيفه PREMIUM"
+    "benefitsSectionTitle": "ما الذي يضيفه PREMIUM",
+    "introOffer": "لك خصيصًا: وفّر {{percent}}٪ في الاشتراك السنوي"
   },
   "reminders": {
     "settingsLabel": "التذكيرات",

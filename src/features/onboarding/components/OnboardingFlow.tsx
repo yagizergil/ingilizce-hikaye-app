@@ -400,6 +400,10 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
     return (
       <PaywallScreen
         source="onboarding"
+        // Onboarding'e özel teklif; RevenueCat'te tanımlı değilse
+        // varsayılana düşüyor (bkz. fetchOfferingPackages).
+        offeringId="onboarding"
+        highlightIntroOffer
         onClose={handlePaywallClosed}
         intro={<OnboardingTrialTimeline trialDays={trialDays} />}
       />

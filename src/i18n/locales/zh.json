@@ -355,6 +355,12 @@
       "history": "历史",
       "emptyFavorites": "收藏中还没有单词",
       "emptyHistory": "还没有单词"
+    },
+    "audioBar": {
+      "play": "开始朗读",
+      "pause": "暂停朗读",
+      "previousWord": "上一个词",
+      "nextWord": "下一个词"
     }
   },
   "profile": {
@@ -795,7 +801,8 @@
     "unavailableInExpoGo": "购买功能仅在编译版本中可用",
     "upgradeRow": "会员",
     "wordListFull": "生词本已用 {{count}}/{{limit}}",
-    "benefitsSectionTitle": "PREMIUM 带来什么"
+    "benefitsSectionTitle": "PREMIUM 带来什么",
+    "introOffer": "专属优惠：年付省 {{percent}}%"
   },
   "reminders": {
     "settingsLabel": "提醒",

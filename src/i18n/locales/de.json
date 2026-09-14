@@ -355,6 +355,12 @@
       "history": "Verlauf",
       "emptyFavorites": "Keine Wörter zu Favoriten hinzugefügt",
       "emptyHistory": "Noch keine Wörter"
+    },
+    "audioBar": {
+      "play": "Vertonung starten",
+      "pause": "Vertonung pausieren",
+      "previousWord": "Ein Wort zurück",
+      "nextWord": "Ein Wort vor"
     }
   },
   "profile": {
@@ -795,7 +801,8 @@
     "unavailableInExpoGo": "KÄUFE FUNKTIONIEREN NUR IN EINEM KOMPILIERTEN BUILD",
     "upgradeRow": "Premium",
     "wordListFull": "Dein Wortheft ist zu {{count}}/{{limit}} voll",
-    "benefitsSectionTitle": "WAS PREMIUM BRINGT"
+    "benefitsSectionTitle": "WAS PREMIUM BRINGT",
+    "introOffer": "FÜR DICH: {{percent}} % SPAREN IM JAHRESABO"
   },
   "reminders": {
     "settingsLabel": "Erinnerungen",

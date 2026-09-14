@@ -355,6 +355,12 @@
       "history": "Geçmiş",
       "emptyFavorites": "Favorilere kelime eklenmedi",
       "emptyHistory": "Henüz kelime yok"
+    },
+    "audioBar": {
+      "play": "Seslendirmeyi başlat",
+      "pause": "Seslendirmeyi duraklat",
+      "previousWord": "Bir kelime geri",
+      "nextWord": "Bir kelime ileri"
     }
   },
   "profile": {
@@ -795,7 +801,8 @@
     "unavailableInExpoGo": "SATIN ALMA YALNIZCA DERLENMİŞ UYGULAMADA ÇALIŞIR",
     "upgradeRow": "Premium",
     "wordListFull": "Kelime defterin {{count}}/{{limit}} dolu",
-    "benefitsSectionTitle": "ABONELİK AVANTAJLARI"
+    "benefitsSectionTitle": "ABONELİK AVANTAJLARI",
+    "introOffer": "SANA ÖZEL: YILLIKTA %{{percent}} TASARRUF"
   },
   "reminders": {
     "settingsLabel": "Hatırlatmalar",

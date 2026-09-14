@@ -355,6 +355,12 @@
       "history": "History",
       "emptyFavorites": "No words added to favorites",
       "emptyHistory": "No words yet"
+    },
+    "audioBar": {
+      "play": "Start narration",
+      "pause": "Pause narration",
+      "previousWord": "Previous word",
+      "nextWord": "Next word"
     }
   },
   "profile": {
@@ -795,7 +801,8 @@
     "unavailableInExpoGo": "PURCHASES ONLY WORK IN A COMPILED BUILD",
     "upgradeRow": "Premium",
     "wordListFull": "Your notebook is {{count}}/{{limit}} full",
-    "benefitsSectionTitle": "WHAT PREMIUM ADDS"
+    "benefitsSectionTitle": "WHAT PREMIUM ADDS",
+    "introOffer": "FOR YOU: SAVE {{percent}}% ON ANNUAL"
   },
   "reminders": {
     "settingsLabel": "Reminders",

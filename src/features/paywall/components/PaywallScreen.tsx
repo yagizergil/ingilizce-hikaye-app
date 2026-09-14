@@ -41,6 +41,22 @@ interface PaywallScreenProps {
    * birinde yaşaması demek olurdu.
    */
   intro?: ReactNode;
+  /**
+   * Gösterilecek RevenueCat teklifi. Onboarding kendi teklifini
+   * ("onboarding") istiyor; tanımlı değilse varsayılana düşülüyor
+   * (bkz. `fetchOfferingPackages`).
+   */
+  offeringId?: string | null;
+  /**
+   * Başlığın üstünde "sana özel" şeridi gösterilsin mi.
+   *
+   * YALNIZCA GERÇEK BİR AVANTAJ VARSA: şerit, yıllık planın aylığa göre
+   * ÖLÇÜLEN tasarrufunu yazıyor (`savingsPercent`, RevenueCat fiyatlarından
+   * hesaplanıyor). Uydurma bir "%50 indirim" yazmak yanıltıcı metadata
+   * olurdu (Guideline 2.3.1); tasarruf hesaplanamıyorsa şerit hiç
+   * görünmüyor.
+   */
+  highlightIntroOffer?: boolean;
 }
 
 /** Ekranın o anda hangi işi yaptığı. */
@@ -64,11 +80,17 @@ type Busy = null | { kind: "purchase"; id: string } | { kind: "restore" } | { ki
  * sunucu 'premium' demeden ekranı kapatmak kullanıcıyı ödediği hâlde
  * sınırlı bir duruma bırakırdı.
  */
-export function PaywallScreen({ onClose, source, intro }: PaywallScreenProps) {
+export function PaywallScreen({
+  onClose,
+  source,
+  intro,
+  offeringId,
+  highlightIntroOffer = false,
+}: PaywallScreenProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const queryClient = useQueryClient();
-  const { data: packages, isLoading, isFetching, refetch } = useOfferingsQuery();
+  const { data: packages, isLoading, isFetching, refetch } = useOfferingsQuery(offeringId);
   const { data: facts } = usePaywallFactsQuery();
 
   const [busy, setBusy] = useState<Busy>(null);
@@ -243,6 +265,14 @@ export function PaywallScreen({ onClose, source, intro }: PaywallScreenProps) {
             ekranın tek "kutlama" öğesi bu. */}
         <LottieView source={crownAnimation} autoPlay loop style={styles.crown} />
 
+        {highlightIntroOffer && selected?.savingsPercent != null ? (
+          <View style={[styles.introRibbon, { backgroundColor: theme.accent }]}>
+            <Text style={[paywallType.planBadge, { color: theme.text.onAccent }]}>
+              {t("paywall.introOffer", { percent: selected.savingsPercent })}
+            </Text>
+          </View>
+        ) : null}
+
         <Text style={[paywallType.title, styles.centered, { color: theme.text.primary }]}>
           {t("paywall.title")}
         </Text>
@@ -388,6 +418,14 @@ const styles = StyleSheet.create({
   },
   centered: {
     textAlign: "center",
+  },
+  introRibbon: {
+    alignSelf: "center",
+    height: paywallMetrics.badgeHeight + spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.full,
+    alignItems: "center",
+    justifyContent: "center",
   },
   sectionLabel: {
     paddingTop: spacing.sm,

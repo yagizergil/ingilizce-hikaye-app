@@ -359,6 +359,12 @@
       "history": "История",
       "emptyFavorites": "В избранное не добавлены слова",
       "emptyHistory": "Пока нет слов"
+    },
+    "audioBar": {
+      "play": "Включить озвучку",
+      "pause": "Приостановить озвучку",
+      "previousWord": "Предыдущее слово",
+      "nextWord": "Следующее слово"
     }
   },
   "profile": {
@@ -815,7 +821,8 @@
     "unavailableInExpoGo": "ПОКУПКИ РАБОТАЮТ ТОЛЬКО В СОБРАННОЙ ВЕРСИИ",
     "upgradeRow": "Премиум",
     "wordListFull": "Словарик заполнен на {{count}}/{{limit}}",
-    "benefitsSectionTitle": "ЧТО ДАЁТ PREMIUM"
+    "benefitsSectionTitle": "ЧТО ДАЁТ PREMIUM",
+    "introOffer": "ДЛЯ ВАС: ЭКОНОМИЯ {{percent}} % НА ГОДОВОМ"
   },
   "reminders": {
     "settingsLabel": "Напоминания",

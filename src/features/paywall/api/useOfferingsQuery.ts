@@ -13,10 +13,13 @@ import type { PurchasesPackage } from "react-native-purchases";
  * bölgesine göre biçimlenmiş oluyor (₺, $, €) — uygulamada fiyat biçimleme
  * yapmıyoruz, App Store'un söylediğini gösteriyoruz.
  */
-export function useOfferingsQuery() {
+export function useOfferingsQuery(offeringId?: string | null) {
   return useQuery<PurchasesPackage[]>({
-    queryKey: subscriptionQueryKeys.offerings(),
-    queryFn: fetchOfferingPackages,
+    // Anahtar teklifin kimliğini taşıyor: onboarding teklifi ile normal
+    // teklif aynı önbellek satırını paylaşsaydı, ekranlardan biri
+    // diğerinin paketlerini gösterirdi.
+    queryKey: [...subscriptionQueryKeys.offerings(), offeringId ?? "current"],
+    queryFn: () => fetchOfferingPackages(offeringId),
     // Expo Go'da native modül yok; sorguyu hiç çalıştırmıyoruz.
     enabled: isPurchasesAvailable,
     staleTime: 10 * 60 * 1000,

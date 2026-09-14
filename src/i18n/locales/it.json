@@ -355,6 +355,12 @@
       "history": "Cronologia",
       "emptyFavorites": "Nessuna parola aggiunta ai preferiti",
       "emptyHistory": "Ancora nessuna parola"
+    },
+    "audioBar": {
+      "play": "Avvia la narrazione",
+      "pause": "Metti in pausa la narrazione",
+      "previousWord": "Parola precedente",
+      "nextWord": "Parola successiva"
     }
   },
   "profile": {
@@ -795,7 +801,8 @@
     "unavailableInExpoGo": "GLI ACQUISTI FUNZIONANO SOLO IN UNA BUILD COMPILATA",
     "upgradeRow": "Premium",
     "wordListFull": "Il tuo quaderno è pieno a {{count}}/{{limit}}",
-    "benefitsSectionTitle": "COSA AGGIUNGE PREMIUM"
+    "benefitsSectionTitle": "COSA AGGIUNGE PREMIUM",
+    "introOffer": "PER TE: RISPARMIA IL {{percent}}% CON L'ANNUALE"
   },
   "reminders": {
     "settingsLabel": "Promemoria",

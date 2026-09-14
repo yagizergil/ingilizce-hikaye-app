@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 
 import { supabase } from "@/lib/supabase";
-import { trackError } from "@/lib/analytics";
+import { trackError, trackEvent } from "@/lib/analytics";
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
 import { isAwaitingAutoStart, shouldAutoStart } from "@/features/reader/tts/autoStartGate";
 import { resumeSeekTarget } from "@/features/reader/tts/resumePosition";
@@ -48,6 +48,17 @@ export interface ReaderTtsController {
   pause: () => void;
   /** Susturur ve konumu SIFIRLAR. Bölüm değişimi ve ekrandan çıkış için. */
   stop: () => void;
+  /**
+   * Bir KELİME ileri (+1) ya da geri (-1) atlar.
+   *
+   * NEDEN SANİYE DEĞİL KELİME: alt çubuktaki iki ok, "15 saniye geri"
+   * gibi bir ses oynatıcısı hareketi değil -- kullanıcı bir kelimeyi
+   * kaçırdığında ya da tekrar duymak istediğinde basıyor. Zaman
+   * işaretleri zaten kelime kelime elimizde (`chapterAudioTimings`), yani
+   * doğru birim kelime. Sabit bir saniye adımı, hızlı konuşulan bir yerde
+   * üç kelime atlar, yavaş bir yerde aynı kelimede kalırdı.
+   */
+  skipWord: (delta: number) => void;
 }
 
 export interface ChapterAudioController extends ReaderTtsController {
@@ -287,6 +298,47 @@ export function useChapterAudio({
     }
   }, [hardStop, player, readerRef, recomputePageWords, setSpokenKey]);
 
+  /**
+   * Kelime kelime atlama.
+   *
+   * Konum BÖLÜMÜN TAMAMI üzerinden hesaplanıyor (sayfaya ait alt küme
+   * değil): sayfanın ilk kelimesindeyken geri basan kullanıcı bir önceki
+   * sayfanın son kelimesine gitmeli, sayfa sınırında takılıp kalmamalı.
+   * Sayfa vurgusu bir sonraki tick'te kendiliğinden düzeliyor.
+   *
+   * Çalmıyorken de çalışıyor: duraklatıp okuduğu yeri geri almak isteyen
+   * kullanıcı için ok tuşları, oynat düğmesine basmayı gerektirmemeli.
+   */
+  const skipWord = useCallback(
+    (delta: number) => {
+      const timings = timingsQuery.data?.words ?? [];
+      if (timings.length === 0) return;
+
+      const current = findWordIndexAtTime(
+        timings.map((word) => ({ key: "", time: word.t })),
+        player.currentTime,
+      );
+
+      // Hiç başlamamışsa (-1) ileri = ilk kelime, geri = başa dön.
+      const next = Math.min(Math.max(current + delta, 0), timings.length - 1);
+      const target = timings[next]?.t;
+      if (target === undefined) return;
+
+      try {
+        void player.seekTo(target);
+      } catch (error) {
+        trackError("chapterAudio.skipWord", error);
+        return;
+      }
+
+      // Vurgu hemen güncellensin: bir sonraki tick'i beklemek, basışla
+      // görsel tepki arasında yarım saniyelik bir boşluk bırakıyordu.
+      recomputePageWords();
+      trackEvent("reader_audio_word_skipped", { delta });
+    },
+    [player, recomputePageWords, timingsQuery.data],
+  );
+
   const toggle = useCallback(() => {
     if (status === "speaking") {
       pause();
@@ -381,5 +433,5 @@ export function useChapterAudio({
   // Bekleme göstergesi: istendi ama makine henüz hazır değil.
   const isPreparing = isAwaitingAutoStart(readiness);
 
-  return { toggle, pause, stop: hardStop, available, isPreparing };
+  return { toggle, pause, stop: hardStop, skipWord, available, isPreparing };
 }

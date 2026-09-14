@@ -355,6 +355,12 @@
       "history": "履歴",
       "emptyFavorites": "お気に入りに単語がありません",
       "emptyHistory": "まだ単語がありません"
+    },
+    "audioBar": {
+      "play": "読み上げを開始",
+      "pause": "読み上げを一時停止",
+      "previousWord": "前の単語",
+      "nextWord": "次の単語"
     }
   },
   "profile": {
@@ -795,7 +801,8 @@
     "unavailableInExpoGo": "購入はビルド済みアプリでのみ動作します",
     "upgradeRow": "プレミアム",
     "wordListFull": "単語帳は {{count}}/{{limit}} 使用中",
-    "benefitsSectionTitle": "PREMIUM で増えること"
+    "benefitsSectionTitle": "PREMIUM で増えること",
+    "introOffer": "あなたへ：年額プランで {{percent}}% お得"
   },
   "reminders": {
     "settingsLabel": "リマインダー",
