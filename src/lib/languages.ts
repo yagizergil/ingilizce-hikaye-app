@@ -20,10 +20,10 @@ export interface LanguageInfo {
   isRtl: boolean;
   /**
    * Bu dilde yazılmış kitap var/olabilir. 2026-09-14 gece oturumunda
-   * es/fr/de/it/ru için A1-B1 orijinal katmanı tamamlanıp yayınlandı
-   * (bkz. migration 035) -- bu beşi artık true. zh/ja/tr B1'i henüz
-   * tamamlamadı, ar hiç üretilmedi -- hepsi bitince migration 036 ile
-   * birlikte burası da güncellenecek.
+   * 9 dilin (es/fr/de/it/ru wave 1, zh/ja/tr/ar wave 2 -- migration
+   * 035/036) A1-B1 orijinal katmanı tamamlanıp yayınlandı. Çince B1
+   * diğerlerinden ince (4 hikâye, kelime listesi kısıtları) ama A1-A2
+   * sağlam -- yine de aktif. B2/C1/C2 (klasikler) devam eden bir iş.
    */
   isContentTarget: boolean;
 }
@@ -31,13 +31,13 @@ export interface LanguageInfo {
 export const LANGUAGES: readonly LanguageInfo[] = [
   { code: "en", nameEn: "English", nativeName: "English", isRtl: false, isContentTarget: true },
   { code: "es", nameEn: "Spanish", nativeName: "Español", isRtl: false, isContentTarget: true },
-  { code: "zh", nameEn: "Chinese", nativeName: "中文", isRtl: false, isContentTarget: false },
-  { code: "ar", nameEn: "Arabic", nativeName: "العربية", isRtl: true, isContentTarget: false },
+  { code: "zh", nameEn: "Chinese", nativeName: "中文", isRtl: false, isContentTarget: true },
+  { code: "ar", nameEn: "Arabic", nativeName: "العربية", isRtl: true, isContentTarget: true },
   { code: "fr", nameEn: "French", nativeName: "Français", isRtl: false, isContentTarget: true },
   { code: "ru", nameEn: "Russian", nativeName: "Русский", isRtl: false, isContentTarget: true },
   { code: "tr", nameEn: "Turkish", nativeName: "Türkçe", isRtl: false, isContentTarget: true },
   { code: "de", nameEn: "German", nativeName: "Deutsch", isRtl: false, isContentTarget: true },
-  { code: "ja", nameEn: "Japanese", nativeName: "日本語", isRtl: false, isContentTarget: false },
+  { code: "ja", nameEn: "Japanese", nativeName: "日本語", isRtl: false, isContentTarget: true },
   { code: "it", nameEn: "Italian", nativeName: "Italiano", isRtl: false, isContentTarget: true },
 ] as const;
 

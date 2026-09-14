@@ -22,7 +22,19 @@ from src.settings import NORMALIZATION_PATH
 # hiç denenmeden kayboluyordu. Apostrof burada SİLİNMİYOR, sadece
 # tokenization aşamasında korunuyor; asıl temizlik normalize_word'de
 # sözlük/kural eşleşmesinden SONRA yapılır.
-_WORD_RE = re.compile(r"'?[A-Za-z]+(?:'[A-Za-z]+)*'?")
+#
+# NEDEN [A-Za-zÀ-ÖØ-öø-ÿ] (yalnızca [A-Za-z] DEĞİL): bu desen İngilizce
+# dışındaki hiçbir dil için hiç kullanılmıyordu; dil çiftleri v2 kapsamında
+# ilk Latin alfabeli hedef dil (İspanyolca) eklenirken fark edildi —
+# á/é/í/ó/ú/ñ/ü gibi harfler eşleşmediği için "año" gibi bir kelime
+# tokenize sırasında "a" + "o"ya BÖLÜNÜYORDU (ñ boşluk gibi davranıyordu).
+# Bu, kelime sayımını, cümle uzunluğu ölçümünü ve kapsam yüzdesini SESSİZCE
+# bozardı — İngilizce'de hiç görünmeyen bir hata sınıfı. Unicode aralığı
+# À-ÖØ-öø-ÿ (Latin-1 Supplement, ß/İ/ı hariç birçok Batı Avrupa harfini
+# kapsar) İspanyolca/Fransızca/Almanca/İtalyanca için yeterli; Türkçe İ/ı/ğ/ş
+# ve daha ötesi (Rusça Kiril, vb.) bu ADR-008/ADR-013'ün belirttiği gibi
+# zaten ayrı bir dil-analizci gerektiriyor, buraya eklenmedi.
+_WORD_RE = re.compile(r"'?[A-Za-zÀ-ÖØ-öø-ÿ]+(?:'[A-Za-zÀ-ÖØ-öø-ÿ]+)*'?")
 _ING_APOSTROPHE_SUFFIX = "in'"
 _CURLY_APOSTROPHES = {"‘": "'", "’": "'", "ʼ": "'", "‛": "'"}
 

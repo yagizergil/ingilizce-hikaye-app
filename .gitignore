@@ -23,6 +23,19 @@ pipeline/data/wikidata_cache.json
 **/__pycache__/
 *.pyc
 
+# dil çiftleri v2 (2026-09-14) -- ham/yeniden-üretilebilir kaynaklar,
+# `pipeline/raw/` ile aynı mantık: script'lerle (fetch_gutenberg.py,
+# convert_*.py) yeniden üretilebilir, depoya girmesi gerekmiyor.
+pipeline/classics_*/
+pipeline/data/*.tsv
+pipeline/data/*.xls
+pipeline/data/jlpt_n*.csv
+# Noto CJK/Arapça fontları büyük (17MB+) ve Google/Noto'nun kendi
+# reposundan yeniden indirilebilir -- Fraunces/IBM Plex Mono (küçük,
+# zaten depoda) gibi committed asset olarak tutulmuyor.
+pipeline/assets/fonts/NotoSansCJK*.otf
+pipeline/assets/fonts/NotoNaskhArabic*.ttf
+
 # editor
 .vscode/*
 !.vscode/extensions.json
