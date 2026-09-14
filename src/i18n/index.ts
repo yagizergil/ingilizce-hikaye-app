@@ -16,6 +16,7 @@ import "@formatjs/intl-pluralrules/locale-data/zh.js";
 import "@formatjs/intl-pluralrules/locale-data/ja.js";
 
 import { isRtlLanguage, UI_LANGUAGE_CODES } from "@/lib/languages";
+import { readStoredUiLanguage } from "@/i18n/uiLanguage";
 
 import tr from "@/i18n/locales/tr.json";
 import en from "@/i18n/locales/en.json";
@@ -84,6 +85,23 @@ void i18n.use(initReactI18next).init({
 });
 
 /**
+ * KULLANICININ SEÇTİĞİ DİL, CİHAZIN DİLİNİ EZER.
+ *
+ * `init` senkron olmak zorunda (ilk render onu bekleyemez), kalıcı depo
+ * ise asenkron. Bu yüzden açılış cihaz diliyle yapılıyor ve kayıtlı bir
+ * seçim varsa hemen ardından uygulanıyor. Aradaki fark bir karelik ve
+ * yalnızca seçim cihaz dilinden FARKLIYSA görünür.
+ *
+ * Bu olmadan dil seçimi kalıcı değildi: kullanıcı ana dilini seçiyor,
+ * uygulamayı kapatıp açtığında arayüz yine cihazın diline dönüyordu.
+ */
+void readStoredUiLanguage().then((stored) => {
+  if (stored && stored !== i18n.language) {
+    void i18n.changeLanguage(stored);
+  }
+});
+
+/**
  * RTL (Arapça) desteği.
  *
  * NEDEN AÇILIŞTA UYGULANIYOR, DEĞİŞİKLİKTE DEĞİL: React Native'de
@@ -100,9 +118,19 @@ void i18n.use(initReactI18next).init({
  * gerekli bir ön koşuldur ve LTR dillerde hiçbir görünür etkisi yoktur.
  */
 I18nManager.allowRTL(true);
-const shouldBeRtl = isRtlLanguage(initialLanguage);
-if (I18nManager.isRTL !== shouldBeRtl) {
-  I18nManager.forceRTL(shouldBeRtl);
-}
+
+/**
+ * RTL kararı KAYITLI SEÇİME göre veriliyor, cihaz diline göre değil.
+ *
+ * Eskiden yalnızca `initialLanguage` (yani cihazın dili) okunuyordu:
+ * Arapçayı uygulama içinden seçen kullanıcı, uygulamayı yeniden başlatsa
+ * bile LTR bir düzende kalıyordu -- çünkü cihazı Arapça değildi.
+ */
+void readStoredUiLanguage().then((stored) => {
+  const shouldBeRtl = isRtlLanguage(stored ?? initialLanguage);
+  if (I18nManager.isRTL !== shouldBeRtl) {
+    I18nManager.forceRTL(shouldBeRtl);
+  }
+});
 
 export default i18n;

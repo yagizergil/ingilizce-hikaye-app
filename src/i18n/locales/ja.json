@@ -128,7 +128,11 @@
     "collections": {
       "title": "コレクション",
       "popular": "人気",
-      "audiobooks": "オーディオブック"
+      "audiobooks": "オーディオブック",
+      "quick": "短い読み物",
+      "myLevel": "あなたのレベル",
+      "favorites": "お気に入り",
+      "review": "単語の復習"
     }
   },
   "collections": {
@@ -235,7 +239,8 @@
       "unlocked": "この物語はスタジオ収録の音声で、単語ごとにハイライトされながら読まれます。",
       "upgradeCta": "プレミアムで聴く",
       "locked": "スタジオ・ナレーションはプレミアムの機能です。自然な声で、読んでいる単語がハイライトされながら物語を聴けます。"
-    }
+    },
+    "about": "この本について"
   },
   "reader": {
     "header": {
@@ -844,6 +849,7 @@
     "yourPairs": "あなたのペア",
     "addPair": "ペアを追加",
     "activeBadge": "使用中",
-    "interfaceLanguageSection": "インターフェース言語"
+    "interfaceLanguageSection": "インターフェース言語",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

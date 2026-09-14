@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import * as Updates from "expo-updates";
 
 import i18n from "@/i18n";
+import { storeUiLanguage } from "@/i18n/uiLanguage";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { LanguageFlag, LoadingState } from "@/components/ui";
@@ -73,6 +74,8 @@ export function ManageLanguagePairsScreen({
   }, [pendingNative]);
 
   const applyNativeLanguageSideEffects = (nativeLanguage: string): boolean => {
+    // Seçim kalıcı: bir sonraki açılışta cihaz diline dönmesin.
+    void storeUiLanguage(nativeLanguage);
     void i18n.changeLanguage(nativeLanguage);
     const needsRtlRestart = isRtlLanguage(nativeLanguage) !== I18nManager.isRTL;
     if (needsRtlRestart) {
@@ -350,7 +353,11 @@ function PairRow({
           {targetInfo ? <LanguageFlag code={targetInfo.code} size={28} /> : null}
         </View>
         <Text style={[monoType.rowText, { color: theme.text.primary }]}>
-          {nativeInfo?.nativeName ?? native} → {targetInfo?.nativeName ?? target}
+          {/* Ok yönü çeviriden: Arapça'da "←". */}
+          {t("languagePair.pairArrow", {
+            from: nativeInfo?.nativeName ?? native,
+            to: targetInfo?.nativeName ?? target,
+          })}
         </Text>
       </View>
       {active ? (

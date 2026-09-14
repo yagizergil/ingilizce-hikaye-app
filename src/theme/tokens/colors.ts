@@ -347,9 +347,23 @@ export const onLevelAccent = "#FFFFFF";
  * değişse de (light/sepia/dark) aynı kalması gereken bir kimlik rengi,
  * `levelAccent`/`categoryTagColors` ile aynı gerekçe.
  */
-export const collectionColors: Record<"popular" | "audiobooks", string> = {
+/**
+ * Koleksiyon kartlarının kimlik renkleri.
+ *
+ * Tema token'ı DEĞİLLER: tema değişse de aynı kalmaları gerekiyor
+ * (`levelAccent` ile aynı gerekçe). Altı kart, altı ayırt edici renk --
+ * kullanıcı kartı okumadan önce rengiyle tanıyor.
+ */
+export const collectionColors: Record<
+  "popular" | "audiobooks" | "favorites" | "review" | "quick" | "myLevel",
+  string
+> = {
   popular: "#7C6FF5",
   audiobooks: "#F2954A",
+  favorites: "#D4567F",
+  review: "#3FA37A",
+  quick: "#4E8FD4",
+  myLevel: "#B3752F",
 };
 
 export const categoryTagColors: readonly string[] = [

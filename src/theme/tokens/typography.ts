@@ -128,6 +128,21 @@ export const type = {
     fontWeight: "700",
     letterSpacing: 0,
   },
+  /**
+   * Kitap detayındaki "hakkında" metni.
+   *
+   * ÖLÇÜLDÜ (docs/reference/referance3.jpeg): satır gövdesi 29 px ->
+   * ~20 pt, satır aralığı bol. Uygulamanın geri kalanındaki gövde
+   * metinlerinden (13-17 pt) belirgin şekilde iri; referansta bu blok
+   * ekranın yarısını kaplıyor ve okunmak için orada.
+   */
+  aboutBody: {
+    fontFamily: fontFamily.nunitoMedium,
+    fontSize: 20,
+    lineHeight: 29,
+    fontWeight: "500",
+    letterSpacing: 0,
+  },
   chapterRowTitle: {
     fontFamily: fontFamily.nunitoSemiBold,
     fontSize: 16,

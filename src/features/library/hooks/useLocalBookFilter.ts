@@ -14,6 +14,10 @@ export interface LocalBookFilter {
   popular?: boolean;
   /** "Koleksiyonlar" rafının "Sesli kitaplar" kartı için. */
   hasAudio?: boolean;
+  /** Tahmini okuma süresi tavanı (dk) -- "Kısa okumalar" kısayolu. */
+  maxMinutes?: number;
+  /** Tek bir CEFR seviyesi -- "Seviyene göre" kısayolu. */
+  level?: string;
 }
 
 /** Same matching rules as `useFilteredBooks`, but reads its criteria from
@@ -40,7 +44,18 @@ export function useLocalBookFilter(books: Book[] | undefined, filter: LocalBookF
       if (filter.genre && book.genre !== filter.genre) return false;
       if (filter.popular && !book.isPopular) return false;
       if (filter.hasAudio && !book.hasAudio) return false;
+      if (filter.maxMinutes != null && book.estimatedMinutes > filter.maxMinutes) return false;
+      if (filter.level && book.level !== filter.level) return false;
       return true;
     });
-  }, [books, filter.query, filter.levelGroup, filter.genre, filter.popular, filter.hasAudio]);
+  }, [
+    books,
+    filter.query,
+    filter.levelGroup,
+    filter.genre,
+    filter.popular,
+    filter.hasAudio,
+    filter.maxMinutes,
+    filter.level,
+  ]);
 }

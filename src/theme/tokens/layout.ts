@@ -51,6 +51,11 @@ export const coverColumnWidth = {
   md: 64,
   /** book-detail.html `.hero img` — 104px wide, 156px tall. */
   lg: 104,
+  /**
+   * Kitap detayının kapağı -- ÖLÇÜLDÜ (referance3.jpeg): 277 px -> 115 pt.
+   * `lg` (104) referanstan belirgin küçüktü.
+   */
+  detail: 115,
   /** TOKEN ADDITION (post-launch, no mockup reference): the "Yeni
    * Kitaplar" home shelf's cards were using `md` (64px) inside a 132px
    * card, leaving ~68px of dead space beside every cover — the exact
@@ -73,6 +78,8 @@ export const coverColumnHeight = {
   sm: 78,
   md: 96,
   lg: 156,
+  /** ÖLÇÜLDÜ (referance3.jpeg): 426 px -> 177 pt. */
+  detail: 177,
   /**
    * ÖLÇÜLDÜ: referansta kapak 466 px yüksek -> 194 pt (132 x 1.47).
    * Diğer boyutların 1.5 oranından küçük bir sapma; 132 x 1.5 = 198

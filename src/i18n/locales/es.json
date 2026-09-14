@@ -128,7 +128,11 @@
     "collections": {
       "title": "Colecciones",
       "popular": "Popular",
-      "audiobooks": "Audiolibros"
+      "audiobooks": "Audiolibros",
+      "quick": "Lecturas breves",
+      "myLevel": "A tu nivel",
+      "favorites": "Favoritos",
+      "review": "Repaso de palabras"
     }
   },
   "collections": {
@@ -235,7 +239,8 @@
       "unlocked": "Esta historia está narrada con voz de estudio y se resalta palabra por palabra.",
       "upgradeCta": "Escuchar con premium",
       "locked": "La narración de estudio forma parte de premium. Escucha esta historia con una voz natural y cada palabra resaltada a medida que se lee."
-    }
+    },
+    "about": "Sobre el libro"
   },
   "reader": {
     "header": {
@@ -844,6 +849,7 @@
     "yourPairs": "TUS PARES",
     "addPair": "AÑADIR UN PAR",
     "activeBadge": "Activo",
-    "interfaceLanguageSection": "IDIOMA DE LA INTERFAZ"
+    "interfaceLanguageSection": "IDIOMA DE LA INTERFAZ",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

@@ -22,6 +22,7 @@ import {
   useRemoveFromCurrentlyReadingMutation,
 } from "@/features/home";
 import { LEVEL_GROUPS } from "@/features/library";
+import { useOnboardingStatusQuery } from "@/features/onboarding";
 
 import type { CategoryTag, CategoryTagNavTarget, CollectionCardData } from "@/features/home";
 import type { Book, LevelGroup } from "@/features/library";
@@ -58,6 +59,9 @@ export default function HomeScreen() {
   const { data: currentlyReading, refetch: refetchCurrentlyReading } = useCurrentlyReadingQuery();
   // Kapaklardaki "okundu" etiketi (referans: referance1.jpeg).
   const { data: finishedBookIds } = useFinishedBookIdsQuery();
+  // "Seviyene göre" kısayolu kullanıcının beyan ettiği seviyeyi kullanıyor.
+  const onboardingQuery = useOnboardingStatusQuery();
+  const userLevel = onboardingQuery.data?.targetLevel ?? null;
   const removeFromCurrentlyReadingMutation = useRemoveFromCurrentlyReadingMutation();
 
   useEffect(() => {
@@ -120,13 +124,33 @@ export default function HomeScreen() {
   const handlePressCollection = useCallback(
     (collection: CollectionCardData) => {
       trackEvent("home_collection_pressed", { key: collection.key });
+
+      /**
+       * Kısayolların ikisi uygulamanın KENDİ ekranlarına gidiyor, dördü
+       * kataloğa bir filtreyle. Hepsinin bir hedefi var; "yakında" kartı
+       * yok -- boş bir kart, rafı doldurmaktan başka bir işe yaramaz.
+       */
+      if (collection.key === "favorites") {
+        router.push("/favorites");
+        return;
+      }
+      if (collection.key === "review") {
+        router.push("/review");
+        return;
+      }
+
       const searchParams = new URLSearchParams();
       searchParams.set("title", collection.label);
       if (collection.key === "popular") searchParams.set("popular", "true");
       if (collection.key === "audiobooks") searchParams.set("hasAudio", "true");
+      if (collection.key === "quick") searchParams.set("maxMinutes", "10");
+      // "Seviyene göre": kullanıcının onboarding'de beyan ettiği seviye.
+      if (collection.key === "myLevel" && userLevel) {
+        searchParams.set("level", userLevel);
+      }
       router.push(`/browse?${searchParams.toString()}`);
     },
-    [router],
+    [router, userLevel],
   );
 
   if (isExtrasLoading) {

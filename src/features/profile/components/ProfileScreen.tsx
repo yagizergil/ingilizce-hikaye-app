@@ -249,7 +249,16 @@ export function ProfileScreen() {
               label={t("profile.account.language")}
               value={
                 languagePairQuery.data
-                  ? `${getLanguage(languagePairQuery.data.nativeLanguage)?.nativeName ?? languagePairQuery.data.nativeLanguage} → ${getLanguage(languagePairQuery.data.targetLanguage)?.nativeName ?? languagePairQuery.data.targetLanguage}`
+                  ? // Ok YÖNÜ de çeviriden geliyor: Arapça'da "←" olmalı.
+                    // Koda gömülü "→" Arapça arayüzde yanlış yönü gösteriyordu.
+                    t("languagePair.pairArrow", {
+                      from:
+                        getLanguage(languagePairQuery.data.nativeLanguage)?.nativeName ??
+                        languagePairQuery.data.nativeLanguage,
+                      to:
+                        getLanguage(languagePairQuery.data.targetLanguage)?.nativeName ??
+                        languagePairQuery.data.targetLanguage,
+                    })
                   : t(`profile.account.language${languageCode === "tr" ? "Tr" : "En"}`)
               }
               onPress={() => router.push("/language-settings")}

@@ -128,7 +128,11 @@
     "collections": {
       "title": "合集",
       "popular": "热门",
-      "audiobooks": "有声书"
+      "audiobooks": "有声书",
+      "quick": "短篇阅读",
+      "myLevel": "适合你的等级",
+      "favorites": "收藏",
+      "review": "单词复习"
     }
   },
   "collections": {
@@ -235,7 +239,8 @@
       "unlocked": "这个故事由录音棚配音朗读，逐词高亮跟读。",
       "upgradeCta": "开通会员收听",
       "locked": "录音棚朗读属于会员功能。用自然的人声听这个故事，读到哪个词就高亮哪个词。"
-    }
+    },
+    "about": "关于本书"
   },
   "reader": {
     "header": {
@@ -844,6 +849,7 @@
     "yourPairs": "你的组合",
     "addPair": "添加组合",
     "activeBadge": "当前使用",
-    "interfaceLanguageSection": "界面语言"
+    "interfaceLanguageSection": "界面语言",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

@@ -12,17 +12,27 @@ interface CollectionShelfProps {
 }
 
 /**
- * FAZ 3 (2026-09-14, referans uygulama eşleştirmesi): "Koleksiyonlar"
- * rafı -- referansta gerçek bir kitap listesi değil, düz renkli iki sabit
- * hedef kartı ("Popüler", "Sesli kitaplar"), her biri `/browse`'a bir
- * filtre parametresiyle (bkz. `useLocalBookFilter`'ın `popular`/`hasAudio`
- * alanları) yönlendiriyor. Renkler sabit/tema-bağımsız (referansın kendi
- * mor/turuncu paleti) -- `levelAccent` gibi, tema değişse de aynı kalması
- * gereken bir kimlik rengi, `colors.ts`'in tema token'larından değil.
+ * "Koleksiyonlar" rafı -- uygulamanın KISAYOL şeridi.
+ *
+ * Referansta iki sabit kart var ("Popüler", "Sesli kitaplar") ve biz de
+ * ikisiyle başlamıştık; ama iki kart bir rafı doldurmuyor ve uygulamanın
+ * kendi ekranlarının (favoriler, kelime tekrarı, seviyene göre kitaplar)
+ * ana ekrandan hiçbir kısayolu yoktu -- kullanıcı onlara ancak sekme
+ * gezinerek ulaşıyordu.
+ *
+ * Kartların HEPSİ var olan bir hedefe gidiyor; "yakında" kartı yok:
+ *   popüler / sesli kitaplar / kısa okumalar / seviyene göre -> /browse
+ *   favoriler -> /favorites        kelime tekrarı -> /review
+ *
+ * Renkler tema-bağımsız kimlik renkleri (bkz. `collectionColors`).
  */
 const COLLECTIONS: CollectionCardData[] = [
   { key: "popular", label: "", color: collectionColors.popular },
   { key: "audiobooks", label: "", color: collectionColors.audiobooks },
+  { key: "quick", label: "", color: collectionColors.quick },
+  { key: "myLevel", label: "", color: collectionColors.myLevel },
+  { key: "favorites", label: "", color: collectionColors.favorites },
+  { key: "review", label: "", color: collectionColors.review },
 ];
 
 export function CollectionShelf({ onPressCollection }: CollectionShelfProps) {
@@ -30,10 +40,7 @@ export function CollectionShelf({ onPressCollection }: CollectionShelfProps) {
 
   const collections = COLLECTIONS.map((collection) => ({
     ...collection,
-    label:
-      collection.key === "popular"
-        ? t("home.collections.popular")
-        : t("home.collections.audiobooks"),
+    label: t(`home.collections.${collection.key}`),
   }));
 
   const renderItem: ListRenderItem<CollectionCardData> = ({ item }) => (

@@ -72,7 +72,7 @@
     "currentlyReading": {
       "title": "Şu An Okunuyor",
       "percent": "%{{percent}}",
-      "remove": "Kaldığın yerden kaldır",
+      "remove": "Şu an okunuyor listesinden kaldır",
       "removeAccessibilityLabel": "{{title}} kitabını şu an okunuyor listesinden kaldır"
     },
     "categories": {
@@ -128,7 +128,11 @@
     "collections": {
       "title": "Koleksiyonlar",
       "popular": "Popüler",
-      "audiobooks": "Sesli kitaplar"
+      "audiobooks": "Sesli kitaplar",
+      "quick": "Kısa okumalar",
+      "myLevel": "Seviyene göre",
+      "favorites": "Favorilerim",
+      "review": "Kelime tekrarı"
     }
   },
   "collections": {
@@ -235,7 +239,8 @@
       "unlocked": "Bu hikâye stüdyo sesiyle, kelime kelime takip edilerek okunuyor.",
       "upgradeCta": "Premium ile dinle",
       "locked": "Stüdyo seslendirmesi premium'a dahil. Bu hikâyeyi doğal bir sesle, okuduğun kelime vurgulanarak dinleyebilirsin."
-    }
+    },
+    "about": "Kitap hakkında"
   },
   "reader": {
     "header": {
@@ -255,7 +260,7 @@
       "saved": "Kaydedildi",
       "savedRemove": "Kaydedildi ✓ — kaldır",
       "know": "Biliyorum",
-      "knownUndo": "Biliyorsun ✓ — geri al",
+      "knownUndo": "Biliniyor ✓ — geri al",
       "senseWithPos": "{{pos}} {{gloss}}",
       "pos": {
         "noun": "(isim)",
@@ -844,6 +849,7 @@
     "yourPairs": "OKUDUĞUN ÇİFTLER",
     "addPair": "YENİ ÇİFT EKLE",
     "activeBadge": "Aktif",
-    "interfaceLanguageSection": "ARAYÜZ DİLİ"
+    "interfaceLanguageSection": "ARAYÜZ DİLİ",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

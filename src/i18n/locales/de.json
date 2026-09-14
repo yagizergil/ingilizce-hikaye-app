@@ -51,7 +51,7 @@
     "shelves": {
       "more": "ALLE →",
       "forYou": "Für dich",
-      "shortReads": "Kurz gelesen",
+      "shortReads": "Kurze Lektüre",
       "byGenre": "Nach Genre",
       "byAuthor": "Nach Autor",
       "byTheme": "Nach Thema",
@@ -128,7 +128,11 @@
     "collections": {
       "title": "Sammlungen",
       "popular": "Beliebt",
-      "audiobooks": "Hörbücher"
+      "audiobooks": "Hörbücher",
+      "quick": "Kurze Lektüre",
+      "myLevel": "Für dein Niveau",
+      "favorites": "Favoriten",
+      "review": "Wörter wiederholen"
     }
   },
   "collections": {
@@ -235,7 +239,8 @@
       "unlocked": "Diese Geschichte wird von einer Studiostimme gelesen — Wort für Wort hervorgehoben.",
       "upgradeCta": "Mit Premium anhören",
       "locked": "Die Studiovertonung gehört zu Premium. Hör dir diese Geschichte in einer natürlichen Stimme an, während jedes Wort beim Lesen hervorgehoben wird."
-    }
+    },
+    "about": "Über dieses Buch"
   },
   "reader": {
     "header": {
@@ -255,7 +260,7 @@
       "saved": "Gespeichert",
       "savedRemove": "Gespeichert ✓ — entfernen",
       "know": "Kenne ich",
-      "knownUndo": "Gekonnt ✓ — rückgängig",
+      "knownUndo": "Bekannt ✓ — rückgängig",
       "senseWithPos": "{{pos}} {{gloss}}",
       "pos": {
         "noun": "(Subst.)",
@@ -844,6 +849,7 @@
     "yourPairs": "DEINE PAARE",
     "addPair": "PAAR HINZUFÜGEN",
     "activeBadge": "Aktiv",
-    "interfaceLanguageSection": "OBERFLÄCHENSPRACHE"
+    "interfaceLanguageSection": "OBERFLÄCHENSPRACHE",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

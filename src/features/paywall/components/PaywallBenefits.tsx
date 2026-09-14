@@ -26,6 +26,17 @@ type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
  * ücretsiz katmandan gerçekten farklı mı? İkisi de evet değilse madde
  * yanıltıcı metadatadır (Guideline 2.3.1).
  *
+ * ÇIKARILAN İKİ MADDE (denetim bulgusu, 2026-09-14): "aralıklı tekrar" ve
+ * "istatistikler" listede duruyordu ama İKİSİ DE ÜCRETSİZ. `useDueCardsQuery`
+ * kendi yorumunda "sınır ücretsiz/premium ayrımı DEĞİL" diyor ve SRS'te
+ * hiçbir yetki kontrolü yok; `StatisticsScreen` de kontrolsüz açılıyor.
+ * Yani paywall, ücretsiz iki özelliği premium diye satıyordu -- yukarıdaki
+ * kuralın ("bir fayda önce üründe çalışır, sonra paywall'a yazılır")
+ * tam ihlali ve Guideline 2.3.1 kapsamında yanıltıcı metadata.
+ * İkisi de listeden ÇIKARILDI. Gerçekten premium yapılmaları ayrı bir ürün
+ * kararı (ücretsiz katmandan değer almak demek); o karar verilene kadar
+ * paywall bunları vaat etmiyor.
+ *
  * BAŞLIK + AÇIKLAMA (referans düzeni): tek satırlık maddeler yerine her
  * fayda bir başlık ve onu açan bir cümle taşıyor. Renkli ikon kareleri de
  * referanstan; burada renk bir SINIFLAMA değil, satırları birbirinden
@@ -39,9 +50,7 @@ const BENEFITS: { icon: IoniconName; key: string; tint: string }[] = [
   { icon: "flash", key: "unlimitedLookups", tint: levelAccent.B2 },
   { icon: "sparkles", key: "aiSentences", tint: levelAccent.B1 },
   { icon: "bookmarks", key: "unlimitedWords", tint: levelAccent.A1 },
-  { icon: "repeat", key: "spacedRepetition", tint: levelAccent.A2 },
   { icon: "language", key: "secondLanguagePair", tint: levelAccent.C2 },
-  { icon: "stats-chart", key: "stats", tint: levelAccent.B2 },
 ];
 
 interface PaywallBenefitsProps {

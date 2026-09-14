@@ -6,6 +6,8 @@ export interface RawBookRow {
   title: string;
   author: string | null;
   subtitle: string | null;
+  /** Kitap detayındaki tanıtım metni (migration 039), kitabın kendi dilinde. */
+  description: string | null;
   cefr_level: string | null;
   word_count: number | null;
   estimated_minutes: number | null;
@@ -35,7 +37,7 @@ export interface RawBookRow {
 }
 
 export const BOOK_SELECT_COLUMNS =
-  "id, slug, title, author, subtitle, cefr_level, word_count, estimated_minutes, has_audio, genres, themes, content_warnings, license, source, source_url, popularity_score, published_at, created_at, cover_url";
+  "id, slug, title, author, subtitle, description, cefr_level, word_count, estimated_minutes, has_audio, genres, themes, content_warnings, license, source, source_url, popularity_score, published_at, created_at, cover_url";
 
 export function mapBookRow(row: RawBookRow): Book {
   const publishedAt = row.published_at ? new Date(row.published_at) : null;
@@ -60,6 +62,7 @@ export function mapBookRow(row: RawBookRow): Book {
     isNew,
     isPopular: Number(row.popularity_score) > 0,
     summaryTr: row.subtitle ?? "",
+    description: row.description ?? "",
     newWordsForUser: 0,
     license: row.license ?? "",
     sourceName: row.source ?? "",

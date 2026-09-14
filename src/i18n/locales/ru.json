@@ -132,7 +132,11 @@
     "collections": {
       "title": "Коллекции",
       "popular": "Популярное",
-      "audiobooks": "Аудиокниги"
+      "audiobooks": "Аудиокниги",
+      "quick": "Короткое чтение",
+      "myLevel": "По вашему уровню",
+      "favorites": "Избранное",
+      "review": "Повторение слов"
     }
   },
   "collections": {
@@ -239,7 +243,8 @@
       "unlocked": "Эту историю читает студийный голос, каждое слово подсвечивается по ходу чтения.",
       "upgradeCta": "Слушать с премиумом",
       "locked": "Студийная озвучка входит в премиум. Слушайте историю живым голосом, а каждое слово будет подсвечиваться по ходу чтения."
-    }
+    },
+    "about": "О книге"
   },
   "reader": {
     "header": {
@@ -259,7 +264,7 @@
       "saved": "Сохранено",
       "savedRemove": "Сохранено ✓ — убрать",
       "know": "Я знаю это слово",
-      "knownUndo": "Знаете ✓ — отменить",
+      "knownUndo": "Знакомо ✓ — отменить",
       "senseWithPos": "{{pos}} {{gloss}}",
       "pos": {
         "noun": "(сущ.)",
@@ -656,8 +661,8 @@
       "recommendedNote": "Для большинства 15 минут — лучший баланс."
     },
     "path": {
-      "title": "Твой путь",
-      "subtitle": "Где ты сейчас и что дальше.",
+      "title": "Ваш путь",
+      "subtitle": "Где вы сейчас и что дальше.",
       "subtitleWithGoal": "{{from}} → {{to}}: {{hours}} ч. чтения за 6 месяцев.",
       "milestones": {
         "0": "Сейчас",
@@ -667,7 +672,7 @@
       "features": {
         "daily": {
           "title": "Ежедневное чтение",
-          "body": "Твоя цель"
+          "body": "Ваша цель"
         },
         "audio": {
           "title": "Студийная озвучка",
@@ -756,7 +761,7 @@
       },
       "secondLanguagePair": {
         "title": "Вторая языковая пара",
-        "body": "Открой ещё одну пару и читай те же книги на другом языке."
+        "body": "Откройте ещё одну пару и читайте те же книги на другом языке."
       },
       "stats": {
         "title": "Видеть прогресс",
@@ -777,10 +782,10 @@
       "savingsShort": "-{{percent}} %",
       "pricePerMonth": "{{price}}/мес."
     },
-    "ctaTrial_one": "Попробовать бесплатно {{count}} день",
-    "ctaTrial_few": "Попробовать бесплатно {{count}} дня",
-    "ctaTrial_many": "Попробовать бесплатно {{count}} дней",
-    "ctaTrial_other": "Попробовать бесплатно {{count}} дня",
+    "ctaTrial_one": "{{count}} день бесплатно",
+    "ctaTrial_few": "{{count}} дня бесплатно",
+    "ctaTrial_many": "{{count}} дня бесплатно",
+    "ctaTrial_other": "{{count}} дня бесплатно",
     "ctaSubscribe": "Перейти на Премиум",
     "legal": {
       "trialThenPrice_one": "Бесплатно {{count}} день, затем {{price}}/{{period}}.",
@@ -872,6 +877,7 @@
     "yourPairs": "ВАШИ ПАРЫ",
     "addPair": "ДОБАВИТЬ ПАРУ",
     "activeBadge": "Активна",
-    "interfaceLanguageSection": "ЯЗЫК ИНТЕРФЕЙСА"
+    "interfaceLanguageSection": "ЯЗЫК ИНТЕРФЕЙСА",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

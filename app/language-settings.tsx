@@ -8,7 +8,9 @@ export default function LanguageSettingsRoute() {
     <ErrorBoundary source="language-settings">
       <ManageLanguagePairsScreen
         onClose={() => router.back()}
-        onNeedsPremium={() => router.replace("/paywall?source=language_pair")}
+        // `replace` değil `push`: paywall'ı kapatan kullanıcı dil ayarlarına
+        // geri dönebilmeli. `replace` bu ekranı yığından düşürüyordu.
+        onNeedsPremium={() => router.push("/paywall?source=language_pair")}
       />
     </ErrorBoundary>
   );

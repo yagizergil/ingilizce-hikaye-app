@@ -128,7 +128,11 @@
     "collections": {
       "title": "Raccolte",
       "popular": "Popolare",
-      "audiobooks": "Audiolibri"
+      "audiobooks": "Audiolibri",
+      "quick": "Letture brevi",
+      "myLevel": "Al tuo livello",
+      "favorites": "Preferiti",
+      "review": "Ripasso parole"
     }
   },
   "collections": {
@@ -235,7 +239,8 @@
       "unlocked": "Questa storia è narrata con voce da studio, con ogni parola evidenziata mentre viene letta.",
       "upgradeCta": "Ascolta con Premium",
       "locked": "La narrazione in studio fa parte di Premium. Ascolta questa storia con una voce naturale, con ogni parola evidenziata mentre viene letta."
-    }
+    },
+    "about": "Informazioni sul libro"
   },
   "reader": {
     "header": {
@@ -752,7 +757,7 @@
     "plan": {
       "annual": "Annuale",
       "monthly": "Mensile",
-      "savings": "RISPARMI IL {{percent}}%",
+      "savings": "RISPARMIA {{percent}}%",
       "perMonth": "{{price}}/mese",
       "trialDays_one": "{{count}} giorno gratis",
       "trialDays_other": "{{count}} giorni gratis",
@@ -844,6 +849,7 @@
     "yourPairs": "LE TUE COPPIE",
     "addPair": "AGGIUNGI UNA COPPIA",
     "activeBadge": "Attiva",
-    "interfaceLanguageSection": "LINGUA DELL'INTERFACCIA"
+    "interfaceLanguageSection": "LINGUA DELL'INTERFACCIA",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

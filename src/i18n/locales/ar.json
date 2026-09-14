@@ -136,7 +136,11 @@
     "collections": {
       "title": "المجموعات",
       "popular": "الأكثر شعبية",
-      "audiobooks": "الكتب الصوتية"
+      "audiobooks": "الكتب الصوتية",
+      "quick": "قراءات قصيرة",
+      "myLevel": "حسب مستواك",
+      "favorites": "المفضلة",
+      "review": "مراجعة الكلمات"
     }
   },
   "collections": {
@@ -243,7 +247,8 @@
       "unlocked": "هذه القصة مسجّلة بصوت استوديو، مع إبراز كل كلمة أثناء قراءتها.",
       "upgradeCta": "استمع مع بريميوم",
       "locked": "السرد بصوت الاستوديو جزء من بريميوم. استمع إلى هذه القصة بصوت طبيعي، مع إبراز كل كلمة أثناء قراءتها."
-    }
+    },
+    "about": "عن الكتاب"
   },
   "reader": {
     "header": {
@@ -900,6 +905,7 @@
     "yourPairs": "أزواجك",
     "addPair": "أضف زوجًا",
     "activeBadge": "نشط",
-    "interfaceLanguageSection": "لغة الواجهة"
+    "interfaceLanguageSection": "لغة الواجهة",
+    "pairArrow": "{{from}} ← {{to}}"
   }
 }

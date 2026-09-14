@@ -128,7 +128,11 @@
     "collections": {
       "title": "Collections",
       "popular": "Popular",
-      "audiobooks": "Audiobooks"
+      "audiobooks": "Audiobooks",
+      "quick": "Quick reads",
+      "myLevel": "At your level",
+      "favorites": "Favourites",
+      "review": "Word review"
     }
   },
   "collections": {
@@ -235,7 +239,8 @@
       "unlocked": "This story is narrated in a studio voice, highlighted word by word.",
       "upgradeCta": "Listen with premium",
       "locked": "Studio narration is part of premium. Listen to this story in a natural voice, with each word highlighted as it is read."
-    }
+    },
+    "about": "About this book"
   },
   "reader": {
     "header": {
@@ -844,6 +849,7 @@
     "yourPairs": "YOUR PAIRS",
     "addPair": "ADD A PAIR",
     "activeBadge": "Active",
-    "interfaceLanguageSection": "INTERFACE LANGUAGE"
+    "interfaceLanguageSection": "INTERFACE LANGUAGE",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

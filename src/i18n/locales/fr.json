@@ -128,7 +128,11 @@
     "collections": {
       "title": "Collections",
       "popular": "Populaire",
-      "audiobooks": "Livres audio"
+      "audiobooks": "Livres audio",
+      "quick": "Lectures courtes",
+      "myLevel": "À ton niveau",
+      "favorites": "Favoris",
+      "review": "Révision des mots"
     }
   },
   "collections": {
@@ -235,7 +239,8 @@
       "unlocked": "Cette histoire est lue par une voix studio, chaque mot surligné au fil de la lecture.",
       "upgradeCta": "Écouter avec Premium",
       "locked": "La narration studio fait partie de Premium. Écoute cette histoire dans une voix naturelle, avec chaque mot surligné au moment où il est lu."
-    }
+    },
+    "about": "À propos du livre"
   },
   "reader": {
     "header": {
@@ -752,7 +757,7 @@
     "plan": {
       "annual": "Annuel",
       "monthly": "Mensuel",
-      "savings": "{{percent}} % D'ÉCONOMIE",
+      "savings": "-{{percent}} %",
       "perMonth": "{{price}}/mois",
       "trialDays_one": "{{count}} jour offert",
       "trialDays_other": "{{count}} jours offerts",
@@ -761,8 +766,8 @@
       "savingsShort": "-{{percent}} %",
       "pricePerMonth": "{{price}}/mois"
     },
-    "ctaTrial_one": "Essayer {{count}} jour gratuitement",
-    "ctaTrial_other": "Essayer {{count}} jours gratuitement",
+    "ctaTrial_one": "{{count}} jour offert",
+    "ctaTrial_other": "{{count}} jours offerts",
     "ctaSubscribe": "Passer à Premium",
     "legal": {
       "trialThenPrice_one": "{{count}} jour gratuit, puis {{price}}/{{period}}.",
@@ -844,6 +849,7 @@
     "yourPairs": "TES PAIRES",
     "addPair": "AJOUTER UNE PAIRE",
     "activeBadge": "Active",
-    "interfaceLanguageSection": "LANGUE DE L'INTERFACE"
+    "interfaceLanguageSection": "LANGUE DE L'INTERFACE",
+    "pairArrow": "{{from}} → {{to}}"
   }
 }

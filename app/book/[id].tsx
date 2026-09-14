@@ -6,7 +6,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
-import { monoType, spacing, type } from "@/theme";
+import { Ionicons } from "@expo/vector-icons";
+
+import { radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import {
@@ -165,32 +167,34 @@ export default function BookDetailScreen() {
 
   const ListHeader = (
     <View>
+      {/* Üst bar referanstaki gibi iki İKON: geri oku ve yer imi. Eskiden
+          solda "GERİ" yazısı, sağda kalp karakteri (♥/♡) vardı -- kalp
+          bir metin glifiydi, yani platforma göre farklı çiziliyordu ve
+          uygulamanın ikon setiyle aynı görsel dile ait değildi. */}
       <View style={styles.topbar}>
         <Pressable
           onPress={handleBack}
-          accessibilityRole="link"
+          accessibilityRole="button"
           accessibilityLabel={t("bookDetail.backAccessibilityLabel")}
           hitSlop={{ top: spacing.sm, bottom: spacing.sm, left: spacing.sm, right: spacing.sm }}
         >
-          <Text style={[monoType.eyebrow, styles.backLabel, { color: theme.text.secondary }]}>
-            {t("bookDetail.back")}
-          </Text>
+          <Ionicons name="chevron-back" size={26} color={theme.text.primary} />
         </Pressable>
         <Pressable
           onPress={handleToggleFavorite}
           accessibilityRole="button"
           accessibilityLabel={t(isFavorited ? "favorites.action.remove" : "favorites.action.add")}
           hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
-          style={styles.favoriteButton}
+          style={[
+            styles.favoriteButton,
+            { backgroundColor: isFavorited ? theme.accent : theme.bg.surface },
+          ]}
         >
-          <Text
-            style={[
-              type.sectionHeading,
-              { color: isFavorited ? theme.accent : theme.text.secondary },
-            ]}
-          >
-            {isFavorited ? "♥" : "♡"}
-          </Text>
+          <Ionicons
+            name={isFavorited ? "bookmark" : "bookmark-outline"}
+            size={18}
+            color={isFavorited ? theme.text.onAccent : theme.text.secondary}
+          />
         </Pressable>
       </View>
 
@@ -209,7 +213,9 @@ export default function BookDetailScreen() {
       <View style={styles.cta}>
         <Button label={ctaLabel} onPress={handlePressCta} disabled={!continueChapter} fullWidth />
         {/* Stüdyo kaydı olmayan kitapta (klasiklerin tamamı) düğme hiç
-            görünmüyor: dinlenecek bir şey yok. */}
+            görünmüyor: dinlenecek bir şey yok. Kilitliyken görünüyor ama
+            paywall'a gidiyor -- teklif okuma akışının DIŞINDA (Ürün İlkesi
+            #1), yani tam burada. */}
         {book.hasAudio ? (
           <Button
             label={t("bookDetail.cta.listen")}
@@ -221,6 +227,18 @@ export default function BookDetailScreen() {
           />
         ) : null}
       </View>
+
+      {/* KİTAP HAKKINDA (referance3). Metin kitabın kendi dilinde
+          (migration 039). Henüz yazılmamışsa bölüm HİÇ gösterilmiyor --
+          boş bir başlık bırakmak, eksikliği daha görünür yapardı. */}
+      {book.description ? (
+        <View style={styles.about}>
+          <Text style={[type.bookTitleMd, { color: theme.text.primary }]}>
+            {t("bookDetail.about")}
+          </Text>
+          <Text style={[type.aboutBody, { color: theme.text.secondary }]}>{book.description}</Text>
+        </View>
+      ) : null}
 
       <SectionHeader title={t("bookDetail.chapters")} style={styles.sectionHead} />
 
@@ -261,11 +279,17 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xs,
     paddingBottom: spacing.xs,
   },
-  backLabel: {
-    alignSelf: "flex-start",
-  },
   favoriteButton: {
-    padding: spacing.xs,
+    width: 36,
+    height: 36,
+    borderRadius: radius.sm,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  about: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.ml,
+    gap: spacing.sm,
   },
   cta: {
     paddingHorizontal: spacing.lg,

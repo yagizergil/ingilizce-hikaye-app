@@ -11,10 +11,17 @@ interface BookHeroProps {
 }
 
 /**
- * book-detail.html `.hero` — asymmetric grid: 104px `BookCover` + info
- * column (bordered mono `LevelBadge`, Fraunces `heroTitle`, mono author),
- * info column uses `justify-content: space-between` per the mockup's
- * `.hero .info` rule.
+ * Kitap detayının üst bloğu.
+ *
+ * ÖLÇÜLDÜ (docs/reference/referance3.jpeg, 1pt = 2.4046px):
+ *   kapak 277x426 px -> 115 x 177 pt
+ *   başlık gövde yüksekliği 35 px -> ~21 pt kalın
+ *   başlığın altında seviye rozeti + biçim etiketi AYNI satırda
+ *
+ * Eskiden kapak 104x156 idi ve sağ sütun rozet/başlık/yazarı dikeyde
+ * yayıyordu (`space-between`). Referansta blok YUKARI hizalı ve yazar
+ * satırı yok -- yazar zaten kapağın üstünde yazıyor; iki kez yazmak
+ * sütunu gereksiz uzatıyordu.
  */
 export function BookHero({ book }: BookHeroProps) {
   const { theme } = useTheme();
@@ -25,17 +32,19 @@ export function BookHero({ book }: BookHeroProps) {
         title={book.title}
         author={book.author}
         coverUrl={book.coverUrl}
-        width={coverColumnWidth.lg}
-        height={coverColumnHeight.lg}
+        width={coverColumnWidth.detail}
+        height={coverColumnHeight.detail}
       />
       <View style={styles.info}>
-        <LevelBadge level={book.level} />
-        <Text style={[type.heroTitle, styles.title, { color: theme.text.primary }]} numberOfLines={3}>
+        <Text style={[type.bookTitleLg, { color: theme.text.primary }]} numberOfLines={3}>
           {book.title}
         </Text>
-        <Text style={[monoType.authorLg, { color: theme.text.secondary }]} numberOfLines={1}>
-          {book.author}
-        </Text>
+        <View style={styles.metaRow}>
+          <LevelBadge level={book.level} />
+          <Text style={[monoType.rowText, { color: theme.text.secondary }]} numberOfLines={1}>
+            {book.author}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -47,13 +56,16 @@ const styles = StyleSheet.create({
     gap: spacing.ml,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.xs,
-    paddingBottom: spacing.xl,
+    paddingBottom: spacing.ml,
+    alignItems: "flex-start",
   },
   info: {
     flex: 1,
-    justifyContent: "space-between",
+    gap: spacing.sm,
   },
-  title: {
-    marginVertical: spacing.xs,
+  metaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
   },
 });

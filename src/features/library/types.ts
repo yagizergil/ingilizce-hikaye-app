@@ -51,6 +51,12 @@ export interface Book {
   isNew: boolean;
   isPopular: boolean;
   summaryTr: string;
+  /**
+   * Kitap detayındaki "hakkında" metni (migration 039). Kitabın KENDİ
+   * dilinde; boş olabilir (henüz yazılmamış kitaplar) -- o durumda bölüm
+   * hiç gösterilmiyor, boş bir başlık bırakmaktansa.
+   */
+  description: string;
   newWordsForUser: number;
   license: string;
   sourceName: string;

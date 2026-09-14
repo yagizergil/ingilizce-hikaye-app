@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
-import { Alert } from "react-native";
+import { Alert, DevSettings, I18nManager, Platform } from "react-native";
 
 import { useTranslation } from "react-i18next";
 import { getLocales } from "expo-localization";
 
 import i18n from "@/i18n";
+import { storeUiLanguage } from "@/i18n/uiLanguage";
+import { isRtlLanguage } from "@/lib/languages";
 import { LANGUAGES } from "@/lib/languages";
 import { trackEvent } from "@/lib/analytics";
 
@@ -131,6 +133,38 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
     // Arayüz dili HEMEN değişiyor: sonraki adımlar kullanıcının kendi
     // dilinde açılsın diye sunucu yanıtı beklenmiyor.
     void i18n.changeLanguage(nativeLanguage);
+
+    /**
+     * SEÇİM KALICI OLARAK YAZILIYOR (denetim bulgusu, 2026-09-14).
+     * Yazılmadığı sürece kullanıcı dilini seçiyor, uygulamayı kapatıp
+     * açtığında arayüz cihazın diline dönüyordu.
+     */
+    void storeUiLanguage(nativeLanguage);
+
+    /**
+     * RTL (Arapça) ANINDA UYGULANAMAZ: `I18nManager.forceRTL` yalnızca bir
+     * sonraki native render ağacı kurulumunda etkili oluyor. Bayrağı
+     * burada set edip uygulamayı YENİDEN BAŞLATIYORUZ -- yarım bir RTL
+     * (bazı ekranlar sağdan sola, bazıları soldan sola) sessizce bırakmak
+     * çok daha kötü olurdu.
+     *
+     * Bu blok daha önce yalnızca `LanguagePairScreen`'de vardı ve o ekran
+     * HİÇBİR YERDEN mount edilmiyor -- yani Arapça seçen bir kullanıcı
+     * onboarding'de RTL'i hiç görmüyordu.
+     */
+    const needsRtlRestart = isRtlLanguage(nativeLanguage) !== I18nManager.isRTL;
+    if (needsRtlRestart) {
+      I18nManager.allowRTL(true);
+      I18nManager.forceRTL(isRtlLanguage(nativeLanguage));
+      trackEvent("onboarding_rtl_restart", { language: nativeLanguage });
+      if (Platform.OS === "web") {
+        window.location.reload();
+      } else {
+        DevSettings.reload();
+      }
+      return;
+    }
+
     trackEvent("onboarding_native_selected", { language: nativeLanguage });
     setStep("target");
   }, [nativeLanguage]);

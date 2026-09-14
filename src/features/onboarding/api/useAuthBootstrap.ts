@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { trackError } from "@/lib/analytics";
 import type { AuthStatus } from "@/features/onboarding/types";
 
 /**
@@ -65,7 +66,18 @@ export function useAuthBootstrap(): AuthStatus {
       setStatus(userData.user?.is_anonymous ? "anonymous" : "registered");
     }
 
-    void bootstrap();
+    /**
+     * DENETİM BULGUSU (2026-09-14): `bootstrap()` içinde hiç try/catch
+     * yoktu. Beklenmedik bir throw (Keychain, ağ katmanı, JSON) `setStatus`
+     * hiç çağrılmadan akışı kesiyor ve `AuthGate` kalıcı olarak dönen bir
+     * spinner gösteriyordu -- kullanıcı için "uygulama açılmıyor", App
+     * Store incelemesinde anında red. Hata yutulmuyor, kaydediliyor ve
+     * kullanıcı en azından anonim akışa düşüyor.
+     */
+    void bootstrap().catch((error) => {
+      trackError("auth.bootstrap", error);
+      if (mounted) setStatus("anonymous");
+    });
 
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!mounted) return;

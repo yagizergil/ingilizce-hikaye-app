@@ -40,11 +40,15 @@ export default function BrowseScreen() {
     q?: string;
     popular?: string;
     hasAudio?: string;
+    maxMinutes?: string;
+    level?: string;
   }>();
   const { data, isLoading, isError, refetch } = useLibraryBooksQuery();
   const books = useLocalBookFilter(data, {
     query: params.q,
     levelGroup: params.levelGroup as LevelGroup | undefined,
+    maxMinutes: params.maxMinutes ? Number(params.maxMinutes) : undefined,
+    level: params.level,
     genre: params.genre,
     popular: params.popular === "true",
     hasAudio: params.hasAudio === "true",

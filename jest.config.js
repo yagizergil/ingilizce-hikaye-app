@@ -19,6 +19,8 @@ module.exports = {
   // ve `import`/`export` sentaksında patlıyordu. src/i18n/index.ts bu
   // polyfill'i gerçekten import ettiği için (i18n.ts'yi gerçek t() ile test
   // etmek istiyorsak) bu paketlerin de transform edilmesi gerekiyor.
+  // Gerekçe jest.setup.js içinde.
+  setupFiles: ["<rootDir>/jest.setup.js"],
   transformIgnorePatterns: [
     "/node_modules/(?!(.pnpm|react-native|@react-native|@react-native-community|expo|@expo|@expo-google-fonts|react-navigation|@react-navigation|@sentry/react-native|native-base|standard-navigation|@formatjs))",
     "/node_modules/react-native-reanimated/plugin/",
