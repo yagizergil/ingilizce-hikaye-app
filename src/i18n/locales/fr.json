@@ -351,22 +351,6 @@
       "emptyHistory": "Pas encore de mots"
     }
   },
-  "auth": {
-    "title": "Crée ton compte",
-    "subtitle": "Inscris-toi pour ne pas perdre ta progression ni tes mots enregistrés. Tu peux aussi continuer en invité.",
-    "google": "Continuer avec Google",
-    "skip": "Plus tard",
-    "email": {
-      "placeholder": "Ton adresse e-mail",
-      "send": "Envoyer le lien",
-      "sentTitle": "Lien envoyé",
-      "sentBody": "Touche le lien reçu par e-mail pour finir la connexion."
-    },
-    "error": {
-      "generic": "La connexion a échoué, réessaie.",
-      "invalidEmail": "Saisis une adresse e-mail valide."
-    }
-  },
   "profile": {
     "title": "Profil",
     "hero": {
@@ -420,9 +404,6 @@
       "language": "Langue",
       "languageTr": "Turc",
       "languageEn": "Anglais",
-      "signUp": "S'inscrire",
-      "signOut": "Se déconnecter",
-      "signOutError": "La déconnexion a échoué, réessaie.",
       "deleteAccount": "Supprimer mon compte",
       "devReplayOnboarding": "Rejouer l'intégration (développeur)"
     },

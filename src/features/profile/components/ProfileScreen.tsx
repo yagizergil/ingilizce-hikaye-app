@@ -76,28 +76,9 @@ export function ProfileScreen() {
     void subscriptionQuery.refetch();
   }, [statsQuery, vocabularyQuery, subscriptionQuery]);
 
-  const handleSignOut = useCallback(async () => {
-    trackEvent("profile_sign_out");
-    try {
-      await supabase.auth.signOut();
-      router.replace("/");
-    } catch {
-      // No dedicated inline error-state slot for a fire-and-forget action
-      // row (Toast is currently excluded from the ui barrel, see
-      // components/ui/index.ts) -- an Alert is the visible error surface,
-      // matching DeleteAccountScreen's own signOut failure handling.
-      Alert.alert(t("common.errorTitle"), t("profile.account.signOutError"));
-    }
-  }, [t]);
-
   const handleDeleteAccount = useCallback(() => {
     trackEvent("profile_delete_account_opened");
     router.push("/delete-account");
-  }, []);
-
-  const handleSignUp = useCallback(() => {
-    trackEvent("profile_sign_up_opened");
-    router.push("/sign-in");
   }, []);
 
   /**
@@ -248,15 +229,6 @@ export function ProfileScreen() {
             />
             <Hairline />
 
-            {isAnonymous ? (
-              <ProfileAccountRow label={t("profile.account.signUp")} onPress={handleSignUp} />
-            ) : (
-              <ProfileAccountRow
-                label={t("profile.account.signOut")}
-                onPress={() => void handleSignOut()}
-              />
-            )}
-            <Hairline />
             <ProfileAccountRow
               label={t("profile.account.deleteAccount")}
               onPress={handleDeleteAccount}

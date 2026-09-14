@@ -351,22 +351,6 @@
       "emptyHistory": "Ancora nessuna parola"
     }
   },
-  "auth": {
-    "title": "Crea il tuo account",
-    "subtitle": "Registrati per non perdere i progressi e le parole salvate. Puoi anche continuare come ospite.",
-    "google": "Continua con Google",
-    "skip": "Non ora",
-    "email": {
-      "placeholder": "Il tuo indirizzo e-mail",
-      "send": "Invia il link",
-      "sentTitle": "Link inviato",
-      "sentBody": "Tocca il link che ti abbiamo inviato via e-mail per completare l'accesso."
-    },
-    "error": {
-      "generic": "Accesso non riuscito, riprova.",
-      "invalidEmail": "Inserisci un indirizzo e-mail valido."
-    }
-  },
   "profile": {
     "title": "Profilo",
     "hero": {
@@ -420,9 +404,6 @@
       "language": "Lingua",
       "languageTr": "Turco",
       "languageEn": "Inglese",
-      "signUp": "Registrati",
-      "signOut": "Esci",
-      "signOutError": "Non è stato possibile uscire, riprova.",
       "deleteAccount": "Elimina il mio account",
       "devReplayOnboarding": "Riavvia l'onboarding (sviluppatore)"
     },

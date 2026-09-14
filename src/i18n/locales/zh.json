@@ -351,22 +351,6 @@
       "emptyHistory": "还没有单词"
     }
   },
-  "auth": {
-    "title": "创建你的账号",
-    "subtitle": "注册后，阅读进度和收藏的单词就不会丢失。你也可以先以访客身份继续使用。",
-    "google": "使用 Google 继续",
-    "skip": "暂时不用",
-    "email": {
-      "placeholder": "你的邮箱地址",
-      "send": "发送链接",
-      "sentTitle": "链接已发送",
-      "sentBody": "点击我们发到你邮箱的链接，完成登录。"
-    },
-    "error": {
-      "generic": "登录失败，请再试一次。",
-      "invalidEmail": "请输入有效的邮箱地址。"
-    }
-  },
   "profile": {
     "title": "我的",
     "hero": {
@@ -420,9 +404,6 @@
       "language": "语言",
       "languageTr": "土耳其语",
       "languageEn": "英语",
-      "signUp": "注册",
-      "signOut": "退出登录",
-      "signOutError": "退出登录失败，请再试一次。",
       "deleteAccount": "删除我的账号",
       "devReplayOnboarding": "重新播放引导流程（开发者）"
     },

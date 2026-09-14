@@ -62,7 +62,6 @@ export default function RootLayout() {
               <AuthGate>
                 <OnboardingGate>
                   <Stack screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="sign-in" options={{ presentation: "modal" }} />
                     <Stack.Screen name="delete-account" options={{ presentation: "modal" }} />
                     <Stack.Screen name="favorites" />
                     <Stack.Screen name="browse" />

@@ -351,22 +351,6 @@
       "emptyHistory": "No words yet"
     }
   },
-  "auth": {
-    "title": "Create your account",
-    "subtitle": "Sign up so you don't lose your progress and saved words. You can also keep using the app as a guest.",
-    "google": "Continue with Google",
-    "skip": "Not now",
-    "email": {
-      "placeholder": "Your email address",
-      "send": "Send link",
-      "sentTitle": "Link sent",
-      "sentBody": "Tap the link we emailed you to finish signing in."
-    },
-    "error": {
-      "generic": "Couldn't sign in, please try again.",
-      "invalidEmail": "Enter a valid email address."
-    }
-  },
   "profile": {
     "title": "Profile",
     "hero": {
@@ -420,9 +404,6 @@
       "language": "Language",
       "languageTr": "Turkish",
       "languageEn": "English",
-      "signUp": "Sign up",
-      "signOut": "Sign out",
-      "signOutError": "Couldn't sign out, please try again.",
       "deleteAccount": "Delete my account",
       "devReplayOnboarding": "Replay onboarding (developer)"
     },

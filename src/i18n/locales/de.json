@@ -351,22 +351,6 @@
       "emptyHistory": "Noch keine Wörter"
     }
   },
-  "auth": {
-    "title": "Konto erstellen",
-    "subtitle": "Melde dich an, damit dein Fortschritt und deine Wörter nicht verloren gehen. Du kannst die App auch als Gast weiternutzen.",
-    "google": "Weiter mit Google",
-    "skip": "Später",
-    "email": {
-      "placeholder": "Deine E-Mail-Adresse",
-      "send": "Link senden",
-      "sentTitle": "Link gesendet",
-      "sentBody": "Tipp auf den Link in unserer E-Mail, um die Anmeldung abzuschließen."
-    },
-    "error": {
-      "generic": "Anmeldung hat nicht geklappt, bitte versuch es noch einmal.",
-      "invalidEmail": "Gib eine gültige E-Mail-Adresse ein."
-    }
-  },
   "profile": {
     "title": "Profil",
     "hero": {
@@ -420,9 +404,6 @@
       "language": "Sprache",
       "languageTr": "Türkisch",
       "languageEn": "Englisch",
-      "signUp": "Registrieren",
-      "signOut": "Abmelden",
-      "signOutError": "Abmelden hat nicht geklappt, bitte versuch es noch einmal.",
       "deleteAccount": "Konto löschen",
       "devReplayOnboarding": "Onboarding erneut abspielen (Entwickler)"
     },

@@ -351,22 +351,6 @@
       "emptyHistory": "Aún no hay palabras"
     }
   },
-  "auth": {
-    "title": "Crea tu cuenta",
-    "subtitle": "Regístrate para no perder tu progreso ni tus palabras guardadas. También puedes seguir usando la app como invitado.",
-    "google": "Continuar con Google",
-    "skip": "Ahora no",
-    "email": {
-      "placeholder": "Tu correo electrónico",
-      "send": "Enviar enlace",
-      "sentTitle": "Enlace enviado",
-      "sentBody": "Toca el enlace que te hemos enviado por correo para terminar de iniciar sesión."
-    },
-    "error": {
-      "generic": "No se pudo iniciar sesión, inténtalo de nuevo.",
-      "invalidEmail": "Escribe un correo electrónico válido."
-    }
-  },
   "profile": {
     "title": "Perfil",
     "hero": {
@@ -420,9 +404,6 @@
       "language": "Idioma",
       "languageTr": "Turco",
       "languageEn": "Inglés",
-      "signUp": "Registrarse",
-      "signOut": "Cerrar sesión",
-      "signOutError": "No se pudo cerrar sesión, inténtalo de nuevo.",
       "deleteAccount": "Eliminar mi cuenta",
       "devReplayOnboarding": "Repetir la introducción (desarrollador)"
     },

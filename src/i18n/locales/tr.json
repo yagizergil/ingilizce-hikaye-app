@@ -351,22 +351,6 @@
       "emptyHistory": "Henüz kelime yok"
     }
   },
-  "auth": {
-    "title": "Hesabını oluştur",
-    "subtitle": "İlerlemeni ve kelimelerini kaybetmemek için kaydol. İstemezsen misafir olarak devam edebilirsin.",
-    "google": "Google ile devam et",
-    "skip": "Şimdi değil",
-    "email": {
-      "placeholder": "E-posta adresin",
-      "send": "Bağlantı gönder",
-      "sentTitle": "Bağlantı gönderildi",
-      "sentBody": "E-postana gönderdiğimiz bağlantıya tıklayarak girişini tamamla."
-    },
-    "error": {
-      "generic": "Giriş yapılamadı, lütfen tekrar dene.",
-      "invalidEmail": "Geçerli bir e-posta adresi gir."
-    }
-  },
   "profile": {
     "title": "Profil",
     "hero": {
@@ -420,9 +404,6 @@
       "language": "Dil",
       "languageTr": "Türkçe",
       "languageEn": "İngilizce",
-      "signUp": "Kaydol",
-      "signOut": "Çıkış yap",
-      "signOutError": "Çıkış yapılamadı, lütfen tekrar dene.",
       "deleteAccount": "Hesabımı sil",
       "devReplayOnboarding": "Onboarding'i baştan oynat (geliştirici)"
     },
