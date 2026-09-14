@@ -405,7 +405,7 @@
       "languageTr": "トルコ語",
       "languageEn": "英語",
       "deleteAccount": "アカウントを削除",
-      "devReplayOnboarding": "オンボーディングを再生（開発者）"
+      "devReplayOnboarding": "アカウントをリセットしてオンボーディングをやり直す（開発者）"
     },
     "footer": "{{name}} — バージョン {{version}}"
   },

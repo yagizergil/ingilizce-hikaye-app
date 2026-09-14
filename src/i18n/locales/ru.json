@@ -409,7 +409,7 @@
       "languageTr": "Турецкий",
       "languageEn": "Английский",
       "deleteAccount": "Удалить аккаунт",
-      "devReplayOnboarding": "Пройти онбординг заново (разработчик)"
+      "devReplayOnboarding": "Сбросить аккаунт и пройти онбординг заново (для разработчика)"
     },
     "footer": "{{name}} — версия {{version}}"
   },

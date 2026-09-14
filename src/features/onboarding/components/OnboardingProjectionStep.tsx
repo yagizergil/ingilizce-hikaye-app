@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -20,25 +20,28 @@ type IoniconName = ComponentProps<typeof Ionicons>["name"];
 /**
  * "Yolun" ekranı (referans: `docs/reference/bookvo-11-ilerleme-grafigi.jpeg`).
  *
- * DÜZEN: yükselen eğri, üzerinde üç düğüm, her düğümün üstünde seviye
- * baloncuğu; grafiğin ALTINDA ayrı bir satırda zaman etiketleri; en altta
- * 2x2 özellik kutucukları.
+ * DÜZEN: eğrinin altı dolgulu yükselen bir grafik, üzerinde üç düğüm, her
+ * düğümün üstünde seviye baloncuğu; grafiğin ALTINDA ayrı bir satırda
+ * zaman etiketleri; altta 2x2 özellik kutucukları.
  *
- * ETİKETLER NEDEN DÜĞÜMÜN ALTINDA DEĞİL, AYRI BİR SATIRDA: ilk sürümde
- * her etiket kendi düğümünün altına, yani eğrinin yüksekliğine göre
- * değişen bir y'ye konuyordu. Düğümler farklı yüksekliklerde olduğu için
- * etiketler eğriye ve birbirine biniyordu. Etiketler artık sabit bir
- * taban çizgisinde, üç eşit sütunda duruyor -- referanstaki gibi bir x
- * ekseni. Baloncuklar da aynı üç sütunun MERKEZİNE hizalı, yani hiçbir
- * genişlikte üst üste binemiyorlar.
+ * ETİKETLER NEDEN AYRI BİR SATIRDA: ilk sürümde her etiket kendi
+ * düğümünün altına, yani eğrinin yüksekliğine göre değişen bir y'ye
+ * konuyordu; düğümler farklı yüksekliklerde olduğu için etiketler eğriye
+ * ve birbirine biniyordu. Şimdi sabit bir taban çizgisinde, üç eşit
+ * sütunda -- referanstaki gibi bir x ekseni. Baloncuklar da aynı üç
+ * sütunun merkezinde, kendi genişliğinde yuvalarda: hiçbir ekran
+ * genişliğinde üst üste binemiyorlar.
+ *
+ * ANİMASYON: eğri soldan sağa ÇİZİLİYOR (strokeDashoffset), dolgu onun
+ * arkasından beliriyor, baloncuklar düğüm sırasına göre tek tek oturuyor.
+ * Süslemeden çok anlatım: ekranın söylediği şey "buradan şuraya
+ * gideceksin" ve hareketin yönü tam olarak o. Yeni bir animasyon
+ * kütüphanesi eklenmedi -- RN'in kendi `Animated`'i yetiyor.
  *
  * TEK İÇERİK FARKI: referansın alt başlığı "6 ayda ~2.700 kelime" diye
  * sayısal bir VAAT veriyor; bizde böyle bir ölçüm yok ve uydurulmuş bir
  * sayı yanıltıcı olurdu (Guideline 2.3.1). Yerine aritmetik olarak doğru
  * olan yazılıyor: kullanıcının kendi günlük hedefi x 6 ay.
- *
- * Kutucuklar yalnızca bugün çalışan özellikler; referanstaki "Shadowing +
- * Oyunlar" ve "Videolar" bizde YOK, o yüzden yazılmadı.
  */
 const LADDER: CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -49,33 +52,36 @@ const FEATURES: { icon: IoniconName; key: string; tint: string }[] = [
   { icon: "repeat-outline", key: "review", tint: levelAccent.C1 },
 ];
 
-/** Çizim alanının ölçüleri (pt). Kart = çizim + etiket satırı + iç boşluk. */
-const PLOT_HEIGHT = 168;
-const BUBBLE_SIZE = 44;
+const PLOT_HEIGHT = 176;
+const BUBBLE_SIZE = 46;
 const DOT_SIZE = 14;
 /** Baloncuğun altı ile düğüm noktası arasındaki boşluk. */
-const BUBBLE_GAP = 8;
+const BUBBLE_GAP = 10;
 
 const VB_WIDTH = 300;
-const VB_HEIGHT = 170;
+const VB_HEIGHT = 176;
+/** Eğrinin uzunluğundan büyük herhangi bir sayı; kesikli desen buna göre. */
+const DASH_LENGTH = 720;
 
-/**
- * Düğümler üç eşit sütunun MERKEZİNDE (1/6, 3/6, 5/6) -- etiket satırıyla
- * birebir aynı hizada. Yükseklikler referanstaki gibi soldan sağa artıyor.
- */
+/** Düğümler üç eşit sütunun merkezinde (1/6, 3/6, 5/6). */
 const NODES = [
-  { x: 50, y: 126 },
-  { x: 150, y: 80 },
-  { x: 250, y: 34 },
+  { x: 50, y: 130 },
+  { x: 150, y: 84 },
+  { x: 250, y: 38 },
 ] as const;
 
 const CURVE = [
-  `M 6 152`,
-  `C 24 148, 34 134, ${NODES[0].x} ${NODES[0].y}`,
-  `S 112 92, ${NODES[1].x} ${NODES[1].y}`,
-  `S 218 42, ${NODES[2].x} ${NODES[2].y}`,
-  `S 286 20, 294 16`,
+  "M 8 156",
+  `C 26 152, 34 138, ${NODES[0].x} ${NODES[0].y}`,
+  `S 112 96, ${NODES[1].x} ${NODES[1].y}`,
+  `S 218 46, ${NODES[2].x} ${NODES[2].y}`,
+  "S 286 24, 292 20",
 ].join(" ");
+
+/** Aynı eğrinin tabana kapatılmış hâli -- altındaki dolgu. */
+const AREA = `${CURVE} L 292 ${VB_HEIGHT} L 8 ${VB_HEIGHT} Z`;
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface OnboardingProjectionStepProps {
   progress: number;
@@ -102,8 +108,52 @@ export function OnboardingProjectionStep({
     return LADDER.slice(start, start + 3);
   }, [level]);
 
+  // `useRef(new Animated.Value(...)).current` render sırasında okunamıyor
+  // (react-hooks/refs); lazy initializer aynı "bir kez üret" davranışında.
+  const [draw] = useState(() => new Animated.Value(0));
+  const [fill] = useState(() => new Animated.Value(0));
+  const [bubbles] = useState(() => NODES.map(() => new Animated.Value(0)));
+
+  useEffect(() => {
+    const drawing = Animated.timing(draw, {
+      toValue: 1,
+      duration: 900,
+      easing: Easing.out(Easing.cubic),
+      // SVG özelliği; native sürücü yalnızca transform/opacity'yi taşıyor.
+      useNativeDriver: false,
+    });
+
+    const fading = Animated.timing(fill, {
+      toValue: 1,
+      duration: 600,
+      delay: 250,
+      useNativeDriver: false,
+    });
+
+    // Baloncuklar eğri o noktaya VARDIKÇA oturuyor; gecikmeler düğümlerin
+    // yatay konumuyla orantılı, yani hareket çizgiyle aynı hızda ilerliyor.
+    const popping = bubbles.map((value, index) =>
+      Animated.spring(value, {
+        toValue: 1,
+        delay: 250 + (NODES[index]?.x ?? 0) * 2.2,
+        friction: 6,
+        tension: 90,
+        useNativeDriver: true,
+      }),
+    );
+
+    const animation = Animated.parallel([drawing, fading, ...popping]);
+    animation.start();
+    return () => animation.stop();
+  }, [draw, fill, bubbles]);
+
   /** 6 ayda toplam okuma saati -- aritmetik, vaat değil. */
   const totalHours = dailyGoalMinutes ? Math.round((dailyGoalMinutes * 180) / 60) : null;
+
+  const dashOffset = draw.interpolate({
+    inputRange: [0, 1],
+    outputRange: [DASH_LENGTH, 0],
+  });
 
   return (
     <OnboardingScaffold
@@ -135,23 +185,31 @@ export function OnboardingProjectionStep({
               style={StyleSheet.absoluteFill}
             >
               <Defs>
-                <LinearGradient id="curve" x1="0" y1="1" x2="1" y2="0">
+                <LinearGradient id="stroke" x1="0" y1="1" x2="1" y2="0">
                   <Stop offset="0" stopColor={levelAccent.A1} />
                   <Stop offset="1" stopColor={theme.accent} />
                 </LinearGradient>
+                <LinearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+                  <Stop offset="0" stopColor={theme.accent} stopOpacity={0.22} />
+                  <Stop offset="1" stopColor={theme.accent} stopOpacity={0} />
+                </LinearGradient>
               </Defs>
 
-              <Path
+              <AnimatedPath d={AREA} fill="url(#area)" opacity={fill} />
+
+              <AnimatedPath
                 d={CURVE}
-                stroke="url(#curve)"
+                stroke="url(#stroke)"
                 strokeWidth={4}
                 fill="none"
                 strokeLinecap="round"
+                strokeDasharray={DASH_LENGTH}
+                strokeDashoffset={dashOffset}
               />
 
-              {/* Düğüm noktaları eğrinin ÜSTÜNE çiziliyor: aynı koordinat
-                  sisteminde oldukları için hiçbir ekran genişliğinde
-                  çizgiden kaymıyorlar. */}
+              {/* Düğümler eğriyle AYNI koordinat sisteminde çiziliyor;
+                  ayrı bir View olsalardı yüzde hesabındaki her sapma
+                  onları çizgiden kaydırırdı. */}
               {NODES.map((node, index) => (
                 <Circle
                   key={path[index] ?? index}
@@ -170,8 +228,16 @@ export function OnboardingProjectionStep({
               const step = path[index] as CefrLevel;
               const left: `${number}%` = `${(node.x / VB_WIDTH) * 100}%`;
               const top: `${number}%` = `${(node.y / VB_HEIGHT) * 100}%`;
+              const value = bubbles[index] as Animated.Value;
               return (
-                <View key={step} style={[styles.bubbleSlot, { left, top }]}>
+                <Animated.View
+                  key={step}
+                  style={[
+                    styles.bubbleSlot,
+                    { left, top },
+                    { opacity: value, transform: [{ scale: value }] },
+                  ]}
+                >
                   <View
                     style={[
                       styles.bubble,
@@ -182,7 +248,7 @@ export function OnboardingProjectionStep({
                       {step}
                     </Text>
                   </View>
-                </View>
+                </Animated.View>
               );
             })}
           </View>
@@ -214,18 +280,12 @@ export function OnboardingProjectionStep({
                 <Ionicons name={feature.icon} size={18} color={feature.tint} />
               </View>
               <View style={styles.featureText}>
-                <Text
-                  style={[monoType.label, { color: theme.text.primary }]}
-                  numberOfLines={1}
-                >
+                <Text style={[monoType.label, { color: theme.text.primary }]} numberOfLines={1}>
                   {feature.key === "daily" && dailyGoalMinutes
                     ? t("onboarding.goal.minutes", { count: dailyGoalMinutes })
                     : t(`onboarding.path.features.${feature.key}.title`)}
                 </Text>
-                <Text
-                  style={[monoType.meta, { color: theme.text.secondary }]}
-                  numberOfLines={2}
-                >
+                <Text style={[monoType.meta, { color: theme.text.secondary }]} numberOfLines={2}>
                   {t(`onboarding.path.features.${feature.key}.body`)}
                 </Text>
               </View>
@@ -254,7 +314,7 @@ const styles = StyleSheet.create({
   },
   /**
    * Baloncuk yuvası: genişliği baloncuk kadar ve yarısı kadar sola
-   * kaydırılmış, böylece düğüm noktasında ORTALANIYOR. Dikeyde de
+   * kaydırılmış, böylece düğüm noktasında ORTALANIYOR; dikeyde de
    * baloncuğun ALTI düğüme değecek şekilde yukarı çekiliyor.
    */
   bubbleSlot: {

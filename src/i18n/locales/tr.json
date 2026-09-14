@@ -405,7 +405,7 @@
       "languageTr": "Türkçe",
       "languageEn": "İngilizce",
       "deleteAccount": "Hesabımı sil",
-      "devReplayOnboarding": "Onboarding'i baştan oynat (geliştirici)"
+      "devReplayOnboarding": "Hesabı sıfırla ve onboarding'i baştan oynat (geliştirici)"
     },
     "footer": "{{name}} — sürüm {{version}}"
   },

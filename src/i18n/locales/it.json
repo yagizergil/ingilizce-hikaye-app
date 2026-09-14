@@ -405,7 +405,7 @@
       "languageTr": "Turco",
       "languageEn": "Inglese",
       "deleteAccount": "Elimina il mio account",
-      "devReplayOnboarding": "Riavvia l'onboarding (sviluppatore)"
+      "devReplayOnboarding": "Reimposta l'account e rivedi l'onboarding (sviluppatore)"
     },
     "footer": "{{name}} — versione {{version}}"
   },

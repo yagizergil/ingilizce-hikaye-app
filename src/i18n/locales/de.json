@@ -405,7 +405,7 @@
       "languageTr": "Türkisch",
       "languageEn": "Englisch",
       "deleteAccount": "Konto löschen",
-      "devReplayOnboarding": "Onboarding erneut abspielen (Entwickler)"
+      "devReplayOnboarding": "Konto zurücksetzen und Onboarding erneut starten (Entwickler)"
     },
     "footer": "{{name}} — Version {{version}}"
   },

@@ -413,7 +413,7 @@
       "languageTr": "التركية",
       "languageEn": "الإنجليزية",
       "deleteAccount": "حذف حسابي",
-      "devReplayOnboarding": "إعادة تشغيل التهيئة (للمطوّر)"
+      "devReplayOnboarding": "إعادة ضبط الحساب وإعادة تشغيل الإعداد (للمطوّر)"
     },
     "footer": "{{name}} — الإصدار {{version}}"
   },

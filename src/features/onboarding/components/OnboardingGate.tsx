@@ -1,8 +1,9 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
 
 import { useTheme } from "@/theme/useTheme";
 
@@ -16,9 +17,8 @@ interface OnboardingGateProps {
 /**
  * İlk açılışta onboarding akışını gösterir, tamamlandıktan sonra uygulamayı.
  *
- * Akışın kendisi `OnboardingFlow` içinde (splash -> karşılama -> ana dil ->
- * hedef dil -> seviye). Bu bileşenin tek işi "gösterilecek mi" sorusuna
- * cevap vermek.
+ * Akışın kendisi `OnboardingFlow` içinde. Bu bileşenin tek işi "gösterilecek
+ * mi" sorusuna cevap vermek.
  *
  * `AuthGate`'in İÇİNDE kullanılmalı: onboarding durumu profil satırından
  * okunuyor, bu da bir `auth.uid()` gerektiriyor.
@@ -32,9 +32,31 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
   const queryClient = useQueryClient();
   const { data, isLoading, isError } = useOnboardingStatusQuery();
 
+  const [finishing, setFinishing] = useState(false);
+  const returnedRef = useRef(false);
+
   const handleDone = useCallback(() => {
+    setFinishing(true);
     void queryClient.invalidateQueries({ queryKey: ["onboarding", "status"] });
   }, [queryClient]);
+
+  const showFlow = !isError && data && !data.completed;
+
+  /**
+   * Onboarding biterken navigasyonu KÖKE alıyoruz.
+   *
+   * NEDEN: akış gösterilirken `Stack` mount edilmiş değil, ama Expo
+   * Router'ın geçmişi duruyor. Kullanıcı onboarding'den önce paywall'a ya
+   * da hesap silme ekranına girdiyse (geliştirici akışında bu çok oluyor),
+   * akış bittiği anda `Stack` o ekranla geri geliyordu -- yani onboarding
+   * "hesabını sil" ekranıyla bitiyormuş gibi görünüyordu. Kök rota
+   * yığındaki artığı temizliyor.
+   */
+  useEffect(() => {
+    if (!finishing || showFlow || returnedRef.current) return;
+    returnedRef.current = true;
+    router.replace("/");
+  }, [finishing, showFlow]);
 
   if (isLoading) {
     return (
@@ -44,7 +66,7 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
     );
   }
 
-  if (!isError && data && !data.completed) {
+  if (showFlow) {
     return <OnboardingFlow onDone={handleDone} />;
   }
 

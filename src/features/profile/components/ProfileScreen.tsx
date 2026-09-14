@@ -10,6 +10,7 @@ import { spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
+import { env } from "@/lib/env";
 import { Card, LoadingState, ErrorState, Hairline, SectionHeader } from "@/components/ui";
 import { useVocabularyQuery } from "@/features/vocabulary";
 import { useReaderSettings } from "@/features/reader";
@@ -82,30 +83,49 @@ export function ProfileScreen() {
   }, []);
 
   /**
-   * GELİŞTİRİCİ ARACI: onboarding'i baştan oynatır.
+   * GELİŞTİRİCİ ARACI: akışı SIFIRDAN, hiç hesap yokmuş gibi başlatır.
    *
-   * `profiles.onboarding_completed_at`'i null'a çekiyor -- `OnboardingGate`
-   * bu alana bakıyor, sorgu tazelenince akış kendiliğinden açılıyor.
-   * Kullanıcının dil çifti, kaydettiği kelimeler ve okuma geçmişi
-   * SİLİNMİYOR: amaç akışı yeniden görmek, hesabı sıfırlamak değil.
+   * NEDEN SADECE `onboarding_completed_at`'i NULL'A ÇEKMİYORUZ (eski hâli
+   * buydu): o zaman dil çifti, beğenilen kitaplar, kaydedilen kelimeler ve
+   * seviye yerinde kalıyordu. Akış bunları okuyup adımları önceden dolu
+   * gösteriyordu -- yani ilk kullanıcının GÖRDÜĞÜ şey test edilemiyordu,
+   * ki bu aracın tek amacı o.
+   *
+   * Şimdi hesabın kendisi siliniyor (hesap silme ekranıyla AYNI edge
+   * function -- ikinci bir silme yolu yazmak, ikisinin zamanla ayrışması
+   * demek olurdu), ardından yeni bir anonim oturum açılıyor. Sonuç: taze
+   * bir `auth.uid()`, boş bir profil, sıfırdan onboarding.
+   *
+   * Önbellek de tamamen temizleniyor: eski hesabın kitapları ve kelimeleri
+   * TanStack Query'de duruyor olurdu ve yeni hesap onları kendi verisi
+   * sanırdı.
    *
    * Yalnızca `__DEV__` altında çağrılıyor (bkz. çağrıldığı yer).
    */
   const handleReplayOnboarding = useCallback(async () => {
-    const { data: userData } = await supabase.auth.getUser();
-    const userId = userData.user?.id;
-    if (!userId) return;
+    try {
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      if (!accessToken) throw new Error("no session");
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({ onboarding_completed_at: null })
-      .eq("id", userId);
+      const response = await fetch(`${env.supabaseUrl}/functions/v1/delete-account`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!response.ok) throw new Error("delete failed");
 
-    if (error) {
-      Alert.alert(t("common.errorTitle"), error.message);
-      return;
+      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signInAnonymously();
+      if (error) throw error;
+
+      queryClient.clear();
+      router.replace("/");
+    } catch (error) {
+      Alert.alert(
+        t("common.errorTitle"),
+        error instanceof Error ? error.message : t("account.delete.error"),
+      );
     }
-    await queryClient.invalidateQueries({ queryKey: ["onboarding", "status"] });
   }, [queryClient, t]);
 
   // Paywall'un açıldığı üç yerden biri (diğerleri: Kelimelerim şeridi ve

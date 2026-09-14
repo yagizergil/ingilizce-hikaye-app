@@ -405,7 +405,7 @@
       "languageTr": "土耳其语",
       "languageEn": "英语",
       "deleteAccount": "删除我的账号",
-      "devReplayOnboarding": "重新播放引导流程（开发者）"
+      "devReplayOnboarding": "重置账号并重新开始引导（开发者）"
     },
     "footer": "{{name}} — 版本 {{version}}"
   },
