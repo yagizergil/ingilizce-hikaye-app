@@ -1,19 +1,17 @@
 import { ScrollView, StyleSheet, Text } from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { SvgXml } from "react-native-svg";
 
 import { monoType, spacing } from "@/theme";
-import { levelAccent, onLevelAccent } from "@/theme/tokens/colors";
+import { useTheme } from "@/theme/useTheme";
 
+import { levelIconXml } from "@/features/onboarding/levelIconXml";
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
 import { OnboardingOptionCard } from "@/features/onboarding/components/OnboardingOptionCard";
 import { OnboardingScaffold } from "@/features/onboarding/components/OnboardingScaffold";
 
 import type { CefrLevel } from "@/features/onboarding/levelEstimate";
-import type { ComponentProps } from "react";
-
-type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
 /**
  * Seviye seçimi (referans: `docs/reference/bookvo-04-seviye-secimi.jpeg`).
@@ -38,7 +36,7 @@ type IoniconName = ComponentProps<typeof Ionicons>["name"];
 const LEVELS: CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 /**
- * Satırda seviye KODU yerine ikon.
+ * Satırda seviye KODU yerine illüstrasyon.
  *
  * NEDEN: "A1/B2" ölçeği Avrupa dilleri için tanımlı ve uygulama artık on
  * arayüz diliyle çalışıyor -- Çince ya da Japonca okuyan birine "B2" hiçbir
@@ -47,18 +45,15 @@ const LEVELS: CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
  * fazlalık. Ölçek sistemin İÇİNDE duruyor (kitaplar `cefr_level` ile
  * filtreleniyor), yalnızca bu ekranda gösterilmiyor.
  *
- * İkonlar bir BÜYÜME hikâyesi anlatıyor: filiz -> yaprak -> kitap ->
- * konuşma -> pusula -> zirve. Rastgele altı ikon değil, sırası olan bir
- * dizi; satırlar arasında ilerleme hissi veren şey bu.
+ * İllüstrasyonlar bir BÜYÜME hikâyesi anlatıyor: yaprak -> güneş ->
+ * kitap -> konuşma -> pusula -> kupa. Rastgele altı görsel değil, sırası
+ * olan bir dizi; satırlar arasında ilerleme hissi veren şey bu.
+ *
+ * ROZETİN ARKA PLANI SEVİYE RENGİ DEĞİL, NÖTR: görseller kendi renklerini
+ * taşıyor (tek renge boyanamıyorlar). Renkli bir görseli renkli bir
+ * dairenin üstüne koymak ikisini de bulanıklaştırırdı; nötr zemin
+ * görselin kendi renklerini öne çıkarıyor.
  */
-const LEVEL_ICONS: Record<CefrLevel, IoniconName> = {
-  A1: "leaf-outline",
-  A2: "sunny-outline",
-  B1: "book-outline",
-  B2: "chatbubbles-outline",
-  C1: "compass-outline",
-  C2: "trophy-outline",
-};
 
 interface OnboardingLevelStepProps {
   progress: number;
@@ -78,6 +73,7 @@ export function OnboardingLevelStep({
   submitting = false,
 }: OnboardingLevelStepProps) {
   const { t } = useTranslation();
+  const { theme } = useTheme();
 
   return (
     <OnboardingScaffold
@@ -97,8 +93,8 @@ export function OnboardingLevelStep({
         {LEVELS.map((level) => (
           <OnboardingOptionCard
             key={level}
-            badge={<Ionicons name={LEVEL_ICONS[level]} size={20} color={onLevelAccent} />}
-            badgeColor={levelAccent[level]}
+            badge={<SvgXml xml={levelIconXml[level] as string} width={26} height={26} />}
+            badgeColor={theme.bg.primary}
             title={t(`onboarding.level.options.${level}.title`)}
             subtitle={t(`onboarding.level.options.${level}.body`)}
             selected={selected === level}
