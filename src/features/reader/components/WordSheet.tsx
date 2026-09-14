@@ -7,10 +7,11 @@ import * as Speech from "expo-speech";
 
 import { radius, spacing, monoType, readingType, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { LevelBadge } from "@/components/ui";
+import { LevelBadge, Skeleton } from "@/components/ui";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { getVoiceIdentifier } from "@/features/reader/tts/englishVoice";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
+import { usePairLemmaLookup } from "@/features/reader/api/usePairLemmaLookup";
 import { useGlobalLemmaLookup } from "@/features/reader/api/useGlobalLemmaLookup";
 import { useLiveWordTranslation } from "@/features/reader/api/useLiveWordTranslation";
 import { useSentenceTranslationQuery } from "@/features/reader/api/useSentenceTranslationQuery";
@@ -192,9 +193,19 @@ export function WordSheet({
   // (globalLookup settled with no result), and only once per word (guarded
   // by lastLiveRequestedLemmaRef) -- re-opening the sheet on the same
   // unresolved word should not re-trigger a fresh LLM call every time.
+  // `lemma_translations` önbelleği: bir kez AI ile çevrilen kelime ikinci
+  // dokunuşta buradan geliyor (bkz. usePairLemmaLookup). Yalnızca genel
+  // sözlük ıskaladıktan SONRA sorgulanıyor.
+  const globalMissed = bookMissed && globalLookup.isFetched && !globalEntry;
+  const pairLookup = usePairLemmaLookup(
+    globalMissed && word ? word.lemma : null,
+    globalMissed && word ? word.surface : null,
+  );
+  const pairEntry = pairLookup.data ?? undefined;
+
   const liveTranslation = useLiveWordTranslation();
   const lastLiveRequestedLemmaRef = useRef<string | null>(null);
-  const bothMissed = bookMissed && globalLookup.isFetched && !globalEntry;
+  const bothMissed = globalMissed && pairLookup.isFetched && !pairEntry;
 
   useEffect(() => {
     if (!word || !bothMissed) return;
@@ -224,9 +235,12 @@ export function WordSheet({
       }
     : undefined;
 
-  const entry = bookEntry ?? globalEntry ?? liveEntry;
+  const entry = bookEntry ?? globalEntry ?? pairEntry ?? liveEntry;
   const isResolvingTranslation =
-    bookMissed && (globalLookup.isLoading || (bothMissed && liveTranslation.isPending));
+    bookMissed &&
+    (globalLookup.isLoading ||
+      (globalMissed && pairLookup.isLoading) ||
+      (bothMissed && liveTranslation.isPending));
 
   /**
    * Gösterilecek anlam(lar).
@@ -381,11 +395,17 @@ export function WordSheet({
                     {primaryGloss}
                   </Text>
                 ) : isResolvingTranslation ? (
-                  <Text
-                    style={[type.wordLemma, styles.wordText, { color: readerColors.textMuted }]}
+                  /* Metin yerine yer tutucu: bekleme cümlesi gelecek olan
+                     şeyin YERİNİ tutmuyordu, karşılık gelince kart
+                     zıplıyordu. Yer tutucu karşılığın boyutunda duruyor ve
+                     her dilde aynı. */
+                  <View
+                    style={styles.wordSkeleton}
+                    accessibilityLabel={t("reader.wordSheet.lookingUpTranslation")}
                   >
-                    {t("reader.wordSheet.lookingUpTranslation")}
-                  </Text>
+                    <Skeleton width={148} height={22} borderRadius={radius.sm} />
+                    <Skeleton width={96} height={14} borderRadius={radius.sm} />
+                  </View>
                 ) : (
                   <Text
                     style={[type.wordLemma, styles.wordText, { color: readerColors.textMuted }]}
@@ -587,6 +607,10 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
+  },
+  wordSkeleton: {
+    gap: spacing.xs,
+    alignItems: "center",
   },
   wordBlock: {
     alignItems: "center",

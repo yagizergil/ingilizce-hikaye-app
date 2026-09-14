@@ -9,7 +9,7 @@ import * as Updates from "expo-updates";
 import i18n from "@/i18n";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { LoadingState } from "@/components/ui";
+import { LanguageFlag, LoadingState } from "@/components/ui";
 import { CONTENT_TARGET_LANGUAGES, LANGUAGES, isRtlLanguage, getLanguage } from "@/lib/languages";
 
 import { useOwnedLanguagePairsQuery } from "@/features/languagePair/api/useActiveLanguagePairQuery";
@@ -231,9 +231,7 @@ export function ManageLanguagePairsScreen({
                     ]}
                   >
                     <View style={styles.rowLabel}>
-                      <Text style={styles.flag}>
-                        {getLanguage(activePair.nativeLanguage)?.flag}
-                      </Text>
+                      <LanguageFlag code={activePair.nativeLanguage} size={28} />
                       <Text style={[monoType.rowText, { color: theme.text.primary }]}>
                         {getLanguage(activePair.nativeLanguage)?.nativeName ??
                           activePair.nativeLanguage}
@@ -303,7 +301,7 @@ function LanguageOptionRow({ language, onPress }: { language: LanguageInfo; onPr
       ]}
     >
       <View style={styles.rowLabel}>
-        <Text style={styles.flag}>{language.flag}</Text>
+        <LanguageFlag code={language.code} size={32} />
         <View>
           <Text style={[monoType.rowText, { color: theme.text.primary }]}>
             {language.nativeName}
@@ -347,10 +345,10 @@ function PairRow({
       accessibilityRole="button"
     >
       <View style={styles.rowLabel}>
-        <Text style={styles.flag}>
-          {nativeInfo?.flag}
-          {targetInfo?.flag}
-        </Text>
+        <View style={styles.flagPair}>
+          {nativeInfo ? <LanguageFlag code={nativeInfo.code} size={28} /> : null}
+          {targetInfo ? <LanguageFlag code={targetInfo.code} size={28} /> : null}
+        </View>
         <Text style={[monoType.rowText, { color: theme.text.primary }]}>
           {nativeInfo?.nativeName ?? native} → {targetInfo?.nativeName ?? target}
         </Text>
@@ -402,7 +400,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing.sm,
   },
-  flag: {
-    fontSize: type.wordmark.fontSize,
+  flagPair: {
+    flexDirection: "row",
+    gap: spacing.xxs,
   },
 });

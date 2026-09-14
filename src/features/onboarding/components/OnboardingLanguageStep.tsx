@@ -1,10 +1,11 @@
 import { useMemo } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
-import { spacing, type } from "@/theme";
+import { spacing } from "@/theme";
 import { LANGUAGES } from "@/lib/languages";
+import { LanguageFlag } from "@/components/ui";
 
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
 import { OnboardingOptionCard } from "@/features/onboarding/components/OnboardingOptionCard";
@@ -76,8 +77,7 @@ export function OnboardingLanguageStep({
           return (
             <OnboardingOptionCard
               key={language.code}
-              badge={<Text style={type.display}>{language.flag}</Text>}
-              badgeColor="transparent"
+              badge={<LanguageFlag code={language.code} size={36} />}
               title={language.nativeName}
               subtitle={language.nameEn}
               selected={selected === language.code}

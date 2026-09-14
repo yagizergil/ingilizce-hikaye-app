@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, Text } from "react-native";
 
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { monoType, spacing } from "@/theme";
@@ -10,6 +11,9 @@ import { OnboardingOptionCard } from "@/features/onboarding/components/Onboardin
 import { OnboardingScaffold } from "@/features/onboarding/components/OnboardingScaffold";
 
 import type { CefrLevel } from "@/features/onboarding/levelEstimate";
+import type { ComponentProps } from "react";
+
+type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
 /**
  * Seviye seçimi (referans: `docs/reference/bookvo-04-seviye-secimi.jpeg`).
@@ -32,6 +36,29 @@ import type { CefrLevel } from "@/features/onboarding/levelEstimate";
  * eşleşiyor).
  */
 const LEVELS: CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
+/**
+ * Satırda seviye KODU yerine ikon.
+ *
+ * NEDEN: "A1/B2" ölçeği Avrupa dilleri için tanımlı ve uygulama artık on
+ * arayüz diliyle çalışıyor -- Çince ya da Japonca okuyan birine "B2" hiçbir
+ * şey söylemiyor. Satırın kendi başlığı ve açıklaması zaten seviyeyi
+ * anlatıyor; kod, anlamayan kullanıcı için gürültü, anlayan için de
+ * fazlalık. Ölçek sistemin İÇİNDE duruyor (kitaplar `cefr_level` ile
+ * filtreleniyor), yalnızca bu ekranda gösterilmiyor.
+ *
+ * İkonlar bir BÜYÜME hikâyesi anlatıyor: filiz -> yaprak -> kitap ->
+ * konuşma -> pusula -> zirve. Rastgele altı ikon değil, sırası olan bir
+ * dizi; satırlar arasında ilerleme hissi veren şey bu.
+ */
+const LEVEL_ICONS: Record<CefrLevel, IoniconName> = {
+  A1: "leaf-outline",
+  A2: "sunny-outline",
+  B1: "book-outline",
+  B2: "chatbubbles-outline",
+  C1: "compass-outline",
+  C2: "trophy-outline",
+};
 
 interface OnboardingLevelStepProps {
   progress: number;
@@ -70,11 +97,7 @@ export function OnboardingLevelStep({
         {LEVELS.map((level) => (
           <OnboardingOptionCard
             key={level}
-            badge={
-              <Text style={[monoType.label, { color: onLevelAccent, letterSpacing: 0 }]}>
-                {level}
-              </Text>
-            }
+            badge={<Ionicons name={LEVEL_ICONS[level]} size={20} color={onLevelAccent} />}
             badgeColor={levelAccent[level]}
             title={t(`onboarding.level.options.${level}.title`)}
             subtitle={t(`onboarding.level.options.${level}.body`)}

@@ -45,41 +45,58 @@ type IoniconName = ComponentProps<typeof Ionicons>["name"];
  */
 const LADDER: CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
-const FEATURES: { icon: IoniconName; key: string; tint: string }[] = [
-  { icon: "flame-outline", key: "daily", tint: levelAccent.A1 },
-  { icon: "headset-outline", key: "audio", tint: levelAccent.A2 },
-  { icon: "sparkles-outline", key: "ai", tint: levelAccent.B1 },
-  { icon: "repeat-outline", key: "review", tint: levelAccent.C1 },
+/**
+ * Alt kutucuklar.
+ *
+ * RENKLİ İKON ROZETLERİ KALDIRILDI: her kutucuğa ayrı bir renk vermek
+ * (mavi/yeşil/sarı/kırmızı) hiçbir şey anlatmıyordu -- renkler bir
+ * SINIFLAMA göstermiyordu, sadece süstü, ve ekranın geri kalanında renk
+ * SEVİYE demek (A1 mavi, C2 mor). Aynı ekranda aynı rengin iki farklı iş
+ * yapması, tasarımı "hazır şablon" gibi gösteren şeydi. İkonlar artık
+ * metinle aynı ailede: tek renk, rozet yok.
+ */
+const FEATURES: { icon: IoniconName; key: string }[] = [
+  { icon: "flame-outline", key: "daily" },
+  { icon: "headset-outline", key: "audio" },
+  { icon: "sparkles-outline", key: "ai" },
+  { icon: "repeat-outline", key: "review" },
 ];
 
-const PLOT_HEIGHT = 176;
-const BUBBLE_SIZE = 46;
+const PLOT_HEIGHT = 200;
+const BUBBLE_SIZE = 44;
 const DOT_SIZE = 14;
 /** Baloncuğun altı ile düğüm noktası arasındaki boşluk. */
 const BUBBLE_GAP = 10;
 
 const VB_WIDTH = 300;
-const VB_HEIGHT = 176;
+const VB_HEIGHT = 200;
 /** Eğrinin uzunluğundan büyük herhangi bir sayı; kesikli desen buna göre. */
 const DASH_LENGTH = 720;
 
-/** Düğümler üç eşit sütunun merkezinde (1/6, 3/6, 5/6). */
+/**
+ * Düğümler üç eşit sütunun merkezinde (1/6, 3/6, 5/6).
+ *
+ * En üstteki düğümün y'si 63 pt'den KÜÇÜK OLAMAZ: baloncuk düğümün
+ * üstünde duruyor ve yüksekliği + boşluğu tam olarak o kadar. Daha yukarı
+ * çıkarsa baloncuk kartın dışına taşar -- ilk sürümde B2 soldan, C2
+ * yukarıdan kırpılıyordu, sebebi buydu.
+ */
 const NODES = [
-  { x: 50, y: 130 },
-  { x: 150, y: 84 },
-  { x: 250, y: 38 },
+  { x: 50, y: 158 },
+  { x: 150, y: 116 },
+  { x: 250, y: 74 },
 ] as const;
 
 const CURVE = [
-  "M 8 156",
-  `C 26 152, 34 138, ${NODES[0].x} ${NODES[0].y}`,
-  `S 112 96, ${NODES[1].x} ${NODES[1].y}`,
-  `S 218 46, ${NODES[2].x} ${NODES[2].y}`,
-  "S 286 24, 292 20",
+  "M 4 184",
+  `C 22 180, 30 166, ${NODES[0].x} ${NODES[0].y}`,
+  `S 112 128, ${NODES[1].x} ${NODES[1].y}`,
+  `S 218 82, ${NODES[2].x} ${NODES[2].y}`,
+  "S 288 58, 296 54",
 ].join(" ");
 
 /** Aynı eğrinin tabana kapatılmış hâli -- altındaki dolgu. */
-const AREA = `${CURVE} L 292 ${VB_HEIGHT} L 8 ${VB_HEIGHT} Z`;
+const AREA = `${CURVE} L 296 ${VB_HEIGHT} L 4 ${VB_HEIGHT} Z`;
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -276,11 +293,9 @@ export function OnboardingProjectionStep({
                 { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
               ]}
             >
-              <View style={[styles.featureBadge, { backgroundColor: `${feature.tint}22` }]}>
-                <Ionicons name={feature.icon} size={18} color={feature.tint} />
-              </View>
+              <Ionicons name={feature.icon} size={18} color={theme.accent} />
               <View style={styles.featureText}>
-                <Text style={[monoType.label, { color: theme.text.primary }]} numberOfLines={1}>
+                <Text style={[monoType.rowText, { color: theme.text.primary }]} numberOfLines={2}>
                   {feature.key === "daily" && dailyGoalMinutes
                     ? t("onboarding.goal.minutes", { count: dailyGoalMinutes })
                     : t(`onboarding.path.features.${feature.key}.title`)}
@@ -306,8 +321,10 @@ const styles = StyleSheet.create({
   chartCard: {
     borderRadius: radius.lg,
     borderWidth: StyleSheet.hairlineWidth,
-    paddingTop: spacing.md,
-    overflow: "hidden",
+    // Yatay iç boşluk, en soldaki ve en sağdaki BALONCUĞUN yarısından
+    // büyük: baloncuklar kartın kenarına değmiyor.
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
   },
   plot: {
     height: PLOT_HEIGHT,
@@ -351,18 +368,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexDirection: "row",
-    alignItems: "center",
+    // İkon başlığın ilk satırıyla hizalı; başlık iki satıra taşarsa ikon
+    // ortaya kayıp satırı eğri göstermiyor.
+    alignItems: "flex-start",
     gap: spacing.xs,
     padding: spacing.sm,
     borderRadius: radius.md,
     borderWidth: StyleSheet.hairlineWidth,
-  },
-  featureBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: radius.sm,
-    alignItems: "center",
-    justifyContent: "center",
   },
   featureText: {
     flex: 1,

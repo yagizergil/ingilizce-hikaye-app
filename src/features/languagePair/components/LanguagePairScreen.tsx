@@ -9,7 +9,7 @@ import { I18nManager } from "react-native";
 import i18n from "@/i18n";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { Button, LoadingState } from "@/components/ui";
+import { Button, LanguageFlag, LoadingState } from "@/components/ui";
 import {
   CONTENT_TARGET_LANGUAGES,
   isRtlLanguage,
@@ -247,7 +247,7 @@ function LanguageRow({
       accessibilityLabel={language.nativeName}
     >
       <View style={styles.rowLabel}>
-        <Text style={styles.flag}>{language.flag}</Text>
+        <LanguageFlag code={language.code} size={32} />
         <View>
           <Text style={[monoType.rowText, { color: theme.text.primary }]}>
             {language.nativeName}

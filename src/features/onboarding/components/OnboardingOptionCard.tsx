@@ -19,8 +19,13 @@ import type { ReactNode } from "react";
  * olabiliyor. Sabit yükseklik vermek uzun metni kırpardı.
  */
 
-/** Ölçüm: 105 px / 2.4046 = 43.7 pt. */
-const BADGE_SIZE = 44;
+/**
+ * Ölçüm 44 pt diyordu ama referansın satırında rozetin altında/üstünde
+ * bizdekinden az boşluk var. 36 pt + daha dar iç padding, satırı
+ * referanstaki yoğunluğa getiriyor: on dillik liste tek ekrana daha çok
+ * sığıyor ve kartlar "boşta" durmuyor.
+ */
+const BADGE_SIZE = 36;
 
 /** Ölçüm: seçim halkası ~24 px çap; iOS radio ölçüsüyle de uyumlu. */
 const RADIO_SIZE = 24;
@@ -71,8 +76,10 @@ export function OnboardingOptionCard({
         },
       ]}
     >
-      {badgeColor ? (
-        <View style={[styles.badge, { backgroundColor: badgeColor }]}>{badge}</View>
+      {badge ? (
+        <View style={[styles.badge, badgeColor ? { backgroundColor: badgeColor } : null]}>
+          {badge}
+        </View>
       ) : null}
 
       <View style={styles.textBlock}>
@@ -105,8 +112,9 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.md,
-    padding: spacing.md,
+    gap: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
     borderRadius: radius.md,
   },
   badge: {

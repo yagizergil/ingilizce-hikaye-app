@@ -5,6 +5,7 @@ export { FilterTab } from "@/components/ui/FilterTab";
 export { SegmentedControl } from "@/components/ui/SegmentedControl";
 export type { SegmentOption } from "@/components/ui/SegmentedControl";
 export { LevelBadge } from "@/components/ui/LevelBadge";
+export { LanguageFlag } from "@/components/ui/LanguageFlag";
 export { EmptyState } from "@/components/ui/EmptyState";
 export { ErrorState } from "@/components/ui/ErrorState";
 export { ErrorBoundary } from "@/components/ui/ErrorBoundary";

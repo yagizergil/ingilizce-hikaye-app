@@ -35,11 +35,23 @@ export interface LanguageInfo {
    * kabul edilen bir bedel, native isim zaten yanında duruyor.
    */
   flag: string;
+  /**
+   * `circle-flags` setindeki dosya adı (ISO 3166-1 alpha-2).
+   *
+   * NEDEN EMOJİ YETMEDİ: emoji bayraklar her platformda farklı çiziliyor,
+   * iOS'ta dikdörtgen ve satırın geri kalanıyla aynı görsel dile ait
+   * değiller -- ekran "hazır parça yapıştırılmış" gibi duruyordu. Yuvarlak
+   * bayraklar satırdaki diğer yuvarlak öğelerle (radyo düğmesi, rozet)
+   * aynı geometride. `flag` alanı erişilebilirlik metni ve görüntü
+   * yüklenemezse yedek olarak duruyor.
+   */
+  flagCode: string;
 }
 
 export const LANGUAGES: readonly LanguageInfo[] = [
   {
     code: "en",
+    flagCode: "gb",
     nameEn: "English",
     nativeName: "English",
     isRtl: false,
@@ -48,6 +60,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "es",
+    flagCode: "es",
     nameEn: "Spanish",
     nativeName: "Español",
     isRtl: false,
@@ -56,6 +69,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "zh",
+    flagCode: "cn",
     nameEn: "Chinese",
     nativeName: "中文",
     isRtl: false,
@@ -64,6 +78,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ar",
+    flagCode: "sa",
     nameEn: "Arabic",
     nativeName: "العربية",
     isRtl: true,
@@ -72,6 +87,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "fr",
+    flagCode: "fr",
     nameEn: "French",
     nativeName: "Français",
     isRtl: false,
@@ -80,6 +96,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ru",
+    flagCode: "ru",
     nameEn: "Russian",
     nativeName: "Русский",
     isRtl: false,
@@ -88,6 +105,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "tr",
+    flagCode: "tr",
     nameEn: "Turkish",
     nativeName: "Türkçe",
     isRtl: false,
@@ -96,6 +114,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "de",
+    flagCode: "de",
     nameEn: "German",
     nativeName: "Deutsch",
     isRtl: false,
@@ -104,6 +123,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ja",
+    flagCode: "jp",
     nameEn: "Japanese",
     nativeName: "日本語",
     isRtl: false,
@@ -112,6 +132,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "it",
+    flagCode: "it",
     nameEn: "Italian",
     nativeName: "Italiano",
     isRtl: false,

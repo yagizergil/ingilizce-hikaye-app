@@ -192,10 +192,10 @@ export function OnboardingFirstReadStep({
                 key={word.lemma}
                 style={[styles.chip, { backgroundColor: theme.bg.surface, borderColor: theme.accent }]}
               >
-                <Text style={[monoType.meta, { color: theme.text.primary }]}>{word.surface}</Text>
+                <Text style={[monoType.rowText, { color: theme.text.primary }]}>{word.surface}</Text>
                 <Ionicons
                   name="close"
-                  size={14}
+                  size={16}
                   color={theme.text.secondary}
                   onPress={() => onUnpick(word.lemma)}
                 />
@@ -262,15 +262,17 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xxs,
-    paddingHorizontal: spacing.sm,
+    gap: spacing.xs,
+    // Metin 10 -> 13 pt büyüdü; yükseklik onunla birlikte artmazsa kelime
+    // çemberin içinde sıkışık durur.
+    paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     borderRadius: radius.full,
     borderWidth: 1,
   },
   chipEmpty: {
-    width: 84,
-    height: 34,
+    width: 92,
+    height: 38,
     borderRadius: radius.full,
     borderWidth: 1,
     borderStyle: "dashed",
