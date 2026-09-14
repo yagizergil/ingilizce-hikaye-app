@@ -84,6 +84,22 @@ export function useInitialReadingProgress(bookId: string, chapterId: string) {
   });
 }
 
+/**
+ * Hook DIŞINDAN çağrılabilen kaydetme -- ekran kapanırken kullanılıyor.
+ *
+ * NEDEN GEREKLİ: pozisyon 1,5 sn'lik bir gecikmeyle kaydediliyor ve
+ * bileşen sökülürken o zamanlayıcı iptal ediliyordu. Sayfayı çevirip hemen
+ * geri tuşuna basan kullanıcının okuması HİÇ yazılmıyordu -- "şu an
+ * okunuyor" rafının boş kalmasının sebebi buydu. Sökülme anında
+ * mutation'a güvenilemez (bileşenle birlikte o da gidiyor), o yüzden
+ * doğrudan çağrılan bir fonksiyon gerekiyor. Başarısız olursa kayıt
+ * kuyruğa alınıyor ve bir sonraki açılışta gönderiliyor.
+ */
+export async function persistReadingProgress(input: ReadingProgressInput): Promise<void> {
+  const result = await saveReadingProgress(input);
+  if (!result.ok) await queuePendingProgress(input);
+}
+
 export function useReadingProgressMutation() {
   const { t } = useTranslation();
 

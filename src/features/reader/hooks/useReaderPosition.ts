@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   flushPendingProgress,
+  persistReadingProgress,
   useInitialReadingProgress,
   useReadingProgressMutation,
 } from "@/features/reader/api/useReadingProgressMutation";
@@ -45,6 +46,8 @@ export function useReaderPosition(
   const { mutate } = useReadingProgressMutation();
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Zamanlayıcı henüz ateşlemediyse yazılmayı bekleyen kayıt. */
+  const pendingRef = useRef<Parameters<typeof persistReadingProgress>[0] | null>(null);
   const [currentPosition, setCurrentPosition] = useState<ReaderPositionUpdatePayload | null>(null);
 
   useEffect(() => {
@@ -54,6 +57,17 @@ export function useReaderPosition(
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      /**
+       * ÇÖZÜLEN HATA: burada zamanlayıcı yalnızca İPTAL ediliyordu. Sayfayı
+       * çevirip 1,5 saniye dolmadan geri çıkan kullanıcının okuması hiç
+       * kaydedilmiyordu -- "şu an okunuyor" rafı bu yüzden boş kalıyordu.
+       * Bekleyen kayıt artık iptal değil, GÖNDERİLİYOR.
+       */
+      if (pendingRef.current) {
+        const pending = pendingRef.current;
+        pendingRef.current = null;
+        void persistReadingProgress(pending);
+      }
     };
   }, []);
 
@@ -86,14 +100,27 @@ export function useReaderPosition(
     const paragraph = chapter.paragraphs.find((candidate) => candidate.id === payload.paragraphId);
     if (!paragraph) return;
 
+    /**
+     * `payload.percent` 0..1 ARASI BİR ORAN (bkz. PaginatedReaderView'deki
+     * `pageIndex / (pages - 1)`), veritabanındaki sütun ise yüzde.
+     * `Math.round` doğrudan uygulanınca her sayfa 0, son sayfa 1 olarak
+     * yazılıyordu -- yani ilerleme çubukları ve "%50" etiketleri hep sıfır
+     * gösteriyordu. Orantı önce yüzdeye çevriliyor.
+     */
+    const percent = Math.min(100, Math.max(0, Math.round(payload.percent * 100)));
+
+    const next = {
+      bookId,
+      chapterId,
+      paragraphIndex: paragraph.paragraphIndex,
+      percent,
+    };
+    pendingRef.current = next;
+
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      mutate({
-        bookId,
-        chapterId,
-        paragraphIndex: paragraph.paragraphIndex,
-        percent: Math.round(payload.percent),
-      });
+      pendingRef.current = null;
+      mutate(next);
     }, SAVE_DEBOUNCE_MS);
   };
 
