@@ -209,14 +209,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: badgePadding.horizontal,
     alignSelf: "flex-start",
   },
+  /**
+   * ÖLÇÜLDÜ (referance1.jpeg): şerit 165 px geniş -> 69 pt, 58 px yüksek
+   * -> 24 pt, kapağın altından 18 px -> 8 pt. İkonlar 16 pt.
+   */
   actionPill: {
     marginTop: spacing.xs,
     alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xs,
-    paddingVertical: spacing.xxs,
-    paddingHorizontal: spacing.sm,
+    justifyContent: "center",
+    gap: spacing.sm,
+    width: 69,
+    height: 24,
     borderRadius: radius.full,
   },
   actionDivider: {

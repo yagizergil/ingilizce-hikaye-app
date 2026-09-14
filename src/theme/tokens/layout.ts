@@ -56,8 +56,13 @@ export const coverColumnWidth = {
    * card, leaving ~68px of dead space beside every cover — the exact
    * cause of the "yeni kitaplar tasarımı çok küçük kalıyor" feedback.
    * `shelf` is sized to fill its card edge-to-edge instead (see
-   * BookShelf.tsx's `CARD_WIDTH`, which now equals this value). */
-  shelf: 112,
+   * BookShelf.tsx's `CARD_WIDTH`, which now equals this value).
+   *
+   * ÖLÇÜLDÜ (2026-09-14, docs/reference/referance1.jpeg): referansta kapak
+   * 318 px geniş -> 132 pt. Bizdeki 112 pt, ekranda referanstan belirgin
+   * şekilde küçük duruyordu -- aradaki 20 pt, yan yana üç kapakta gözle
+   * görülür bir fark. Artık ölçülen değer. */
+  shelf: 132,
 } as const;
 
 /** Derived heights (coverColumnWidth * 1.5, i.e. / coverAspectRatio) —
@@ -68,7 +73,12 @@ export const coverColumnHeight = {
   sm: 78,
   md: 96,
   lg: 156,
-  shelf: 168,
+  /**
+   * ÖLÇÜLDÜ: referansta kapak 466 px yüksek -> 194 pt (132 x 1.47).
+   * Diğer boyutların 1.5 oranından küçük bir sapma; 132 x 1.5 = 198
+   * yazmak yerine ÖLÇÜLEN değer konuldu -- amaç oranı korumak değil,
+   * referansla aynı görünmek. */
+  shelf: 194,
 } as const;
 
 /**
