@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Alert } from "react-native";
 
 import { useTranslation } from "react-i18next";
 import { getLocales } from "expo-localization";
+import { router } from "expo-router";
 
 import i18n from "@/i18n";
 import { LANGUAGES } from "@/lib/languages";
@@ -10,12 +11,23 @@ import { trackEvent } from "@/lib/analytics";
 
 import { useSetLanguagePairMutation } from "@/features/languagePair";
 import { useCompleteOnboardingMutation } from "@/features/onboarding/api/useCompleteOnboardingMutation";
+import { useOnboardingContentQuery } from "@/features/onboarding/api/useOnboardingContentQuery";
+import { useOnboardingGlossesQuery } from "@/features/onboarding/api/useOnboardingGlossesQuery";
+import { useSaveOnboardingFavoritesMutation } from "@/features/onboarding/api/useSaveOnboardingFavoritesMutation";
 import { LevelTestScreen } from "@/features/onboarding/components/LevelTestScreen";
+import { OnboardingBookTasteStep } from "@/features/onboarding/components/OnboardingBookTasteStep";
+import { OnboardingDailyGoalStep } from "@/features/onboarding/components/OnboardingDailyGoalStep";
+import { OnboardingFirstReadStep } from "@/features/onboarding/components/OnboardingFirstReadStep";
 import { OnboardingLanguageStep } from "@/features/onboarding/components/OnboardingLanguageStep";
 import { OnboardingLevelStep } from "@/features/onboarding/components/OnboardingLevelStep";
+import { OnboardingPlanStep } from "@/features/onboarding/components/OnboardingPlanStep";
+import { OnboardingProjectionStep } from "@/features/onboarding/components/OnboardingProjectionStep";
+import { OnboardingQuizStep } from "@/features/onboarding/components/OnboardingQuizStep";
 import { OnboardingSplashScreen } from "@/features/onboarding/components/OnboardingSplashScreen";
 import { OnboardingWelcomeScreen } from "@/features/onboarding/components/OnboardingWelcomeScreen";
+import { OnboardingWordsCelebrationStep } from "@/features/onboarding/components/OnboardingWordsCelebrationStep";
 
+import type { OnboardingWord } from "@/features/onboarding/components/OnboardingFirstReadStep";
 import type { CefrLevel } from "@/features/onboarding/levelEstimate";
 
 /**
@@ -23,23 +35,48 @@ import type { CefrLevel } from "@/features/onboarding/levelEstimate";
  *
  * SIRALAMA referans uygulamadan (Bookvo) alındı; splash, karşılama ve iki
  * dil adımı bizim eklediğimiz (referans tek dilli ve doğrudan seviye
- * sorusuyla açılıyor). Tam gerekçe ve ölçüm tablosu:
+ * sorusuyla açılıyor). Ölçüm tablosu ve ekran ekran gerekçeler:
  * docs/plans/2026-09-14-onboarding-tasarim.md.
  *
  * NEDEN TEK BİR STATE MAKİNESİ, AYRI ROUTE'LAR DEĞİL: adımlar arasında
- * taşınan durum (seçilen diller, seviye) yalnızca akış bitene kadar
- * yaşıyor ve hiçbiri derin bağlantıyla açılmamalı -- yarıda kalmış bir
- * onboarding'e dışarıdan girilebilmesi anlamsız. `LevelTestScreen` de
- * aynı desende zaten bir `Phase` makinesi kullanıyor.
+ * taşınan durum (diller, seviye, seçilen kelimeler, beğenilen kitaplar)
+ * yalnızca akış bitene kadar yaşıyor ve hiçbiri derin bağlantıyla
+ * açılmamalı -- yarıda kalmış bir onboarding'e dışarıdan girilebilmesi
+ * anlamsız.
  */
-type Step = "splash" | "welcome" | "native" | "target" | "level" | "levelTest";
+type Step =
+  | "splash"
+  | "welcome"
+  | "native"
+  | "target"
+  | "level"
+  | "levelTest"
+  | "taste"
+  | "firstRead"
+  | "quiz"
+  | "celebrate"
+  | "goal"
+  | "path"
+  | "plan";
 
-/** Alt çubuktaki ilerleme -- splash ve karşılamada çubuk gösterilmiyor. */
-const PROGRESS: Record<string, number> = {
-  native: 1 / 3,
-  target: 2 / 3,
-  level: 1,
-};
+/** İlerleme çubuğu gösteren adımlar, sırayla. */
+const PROGRESS_STEPS: Step[] = [
+  "native",
+  "target",
+  "level",
+  "taste",
+  "firstRead",
+  "quiz",
+  "celebrate",
+  "goal",
+  "path",
+  "plan",
+];
+
+function progressOf(step: Step): number {
+  const index = PROGRESS_STEPS.indexOf(step);
+  return index < 0 ? 0 : (index + 1) / PROGRESS_STEPS.length;
+}
 
 interface OnboardingFlowProps {
   /** Akış tamamlandığında çağrılır (profil güncellendikten sonra). */
@@ -50,6 +87,7 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const { t } = useTranslation();
   const setPair = useSetLanguagePairMutation();
   const completeOnboarding = useCompleteOnboardingMutation();
+  const saveFavorites = useSaveOnboardingFavoritesMutation();
 
   const deviceLanguage = getLocales()[0]?.languageCode ?? "tr";
   const defaultNative = LANGUAGES.some((l) => l.code === deviceLanguage) ? deviceLanguage : "tr";
@@ -58,6 +96,26 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const [nativeLanguage, setNativeLanguage] = useState<string | null>(defaultNative);
   const [targetLanguage, setTargetLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<CefrLevel | null>(null);
+  const [likedBookIds, setLikedBookIds] = useState<string[]>([]);
+  const [pickedWords, setPickedWords] = useState<OnboardingWord[]>([]);
+  const [dailyGoal, setDailyGoal] = useState<number | null>(null);
+
+  // İçerik, hedef dil ve seviye belli olur olmaz çekiliyor; kitap zevki
+  // adımına gelindiğinde çoktan hazır oluyor.
+  const contentQuery = useOnboardingContentQuery(targetLanguage, level);
+
+  const pickedLemmas = useMemo(() => pickedWords.map((word) => word.lemma), [pickedWords]);
+  const glossesQuery = useOnboardingGlossesQuery(pickedLemmas, targetLanguage, nativeLanguage);
+
+  /** Karşılıkları gelen kelimeler -- alıştırma ve kutlama bunları kullanıyor. */
+  const wordsWithGloss = useMemo(
+    () =>
+      pickedWords.map((word) => ({
+        ...word,
+        gloss: word.gloss ?? glossesQuery.data?.get(word.lemma) ?? null,
+      })),
+    [pickedWords, glossesQuery.data],
+  );
 
   const goTarget = useCallback(() => {
     if (!nativeLanguage) return;
@@ -69,17 +127,12 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   }, [nativeLanguage]);
 
   /**
-   * Hedef dil seçildiğinde dil çifti HEMEN kaydediliyor, akışın sonunda
-   * değil.
+   * Dil çifti HEDEF DİL ADIMINDA kaydediliyor, akışın sonunda değil.
    *
    * NEDEN BURADA: seviye adımından sonra iki çıkış var -- hızlı seçim ve
    * seviye TESTİ. Test kendi içinde onboarding'i tamamlıyor; çifti sona
    * bırakmış olsaydık test yolundan giden kullanıcının dil çifti HİÇ
    * yazılmaz ve boş bir kütüphaneye düşerdi.
-   *
-   * Kullanıcı seviye adımında vazgeçerse çift yazılmış ama onboarding
-   * tamamlanmamış olur; bu zararsız -- akışa döndüğünde aynı çifti tekrar
-   * seçmek ücretsiz (zaten sahip olunan çift, bkz. `set_language_pair`).
    */
   const goLevel = useCallback(() => {
     if (!nativeLanguage || !targetLanguage) return;
@@ -90,7 +143,6 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
       {
         onSuccess: (result) => {
           if (result === "premium_required") {
-            // İlk çift için sunucu bunu döndürmez; savunma amaçlı.
             Alert.alert(t("common.errorTitle"), t("languagePair.unexpectedPremiumRequired"));
             return;
           }
@@ -101,35 +153,72 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
     );
   }, [nativeLanguage, targetLanguage, setPair, t]);
 
-  /** Son adım: seviyeyi profile yazıp onboarding'i tamamlar. */
-  const finish = useCallback(
-    (chosenLevel: CefrLevel) => {
-      completeOnboarding.mutate(
-        { targetLevel: chosenLevel, estimate: null, adjusted: false },
-        {
-          onSuccess: onDone,
-          onError: () => Alert.alert(t("common.errorTitle"), t("onboarding.saveError")),
-        },
-      );
-    },
-    [completeOnboarding, onDone, t],
+  /**
+   * "Planın hazırlanıyor" ekranının maddeleri GERÇEK işlere bağlı --
+   * referanstaki gibi sahte bir bekleme değil. Bkz. `OnboardingPlanStep`.
+   */
+  const planTasks = useMemo(
+    () => [
+      { key: "library", done: !contentQuery.isLoading },
+      { key: "words", done: !glossesQuery.isLoading },
+      { key: "favorites", done: !saveFavorites.isPending },
+      { key: "profile", done: !completeOnboarding.isPending && completeOnboarding.isSuccess },
+    ],
+    [
+      contentQuery.isLoading,
+      glossesQuery.isLoading,
+      saveFavorites.isPending,
+      completeOnboarding.isPending,
+      completeOnboarding.isSuccess,
+    ],
   );
 
-  const submitting = setPair.isPending || completeOnboarding.isPending;
+  /** Son adım: hedef, seviye ve beğeniler kaydedilir. */
+  const startFinishing = useCallback(() => {
+    if (!level) return;
+    setStep("plan");
 
-  if (step === "splash") {
-    return <OnboardingSplashScreen onDone={() => setStep("welcome")} />;
-  }
+    if (likedBookIds.length > 0) saveFavorites.mutate(likedBookIds);
 
-  if (step === "welcome") {
-    return <OnboardingWelcomeScreen onStart={() => setStep("native")} />;
-  }
+    completeOnboarding.mutate(
+      {
+        targetLevel: level,
+        estimate: null,
+        adjusted: false,
+        dailyGoalMinutes: dailyGoal ?? undefined,
+      },
+      {
+        onError: () => {
+          // Plan ekranı "profil kaydedildi" maddesini bekliyor; kayıt
+          // başarısız olursa o madde asla işaretlenmez ve ekran sonsuza
+          // kadar dönerdi. Kullanıcıyı bir önceki adıma geri alıp tekrar
+          // denemesine izin veriyoruz.
+          setStep("path");
+          Alert.alert(t("common.errorTitle"), t("onboarding.saveError"));
+        },
+      },
+    );
+  }, [level, likedBookIds, dailyGoal, saveFavorites, completeOnboarding, t]);
+
+  /**
+   * Plan ekranı bitince paywall'a geçiliyor (referansın son adımı), sonra
+   * uygulamaya. Paywall'ı burada YENİDEN YAZMIYORUZ -- uygulamanın kendi
+   * paywall'ı zaten var ve App Store gereklerini (Guideline 3.1.2) o
+   * karşılıyor.
+   */
+  const handlePlanDone = useCallback(() => {
+    onDone();
+    router.push("/paywall?source=onboarding");
+  }, [onDone]);
+
+  if (step === "splash") return <OnboardingSplashScreen onDone={() => setStep("welcome")} />;
+  if (step === "welcome") return <OnboardingWelcomeScreen onStart={() => setStep("native")} />;
 
   if (step === "native") {
     return (
       <OnboardingLanguageStep
         mode="native"
-        progress={PROGRESS.native ?? 0}
+        progress={progressOf("native")}
         selected={nativeLanguage}
         excludeCode={null}
         onSelect={setNativeLanguage}
@@ -142,31 +231,113 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
     return (
       <OnboardingLanguageStep
         mode="target"
-        progress={PROGRESS.target ?? 0}
+        progress={progressOf("target")}
         selected={targetLanguage}
         excludeCode={nativeLanguage}
         onSelect={setTargetLanguage}
         onContinue={goLevel}
+        submitting={setPair.isPending}
       />
     );
   }
 
   if (step === "levelTest") {
-    // Dil çifti bu noktada ZATEN kaydedildi (bkz. `goLevel`), bu yüzden
-    // testin kendi tamamlama akışı yeterli.
+    // Dil çifti bu noktada ZATEN kaydedildi (bkz. `goLevel`).
     return <LevelTestScreen onDone={onDone} />;
   }
 
+  if (step === "level") {
+    return (
+      <OnboardingLevelStep
+        progress={progressOf("level")}
+        selected={level}
+        onSelect={setLevel}
+        onContinue={() => setStep("taste")}
+        onTakeTest={() => setStep("levelTest")}
+      />
+    );
+  }
+
+  if (step === "taste") {
+    return (
+      <OnboardingBookTasteStep
+        progress={progressOf("taste")}
+        books={contentQuery.data?.books ?? []}
+        loading={contentQuery.isLoading}
+        likedIds={likedBookIds}
+        onLike={(bookId) => setLikedBookIds((ids) => [...ids, bookId])}
+        onSkipBook={() => undefined}
+        onContinue={() => setStep("firstRead")}
+      />
+    );
+  }
+
+  if (step === "firstRead") {
+    return (
+      <OnboardingFirstReadStep
+        progress={progressOf("firstRead")}
+        passage={contentQuery.data?.passage ?? null}
+        loading={contentQuery.isLoading}
+        level={level}
+        picked={pickedWords}
+        onPick={(word) =>
+          setPickedWords((words) =>
+            words.some((existing) => existing.lemma === word.lemma) ? words : [...words, word],
+          )
+        }
+        onUnpick={(lemma) =>
+          setPickedWords((words) => words.filter((word) => word.lemma !== lemma))
+        }
+        onContinue={() => setStep("quiz")}
+        onSkip={() => setStep("goal")}
+      />
+    );
+  }
+
+  if (step === "quiz") {
+    return (
+      <OnboardingQuizStep
+        progress={progressOf("quiz")}
+        words={wordsWithGloss}
+        loading={glossesQuery.isLoading}
+        onContinue={() => setStep("celebrate")}
+      />
+    );
+  }
+
+  if (step === "celebrate") {
+    return (
+      <OnboardingWordsCelebrationStep
+        progress={progressOf("celebrate")}
+        words={wordsWithGloss}
+        onContinue={() => setStep("goal")}
+      />
+    );
+  }
+
+  if (step === "goal") {
+    return (
+      <OnboardingDailyGoalStep
+        progress={progressOf("goal")}
+        selected={dailyGoal}
+        onSelect={setDailyGoal}
+        onContinue={() => setStep("path")}
+      />
+    );
+  }
+
+  if (step === "path") {
+    return (
+      <OnboardingProjectionStep
+        progress={progressOf("path")}
+        level={level}
+        dailyGoalMinutes={dailyGoal}
+        onContinue={startFinishing}
+      />
+    );
+  }
+
   return (
-    <OnboardingLevelStep
-      progress={PROGRESS.level ?? 1}
-      selected={level}
-      onSelect={setLevel}
-      onContinue={() => {
-        if (level) finish(level);
-      }}
-      onTakeTest={() => setStep("levelTest")}
-      submitting={submitting}
-    />
+    <OnboardingPlanStep progress={progressOf("plan")} tasks={planTasks} onDone={handlePlanDone} />
   );
 }

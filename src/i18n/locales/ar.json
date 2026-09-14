@@ -623,7 +623,94 @@
         }
       }
     },
-    "saveError": "تعذّر الحفظ. حاول مرة أخرى."
+    "saveError": "تعذّر الحفظ. حاول مرة أخرى.",
+    "taste": {
+      "title": "اختر كتبًا تعجبك",
+      "subtitle": "سنبني رفّك من اختياراتك.",
+      "counter_zero": "لا كتب على رفّك",
+      "counter_one": "كتاب واحد على رفّك",
+      "counter_two": "كتابان على رفّك",
+      "counter_few": "{{count}} كتب على رفّك",
+      "counter_many": "{{count}} كتابًا على رفّك",
+      "counter_other": "{{count}} كتاب على رفّك",
+      "done": "هذا كل شيء. يمكنك المتابعة.",
+      "skipBook": "تخطّي",
+      "likeBook": "أعجبني"
+    },
+    "firstRead": {
+      "title": "قراءتك الأولى",
+      "subtitle": "المس كلمة لا تعرفها — سنحفظها لك.",
+      "cta": "تدرّب على هذه الكلمات",
+      "ctaPending_zero": "اختر كلمات للتدرّب",
+      "ctaPending_one": "اختر كلمة أخرى للتدرّب",
+      "ctaPending_two": "اختر كلمتين أخريين للتدرّب",
+      "ctaPending_few": "اختر {{count}} كلمات أخرى",
+      "ctaPending_many": "اختر {{count}} كلمة أخرى",
+      "ctaPending_other": "اختر {{count}} كلمة أخرى",
+      "levelPill": "{{level}} · لك",
+      "unavailable": "لا يوجد نص جاهز بهذه اللغة بعد."
+    },
+    "quiz": {
+      "title": "تدرّب على كلماتك",
+      "subtitle": "اختر المعنى الصحيح.",
+      "next": "التالي",
+      "unavailable": "تعذّر تحميل المعاني، سنتخطّى هذه الخطوة."
+    },
+    "celebrate": {
+      "title_zero": "كلماتك الأولى",
+      "title_one": "كلمتك الأولى",
+      "title_two": "كلمتاك الأوليان",
+      "title_few": "كلماتك الأولى: {{count}}",
+      "title_many": "كلماتك الأولى: {{count}}",
+      "title_other": "كلماتك الأولى: {{count}}",
+      "subtitle": "بدقائق قليلة من القراءة — دون حفظ."
+    },
+    "goal": {
+      "title": "هدفك اليومي",
+      "subtitle": "كم تريد أن تقرأ يوميًا؟ سنبني خطتك على ذلك.",
+      "minutes_zero": "{{count}} دقيقة / يوم",
+      "minutes_one": "دقيقة واحدة / يوم",
+      "minutes_two": "دقيقتان / يوم",
+      "minutes_few": "{{count}} دقائق / يوم",
+      "minutes_many": "{{count}} دقيقة / يوم",
+      "minutes_other": "{{count}} دقيقة / يوم",
+      "options": {
+        "5": "بداية سهلة",
+        "10": "عادة منتظمة",
+        "15": "أفضل توازن",
+        "20": "تقدّم أسرع",
+        "30": "مكثّف"
+      },
+      "recommendedNote": "بالنسبة لمعظم الناس، 15 دقيقة هي أفضل توازن."
+    },
+    "path": {
+      "title": "مسارك",
+      "subtitle": "أين أنت الآن وما يأتي بعد ذلك.",
+      "subtitleWithGoal_zero": "الخطوات القادمة بـ {{count}} دقيقة يوميًا.",
+      "subtitleWithGoal_one": "الخطوات القادمة بدقيقة واحدة يوميًا.",
+      "subtitleWithGoal_two": "الخطوات القادمة بدقيقتين يوميًا.",
+      "subtitleWithGoal_few": "الخطوات القادمة بـ {{count}} دقائق يوميًا.",
+      "subtitleWithGoal_many": "الخطوات القادمة بـ {{count}} دقيقة يوميًا.",
+      "subtitleWithGoal_other": "الخطوات القادمة بـ {{count}} دقيقة يوميًا.",
+      "youAreHere": "أنت هنا",
+      "next": "الخطوة التالية",
+      "features": {
+        "audio": "سرد استوديو",
+        "vocabulary": "دفتر الكلمات والمراجعة",
+        "ai": "ترجمة الجمل بالذكاء الاصطناعي",
+        "offline": "قراءة دون اتصال"
+      }
+    },
+    "plan": {
+      "title": "نُعدّ خطتك",
+      "subtitle": "سيستغرق ذلك بضع ثوانٍ.",
+      "tasks": {
+        "library": "تحضير مكتبتك",
+        "words": "إضافة كلماتك",
+        "favorites": "بناء رفّك",
+        "profile": "حفظ ملفك"
+      }
+    }
   },
   "paywall": {
     "title": "اجعل ما تقرأه يبقى في ذاكرتك",

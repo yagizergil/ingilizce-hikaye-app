@@ -615,7 +615,74 @@
         }
       }
     },
-    "saveError": "保存失败，请重试。"
+    "saveError": "保存失败，请重试。",
+    "taste": {
+      "title": "挑选你喜欢的书",
+      "subtitle": "我们会用你的选择搭建书架。",
+      "counter_one": "书架上有 {{count}} 本书",
+      "counter_other": "书架上有 {{count}} 本书",
+      "done": "就这些了，可以继续。",
+      "skipBook": "跳过",
+      "likeBook": "喜欢"
+    },
+    "firstRead": {
+      "title": "你的第一次阅读",
+      "subtitle": "点一下不认识的词——我们帮你保存。",
+      "cta": "练习这些词",
+      "ctaPending_one": "再选 {{count}} 个词来练习",
+      "ctaPending_other": "再选 {{count}} 个词来练习",
+      "levelPill": "{{level}} · 为你挑选",
+      "unavailable": "这种语言还没有可读的段落。"
+    },
+    "quiz": {
+      "title": "练习你的词",
+      "subtitle": "选出正确的意思。",
+      "next": "下一个",
+      "unavailable": "无法加载词义，跳过这一步。"
+    },
+    "celebrate": {
+      "title_one": "你的第一个词",
+      "title_other": "你的前 {{count}} 个词",
+      "subtitle": "只用了几分钟阅读——不用死记硬背。"
+    },
+    "goal": {
+      "title": "每日目标",
+      "subtitle": "你每天想读多久？我们据此制定计划。",
+      "minutes_one": "{{count}} 分钟 / 天",
+      "minutes_other": "{{count}} 分钟 / 天",
+      "options": {
+        "5": "轻松开始",
+        "10": "稳定习惯",
+        "15": "最佳平衡",
+        "20": "进步更快",
+        "30": "高强度"
+      },
+      "recommendedNote": "对大多数人来说，15 分钟最为平衡。"
+    },
+    "path": {
+      "title": "你的路径",
+      "subtitle": "你现在的位置和接下来的台阶。",
+      "subtitleWithGoal_one": "每天 {{count}} 分钟能走到的台阶。",
+      "subtitleWithGoal_other": "每天 {{count}} 分钟能走到的台阶。",
+      "youAreHere": "你在这里",
+      "next": "下一级",
+      "features": {
+        "audio": "录音室朗读",
+        "vocabulary": "生词本与复习",
+        "ai": "AI 句子翻译",
+        "offline": "离线阅读"
+      }
+    },
+    "plan": {
+      "title": "正在生成你的计划",
+      "subtitle": "需要几秒钟。",
+      "tasks": {
+        "library": "正在准备你的书库",
+        "words": "正在添加你的生词",
+        "favorites": "正在搭建你的书架",
+        "profile": "正在保存你的资料"
+      }
+    }
   },
   "paywall": {
     "title": "让读过的词真正记住",

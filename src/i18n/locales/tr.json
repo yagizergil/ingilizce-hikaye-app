@@ -615,7 +615,74 @@
         }
       }
     },
-    "saveError": "Kaydedilemedi. Lütfen tekrar dene."
+    "saveError": "Kaydedilemedi. Lütfen tekrar dene.",
+    "taste": {
+      "title": "Zevkine göre kitap seç",
+      "subtitle": "Beğendiklerinden rafını oluşturacağız.",
+      "counter_one": "Rafında {{count}} kitap",
+      "counter_other": "Rafında {{count}} kitap",
+      "done": "Hepsi bu kadar. Devam edebilirsin.",
+      "skipBook": "Geç",
+      "likeBook": "Beğen"
+    },
+    "firstRead": {
+      "title": "İlk okuman",
+      "subtitle": "Bilmediğin kelimeye dokun — biz kaydedelim.",
+      "cta": "Bu kelimeleri çalış",
+      "ctaPending_one": "Alıştırma için {{count}} kelime daha seç",
+      "ctaPending_other": "Alıştırma için {{count}} kelime daha seç",
+      "levelPill": "{{level}} · sana göre",
+      "unavailable": "Bu dilde okuma parçası henüz hazır değil."
+    },
+    "quiz": {
+      "title": "Kelimelerini çalış",
+      "subtitle": "Doğru karşılığı seç.",
+      "next": "Sıradaki",
+      "unavailable": "Karşılıklar getirilemedi, bu adımı atlıyoruz."
+    },
+    "celebrate": {
+      "title_one": "İlk {{count}} kelimen",
+      "title_other": "İlk {{count}} kelimen",
+      "subtitle": "Üstelik birkaç dakikalık okumayla — ezber yok."
+    },
+    "goal": {
+      "title": "Günlük hedefin",
+      "subtitle": "Günde ne kadar okumak istersin? Planını buna göre kuracağız.",
+      "minutes_one": "{{count}} dk / gün",
+      "minutes_other": "{{count}} dk / gün",
+      "options": {
+        "5": "Kolay başlangıç",
+        "10": "Düzenli alışkanlık",
+        "15": "En iyi denge",
+        "20": "Daha hızlı ilerleme",
+        "30": "Yoğun"
+      },
+      "recommendedNote": "Çoğu kişi için 15 dakika en iyi dengeyi veriyor."
+    },
+    "path": {
+      "title": "Yolun",
+      "subtitle": "Bulunduğun yer ve sıradaki basamaklar.",
+      "subtitleWithGoal_one": "Günde {{count}} dakikayla çıkacağın basamaklar.",
+      "subtitleWithGoal_other": "Günde {{count}} dakikayla çıkacağın basamaklar.",
+      "youAreHere": "Şu an buradasın",
+      "next": "Sıradaki basamak",
+      "features": {
+        "audio": "Stüdyo seslendirmesi",
+        "vocabulary": "Kelime defteri ve tekrar",
+        "ai": "AI cümle çevirisi",
+        "offline": "Çevrimdışı okuma"
+      }
+    },
+    "plan": {
+      "title": "Planın hazırlanıyor",
+      "subtitle": "Birkaç saniye sürecek.",
+      "tasks": {
+        "library": "Kütüphanen hazırlanıyor",
+        "words": "Kelimelerin ekleniyor",
+        "favorites": "Rafın oluşturuluyor",
+        "profile": "Profilin kaydediliyor"
+      }
+    }
   },
   "paywall": {
     "title": "Okuduğun kelimeler aklında kalsın",

@@ -615,7 +615,74 @@
         }
       }
     },
-    "saveError": "No se pudo guardar. Inténtalo de nuevo."
+    "saveError": "No se pudo guardar. Inténtalo de nuevo.",
+    "taste": {
+      "title": "Elige libros que te gusten",
+      "subtitle": "Crearemos tu estantería con tus elecciones.",
+      "counter_one": "{{count}} libro en tu estantería",
+      "counter_other": "{{count}} libros en tu estantería",
+      "done": "Eso es todo. Puedes continuar.",
+      "skipBook": "Saltar",
+      "likeBook": "Me gusta"
+    },
+    "firstRead": {
+      "title": "Tu primera lectura",
+      "subtitle": "Toca una palabra que no sepas — la guardamos.",
+      "cta": "Practicar estas palabras",
+      "ctaPending_one": "Elige {{count}} palabra más para practicar",
+      "ctaPending_other": "Elige {{count}} palabras más para practicar",
+      "levelPill": "{{level}} · para ti",
+      "unavailable": "Todavía no hay un texto listo en este idioma."
+    },
+    "quiz": {
+      "title": "Practica tus palabras",
+      "subtitle": "Elige el significado correcto.",
+      "next": "Siguiente",
+      "unavailable": "No se pudieron cargar los significados, saltamos este paso."
+    },
+    "celebrate": {
+      "title_one": "Tu primera palabra",
+      "title_other": "Tus primeras {{count}} palabras",
+      "subtitle": "Con solo unos minutos de lectura — sin memorizar."
+    },
+    "goal": {
+      "title": "Tu meta diaria",
+      "subtitle": "¿Cuánto quieres leer cada día? Ajustaremos tu plan.",
+      "minutes_one": "{{count}} min / día",
+      "minutes_other": "{{count}} min / día",
+      "options": {
+        "5": "Comienzo fácil",
+        "10": "Hábito constante",
+        "15": "Mejor equilibrio",
+        "20": "Progreso más rápido",
+        "30": "Intensivo"
+      },
+      "recommendedNote": "Para la mayoría, 15 minutos es el mejor equilibrio."
+    },
+    "path": {
+      "title": "Tu camino",
+      "subtitle": "Dónde estás y qué viene después.",
+      "subtitleWithGoal_one": "Los siguientes pasos con {{count}} minuto al día.",
+      "subtitleWithGoal_other": "Los siguientes pasos con {{count}} minutos al día.",
+      "youAreHere": "Estás aquí",
+      "next": "Siguiente paso",
+      "features": {
+        "audio": "Narración de estudio",
+        "vocabulary": "Cuaderno y repaso",
+        "ai": "Traducción de frases con IA",
+        "offline": "Lectura sin conexión"
+      }
+    },
+    "plan": {
+      "title": "Preparando tu plan",
+      "subtitle": "Tardará unos segundos.",
+      "tasks": {
+        "library": "Preparando tu biblioteca",
+        "words": "Añadiendo tus palabras",
+        "favorites": "Creando tu estantería",
+        "profile": "Guardando tu perfil"
+      }
+    }
   },
   "paywall": {
     "title": "Que las palabras que lees se te queden",

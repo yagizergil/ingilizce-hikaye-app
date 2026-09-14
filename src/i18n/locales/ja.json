@@ -615,7 +615,74 @@
         }
       }
     },
-    "saveError": "保存できませんでした。もう一度お試しください。"
+    "saveError": "保存できませんでした。もう一度お試しください。",
+    "taste": {
+      "title": "好きな本を選んでください",
+      "subtitle": "選んだ本から本棚をつくります。",
+      "counter_one": "本棚に {{count}} 冊",
+      "counter_other": "本棚に {{count}} 冊",
+      "done": "以上です。次へ進めます。",
+      "skipBook": "スキップ",
+      "likeBook": "好き"
+    },
+    "firstRead": {
+      "title": "はじめての読書",
+      "subtitle": "わからない単語をタップしてください。保存します。",
+      "cta": "この単語を練習する",
+      "ctaPending_one": "あと {{count}} 語選んでください",
+      "ctaPending_other": "あと {{count}} 語選んでください",
+      "levelPill": "{{level}} · あなた向け",
+      "unavailable": "この言語の読み物はまだ用意されていません。"
+    },
+    "quiz": {
+      "title": "単語を練習しましょう",
+      "subtitle": "正しい意味を選んでください。",
+      "next": "次へ",
+      "unavailable": "意味を読み込めなかったので、この手順をスキップします。"
+    },
+    "celebrate": {
+      "title_one": "はじめての {{count}} 語",
+      "title_other": "はじめての {{count}} 語",
+      "subtitle": "ほんの数分の読書で——暗記なしで。"
+    },
+    "goal": {
+      "title": "毎日の目標",
+      "subtitle": "毎日どれくらい読みたいですか？それに合わせて計画を立てます。",
+      "minutes_one": "1 日 {{count}} 分",
+      "minutes_other": "1 日 {{count}} 分",
+      "options": {
+        "5": "気軽にスタート",
+        "10": "習慣づくり",
+        "15": "ちょうどよい",
+        "20": "もっと早く",
+        "30": "集中"
+      },
+      "recommendedNote": "多くの方には 15 分がちょうどよいバランスです。"
+    },
+    "path": {
+      "title": "あなたの道のり",
+      "subtitle": "今いる場所と、この先の段階。",
+      "subtitleWithGoal_one": "1 日 {{count}} 分で進める段階です。",
+      "subtitleWithGoal_other": "1 日 {{count}} 分で進める段階です。",
+      "youAreHere": "現在地",
+      "next": "次の段階",
+      "features": {
+        "audio": "スタジオ音声",
+        "vocabulary": "単語帳と復習",
+        "ai": "AI 文章翻訳",
+        "offline": "オフラインで読む"
+      }
+    },
+    "plan": {
+      "title": "プランを作成中",
+      "subtitle": "数秒かかります。",
+      "tasks": {
+        "library": "ライブラリを準備中",
+        "words": "単語を追加中",
+        "favorites": "本棚を作成中",
+        "profile": "プロフィールを保存中"
+      }
+    }
   },
   "paywall": {
     "title": "読んだ言葉を、記憶に残す",

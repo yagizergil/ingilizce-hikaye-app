@@ -615,7 +615,74 @@
         }
       }
     },
-    "saveError": "Konnte nicht gespeichert werden. Bitte versuch es erneut."
+    "saveError": "Konnte nicht gespeichert werden. Bitte versuch es erneut.",
+    "taste": {
+      "title": "Wähle Bücher, die dir gefallen",
+      "subtitle": "Aus deiner Auswahl bauen wir dein Regal.",
+      "counter_one": "{{count}} Buch im Regal",
+      "counter_other": "{{count}} Bücher im Regal",
+      "done": "Das waren alle. Du kannst weitermachen.",
+      "skipBook": "Überspringen",
+      "likeBook": "Gefällt mir"
+    },
+    "firstRead": {
+      "title": "Dein erstes Lesen",
+      "subtitle": "Tippe ein unbekanntes Wort an — wir speichern es.",
+      "cta": "Diese Wörter üben",
+      "ctaPending_one": "Wähle noch {{count}} Wort zum Üben",
+      "ctaPending_other": "Wähle noch {{count}} Wörter zum Üben",
+      "levelPill": "{{level}} · für dich",
+      "unavailable": "In dieser Sprache gibt es noch keinen Lesetext."
+    },
+    "quiz": {
+      "title": "Übe deine Wörter",
+      "subtitle": "Wähle die richtige Bedeutung.",
+      "next": "Weiter",
+      "unavailable": "Bedeutungen konnten nicht geladen werden, wir überspringen diesen Schritt."
+    },
+    "celebrate": {
+      "title_one": "Dein erstes {{count}} Wort",
+      "title_other": "Deine ersten {{count}} Wörter",
+      "subtitle": "Nach nur wenigen Minuten Lesen — ohne Auswendiglernen."
+    },
+    "goal": {
+      "title": "Dein Tagesziel",
+      "subtitle": "Wie lange möchtest du täglich lesen? Danach richten wir deinen Plan aus.",
+      "minutes_one": "{{count}} Min / Tag",
+      "minutes_other": "{{count}} Min / Tag",
+      "options": {
+        "5": "Leichter Einstieg",
+        "10": "Feste Gewohnheit",
+        "15": "Beste Balance",
+        "20": "Schnellerer Fortschritt",
+        "30": "Intensiv"
+      },
+      "recommendedNote": "Für die meisten sind 15 Minuten die beste Balance."
+    },
+    "path": {
+      "title": "Dein Weg",
+      "subtitle": "Wo du stehst und was als Nächstes kommt.",
+      "subtitleWithGoal_one": "Die nächsten Stufen bei {{count}} Minute am Tag.",
+      "subtitleWithGoal_other": "Die nächsten Stufen bei {{count}} Minuten am Tag.",
+      "youAreHere": "Hier stehst du",
+      "next": "Nächste Stufe",
+      "features": {
+        "audio": "Studio-Vertonung",
+        "vocabulary": "Wortliste und Wiederholung",
+        "ai": "KI-Satzübersetzung",
+        "offline": "Offline lesen"
+      }
+    },
+    "plan": {
+      "title": "Dein Plan entsteht",
+      "subtitle": "Das dauert ein paar Sekunden.",
+      "tasks": {
+        "library": "Deine Bibliothek wird vorbereitet",
+        "words": "Deine Wörter werden hinzugefügt",
+        "favorites": "Dein Regal wird gebaut",
+        "profile": "Dein Profil wird gespeichert"
+      }
+    }
   },
   "paywall": {
     "title": "Damit die Wörter hängen bleiben",

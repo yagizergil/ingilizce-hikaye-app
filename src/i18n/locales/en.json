@@ -615,7 +615,74 @@
         }
       }
     },
-    "saveError": "Couldn't save. Please try again."
+    "saveError": "Couldn't save. Please try again.",
+    "taste": {
+      "title": "Pick books you like",
+      "subtitle": "We'll build your shelf from your picks.",
+      "counter_one": "{{count}} book on your shelf",
+      "counter_other": "{{count}} books on your shelf",
+      "done": "That's all of them. You can continue.",
+      "skipBook": "Skip",
+      "likeBook": "Like"
+    },
+    "firstRead": {
+      "title": "Your first read",
+      "subtitle": "Tap a word you don't know — we'll save it.",
+      "cta": "Practise these words",
+      "ctaPending_one": "Pick {{count}} more word to practise",
+      "ctaPending_other": "Pick {{count}} more words to practise",
+      "levelPill": "{{level}} · for you",
+      "unavailable": "No reading passage is ready in this language yet."
+    },
+    "quiz": {
+      "title": "Practise your words",
+      "subtitle": "Choose the right meaning.",
+      "next": "Next",
+      "unavailable": "Meanings couldn't be loaded, skipping this step."
+    },
+    "celebrate": {
+      "title_one": "Your first {{count}} word",
+      "title_other": "Your first {{count}} words",
+      "subtitle": "From just a few minutes of reading — no memorising."
+    },
+    "goal": {
+      "title": "Your daily goal",
+      "subtitle": "How long do you want to read each day? We'll build your plan around it.",
+      "minutes_one": "{{count}} min / day",
+      "minutes_other": "{{count}} min / day",
+      "options": {
+        "5": "Easy start",
+        "10": "Steady habit",
+        "15": "Best balance",
+        "20": "Faster progress",
+        "30": "Intensive"
+      },
+      "recommendedNote": "For most people 15 minutes strikes the best balance."
+    },
+    "path": {
+      "title": "Your path",
+      "subtitle": "Where you are and what comes next.",
+      "subtitleWithGoal_one": "The steps ahead at {{count}} minute a day.",
+      "subtitleWithGoal_other": "The steps ahead at {{count}} minutes a day.",
+      "youAreHere": "You are here",
+      "next": "Next step",
+      "features": {
+        "audio": "Studio narration",
+        "vocabulary": "Word list and review",
+        "ai": "AI sentence translation",
+        "offline": "Offline reading"
+      }
+    },
+    "plan": {
+      "title": "Building your plan",
+      "subtitle": "This takes a few seconds.",
+      "tasks": {
+        "library": "Preparing your library",
+        "words": "Adding your words",
+        "favorites": "Building your shelf",
+        "profile": "Saving your profile"
+      }
+    }
   },
   "paywall": {
     "title": "Make the words you read stick",

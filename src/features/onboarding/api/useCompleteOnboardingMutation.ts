@@ -15,6 +15,14 @@ interface CompleteOnboardingInput {
   estimate: { size: number; level: CefrLevel } | null;
   /** Kullanıcı sonucu elle değiştirdi mi (ölçümün güvenilirliği için). */
   adjusted: boolean;
+  /**
+   * Onboarding'deki günlük hedef adımında seçilen dakika.
+   *
+   * İSTEĞE BAĞLI çünkü bu mutasyonun diğer çağıranı (`LevelTestScreen`)
+   * hedefi sormuyor -- verilmezse `profiles.daily_goal_minutes` kendi
+   * varsayılanında kalıyor, üzerine null yazılmıyor.
+   */
+  dailyGoalMinutes?: number;
 }
 
 /**
@@ -29,6 +37,7 @@ async function completeOnboarding({
   targetLevel,
   estimate,
   adjusted,
+  dailyGoalMinutes,
 }: CompleteOnboardingInput): Promise<void> {
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError || !userData.user) throw userError ?? new Error("no_session");
@@ -39,6 +48,9 @@ async function completeOnboarding({
       id: userId,
       target_level: targetLevel,
       onboarding_completed_at: new Date().toISOString(),
+      // Seçilmediyse alan hiç gönderilmiyor -- mevcut değerin üzerine
+      // null yazmak, hatırlatma bildirimlerini (ADR-010) bozardı.
+      ...(dailyGoalMinutes !== undefined ? { daily_goal_minutes: dailyGoalMinutes } : {}),
     },
     { onConflict: "id" },
   );

@@ -615,7 +615,74 @@
         }
       }
     },
-    "saveError": "Impossibile salvare. Riprova."
+    "saveError": "Impossibile salvare. Riprova.",
+    "taste": {
+      "title": "Scegli i libri che ti piacciono",
+      "subtitle": "Costruiremo il tuo scaffale dalle tue scelte.",
+      "counter_one": "{{count}} libro sullo scaffale",
+      "counter_other": "{{count}} libri sullo scaffale",
+      "done": "È tutto. Puoi continuare.",
+      "skipBook": "Salta",
+      "likeBook": "Mi piace"
+    },
+    "firstRead": {
+      "title": "La tua prima lettura",
+      "subtitle": "Tocca una parola che non conosci — la salviamo noi.",
+      "cta": "Esercitati su queste parole",
+      "ctaPending_one": "Scegli ancora {{count}} parola da esercitare",
+      "ctaPending_other": "Scegli ancora {{count}} parole da esercitare",
+      "levelPill": "{{level}} · per te",
+      "unavailable": "In questa lingua non c'è ancora un brano pronto."
+    },
+    "quiz": {
+      "title": "Esercitati sulle parole",
+      "subtitle": "Scegli il significato giusto.",
+      "next": "Avanti",
+      "unavailable": "Non è stato possibile caricare i significati, saltiamo questo passaggio."
+    },
+    "celebrate": {
+      "title_one": "La tua prima parola",
+      "title_other": "Le tue prime {{count}} parole",
+      "subtitle": "Con pochi minuti di lettura — senza memorizzare."
+    },
+    "goal": {
+      "title": "Il tuo obiettivo quotidiano",
+      "subtitle": "Quanto vuoi leggere ogni giorno? Costruiremo il piano su questo.",
+      "minutes_one": "{{count}} min / giorno",
+      "minutes_other": "{{count}} min / giorno",
+      "options": {
+        "5": "Inizio facile",
+        "10": "Abitudine costante",
+        "15": "Equilibrio migliore",
+        "20": "Progressi più rapidi",
+        "30": "Intensivo"
+      },
+      "recommendedNote": "Per la maggior parte delle persone 15 minuti sono il miglior equilibrio."
+    },
+    "path": {
+      "title": "Il tuo percorso",
+      "subtitle": "Dove sei e cosa viene dopo.",
+      "subtitleWithGoal_one": "I prossimi gradini con {{count}} minuto al giorno.",
+      "subtitleWithGoal_other": "I prossimi gradini con {{count}} minuti al giorno.",
+      "youAreHere": "Sei qui",
+      "next": "Prossimo gradino",
+      "features": {
+        "audio": "Narrazione in studio",
+        "vocabulary": "Quaderno e ripasso",
+        "ai": "Traduzione frasi con IA",
+        "offline": "Lettura offline"
+      }
+    },
+    "plan": {
+      "title": "Stiamo creando il piano",
+      "subtitle": "Ci vogliono pochi secondi.",
+      "tasks": {
+        "library": "Preparazione della biblioteca",
+        "words": "Aggiunta delle tue parole",
+        "favorites": "Creazione dello scaffale",
+        "profile": "Salvataggio del profilo"
+      }
+    }
   },
   "paywall": {
     "title": "Fai restare le parole che leggi",
