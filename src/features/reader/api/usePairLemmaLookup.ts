@@ -69,9 +69,19 @@ async function fetchPairLemma(lemma: string, surface: string | null) {
   return null;
 }
 
+/**
+ * Sorgu anahtarı dışarı açık: AI bir karşılık ÜRETTİĞİNDE sonuç doğrudan
+ * bu önbelleğe yazılıyor (bkz. WordSheet). Yazılmasaydı, `staleTime:
+ * Infinity` yüzünden aynı kelimeye ikinci dokunuşta önbellekteki ESKİ
+ * "bulunamadı" cevabı okunur ve kart sonsuza kadar yer tutucuda kalırdı.
+ */
+export function pairLemmaQueryKey(lemma: string | null, surface: string | null) {
+  return ["reader", "lemma", "pair", `${lemma ?? ""}|${surface ?? ""}`] as const;
+}
+
 export function usePairLemmaLookup(lemma: string | null, surface: string | null = null) {
   return useQuery({
-    queryKey: ["reader", "lemma", "pair", `${lemma ?? ""}|${surface ?? ""}`],
+    queryKey: pairLemmaQueryKey(lemma, surface),
     queryFn: () => fetchPairLemma(lemma as string, surface),
     enabled: lemma !== null && lemma.length > 0,
     staleTime: Infinity,

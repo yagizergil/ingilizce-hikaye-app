@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import * as Speech from "expo-speech";
 
@@ -19,7 +20,7 @@ import { LevelBadge, Skeleton } from "@/components/ui";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { getVoiceIdentifier } from "@/features/reader/tts/englishVoice";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
-import { usePairLemmaLookup } from "@/features/reader/api/usePairLemmaLookup";
+import { pairLemmaQueryKey, usePairLemmaLookup } from "@/features/reader/api/usePairLemmaLookup";
 import { useGlobalLemmaLookup } from "@/features/reader/api/useGlobalLemmaLookup";
 import { useLiveWordTranslation } from "@/features/reader/api/useLiveWordTranslation";
 import { useSentenceTranslationQuery } from "@/features/reader/api/useSentenceTranslationQuery";
@@ -143,6 +144,7 @@ export function WordSheet({
   onDismiss,
 }: WordSheetProps) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const { theme } = useTheme();
   const readerColors = useReaderThemeColors();
   const speechVoiceId = useReaderSettings((state) => state.speechVoiceId);
@@ -219,17 +221,39 @@ export function WordSheet({
     if (!word || !bothMissed) return;
     if (lastLiveRequestedLemmaRef.current === word.lemma) return;
     lastLiveRequestedLemmaRef.current = word.lemma;
-    liveTranslation.mutate({
-      surface: word.surface,
-      lemma: word.lemma,
-      contextSentence: word.sentenceText,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- liveTranslation is a mutation object, intentionally excluded (would re-run on every render otherwise)
-  }, [word, bothMissed]);
 
-  useEffect(() => {
-    if (!word) lastLiveRequestedLemmaRef.current = null;
-  }, [word]);
+    const { surface, lemma, sentenceText } = word;
+    liveTranslation.mutate(
+      { surface, lemma, contextSentence: sentenceText },
+      {
+        onSuccess: (result) => {
+          if (!result) return;
+          /**
+           * AI'ın ürettiği karşılık ÖNBELLEĞE DE yazılıyor.
+           *
+           * ÇÖZDÜĞÜ KİLİTLENME: edge function sonucu `lemma_translations`'a
+           * yazıyor ama istemcideki çift sorgusu `staleTime: Infinity` ile
+           * çalışıyor -- yani aynı kelimeye ikinci dokunuşta sunucuya hiç
+           * gidilmiyor, önbellekteki ESKİ "bulunamadı" cevabı okunuyordu.
+           * Sonuç: ilk dokunuşta gelen karşılık, ikinci dokunuşta sonsuza
+           * kadar yer tutucuda kalıyordu. Artık sonuç yazıldığı anda
+           * önbellek de doğru cevabı taşıyor; ikinci dokunuş ne sunucuya
+           * ne de AI'a gidiyor, anında açılıyor.
+           */
+          queryClient.setQueryData(pairLemmaQueryKey(lemma, surface), {
+            pos: result.pos,
+            cefrLevel: null,
+            trGloss: result.trGloss,
+            ipa: null,
+            audioUrl: null,
+            isPhrasal: false,
+            falseFriendNoteTr: null,
+          } satisfies BookLemmaEntry);
+        },
+      },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- liveTranslation is a mutation object, intentionally excluded (would re-run on every render otherwise)
+  }, [word, bothMissed, queryClient]);
 
   /**
    * ÖNCEKİ KELİMENİN ANLAMI GÖRÜNÜYORDU -- sebebi ve çözümü.
@@ -245,6 +269,15 @@ export function WordSheet({
    */
   useEffect(() => {
     liveTranslation.reset();
+    // "Bu kelime için çağrı yapıldı" kilidi de burada açılıyor.
+    //
+    // ÇÖZDÜĞÜ KİLİTLENME: kilit yalnızca kart KAPANIRKEN (word === null)
+    // açılıyordu. Kart kapanmadan başka bir kelimeye geçilip geri
+    // dönüldüğünde kilit hâlâ kapalı, mutation ise sıfırlanmış oluyordu --
+    // ne yeni çağrı yapılıyor ne de gösterilecek veri kalıyordu, kart yer
+    // tutucuda donuyordu. Kilit artık mutation ile AYNI anda sıfırlanıyor;
+    // ikisinin ayrı yerlerde sıfırlanması bu hatanın kendisiydi.
+    lastLiveRequestedLemmaRef.current = null;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mutation nesnesi bilerek dışarıda (her render'da yeniden çalışırdı)
   }, [word?.lemma]);
 
