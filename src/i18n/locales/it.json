@@ -423,7 +423,8 @@
       "signUp": "Registrati",
       "signOut": "Esci",
       "signOutError": "Non è stato possibile uscire, riprova.",
-      "deleteAccount": "Elimina il mio account"
+      "deleteAccount": "Elimina il mio account",
+      "devReplayOnboarding": "Riavvia l'onboarding (sviluppatore)"
     },
     "footer": "{{name}} — versione {{version}}"
   },
@@ -552,7 +553,69 @@
     "resultSize": "Conosci circa {{count}} parole.",
     "adjustHint": "CAMBIALO SE NON TI SEMBRA GIUSTO",
     "finish": "Vai ai libri",
-    "loadError": "Non è stato possibile caricare le parole del test."
+    "loadError": "Non è stato possibile caricare le parole del test.",
+    "splash": {
+      "tagline": "IMPARA UNA LINGUA CON LE STORIE"
+    },
+    "welcome": {
+      "title": "Leggi storie, impara una lingua",
+      "body": "Leggi una storia che ti piace — tocca una parola che non conosci e vedila subito.",
+      "cta": "Inizia",
+      "highlights": {
+        "tapWord": {
+          "title": "Tocca e capisci",
+          "body": "Tocca una parola sconosciuta e vedine subito il significato."
+        },
+        "leveled": {
+          "title": "Al tuo livello",
+          "body": "Storie adatte a te, dall'A1 al C2."
+        },
+        "remember": {
+          "title": "Resta impresso",
+          "body": "Le parole salvate tornano al momento giusto."
+        }
+      }
+    },
+    "native": {
+      "title": "Qual è la tua lingua madre?",
+      "subtitle": "L'app e i significati delle parole saranno in questa lingua."
+    },
+    "target": {
+      "title": "Quale lingua vuoi leggere?",
+      "subtitle": "Le storie saranno in questa lingua."
+    },
+    "level": {
+      "title": "Scegli il tuo livello",
+      "subtitle": "Scegli quello più vicino — puoi cambiarlo quando vuoi.",
+      "takeTest": "Non sei sicuro? Fai un test veloce",
+      "options": {
+        "A1": {
+          "title": "Sto iniziando",
+          "body": "Capisco singole parole e frasi molto semplici."
+        },
+        "A2": {
+          "title": "Base",
+          "body": "Riesco a seguire conversazioni quotidiane semplici."
+        },
+        "B1": {
+          "title": "Intermedio",
+          "body": "So esprimermi su argomenti familiari."
+        },
+        "B2": {
+          "title": "Intermedio superiore",
+          "body": "Colgo l'idea principale di testi complessi."
+        },
+        "C1": {
+          "title": "Avanzato",
+          "body": "Leggo con facilità testi lunghi e impegnativi."
+        },
+        "C2": {
+          "title": "Padronanza",
+          "body": "Capisco quasi tutto senza sforzo."
+        }
+      }
+    },
+    "saveError": "Impossibile salvare. Riprova."
   },
   "paywall": {
     "title": "Fai restare le parole che leggi",

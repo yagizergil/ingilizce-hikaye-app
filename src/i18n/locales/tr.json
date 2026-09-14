@@ -423,7 +423,8 @@
       "signUp": "Kaydol",
       "signOut": "Çıkış yap",
       "signOutError": "Çıkış yapılamadı, lütfen tekrar dene.",
-      "deleteAccount": "Hesabımı sil"
+      "deleteAccount": "Hesabımı sil",
+      "devReplayOnboarding": "Onboarding'i baştan oynat (geliştirici)"
     },
     "footer": "{{name}} — sürüm {{version}}"
   },
@@ -552,7 +553,69 @@
     "resultSize": "Yaklaşık {{count}} kelime biliyorsun.",
     "adjustHint": "DOĞRU GELMEDİYSE DEĞİŞTİR",
     "finish": "Kitaplara geç",
-    "loadError": "Test kelimeleri yüklenemedi."
+    "loadError": "Test kelimeleri yüklenemedi.",
+    "splash": {
+      "tagline": "HİKÂYELERLE DİL ÖĞREN"
+    },
+    "welcome": {
+      "title": "Hikâye oku, dil öğren",
+      "body": "Sevdiğin hikâyeyi oku; takıldığın kelimeye dokun, karşılığı anında gelsin.",
+      "cta": "Başla",
+      "highlights": {
+        "tapWord": {
+          "title": "Dokun, anla",
+          "body": "Bilmediğin kelimeye dokun, karşılığını hemen gör."
+        },
+        "leveled": {
+          "title": "Seviyene göre",
+          "body": "A1'den C2'ye, sana uygun hikâyeler."
+        },
+        "remember": {
+          "title": "Aklında kalsın",
+          "body": "Kaydettiğin kelimeler doğru zamanda karşına çıkar."
+        }
+      }
+    },
+    "native": {
+      "title": "Ana dilin hangisi?",
+      "subtitle": "Uygulama ve kelime karşılıkları bu dilde olacak."
+    },
+    "target": {
+      "title": "Hangi dili okumak istiyorsun?",
+      "subtitle": "Hikâyeler bu dilde olacak."
+    },
+    "level": {
+      "title": "Seviyeni seç",
+      "subtitle": "Sana en yakın olanı seç — istediğin zaman değiştirebilirsin.",
+      "takeTest": "Emin değilim, kısa bir test yapayım",
+      "options": {
+        "A1": {
+          "title": "Yeni başlıyorum",
+          "body": "Tek tek kelimeleri ve çok basit cümleleri anlıyorum."
+        },
+        "A2": {
+          "title": "Temel",
+          "body": "Günlük basit konuşmaları takip edebiliyorum."
+        },
+        "B1": {
+          "title": "Orta",
+          "body": "Tanıdık konularda kendimi ifade edebiliyorum."
+        },
+        "B2": {
+          "title": "Orta üstü",
+          "body": "Karmaşık metinlerin ana fikrini anlıyorum."
+        },
+        "C1": {
+          "title": "İleri",
+          "body": "Uzun ve zorlu metinleri rahatça okuyabiliyorum."
+        },
+        "C2": {
+          "title": "Ustalık",
+          "body": "Neredeyse her şeyi zorlanmadan anlıyorum."
+        }
+      }
+    },
+    "saveError": "Kaydedilemedi. Lütfen tekrar dene."
   },
   "paywall": {
     "title": "Okuduğun kelimeler aklında kalsın",

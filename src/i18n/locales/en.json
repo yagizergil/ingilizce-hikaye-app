@@ -423,7 +423,8 @@
       "signUp": "Sign up",
       "signOut": "Sign out",
       "signOutError": "Couldn't sign out, please try again.",
-      "deleteAccount": "Delete my account"
+      "deleteAccount": "Delete my account",
+      "devReplayOnboarding": "Replay onboarding (developer)"
     },
     "footer": "{{name}} — version {{version}}"
   },
@@ -552,7 +553,69 @@
     "resultSize": "You know roughly {{count}} words.",
     "adjustHint": "CHANGE IT IF THIS LOOKS WRONG",
     "finish": "Go to books",
-    "loadError": "Test words could not be loaded."
+    "loadError": "Test words could not be loaded.",
+    "splash": {
+      "tagline": "LEARN A LANGUAGE THROUGH STORIES"
+    },
+    "welcome": {
+      "title": "Read stories, learn a language",
+      "body": "Read a story you enjoy — tap any word you don't know and see it instantly.",
+      "cta": "Get started",
+      "highlights": {
+        "tapWord": {
+          "title": "Tap to understand",
+          "body": "Tap an unfamiliar word and see its meaning right away."
+        },
+        "leveled": {
+          "title": "At your level",
+          "body": "Stories that fit you, from A1 to C2."
+        },
+        "remember": {
+          "title": "Made to stick",
+          "body": "Saved words come back at the right moment."
+        }
+      }
+    },
+    "native": {
+      "title": "What's your native language?",
+      "subtitle": "The app and word meanings will be in this language."
+    },
+    "target": {
+      "title": "Which language do you want to read?",
+      "subtitle": "Stories will be in this language."
+    },
+    "level": {
+      "title": "Choose your level",
+      "subtitle": "Pick the closest one — you can change it any time.",
+      "takeTest": "Not sure? Take a quick test",
+      "options": {
+        "A1": {
+          "title": "Just starting",
+          "body": "I understand single words and very simple sentences."
+        },
+        "A2": {
+          "title": "Basic",
+          "body": "I can follow simple everyday conversations."
+        },
+        "B1": {
+          "title": "Intermediate",
+          "body": "I can express myself on familiar topics."
+        },
+        "B2": {
+          "title": "Upper intermediate",
+          "body": "I get the main idea of complex texts."
+        },
+        "C1": {
+          "title": "Advanced",
+          "body": "I read long and demanding texts with ease."
+        },
+        "C2": {
+          "title": "Mastery",
+          "body": "I understand virtually everything effortlessly."
+        }
+      }
+    },
+    "saveError": "Couldn't save. Please try again."
   },
   "paywall": {
     "title": "Make the words you read stick",

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
 
@@ -55,6 +56,7 @@ import { ProfileFooter } from "@/features/profile/components/ProfileFooter";
 export function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const { theme, themeName } = useTheme();
+  const queryClient = useQueryClient();
   const { isAnonymous, email, displayName, memberSince } = useProfileAuthStatus();
   const fontScalePercent = useReaderSettings((state) => state.fontScale);
 
@@ -97,6 +99,33 @@ export function ProfileScreen() {
     trackEvent("profile_sign_up_opened");
     router.push("/sign-in");
   }, []);
+
+  /**
+   * GELİŞTİRİCİ ARACI: onboarding'i baştan oynatır.
+   *
+   * `profiles.onboarding_completed_at`'i null'a çekiyor -- `OnboardingGate`
+   * bu alana bakıyor, sorgu tazelenince akış kendiliğinden açılıyor.
+   * Kullanıcının dil çifti, kaydettiği kelimeler ve okuma geçmişi
+   * SİLİNMİYOR: amaç akışı yeniden görmek, hesabı sıfırlamak değil.
+   *
+   * Yalnızca `__DEV__` altında çağrılıyor (bkz. çağrıldığı yer).
+   */
+  const handleReplayOnboarding = useCallback(async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ onboarding_completed_at: null })
+      .eq("id", userId);
+
+    if (error) {
+      Alert.alert(t("common.errorTitle"), error.message);
+      return;
+    }
+    await queryClient.invalidateQueries({ queryKey: ["onboarding", "status"] });
+  }, [queryClient, t]);
 
   // Paywall'un açıldığı üç yerden biri (diğerleri: Kelimelerim şeridi ve
   // kitap bitirme ekranı). Hepsi okuma akışının DIŞINDA -- ürün ilkesi #1.
@@ -234,6 +263,19 @@ export function ProfileScreen() {
               destructive
             />
           </Card>
+
+          {/* GELİŞTİRİCİ ARACI -- yalnızca geliştirme derlemesinde.
+              `__DEV__` üretim paketinde `false` olduğu için bu blok
+              Metro tarafından tamamen elenir; App Store'a giden ikilide
+              ne düğme ne de çağırdığı kod bulunur. */}
+          {__DEV__ ? (
+            <Card style={styles.rows} bordered>
+              <ProfileAccountRow
+                label={t("profile.account.devReplayOnboarding")}
+                onPress={handleReplayOnboarding}
+              />
+            </Card>
+          ) : null}
 
           <ProfileFooter />
         </ScrollView>

@@ -423,7 +423,8 @@
       "signUp": "Registrieren",
       "signOut": "Abmelden",
       "signOutError": "Abmelden hat nicht geklappt, bitte versuch es noch einmal.",
-      "deleteAccount": "Konto löschen"
+      "deleteAccount": "Konto löschen",
+      "devReplayOnboarding": "Onboarding erneut abspielen (Entwickler)"
     },
     "footer": "{{name}} — Version {{version}}"
   },
@@ -552,7 +553,69 @@
     "resultSize": "Du kennst ungefähr {{count}} Wörter.",
     "adjustHint": "ÄNDERE ES, WENN DAS NICHT PASST",
     "finish": "Zu den Büchern",
-    "loadError": "Die Testwörter konnten nicht geladen werden."
+    "loadError": "Die Testwörter konnten nicht geladen werden.",
+    "splash": {
+      "tagline": "MIT GESCHICHTEN SPRACHEN LERNEN"
+    },
+    "welcome": {
+      "title": "Geschichten lesen, Sprache lernen",
+      "body": "Lies eine Geschichte, die dir gefällt — tippe auf jedes unbekannte Wort und sieh es sofort.",
+      "cta": "Los geht's",
+      "highlights": {
+        "tapWord": {
+          "title": "Antippen, verstehen",
+          "body": "Tippe ein unbekanntes Wort an und sieh sofort die Bedeutung."
+        },
+        "leveled": {
+          "title": "Auf deinem Niveau",
+          "body": "Passende Geschichten von A1 bis C2."
+        },
+        "remember": {
+          "title": "Bleibt hängen",
+          "body": "Gespeicherte Wörter kommen im richtigen Moment zurück."
+        }
+      }
+    },
+    "native": {
+      "title": "Was ist deine Muttersprache?",
+      "subtitle": "App und Wortbedeutungen erscheinen in dieser Sprache."
+    },
+    "target": {
+      "title": "Welche Sprache möchtest du lesen?",
+      "subtitle": "Die Geschichten sind in dieser Sprache."
+    },
+    "level": {
+      "title": "Wähle dein Niveau",
+      "subtitle": "Nimm das passendste — du kannst es jederzeit ändern.",
+      "takeTest": "Unsicher? Mach einen kurzen Test",
+      "options": {
+        "A1": {
+          "title": "Ganz am Anfang",
+          "body": "Ich verstehe einzelne Wörter und sehr einfache Sätze."
+        },
+        "A2": {
+          "title": "Grundlagen",
+          "body": "Ich kann einfachen Alltagsgesprächen folgen."
+        },
+        "B1": {
+          "title": "Mittelstufe",
+          "body": "Ich kann mich zu vertrauten Themen ausdrücken."
+        },
+        "B2": {
+          "title": "Obere Mittelstufe",
+          "body": "Ich erfasse den Kern komplexer Texte."
+        },
+        "C1": {
+          "title": "Fortgeschritten",
+          "body": "Ich lese lange und anspruchsvolle Texte mühelos."
+        },
+        "C2": {
+          "title": "Sehr fortgeschritten",
+          "body": "Ich verstehe praktisch alles ohne Anstrengung."
+        }
+      }
+    },
+    "saveError": "Konnte nicht gespeichert werden. Bitte versuch es erneut."
   },
   "paywall": {
     "title": "Damit die Wörter hängen bleiben",

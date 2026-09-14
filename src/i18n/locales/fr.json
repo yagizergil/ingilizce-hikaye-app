@@ -423,7 +423,8 @@
       "signUp": "S'inscrire",
       "signOut": "Se déconnecter",
       "signOutError": "La déconnexion a échoué, réessaie.",
-      "deleteAccount": "Supprimer mon compte"
+      "deleteAccount": "Supprimer mon compte",
+      "devReplayOnboarding": "Rejouer l'intégration (développeur)"
     },
     "footer": "{{name}} — version {{version}}"
   },
@@ -552,7 +553,69 @@
     "resultSize": "Tu connais environ {{count}} mots.",
     "adjustHint": "MODIFIE-LE SI ÇA NE TE CORRESPOND PAS",
     "finish": "Voir les livres",
-    "loadError": "Les mots du test n'ont pas pu être chargés."
+    "loadError": "Les mots du test n'ont pas pu être chargés.",
+    "splash": {
+      "tagline": "APPRENDRE UNE LANGUE PAR LES HISTOIRES"
+    },
+    "welcome": {
+      "title": "Lis des histoires, apprends une langue",
+      "body": "Lis une histoire qui te plaît — touche un mot inconnu et vois-le aussitôt.",
+      "cta": "Commencer",
+      "highlights": {
+        "tapWord": {
+          "title": "Touche, comprends",
+          "body": "Touche un mot inconnu et vois son sens immédiatement."
+        },
+        "leveled": {
+          "title": "À ton niveau",
+          "body": "Des histoires adaptées, de A1 à C2."
+        },
+        "remember": {
+          "title": "Ça reste",
+          "body": "Les mots enregistrés reviennent au bon moment."
+        }
+      }
+    },
+    "native": {
+      "title": "Quelle est ta langue maternelle ?",
+      "subtitle": "L'application et les traductions seront dans cette langue."
+    },
+    "target": {
+      "title": "Quelle langue veux-tu lire ?",
+      "subtitle": "Les histoires seront dans cette langue."
+    },
+    "level": {
+      "title": "Choisis ton niveau",
+      "subtitle": "Prends le plus proche — tu peux le changer quand tu veux.",
+      "takeTest": "Pas sûr ? Fais un test rapide",
+      "options": {
+        "A1": {
+          "title": "Je débute",
+          "body": "Je comprends des mots isolés et des phrases très simples."
+        },
+        "A2": {
+          "title": "Élémentaire",
+          "body": "Je suis des conversations simples du quotidien."
+        },
+        "B1": {
+          "title": "Intermédiaire",
+          "body": "Je m'exprime sur des sujets familiers."
+        },
+        "B2": {
+          "title": "Intermédiaire avancé",
+          "body": "Je saisis l'essentiel de textes complexes."
+        },
+        "C1": {
+          "title": "Avancé",
+          "body": "Je lis sans peine des textes longs et exigeants."
+        },
+        "C2": {
+          "title": "Maîtrise",
+          "body": "Je comprends presque tout sans effort."
+        }
+      }
+    },
+    "saveError": "Enregistrement impossible. Réessaie."
   },
   "paywall": {
     "title": "Retiens les mots que tu lis",

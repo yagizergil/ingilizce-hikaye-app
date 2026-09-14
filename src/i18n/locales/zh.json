@@ -423,7 +423,8 @@
       "signUp": "注册",
       "signOut": "退出登录",
       "signOutError": "退出登录失败，请再试一次。",
-      "deleteAccount": "删除我的账号"
+      "deleteAccount": "删除我的账号",
+      "devReplayOnboarding": "重新播放引导流程（开发者）"
     },
     "footer": "{{name}} — 版本 {{version}}"
   },
@@ -552,7 +553,69 @@
     "resultSize": "你大约认识 {{count}} 个单词。",
     "adjustHint": "如果觉得不准，可以调整",
     "finish": "去看书",
-    "loadError": "测试单词加载失败。"
+    "loadError": "测试单词加载失败。",
+    "splash": {
+      "tagline": "用故事学语言"
+    },
+    "welcome": {
+      "title": "读故事，学语言",
+      "body": "读你喜欢的故事——点一下不认识的词，立刻看到意思。",
+      "cta": "开始",
+      "highlights": {
+        "tapWord": {
+          "title": "点一下就懂",
+          "body": "点击不认识的词，立刻看到它的意思。"
+        },
+        "leveled": {
+          "title": "适合你的难度",
+          "body": "从 A1 到 C2，都有适合你的故事。"
+        },
+        "remember": {
+          "title": "记得住",
+          "body": "收藏的词会在合适的时候再次出现。"
+        }
+      }
+    },
+    "native": {
+      "title": "你的母语是什么？",
+      "subtitle": "应用界面和词义将以这种语言显示。"
+    },
+    "target": {
+      "title": "你想读哪种语言？",
+      "subtitle": "故事将以这种语言呈现。"
+    },
+    "level": {
+      "title": "选择你的水平",
+      "subtitle": "选最接近的一个——随时可以更改。",
+      "takeTest": "不确定？做个小测试",
+      "options": {
+        "A1": {
+          "title": "刚刚开始",
+          "body": "我能看懂单个词和非常简单的句子。"
+        },
+        "A2": {
+          "title": "基础",
+          "body": "我能听懂简单的日常对话。"
+        },
+        "B1": {
+          "title": "中级",
+          "body": "我能就熟悉的话题表达自己。"
+        },
+        "B2": {
+          "title": "中高级",
+          "body": "我能抓住复杂文章的主要意思。"
+        },
+        "C1": {
+          "title": "高级",
+          "body": "我能轻松阅读长篇且有难度的文章。"
+        },
+        "C2": {
+          "title": "精通",
+          "body": "我几乎毫不费力就能理解一切。"
+        }
+      }
+    },
+    "saveError": "保存失败，请重试。"
   },
   "paywall": {
     "title": "让读过的词真正记住",
