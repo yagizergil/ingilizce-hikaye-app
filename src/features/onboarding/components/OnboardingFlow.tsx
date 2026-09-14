@@ -95,8 +95,11 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const completeOnboarding = useCompleteOnboardingMutation();
   const saveFavorites = useSaveOnboardingFavoritesMutation();
 
-  const deviceLanguage = getLocales()[0]?.languageCode ?? "tr";
-  const defaultNative = LANGUAGES.some((l) => l.code === deviceLanguage) ? deviceLanguage : "tr";
+  // Cihazın dili listemizde yoksa İngilizce -- Türkçe'ye düşmek, uygulamanın
+  // tek dil çiftiyle başladığı dönemden kalan bir varsayılandı ve artık
+  // yanlış (bkz. src/i18n/index.ts'teki aynı gerekçe).
+  const deviceLanguage = getLocales()[0]?.languageCode ?? "en";
+  const defaultNative = LANGUAGES.some((l) => l.code === deviceLanguage) ? deviceLanguage : "en";
 
   const [step, setStep] = useState<Step>("splash");
   const [nativeLanguage, setNativeLanguage] = useState<string | null>(defaultNative);

@@ -47,10 +47,13 @@ export function LanguagePairScreen({ onDone }: LanguagePairScreenProps) {
   const { theme } = useTheme();
   const setPair = useSetLanguagePairMutation();
 
-  const deviceLanguageCode = getLocales()[0]?.languageCode ?? "tr";
+  // Cihazın dili listemizde yoksa İngilizce (bkz. src/i18n/index.ts):
+  // Türkçe varsayılanı, uygulamanın tek dil çiftiyle başladığı dönemden
+  // kalmıştı ve on arayüz dilinde artık yanlış.
+  const deviceLanguageCode = getLocales()[0]?.languageCode ?? "en";
   const defaultNative = LANGUAGES.some((l) => l.code === deviceLanguageCode)
     ? deviceLanguageCode
-    : "tr";
+    : "en";
 
   const [phase, setPhase] = useState<Phase>("native");
   const [nativeLanguage, setNativeLanguage] = useState<string>(defaultNative);

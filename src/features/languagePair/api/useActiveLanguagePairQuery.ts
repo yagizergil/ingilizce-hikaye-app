@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { getLocales } from "expo-localization";
+
 import { supabase } from "@/lib/supabase";
+import { UI_LANGUAGE_CODES } from "@/lib/languages";
 
 export interface LanguagePair {
   nativeLanguage: string;
@@ -33,7 +36,20 @@ interface LanguagePairRow {
  * -- reader ve sözlük bu varsayılanla AYNEN eskisi gibi çalışmaya devam
  * eder, kimse aniden "dil seç" ekranına kilitlenmez.
  */
-const FALLBACK_PAIR: LanguagePair = { nativeLanguage: "tr", targetLanguage: "en" };
+/**
+ * Satır yoksa CİHAZIN dili ana dil, İngilizce hedef dil sayılıyor.
+ *
+ * Eskiden burada sabit `tr` yazıyordu -- uygulamanın tek çiftle (Türkçe
+ * okuyucu / İngilizce içerik) başladığı dönemden kalma. Türkçe telefonda
+ * sonuç birebir aynı; Almanca telefonda ise kullanıcı, çifti henüz
+ * yazılmadan bir kelimeye dokunduğunda TÜRKÇE karşılık alıyordu.
+ */
+const FALLBACK_PAIR: LanguagePair = {
+  nativeLanguage: (UI_LANGUAGE_CODES as readonly string[]).includes(getLocales()[0]?.languageCode ?? "")
+    ? (getLocales()[0]?.languageCode as string)
+    : "en",
+  targetLanguage: "en",
+};
 
 export async function fetchActiveLanguagePair(): Promise<LanguagePair> {
   const { data, error } = await supabase

@@ -59,10 +59,22 @@ const resources = {
   ja: { translation: ja },
 };
 
-const deviceLocale = getLocales()[0]?.languageCode ?? "tr";
+/**
+ * Cihazın dili taşıdığımız on dilden biriyse arayüz o dilde açılıyor;
+ * DEĞİLSE İngilizce.
+ *
+ * NEDEN TÜRKÇE DEĞİL (eski hâli buydu): uygulama tek dil çiftiyle
+ * (İngilizce içerik / Türkçe arayüz) başlamıştı ve varsayılan oradan
+ * kalmıştı. Artık on arayüz dili var, yani Portekizce ya da Lehçe bir
+ * telefonda açılan ilk ekran -- splash ve karşılama dâhil -- kullanıcının
+ * hiç bilmediği bir dilde çıkıyordu. İngilizce, bu on dilden birini
+ * konuşmayan biri için en yüksek anlaşılma şansı olan seçenek; zaten
+ * `fallbackLng` de o.
+ */
+const deviceLocale = getLocales()[0]?.languageCode ?? "en";
 const initialLanguage = (UI_LANGUAGE_CODES as string[]).includes(deviceLocale)
   ? deviceLocale
-  : "tr";
+  : "en";
 
 void i18n.use(initReactI18next).init({
   resources,
