@@ -18,21 +18,27 @@ export interface LanguageInfo {
   nameEn: string;
   nativeName: string;
   isRtl: boolean;
-  /** Bu dilde yazılmış kitap var/olabilir. Bugün yalnızca en, tr. */
+  /**
+   * Bu dilde yazılmış kitap var/olabilir. 2026-09-14 gece oturumunda
+   * es/fr/de/it/ru için A1-B1 orijinal katmanı tamamlanıp yayınlandı
+   * (bkz. migration 035) -- bu beşi artık true. zh/ja/tr B1'i henüz
+   * tamamlamadı, ar hiç üretilmedi -- hepsi bitince migration 036 ile
+   * birlikte burası da güncellenecek.
+   */
   isContentTarget: boolean;
 }
 
 export const LANGUAGES: readonly LanguageInfo[] = [
   { code: "en", nameEn: "English", nativeName: "English", isRtl: false, isContentTarget: true },
-  { code: "es", nameEn: "Spanish", nativeName: "Español", isRtl: false, isContentTarget: false },
+  { code: "es", nameEn: "Spanish", nativeName: "Español", isRtl: false, isContentTarget: true },
   { code: "zh", nameEn: "Chinese", nativeName: "中文", isRtl: false, isContentTarget: false },
   { code: "ar", nameEn: "Arabic", nativeName: "العربية", isRtl: true, isContentTarget: false },
-  { code: "fr", nameEn: "French", nativeName: "Français", isRtl: false, isContentTarget: false },
-  { code: "ru", nameEn: "Russian", nativeName: "Русский", isRtl: false, isContentTarget: false },
+  { code: "fr", nameEn: "French", nativeName: "Français", isRtl: false, isContentTarget: true },
+  { code: "ru", nameEn: "Russian", nativeName: "Русский", isRtl: false, isContentTarget: true },
   { code: "tr", nameEn: "Turkish", nativeName: "Türkçe", isRtl: false, isContentTarget: true },
-  { code: "de", nameEn: "German", nativeName: "Deutsch", isRtl: false, isContentTarget: false },
+  { code: "de", nameEn: "German", nativeName: "Deutsch", isRtl: false, isContentTarget: true },
   { code: "ja", nameEn: "Japanese", nativeName: "日本語", isRtl: false, isContentTarget: false },
-  { code: "it", nameEn: "Italian", nativeName: "Italiano", isRtl: false, isContentTarget: false },
+  { code: "it", nameEn: "Italian", nativeName: "Italiano", isRtl: false, isContentTarget: true },
 ] as const;
 
 const BY_CODE = new Map(LANGUAGES.map((language) => [language.code, language]));
