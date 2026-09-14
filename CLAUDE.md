@@ -12,8 +12,17 @@ klasikler public domain, seviyeli hikâyeler kendi ürettiğimiz özgün
 metinler. Gelir premium abonelikten geliyor.
 
 **Premium bugün ne sunuyor** (paywall'da yalnızca bunlar yazılabilir):
-**stüdyo seslendirmesi**, sınırsız kelime defteri, sınırsız aralıklı tekrar
-(SRS), yüksek AI cümle çevirisi kotası, ayrıntılı öğrenme istatistikleri.
+**stüdyo seslendirmesi**, sınırsız kelime çevirisi (ücretsizde günde 15 --
+migration 038), sınırsız kelime defteri, yüksek AI cümle çevirisi kotası,
+ikinci dil çifti.
+
+**AŞAĞIDAKİLER PREMIUM DEĞİL** ve paywall'a yazılamaz (2026-09-14 denetim
+bulgusu): aralıklı tekrar (SRS'te hiçbir yetki kontrolü yok, ücretsiz
+kullanıcı sınırsız tekrar yapıyor) ve istatistikler (`/statistics`
+kontrolsüz açılıyor). İkisi de bir süre paywall'da yazıyordu; bu, ücretsiz
+bir özelliği premium diye satmak demekti (Guideline 2.3.1). Gerçekten
+premium yapılmaları ücretsiz katmandan değer almak demek -- ayrı bir ürün
+kararı.
 
 **Dinlemek premium'dur** (bkz. ADR-012). Bölüm seslendirmesi önceden
 üretilmiş stüdyo kaydıyla yapılıyor ve özgün 63 hikâyede var; klasiklerde
@@ -481,11 +490,46 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 
 ## Mevcut Durum ve Sonraki Adımlar
 
-> Son güncelleme: 2026-09-13 (i18n bootstrap regresyon testi + `ozSeries`
-> etiket hatası düzeltmesi). Bu bölüm her önemli oturumdan sonra güncellenir.
+> Son güncelleme: 2026-09-15 (referans tasarımına geçiş, kelime kotası,
+> paywall denetimi). Bu bölüm her önemli oturumdan sonra güncellenir.
 > `docs/ROADMAP.md` ve `docs/STATE.md` çok daha eski; çelişki olursa burası
 > geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
 > içinde.
+
+
+### Bu oturumda kapatılanlar (2026-09-14/15, tasarım + gelir turu)
+
+1. **Referans tasarımına geçiş.** Kitap rafları, seviye rozetleri, ayarlar
+   satırları, kitap detayı, paywall ve onboarding'in tamamı referans
+   ekran görüntülerinden PİKSEL ÖLÇÜLEREK yeniden yazıldı
+   (`scripts/measure-reference.py`, 1pt = 2.4046px). Ölçüler token'a
+   dönüştü (`paywallType`, `paywallMetrics`, `coverColumn*.detail`,
+   `monoType.levelBadge`) -- koda gömülmediler.
+2. **Günlük kelime çevirisi kotası (migration 038).** Ücretsiz 15/gün,
+   premium sınırsız. Öncesinde okuma ekranındaki rozet KODA GÖMÜLÜ sabit
+   bir "15" yazıyordu ve hiçbir şeyi saymıyordu -- yani vaat edilen sınır
+   üründe YOKTU ve paywall hiç tetiklenmiyordu. Sayaç artık sunucuda;
+   `consume_word_lookup()` kontrol ve yazmayı tek çağrıda yapıyor.
+3. **Cihaza bağlı kalıcı anonim hesap.** Oturum Keychain/Keystore'da
+   (`src/lib/authStorage.ts`, 1800 baytlık parçalama + AsyncStorage'dan tek
+   seferlik taşıma). Uygulama silinip yeniden kurulsa bile aynı hesap.
+   Hesap oluşturma akışı (Apple/Google/e-posta) TAMAMEN KALDIRILDI.
+4. **Dil seçimi kalıcı oldu** (`src/i18n/uiLanguage.ts`). Öncesinde seçilen
+   dil hiçbir yere yazılmıyordu ve uygulama her açılışta cihaz diline
+   dönüyordu. Arapça RTL de artık gerçek onboarding akışında devreye
+   giriyor (kod ölü bir ekranda duruyordu).
+5. **Paywall denetimi.** "Aralıklı tekrar" ve "istatistikler" ücretsiz
+   oldukları hâlde premium diye satılıyordu (Guideline 2.3.1); listeden
+   çıkarıldı. Dokuz tetikleyicinin envanteri ve her vaadin sunucudaki
+   kapısı artık testli (`src/features/paywall/__tests__/paywallTriggers.test.ts`).
+6. **Kitap açıklamaları (migration 039).** Yayındaki 356 kitabın TAMAMI
+   artık kendi dilinde 3-5 cümlelik bir tanıtım metni taşıyor; her biri
+   kitabın gerçek açılış paragrafları okunarak yazıldı.
+7. **Okuma ilerlemesi kaydedilmiyordu.** Bekleyen kayıt, ekran kapanırken
+   iptal ediliyordu (gönderilmek yerine) ve yüzde 0..1 oranı olarak
+   yuvarlandığı için hep 0 yazılıyordu. İkisi de düzeltildi.
+8. **Ses kontrol çubuğu** (geri/duraklat/ileri) -- oklar saniye değil
+   KELİME atlıyor; zaman işaretleri zaten kelime kelime elimizde.
 
 ### Bu oturumda kapatılanlar (2026-09-13, devam oturumu)
 
@@ -572,7 +616,7 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 dağıtıldı (`revenuecat-webhook`, `chapter-audio`, `sync-entitlement`,
 `translate-lemma`, `translate-sentence`). i18n 11 dile genellendi (eşit
 anahtar + interpolasyon + çoğul tutarlılığı testle zorlanıyor, bkz.
-`src/i18n/__tests__/localeParity.test.ts`). 248 test geçiyor, typecheck ve
+`src/i18n/__tests__/localeParity.test.ts`). 256 test geçiyor, typecheck ve
 lint temiz. Supabase güvenlik denetçisinde gerçek bulgu yok:
 `SECURITY DEFINER` uyarılarının tamamı bilerek istemciye açılan RPC'ler
 (hepsi `auth.uid()` kapsamlı, `search_path` kilitli), "anonim erişim"
