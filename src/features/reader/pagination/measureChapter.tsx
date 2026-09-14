@@ -16,7 +16,7 @@ export interface MeasurementTextStyle {
   fontFamily: string | undefined;
   fontSize: number;
   lineHeight: number;
-  fontWeight: "400" | "500" | "600";
+  fontWeight: "400" | "500" | "600" | "700" | "800";
   letterSpacing: number;
   fontStyle?: "normal" | "italic";
 }
@@ -78,7 +78,7 @@ interface UseChapterMeasurementResult {
  */
 function linesToMeasuredLines(
   paragraphText: string,
-  layoutLines: readonly { text: string; height: number }[]
+  layoutLines: readonly { text: string; height: number }[],
 ): MeasuredLine[] {
   const result: MeasuredLine[] = [];
   let cursor = 0;
@@ -167,7 +167,7 @@ function MeasurementTree({
 
   const handleLayout = (
     paragraph: ReaderParagraph,
-    event: NativeSyntheticEvent<TextLayoutEventData>
+    event: NativeSyntheticEvent<TextLayoutEventData>,
   ): void => {
     if (resolvedRef.current) return;
 
@@ -188,7 +188,7 @@ function MeasurementTree({
             paragraphId: p.id,
             paragraphIndex: p.paragraphIndex,
             lines: [],
-          }
+          },
       );
       onComplete(requestKey, ordered);
     }
@@ -258,10 +258,10 @@ function MeasurementTree({
  * in a later phase.
  */
 export function useChapterMeasurement(
-  request: MeasurementRequest | null
+  request: MeasurementRequest | null,
 ): UseChapterMeasurementResult {
   const [resolved, setResolved] = useState<{ key: string; paragraphs: MeasuredParagraph[] } | null>(
-    null
+    null,
   );
 
   const handleComplete = (requestKey: string, paragraphs: MeasuredParagraph[]): void => {

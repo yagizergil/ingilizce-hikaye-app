@@ -35,7 +35,7 @@ export function useReaderThemeColors(): ReaderThemeColors {
   return useMemo(() => {
     const theme = colors[themeName];
     return {
-      background: theme.bg.primary,
+      background: theme.bg.reading,
       text: theme.text.reading,
       textMuted: theme.text.secondary,
       highlight: theme.secondaryMuted,

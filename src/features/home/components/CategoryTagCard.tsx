@@ -55,11 +55,19 @@ export function CategoryTagCard({ tag, onPress }: CategoryTagCardProps) {
       accessibilityLabel={t("home.categoryTag.accessibilityLabel", { label, count: tag.count })}
     >
       {tag.coverUrl ? (
-        <Image source={{ uri: tag.coverUrl }} style={styles.cover} contentFit="cover" accessibilityIgnoresInvertColors />
+        <Image
+          source={{ uri: tag.coverUrl }}
+          style={styles.cover}
+          contentFit="cover"
+          accessibilityIgnoresInvertColors
+        />
       ) : (
         <View style={[styles.cover, { backgroundColor: colorForKey(tag.key) }]} />
       )}
-      <Text style={[type.bookTitleMd, styles.label, { color: theme.text.primary }]} numberOfLines={2}>
+      <Text
+        style={[type.bookTitleMd, styles.label, { color: theme.text.primary }]}
+        numberOfLines={2}
+      >
         {label}
       </Text>
     </Pressable>
@@ -74,7 +82,7 @@ const styles = StyleSheet.create({
   cover: {
     width: CARD_WIDTH,
     height: CARD_WIDTH,
-    borderRadius: radius.md,
+    borderRadius: radius.cover,
   },
   label: {
     marginTop: spacing.sm,

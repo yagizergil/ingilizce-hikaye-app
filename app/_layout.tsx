@@ -9,12 +9,13 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useFonts } from "expo-font";
 import {
-  Fraunces_500Medium,
-  Fraunces_500Medium_Italic,
-  Fraunces_600SemiBold,
-} from "@expo-google-fonts/fraunces";
+  Nunito_400Regular,
+  Nunito_500Medium,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+  Nunito_800ExtraBold,
+} from "@expo-google-fonts/nunito";
 import { Literata_400Regular, Literata_400Regular_Italic } from "@expo-google-fonts/literata";
-import { IBMPlexMono_400Regular, IBMPlexMono_500Medium } from "@expo-google-fonts/ibm-plex-mono";
 
 import { queryClient } from "@/lib/queryClient";
 import { useTheme } from "@/theme/useTheme";
@@ -27,13 +28,13 @@ import { configureAudioSession } from "@/lib/audioSession";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    Fraunces_500Medium,
-    Fraunces_500Medium_Italic,
-    Fraunces_600SemiBold,
+    Nunito_400Regular,
+    Nunito_500Medium,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    Nunito_800ExtraBold,
     Literata_400Regular,
     Literata_400Regular_Italic,
-    IBMPlexMono_400Regular,
-    IBMPlexMono_500Medium,
   });
   const { theme } = useTheme();
 

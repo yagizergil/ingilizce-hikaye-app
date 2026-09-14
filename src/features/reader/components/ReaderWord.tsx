@@ -2,6 +2,8 @@ import { Text } from "react-native";
 
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
 
+import type { GestureResponderEvent } from "react-native";
+
 interface ReaderWordProps {
   text: string;
   /** `ttsPlan.wordKey` ile üretilen anahtar; seslendirme bununla eşleşiyor. */
@@ -10,7 +12,12 @@ interface ReaderWordProps {
   savedUnderlineColor: string;
   /** Sesli okuma sırasındaki geçici vurgu rengi. */
   spokenBackground: string;
-  onPress: () => void;
+  /**
+   * Olay OLDUĞU GİBİ yukarı veriliyor: çağıran `nativeEvent.pageY`'den
+   * sözlük kartının kelimenin altında mı üstünde mi açılacağını hesaplıyor
+   * (bkz. `ReaderWordTapPayload.anchorY`).
+   */
+  onPress: (event: GestureResponderEvent) => void;
   onLongPress: () => void;
 }
 

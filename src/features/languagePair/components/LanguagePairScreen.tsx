@@ -246,8 +246,15 @@ function LanguageRow({
       accessibilityState={{ selected }}
       accessibilityLabel={language.nativeName}
     >
-      <Text style={[monoType.rowText, { color: theme.text.primary }]}>{language.nativeName}</Text>
-      <Text style={[monoType.label, { color: theme.text.secondary }]}>{language.nameEn}</Text>
+      <View style={styles.rowLabel}>
+        <Text style={styles.flag}>{language.flag}</Text>
+        <View>
+          <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+            {language.nativeName}
+          </Text>
+          <Text style={[monoType.label, { color: theme.text.secondary }]}>{language.nameEn}</Text>
+        </View>
+      </View>
     </Pressable>
   );
 }
@@ -276,6 +283,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 8,
+  },
+  rowLabel: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  flag: {
+    fontSize: type.wordmark.fontSize,
   },
   rowDisabled: {
     opacity: 0.5,

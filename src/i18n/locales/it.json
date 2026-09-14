@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "İngilizce Hikaye"
+    "name": "Lingo"
   },
   "tabs": {
-    "home": "Home",
+    "home": "Libri",
     "library": "Libreria",
-    "vocabulary": "Le mie parole",
-    "profile": "Profilo"
+    "vocabulary": "Parole",
+    "profile": "Impostazioni"
   },
   "placeholder": {
     "comingSoon": "Presto disponibile"
@@ -24,7 +24,8 @@
     "dismiss": "Chiudi",
     "crashTitle": "Qualcosa è andato storto",
     "crashMessage": "Questa schermata non si è caricata. Di solito basta riprovare.",
-    "ok": "OK"
+    "ok": "OK",
+    "close": "Chiudi"
   },
   "ui": {
     "levelBadge": {
@@ -123,6 +124,11 @@
       "accessibilitySafe_other": "Serie di {{count}} giorni, per oggi è fatta",
       "accessibilityAtRisk_one": "Serie di {{count}} giorno, oggi non hai ancora letto",
       "accessibilityAtRisk_other": "Serie di {{count}} giorni, oggi non hai ancora letto"
+    },
+    "collections": {
+      "title": "Raccolte",
+      "popular": "Popolare",
+      "audiobooks": "Audiolibri"
     }
   },
   "collections": {
@@ -235,7 +241,10 @@
       "back": "Indietro",
       "settings": "Impostazioni di lettura",
       "playSpeech": "Leggi ad alta voce",
-      "pauseSpeech": "Metti in pausa la lettura"
+      "pauseSpeech": "Metti in pausa la lettura",
+      "chapterList": "Indice",
+      "quotaRemaining": "Ti restano {{count}} traduzioni oggi",
+      "bookWords": "Parole dal libro"
     },
     "wordSheet": {
       "pronounce": "Pronuncia",
@@ -258,7 +267,8 @@
         "conjunction": "(cong.)",
         "interjection": "(inter.)",
         "other": ""
-      }
+      },
+      "moreDetail": "Mostra dettagli"
     },
     "sentenceTranslation": {
       "toggle": "Mostra la traduzione della frase",
@@ -291,8 +301,8 @@
       "highlights": "Evidenzia le parole sconosciute",
       "speechRate": "Velocità di lettura",
       "speechRateOptions": {
-        "0.8": "Lenta",
         "1": "Normale",
+        "0.8": "Lenta",
         "1.2": "Veloce"
       },
       "voice": "Voce per la pronuncia delle parole",
@@ -300,7 +310,8 @@
         "premium": "alta qualità",
         "enhanced": "migliorata"
       },
-      "voiceUpgradeHint": "La voce del dispositivo che legge le parole del dizionario. Per un suono più naturale: Impostazioni > Accessibilità > Contenuto letto > Voci > Inglese, quindi scarica una voce. È gratis e si fa una volta sola. (La narrazione dei capitoli è un'altra cosa — arriva da una registrazione in studio.)"
+      "voiceUpgradeHint": "La voce del dispositivo che legge le parole del dizionario. Per un suono più naturale: Impostazioni > Accessibilità > Contenuto letto > Voci > Inglese, quindi scarica una voce. È gratis e si fa una volta sola. (La narrazione dei capitoli è un'altra cosa — arriva da una registrazione in studio.)",
+      "title": "Impostazioni"
     },
     "chapterComplete": {
       "title": "Capitolo completato",
@@ -328,6 +339,16 @@
     "footer": {
       "nextChapter": "CAPITOLO SUCCESSIVO",
       "finishBook": "CONCLUDI IL LIBRO"
+    },
+    "chapterList": {
+      "title": "Indice"
+    },
+    "bookWords": {
+      "title": "Parole dal libro",
+      "favorites": "Preferiti",
+      "history": "Cronologia",
+      "emptyFavorites": "Nessuna parola aggiunta ai preferiti",
+      "emptyHistory": "Ancora nessuna parola"
     }
   },
   "auth": {
@@ -412,9 +433,10 @@
     "error": "Impossibile caricare le parole",
     "summary": "{{total}} parole · {{due}} da ripassare oggi",
     "filters": {
-      "all": "TUTTE",
-      "due": "DA RIPASSARE",
-      "known": "APPRESE"
+      "all": "Tutti",
+      "due": "Da rivedere",
+      "known": "Imparate",
+      "withCount": "{{label}} ({{count}})"
     },
     "due": {
       "today": "Oggi",
@@ -637,6 +659,7 @@
     "manageTitle": "Le tue coppie di lingue",
     "yourPairs": "LE TUE COPPIE",
     "addPair": "AGGIUNGI UNA COPPIA",
-    "activeBadge": "Attiva"
+    "activeBadge": "Attiva",
+    "interfaceLanguageSection": "LINGUA DELL'INTERFACCIA"
   }
 }

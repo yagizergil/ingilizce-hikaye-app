@@ -1,19 +1,14 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { accentLineThickness, tabBarIconSize } from "@/theme/tokens/layout";
+import { tabBarIconSize } from "@/theme/tokens/layout";
 import { spacing } from "@/theme/tokens/spacing";
-import { monoType } from "@/theme/tokens/typography";
+import { fontFamily, monoType } from "@/theme/tokens/typography";
 import { useTheme } from "@/theme/useTheme";
 
 import type { ComponentProps } from "react";
-import type {
-  AccessibilityState,
-  GestureResponderEvent,
-  StyleProp,
-  ViewStyle,
-} from "react-native";
+import type { AccessibilityState, GestureResponderEvent, StyleProp, ViewStyle } from "react-native";
 
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -36,24 +31,13 @@ interface TabBarButtonProps {
 }
 
 /**
- * mockups/tab-bar.html `nav .item` / `nav .item.active::after` — mono
- * label, active item gets a 2px accent underline (`accentLineThickness`).
- * Expo Router's built-in `tabBarLabelStyle` can't draw that underline, so
- * this replaces the default tab button via `tabBarButton`.
- *
- * The active tab is signaled three ways at once (product owner feedback:
- * the underline alone read as too subtle): ink vs. secondary text/icon
- * color, an outline→filled icon swap, and the underline. See
- * `tabBarIconSize`'s doc comment in `layout.ts` for why the filled icon
- * on the active item doesn't violate the "no filled icon sets" rule.
- *
- * REVISED (post-launch, product-owner design pass): a gradient-tab-bar
- * attempt briefly forced these to fixed white; that gradient was rejected
- * on-device ("saçma sapan", "saydam yap" — see app/(tabs)/_layout.tsx) and
- * the bar reverted to fully transparent, so icon/label colors are back to
- * theme-based (`theme.text.primary`/`secondary`) — a transparent bar still
- * sits over whatever theme background is scrolled underneath it, so fixed
- * white would no longer be reliably legible.
+ * FAZ 2 (2026-09-14, referans uygulama eşleştirmesi — "dicto"): önceki
+ * versiyon mono, BÜYÜK HARF etiket + aktif öğede 2px altçizgi kullanıyordu.
+ * Referans çubukta ne büyük harf ne de altçizgi var — aktif/inaktif ayrımı
+ * yalnızca RENK (beyaz vs. gri) ve etiket KALINLIĞI (bold vs. regular) ile
+ * yapılıyor, ikon da outline->dolu değişiyor (bu ikinci sinyal referansta
+ * da var, aynı kalıp korundu). Etiket artık normal büyük/küçük harf
+ * (`label.toUpperCase()` çağrısı `app/(tabs)/_layout.tsx`'ten kaldırıldı).
  */
 export function TabBarButton({
   label,
@@ -81,13 +65,17 @@ export function TabBarButton({
         size={tabBarIconSize}
         color={tintColor}
       />
-      <Text style={[styles.label, { color: tintColor }]}>{label}</Text>
-      <View
+      <Text
         style={[
-          styles.underline,
-          { backgroundColor: isActive ? theme.accent : "transparent" },
+          styles.label,
+          {
+            color: tintColor,
+            fontFamily: isActive ? fontFamily.nunitoBold : fontFamily.nunitoSemiBold,
+          },
         ]}
-      />
+      >
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -100,11 +88,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   label: {
-    ...monoType.label,
-  },
-  underline: {
-    marginTop: spacing.xs,
-    width: spacing.lg,
-    height: accentLineThickness,
+    fontSize: monoType.buttonLabel.fontSize,
+    lineHeight: monoType.buttonLabel.lineHeight,
   },
 });

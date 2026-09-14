@@ -8,6 +8,12 @@ export interface LocalBookFilter {
   query?: string;
   levelGroup?: LevelGroup;
   genre?: string;
+  /** FAZ 3 EKLENTİSİ (2026-09-14): ana sayfadaki "Koleksiyonlar" rafının
+   * "Popüler" kartı için -- referans uygulamada bu bir gerçek kitap listesi
+   * değil, `books.isPopular`'a göre filtrelenmiş bir hedef. */
+  popular?: boolean;
+  /** "Koleksiyonlar" rafının "Sesli kitaplar" kartı için. */
+  hasAudio?: boolean;
 }
 
 /** Same matching rules as `useFilteredBooks`, but reads its criteria from
@@ -29,9 +35,12 @@ export function useLocalBookFilter(books: Book[] | undefined, filter: LocalBookF
           book.themes.some((theme) => theme.toLowerCase().includes(query));
         if (!matchesQuery) return false;
       }
-      if (filter.levelGroup && !LEVEL_GROUP_LEVELS[filter.levelGroup].includes(book.level)) return false;
+      if (filter.levelGroup && !LEVEL_GROUP_LEVELS[filter.levelGroup].includes(book.level))
+        return false;
       if (filter.genre && book.genre !== filter.genre) return false;
+      if (filter.popular && !book.isPopular) return false;
+      if (filter.hasAudio && !book.hasAudio) return false;
       return true;
     });
-  }, [books, filter.query, filter.levelGroup, filter.genre]);
+  }, [books, filter.query, filter.levelGroup, filter.genre, filter.popular, filter.hasAudio]);
 }

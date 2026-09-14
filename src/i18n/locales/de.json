@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "İngilizce Hikaye"
+    "name": "Lingo"
   },
   "tabs": {
-    "home": "Start",
+    "home": "Bücher",
     "library": "Bibliothek",
-    "vocabulary": "Meine Wörter",
-    "profile": "Profil"
+    "vocabulary": "Wörter",
+    "profile": "Einstellungen"
   },
   "placeholder": {
     "comingSoon": "Bald verfügbar"
@@ -24,7 +24,8 @@
     "dismiss": "Schließen",
     "crashTitle": "Etwas ist schiefgelaufen",
     "crashMessage": "Diese Seite konnte nicht geladen werden. Meist hilft ein zweiter Versuch.",
-    "ok": "OK"
+    "ok": "OK",
+    "close": "Schließen"
   },
   "ui": {
     "levelBadge": {
@@ -123,6 +124,11 @@
       "accessibilitySafe_other": "{{count}} Tage Serie, für heute erledigt",
       "accessibilityAtRisk_one": "{{count}} Tag Serie, du hast heute noch nicht gelesen",
       "accessibilityAtRisk_other": "{{count}} Tage Serie, du hast heute noch nicht gelesen"
+    },
+    "collections": {
+      "title": "Sammlungen",
+      "popular": "Beliebt",
+      "audiobooks": "Hörbücher"
     }
   },
   "collections": {
@@ -235,7 +241,10 @@
       "back": "Zurück",
       "settings": "Leseeinstellungen",
       "playSpeech": "Vorlesen",
-      "pauseSpeech": "Vorlesen pausieren"
+      "pauseSpeech": "Vorlesen pausieren",
+      "chapterList": "Inhalt",
+      "quotaRemaining": "Heute noch {{count}} Übersetzungen übrig",
+      "bookWords": "Wörter aus dem Buch"
     },
     "wordSheet": {
       "pronounce": "Aussprechen",
@@ -258,7 +267,8 @@
         "conjunction": "(Konj.)",
         "interjection": "(Interj.)",
         "other": ""
-      }
+      },
+      "moreDetail": "Details anzeigen"
     },
     "sentenceTranslation": {
       "toggle": "Satzübersetzung anzeigen",
@@ -291,8 +301,8 @@
       "highlights": "Unbekannte Wörter hervorheben",
       "speechRate": "Lesetempo",
       "speechRateOptions": {
-        "0.8": "Langsam",
         "1": "Normal",
+        "0.8": "Langsam",
         "1.2": "Schnell"
       },
       "voice": "Stimme für die Wortaussprache",
@@ -300,7 +310,8 @@
         "premium": "hohe Qualität",
         "enhanced": "verbessert"
       },
-      "voiceUpgradeHint": "Die Gerätestimme, die Wörter aus dem Wörterbuch vorliest. Für einen natürlicheren Klang: Einstellungen > Bedienungshilfen > Gesprochene Inhalte > Stimmen > Englisch, dort eine Stimme laden. Kostenlos und nur einmal nötig. (Die Kapitelvertonung ist davon getrennt — sie kommt aus einer Studioaufnahme.)"
+      "voiceUpgradeHint": "Die Gerätestimme, die Wörter aus dem Wörterbuch vorliest. Für einen natürlicheren Klang: Einstellungen > Bedienungshilfen > Gesprochene Inhalte > Stimmen > Englisch, dort eine Stimme laden. Kostenlos und nur einmal nötig. (Die Kapitelvertonung ist davon getrennt — sie kommt aus einer Studioaufnahme.)",
+      "title": "Einstellungen"
     },
     "chapterComplete": {
       "title": "Kapitel geschafft",
@@ -328,6 +339,16 @@
     "footer": {
       "nextChapter": "NÄCHSTES KAPITEL",
       "finishBook": "BUCH ABSCHLIESSEN"
+    },
+    "chapterList": {
+      "title": "Inhalt"
+    },
+    "bookWords": {
+      "title": "Wörter aus dem Buch",
+      "favorites": "Favoriten",
+      "history": "Verlauf",
+      "emptyFavorites": "Keine Wörter zu Favoriten hinzugefügt",
+      "emptyHistory": "Noch keine Wörter"
     }
   },
   "auth": {
@@ -412,9 +433,10 @@
     "error": "Wörter konnten nicht geladen werden",
     "summary": "{{total}} Wörter · {{due}} heute fällig",
     "filters": {
-      "all": "ALLE",
-      "due": "FÄLLIG",
-      "known": "GELERNT"
+      "all": "Alle",
+      "due": "Fällig",
+      "known": "Gelernt",
+      "withCount": "{{label}} ({{count}})"
     },
     "due": {
       "today": "Heute",
@@ -637,6 +659,7 @@
     "manageTitle": "Deine Sprachpaare",
     "yourPairs": "DEINE PAARE",
     "addPair": "PAAR HINZUFÜGEN",
-    "activeBadge": "Aktiv"
+    "activeBadge": "Aktiv",
+    "interfaceLanguageSection": "OBERFLÄCHENSPRACHE"
   }
 }

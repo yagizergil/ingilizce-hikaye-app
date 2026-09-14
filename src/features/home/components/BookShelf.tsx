@@ -1,9 +1,17 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { badgePadding, coverColumnHeight, coverColumnWidth, monoType, spacing, type } from "@/theme";
+import {
+  badgePadding,
+  coverColumnHeight,
+  coverColumnWidth,
+  monoType,
+  radius,
+  spacing,
+} from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { BookCover, LevelBadge, SectionHeader } from "@/components/ui";
 
@@ -18,11 +26,13 @@ interface ShelfBookCardProps {
 }
 
 /**
- * Compact vertical card for a horizontal shelf: `BookCover` (2:3, same
- * dimensions/asset as `BookListRow`'s cover) + `LevelBadge` + Fraunces
- * title + mono author, at a fixed card width — the same badge/title/author
- * stack `BookListRow` (src/features/library/components/BookListRow.tsx)
- * uses, just laid out vertically instead of next to a horizontal row.
+ * FAZ 2 (2026-09-14, referans uygulama eşleştirmesi): kapak ARTIK kendi
+ * başlığını/yazarını taşıyor (gerçek kapak resmiyse görselin üzerinde,
+ * tipografik fallback'te `BookCover`'ın kendi metni) -- referansta
+ * kapağın ALTINDA ayrı bir başlık/yazar satırı yok. Seviye rozeti kapağın
+ * SOL-ÜST köşesine bindirilmiş (`BookCover`'ın `overlay` prop'u); kapağın
+ * altında da "kitap | kulaklık" ikon şeridi var (referanstaki pill-şeklinde
+ * aksiyon şeridi) -- kulaklık yalnızca `book.hasAudio` true ise gösteriliyor.
  */
 function ShelfBookCard({ book, onPress, progressLabel }: ShelfBookCardProps) {
   const { t } = useTranslation();
@@ -45,29 +55,32 @@ function ShelfBookCard({ book, onPress, progressLabel }: ShelfBookCardProps) {
         coverUrl={book.coverUrl}
         width={coverColumnWidth.shelf}
         height={coverColumnHeight.shelf}
+        overlay={
+          <View style={styles.badgeOverlay}>
+            <LevelBadge level={book.level} />
+            {progressLabel ? (
+              <View
+                style={[styles.seriesBadge, { backgroundColor: theme.bg.primary }]}
+                accessibilityRole="text"
+                accessibilityLabel={t("home.seriesCard.progress", {
+                  current: progressLabel.split("/")[0],
+                  total: progressLabel.split("/")[1],
+                })}
+              >
+                <Text style={[monoType.badge, { color: theme.text.primary }]}>{progressLabel}</Text>
+              </View>
+            ) : null}
+          </View>
+        }
       />
-      <View style={styles.cardInfo}>
-        <View style={styles.badgeRow}>
-          <LevelBadge level={book.level} />
-          {progressLabel ? (
-            <View
-              style={[styles.seriesBadge, { borderColor: theme.border.strong }]}
-              accessibilityRole="text"
-              accessibilityLabel={t("home.seriesCard.progress", {
-                current: progressLabel.split("/")[0],
-                total: progressLabel.split("/")[1],
-              })}
-            >
-              <Text style={[monoType.badge, { color: theme.text.primary }]}>{progressLabel}</Text>
-            </View>
-          ) : null}
-        </View>
-        <Text style={[type.bookTitleMd, styles.cardTitle, { color: theme.text.primary }]} numberOfLines={2}>
-          {book.title}
-        </Text>
-        <Text style={[monoType.author, { color: theme.text.secondary }]} numberOfLines={1}>
-          {book.author}
-        </Text>
+      <View style={[styles.actionPill, { backgroundColor: theme.bg.surface }]}>
+        <Ionicons name="book-outline" size={16} color={theme.text.secondary} />
+        {book.hasAudio ? (
+          <>
+            <View style={[styles.actionDivider, { backgroundColor: theme.border.hairline }]} />
+            <Ionicons name="headset-outline" size={16} color={theme.text.secondary} />
+          </>
+        ) : null}
       </View>
     </Pressable>
   );
@@ -89,14 +102,26 @@ interface BookShelfProps {
  * responsible for not rendering this at all when `books` is empty — see
  * `HomeScreen`, which filters shelves before mapping them to this
  * component (component-level hide, not an empty-array render). */
-export function BookShelf({ title, moreLabel, onPressMore, books, onPressBook, progressLabels }: BookShelfProps) {
+export function BookShelf({
+  title,
+  moreLabel,
+  onPressMore,
+  books,
+  onPressBook,
+  progressLabels,
+}: BookShelfProps) {
   const renderItem: ListRenderItem<Book> = ({ item }) => (
     <ShelfBookCard book={item} onPress={onPressBook} progressLabel={progressLabels?.[item.id]} />
   );
 
   return (
     <View style={styles.container}>
-      <SectionHeader title={title} moreLabel={moreLabel} onPressMore={onPressMore} style={styles.head} />
+      <SectionHeader
+        title={title}
+        moreLabel={moreLabel}
+        onPressMore={onPressMore}
+        style={styles.head}
+      />
       <FlashList
         horizontal
         data={books}
@@ -130,21 +155,31 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     marginRight: spacing.md,
   },
-  cardInfo: {
-    marginTop: spacing.xs,
-    gap: spacing.xxs,
-  },
-  badgeRow: {
+  badgeOverlay: {
+    position: "absolute",
+    top: spacing.xs,
+    left: spacing.xs,
     flexDirection: "row",
     gap: spacing.xxs,
   },
   seriesBadge: {
-    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radius.sm,
     paddingVertical: badgePadding.vertical,
     paddingHorizontal: badgePadding.horizontal,
     alignSelf: "flex-start",
   },
-  cardTitle: {
-    marginTop: spacing.xxs,
+  actionPill: {
+    marginTop: spacing.xs,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+    paddingVertical: spacing.xxs,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radius.full,
+  },
+  actionDivider: {
+    width: StyleSheet.hairlineWidth,
+    height: 14,
   },
 });

@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "İngilizce Hikaye"
+    "name": "Lingo"
   },
   "tabs": {
-    "home": "الرئيسية",
+    "home": "الكتب",
     "library": "المكتبة",
-    "vocabulary": "كلماتي",
-    "profile": "حسابي"
+    "vocabulary": "الكلمات",
+    "profile": "الإعدادات"
   },
   "placeholder": {
     "comingSoon": "قريبًا"
@@ -24,7 +24,8 @@
     "dismiss": "إغلاق",
     "crashTitle": "حدث خطأ ما",
     "crashMessage": "تعذّر تحميل هذه الشاشة. إعادة المحاولة تحلّ المشكلة عادةً.",
-    "ok": "حسنًا"
+    "ok": "حسنًا",
+    "close": "إغلاق"
   },
   "ui": {
     "levelBadge": {
@@ -131,6 +132,11 @@
       "accessibilityAtRisk_few": "سلسلة {{count}} أيام، لم تقرأ اليوم بعد",
       "accessibilityAtRisk_many": "سلسلة {{count}} يومًا، لم تقرأ اليوم بعد",
       "accessibilityAtRisk_other": "سلسلة {{count}} يوم، لم تقرأ اليوم بعد"
+    },
+    "collections": {
+      "title": "المجموعات",
+      "popular": "الأكثر شعبية",
+      "audiobooks": "الكتب الصوتية"
     }
   },
   "collections": {
@@ -243,7 +249,10 @@
       "back": "رجوع",
       "settings": "إعدادات القراءة",
       "playSpeech": "استماع",
-      "pauseSpeech": "إيقاف الاستماع مؤقتًا"
+      "pauseSpeech": "إيقاف الاستماع مؤقتًا",
+      "chapterList": "المحتويات",
+      "quotaRemaining": "تبقى لديك {{count}} ترجمة اليوم",
+      "bookWords": "كلمات من الكتاب"
     },
     "wordSheet": {
       "pronounce": "استمع إلى النطق",
@@ -266,7 +275,8 @@
         "conjunction": "(حرف عطف)",
         "interjection": "(تعجّب)",
         "other": ""
-      }
+      },
+      "moreDetail": "إظهار التفاصيل"
     },
     "sentenceTranslation": {
       "toggle": "عرض ترجمة الجملة",
@@ -299,8 +309,8 @@
       "highlights": "إبراز الكلمات غير المعروفة",
       "speechRate": "سرعة القراءة",
       "speechRateOptions": {
-        "0.8": "بطيئة",
         "1": "عادية",
+        "0.8": "بطيئة",
         "1.2": "سريعة"
       },
       "voice": "صوت نطق الكلمات",
@@ -308,7 +318,8 @@
         "premium": "جودة عالية",
         "enhanced": "محسّن"
       },
-      "voiceUpgradeHint": "هذا صوت الجهاز الذي ينطق كلمات القاموس. للحصول على صوت أكثر طبيعية: الإعدادات > تسهيلات الاستخدام > المحتوى المنطوق > الأصوات > الإنجليزية، ثم نزّل صوتًا. مجاني ولمرة واحدة. (سرد الفصول شيء منفصل — يعتمد على تسجيل استوديو.)"
+      "voiceUpgradeHint": "هذا صوت الجهاز الذي ينطق كلمات القاموس. للحصول على صوت أكثر طبيعية: الإعدادات > تسهيلات الاستخدام > المحتوى المنطوق > الأصوات > الإنجليزية، ثم نزّل صوتًا. مجاني ولمرة واحدة. (سرد الفصول شيء منفصل — يعتمد على تسجيل استوديو.)",
+      "title": "الإعدادات"
     },
     "chapterComplete": {
       "title": "انتهى الفصل",
@@ -336,6 +347,16 @@
     "footer": {
       "nextChapter": "الفصل التالي",
       "finishBook": "إنهاء الكتاب"
+    },
+    "chapterList": {
+      "title": "المحتويات"
+    },
+    "bookWords": {
+      "title": "كلمات من الكتاب",
+      "favorites": "المفضلة",
+      "history": "السجل",
+      "emptyFavorites": "لم تتم إضافة كلمات إلى المفضلة",
+      "emptyHistory": "لا توجد كلمات بعد"
     }
   },
   "auth": {
@@ -421,8 +442,9 @@
     "summary": "{{total}} كلمة · {{due}} للمراجعة اليوم",
     "filters": {
       "all": "الكل",
-      "due": "للمراجعة",
-      "known": "تم تعلّمها"
+      "due": "المستحقة",
+      "known": "معروفة",
+      "withCount": "{{label}} ({{count}})"
     },
     "due": {
       "today": "اليوم",
@@ -677,6 +699,7 @@
     "manageTitle": "أزواج لغاتك",
     "yourPairs": "أزواجك",
     "addPair": "أضف زوجًا",
-    "activeBadge": "نشط"
+    "activeBadge": "نشط",
+    "interfaceLanguageSection": "لغة الواجهة"
   }
 }

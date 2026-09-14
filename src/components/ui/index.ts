@@ -2,6 +2,8 @@ export { Button } from "@/components/ui/Button";
 export type { ButtonVariant, ButtonSize } from "@/components/ui/Button";
 
 export { FilterTab } from "@/components/ui/FilterTab";
+export { SegmentedControl } from "@/components/ui/SegmentedControl";
+export type { SegmentOption } from "@/components/ui/SegmentedControl";
 export { LevelBadge } from "@/components/ui/LevelBadge";
 export { EmptyState } from "@/components/ui/EmptyState";
 export { ErrorState } from "@/components/ui/ErrorState";

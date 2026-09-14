@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "İngilizce Hikaye"
+    "name": "Lingo"
   },
   "tabs": {
-    "home": "ホーム",
+    "home": "本",
     "library": "ライブラリ",
-    "vocabulary": "単語帳",
-    "profile": "マイページ"
+    "vocabulary": "単語",
+    "profile": "設定"
   },
   "placeholder": {
     "comingSoon": "近日公開"
@@ -24,7 +24,8 @@
     "dismiss": "閉じる",
     "crashTitle": "問題が発生しました",
     "crashMessage": "この画面を読み込めませんでした。もう一度試すとたいてい直ります。",
-    "ok": "OK"
+    "ok": "OK",
+    "close": "閉じる"
   },
   "ui": {
     "levelBadge": {
@@ -123,6 +124,11 @@
       "accessibilitySafe_other": "{{count}} 日連続、今日は達成済み",
       "accessibilityAtRisk_one": "{{count}} 日連続、今日はまだ読んでいません",
       "accessibilityAtRisk_other": "{{count}} 日連続、今日はまだ読んでいません"
+    },
+    "collections": {
+      "title": "コレクション",
+      "popular": "人気",
+      "audiobooks": "オーディオブック"
     }
   },
   "collections": {
@@ -235,7 +241,10 @@
       "back": "戻る",
       "settings": "読書設定",
       "playSpeech": "音声で読む",
-      "pauseSpeech": "読み上げを一時停止"
+      "pauseSpeech": "読み上げを一時停止",
+      "chapterList": "目次",
+      "quotaRemaining": "今日はあと{{count}}回翻訳できます",
+      "bookWords": "この本の単語"
     },
     "wordSheet": {
       "pronounce": "発音を聞く",
@@ -258,7 +267,8 @@
         "conjunction": "（接）",
         "interjection": "（間投）",
         "other": ""
-      }
+      },
+      "moreDetail": "詳細を表示"
     },
     "sentenceTranslation": {
       "toggle": "文の訳を表示",
@@ -291,8 +301,8 @@
       "highlights": "知らない単語をハイライト",
       "speechRate": "読み上げ速度",
       "speechRateOptions": {
-        "0.8": "ゆっくり",
         "1": "ふつう",
+        "0.8": "ゆっくり",
         "1.2": "速い"
       },
       "voice": "単語発音の音声",
@@ -300,7 +310,8 @@
         "premium": "高品質",
         "enhanced": "拡張"
       },
-      "voiceUpgradeHint": "辞書の単語を読み上げるのは端末の音声です。より自然な声にするには、設定 > アクセシビリティ > 読み上げコンテンツ > 声 > 英語 から音声をダウンロードしてください。無料で一度きりの作業です。（章のナレーションは別で、スタジオ収録の音声を使います。）"
+      "voiceUpgradeHint": "辞書の単語を読み上げるのは端末の音声です。より自然な声にするには、設定 > アクセシビリティ > 読み上げコンテンツ > 声 > 英語 から音声をダウンロードしてください。無料で一度きりの作業です。（章のナレーションは別で、スタジオ収録の音声を使います。）",
+      "title": "設定"
     },
     "chapterComplete": {
       "title": "この章を読み終えました",
@@ -328,6 +339,16 @@
     "footer": {
       "nextChapter": "次の章",
       "finishBook": "読み終える"
+    },
+    "chapterList": {
+      "title": "目次"
+    },
+    "bookWords": {
+      "title": "この本の単語",
+      "favorites": "お気に入り",
+      "history": "履歴",
+      "emptyFavorites": "お気に入りに単語がありません",
+      "emptyHistory": "まだ単語がありません"
     }
   },
   "auth": {
@@ -414,7 +435,8 @@
     "filters": {
       "all": "すべて",
       "due": "復習",
-      "known": "習得済み"
+      "known": "習得済み",
+      "withCount": "{{label}} ({{count}})"
     },
     "due": {
       "today": "今日",
@@ -637,6 +659,7 @@
     "manageTitle": "あなたの言語ペア",
     "yourPairs": "あなたのペア",
     "addPair": "ペアを追加",
-    "activeBadge": "使用中"
+    "activeBadge": "使用中",
+    "interfaceLanguageSection": "インターフェース言語"
   }
 }

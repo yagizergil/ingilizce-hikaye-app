@@ -61,27 +61,25 @@ export default function TabsLayout() {
           tabBarButton: (props) => (
             <TabBarButton
               {...props}
-              iconOutline="home-outline"
-              iconActive="home"
-              label={t("tabs.home").toUpperCase()}
+              iconOutline="library-outline"
+              iconActive="library"
+              label={t("tabs.home")}
             />
           ),
         }}
       />
-      <Tabs.Screen
-        name="library"
-        options={{
-          title: t("tabs.library"),
-          tabBarButton: (props) => (
-            <TabBarButton
-              {...props}
-              iconOutline="book-outline"
-              iconActive="book"
-              label={t("tabs.library").toUpperCase()}
-            />
-          ),
-        }}
-      />
+      {/*
+        FAZ 2 (2026-09-14, referans uygulama eşleştirmesi): referans ("dicto")
+        3 sekmeli -- Kitaplar/Kelimeler/Ayarlar. Bizde "index" (ana sayfa
+        akışı: yeni kitaplar, şu an okunuyor, koleksiyonlar, seviyelere göre
+        kitaplar) zaten referansın "Kitaplar" sekmesiyle birebir aynı içeriği
+        taşıyor -- bu yüzden "Kütüphane" (filtre + tüm katalog listesi) ayrı
+        bir sekme DEĞİL, `/browse` rotasıyla aynı işi yapan fazlalık bir
+        4. sekmeydi. `href: null` bunu tab bar'dan gizliyor; rota (ve
+        `EmptyHome`'un boş katalog CTA'sı gibi doğrudan linkler) hâlâ
+        çalışıyor, yalnızca alt barda görünmüyor.
+      */}
+      <Tabs.Screen name="library" options={{ href: null }} />
       <Tabs.Screen
         name="vocabulary"
         options={{
@@ -89,9 +87,9 @@ export default function TabsLayout() {
           tabBarButton: (props) => (
             <TabBarButton
               {...props}
-              iconOutline="bookmark-outline"
-              iconActive="bookmark"
-              label={t("tabs.vocabulary").toUpperCase()}
+              iconOutline="book-outline"
+              iconActive="book"
+              label={t("tabs.vocabulary")}
             />
           ),
         }}
@@ -103,9 +101,9 @@ export default function TabsLayout() {
           tabBarButton: (props) => (
             <TabBarButton
               {...props}
-              iconOutline="person-outline"
-              iconActive="person"
-              label={t("tabs.profile").toUpperCase()}
+              iconOutline="settings-outline"
+              iconActive="settings"
+              label={t("tabs.profile")}
             />
           ),
         }}

@@ -36,7 +36,10 @@ import { PaginatedReaderView } from "@/features/reader/components/PaginatedReade
 import { WordSheet } from "@/features/reader/components/WordSheet";
 import { SentenceSheet } from "@/features/reader/components/SentenceSheet";
 import { ReaderSettingsSheet } from "@/features/reader/components/ReaderSettingsSheet";
+import { ChapterListSheet } from "@/features/reader/components/ChapterListSheet";
+import { BookWordsSheet } from "@/features/reader/components/BookWordsSheet";
 import { ChapterCompleteCard } from "@/features/reader/components/ChapterCompleteCard";
+import { useAiSentenceQuotaQuery } from "@/features/reader/api/useAiSentenceQuotaQuery";
 
 import type {
   PaginatedPageChangePayload,
@@ -179,6 +182,22 @@ export function ReaderScreen({
 
   const canPlayAudio = tts.available;
 
+  // Üst çubuktaki turuncu "kalan kelime çevirisi hakkı" rozeti için.
+  //
+  // GEÇİCİ/YER TUTUCU (2026-09-14, ürün sahibinin talimatıyla): gerçek
+  // kural "premium olmayan kullanıcının günde 15 KELİME çevirme hakkı
+  // var" -- bu, `useAiSentenceQuotaQuery`'nin ölçtüğü CÜMLE çevirisi
+  // kotasından (migration 029, günde 10/200) AYRI bir sayaç ve henüz
+  // sunucu tarafında yok ("bu sistemi sonra yazarız" -- ürün sahibi).
+  // Şimdilik yalnızca ücretsiz/premium ayrımı gerçek (`isPremium`),
+  // sayının kendisi (15) sabit -- kelime çevirisi kullanım sayacı
+  // kurulunca burası gerçek "kalan" değerini okuyacak şekilde
+  // değiştirilecek.
+  const FREE_DAILY_WORD_TRANSLATIONS = 15;
+  const aiQuota = useAiSentenceQuotaQuery();
+  const aiQuotaRemaining =
+    aiQuota.data == null ? null : aiQuota.data.isPremium ? null : FREE_DAILY_WORD_TRANSLATIONS;
+
   // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
   // `stop` konumu sıfırlıyor, yani kullanıcı sözlüğe bakıp geri döndüğünde
   // seslendirme sayfanın başından başlıyordu.
@@ -207,11 +226,12 @@ export function ReaderScreen({
   const [activeWord, setActiveWord] = useState<WordSheetWord | null>(null);
   const [activeSentence, setActiveSentence] = useState<SentenceSheetSentence | null>(null);
 
-  const wordSheetRef = useRef<BottomSheetModal>(null);
   /** Sözlük kapanınca seslendirme kaldığı yerden sürsün mü. */
   const resumeAfterSheetRef = useRef(false);
   const sentenceSheetRef = useRef<BottomSheetModal>(null);
   const settingsSheetRef = useRef<BottomSheetModal>(null);
+  const chapterListSheetRef = useRef<BottomSheetModal>(null);
+  const bookWordsSheetRef = useRef<BottomSheetModal>(null);
   // Tracks whether this chapter view has already reached the reader branch
   // below, so the isVocabDataLoading check can tell a genuine regression
   // (loaded -> loading again, e.g. a query refetch flipping
@@ -312,8 +332,8 @@ export function ReaderScreen({
         sentenceText: payload.sentenceText,
         paragraphId: payload.paragraphId ?? "",
         sentenceCharOffset: payload.sentenceCharOffset,
+        anchorY: payload.anchorY,
       });
-      wordSheetRef.current?.present();
     },
     [pauseSpeech],
   );
@@ -553,13 +573,15 @@ export function ReaderScreen({
           hareketi kaldırıldı — gerekçe PaginatedReaderView'daki
           `handleZonePress` yorumunda. */}
       <ReaderHeader
-        title={chapter.title ?? ""}
-        onBack={onBack}
+        onOpenChapterList={() => chapterListSheetRef.current?.present()}
         onOpenSettings={() => settingsSheetRef.current?.present()}
+        onOpenBookWords={() => bookWordsSheetRef.current?.present()}
         onToggleSpeech={tts.toggle}
         isSpeaking={isSpeaking}
         canPlaySpeech={canPlayAudio}
         isPreparingSpeech={tts.isPreparing}
+        aiQuotaRemaining={aiQuotaRemaining}
+        onClose={onBack}
       />
 
       <View style={styles.readerWrap}>
@@ -612,7 +634,6 @@ export function ReaderScreen({
       />
 
       <WordSheet
-        ref={wordSheetRef}
         word={activeWord}
         lemmaDictionary={lemmaDictionary}
         lemmaState={getLemmaState(activeWord?.lemma ?? null)}
@@ -635,6 +656,13 @@ export function ReaderScreen({
         onDismiss={() => setActiveSentence(null)}
       />
       <ReaderSettingsSheet ref={settingsSheetRef} />
+      <ChapterListSheet
+        ref={chapterListSheetRef}
+        bookId={chapter.bookId}
+        currentChapterId={chapterId}
+        onSelectChapter={onOpenChapter}
+      />
+      <BookWordsSheet ref={bookWordsSheetRef} bookId={chapter.bookId} />
     </View>
   );
 }

@@ -1,21 +1,12 @@
+import { useCallback } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import * as Speech from "expo-speech";
 
-import {
-  badgePadding,
-  levelAccent,
-  monoType,
-  motion,
-  radius,
-  readingType,
-  spacing,
-  type,
-} from "@/theme";
+import { monoType, motion, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-
-import { formatDueLabel } from "@/features/vocabulary/api/formatDueLabel";
-import { formatPosLabel } from "@/features/vocabulary/api/formatPosLabel";
 
 import type { VocabularyWord } from "@/features/vocabulary/types";
 
@@ -25,33 +16,34 @@ interface VocabularyWordRowProps {
 }
 
 /**
- * vocabulary.html `.word` — a CSS grid (`1fr auto`) with lemma+due on the
- * first row and gloss+source on the second, tags wrapping full-width below.
- * Replicated here with two explicit two-column rows (RN has no implicit
- * grid), which produces the same baseline-aligned layout as the mockup's
- * `align-items:baseline`.
+ * FAZ 4 (2026-09-14, referans uygulama eşleştirmesi): satır artık kartlı/
+ * çerçeveli/sol-şeritli değil -- referanstaki gibi düz bir satır: sol
+ * tarafta seslendirme düğmesi, ortada kelime (kalın) + karşılığı (gri,
+ * altında), sağda kaydet/kaldır ikon düğmesi. CEFR/POS/kaynak-kitap
+ * etiketleri ve SRS "tekrar tarihi" rozeti varsayılan görünümden kalktı
+ * (referansta hiçbiri yok) -- veri KAYBOLMADI, yalnızca bu liste satırından
+ * kalktı; kelime detayına dokunulduğunda (`onPress`) hâlâ erişilebilir.
+ *
+ * SESLENDİRME: bu satırda önceden hiç yoktu -- referansın sol ikonu
+ * tam olarak bu, `WordSheet`'teki `handlePronounce` ile aynı basit
+ * `expo-speech` çağrısı (aynı özel ses seçimini burada tekrar okumaya
+ * gerek yok, defter satırı ayarlar ekranındaki sesi değil sistem
+ * varsayılanını kullanıyor -- düşük riskli, geri alınabilir bir basitlik
+ * tercihi).
  */
 export function VocabularyWordRow({ word, onPress }: VocabularyWordRowProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
-  const dueLabel = formatDueLabel(t, word.dueAt);
-  const posLabel = formatPosLabel(t, word.pos);
-
-  const tags = [posLabel, word.cefrLevel].filter((tag): tag is string => tag !== null);
-
-  // Kelimenin seviyesi sol kenarda bir şerit olarak duruyor — kitap
-  // listesindeki desenle aynı, defter de aynı dili konuşuyor.
-  const stripe =
-    word.cefrLevel != null && word.cefrLevel in levelAccent
-      ? levelAccent[word.cefrLevel as keyof typeof levelAccent]
-      : theme.border.hairline;
+  const handlePronounce = useCallback(() => {
+    Speech.speak(word.lemma, { language: "en-US" });
+  }, [word.lemma]);
 
   return (
     <Pressable
       style={({ pressed }) => [
         styles.row,
-        { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
+        { borderBottomColor: theme.border.hairline },
         pressed ? { opacity: motion.pressed.opacity } : null,
       ]}
       onPress={() => onPress(word)}
@@ -61,100 +53,56 @@ export function VocabularyWordRow({ word, onPress }: VocabularyWordRowProps) {
         gloss: word.gloss ?? "",
       })}
     >
-      <View style={[styles.stripe, { backgroundColor: stripe }]} />
+      <Pressable
+        onPress={handlePronounce}
+        accessibilityRole="button"
+        accessibilityLabel={t("reader.wordSheet.pronounce")}
+        hitSlop={spacing.sm}
+      >
+        <Ionicons name="volume-medium-outline" size={22} color={theme.text.secondary} />
+      </Pressable>
 
-      <View style={styles.topLine}>
-        <Text style={[type.wordLemma, styles.lemma, { color: theme.text.primary }]} numberOfLines={1}>
+      <View style={styles.textBlock}>
+        <Text style={[type.bookTitleMd, { color: theme.text.primary }]} numberOfLines={1}>
           {word.lemma}
         </Text>
-        {dueLabel !== null ? (
-          <Text style={[monoType.dueLabel, styles.due, { color: theme.accent }]}>{dueLabel}</Text>
-        ) : null}
-      </View>
-
-      <View style={styles.bottomLine}>
         {word.gloss !== null ? (
-          <Text style={[readingType.gloss, styles.gloss, { color: theme.text.secondary }]} numberOfLines={1}>
+          <Text
+            style={[monoType.rowText, styles.gloss, { color: theme.text.secondary }]}
+            numberOfLines={1}
+          >
             {word.gloss}
           </Text>
         ) : null}
-        {word.sourceTitle !== null ? (
-          <Text style={[monoType.sourceLabel, styles.source, { color: theme.text.secondary }]} numberOfLines={1}>
-            {word.sourceTitle}
-          </Text>
-        ) : null}
       </View>
 
-      {tags.length > 0 ? (
-        <View style={styles.tags}>
-          {tags.map((tag) => (
-            <Text
-              key={tag}
-              style={[
-                monoType.tag,
-                styles.tag,
-                { color: theme.text.secondary, borderColor: theme.border.hairline },
-              ]}
-            >
-              {tag}
-            </Text>
-          ))}
-        </View>
-      ) : null}
+      <View style={[styles.saveButton, { backgroundColor: theme.bg.surface }]}>
+        <Ionicons name="bookmark-outline" size={18} color={theme.text.secondary} />
+      </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   row: {
-    padding: spacing.md,
-    paddingLeft: spacing.ml,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
     minHeight: 44,
-    borderRadius: radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    overflow: "hidden",
+    paddingVertical: spacing.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  stripe: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 4,
-  },
-  topLine: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline",
-    gap: spacing.sm,
-  },
-  lemma: {
-    flexShrink: 1,
-  },
-  due: {
-    flexShrink: 0,
-  },
-  bottomLine: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline",
-    gap: spacing.sm,
-    marginTop: spacing.xxs,
+  textBlock: {
+    flex: 1,
   },
   gloss: {
-    flexShrink: 1,
-  },
-  source: {
-    flexShrink: 0,
-  },
-  tags: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.xs,
     marginTop: spacing.xxs,
   },
-  tag: {
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingVertical: badgePadding.vertical,
-    paddingHorizontal: badgePadding.horizontal,
+  saveButton: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.sm,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

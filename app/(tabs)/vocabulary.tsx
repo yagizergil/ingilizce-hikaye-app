@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
@@ -9,7 +9,7 @@ import { router, useFocusEffect } from "expo-router";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
-import { Button, LoadingState, ErrorState, EmptyState, FilterTab } from "@/components/ui";
+import { Button, LoadingState, ErrorState, EmptyState, SegmentedControl } from "@/components/ui";
 import { useSubscriptionQuery } from "@/features/paywall";
 import {
   VocabularyWordRow,
@@ -18,6 +18,7 @@ import {
   useVocabularyQuery,
 } from "@/features/vocabulary";
 
+import type { SegmentOption } from "@/components/ui";
 import type { VocabularyFilter, VocabularyWord } from "@/features/vocabulary";
 
 const FILTER_TABS: VocabularyFilter[] = ["all", "due", "known"];
@@ -62,6 +63,32 @@ export default function VocabularyScreen() {
     trackEvent("vocabulary_word_pressed", { lemma: word.lemma });
   }, []);
 
+  // FAZ 4 (2026-09-14, referans uygulama eşleştirmesi): segmentli seçici
+  // her sekmenin yanında sayı gösteriyor ("Favoriler (0)" gibi) -- üç
+  // filtrenin kendi sayısını ayrı ayrı hesaplamak için `useFilteredWords`ü
+  // tekrar tekrar çağırmak yerine tek geçişte sayıyoruz.
+  const filterCounts = useMemo(() => {
+    const allWords = data?.words ?? [];
+    // "Tekrar bekleyen" sayısı o anki zamana bakar; sabit bir değer
+    // anlamsız olurdu (bkz. useFilteredWords.ts'teki aynı gerekçe).
+    // eslint-disable-next-line react-hooks/purity
+    const now = Date.now();
+    return {
+      all: allWords.length,
+      due: allWords.filter((word) => word.dueAt !== null && new Date(word.dueAt).getTime() <= now)
+        .length,
+      known: allWords.filter((word) => word.state === "known").length,
+    };
+  }, [data?.words]);
+
+  const segmentOptions: SegmentOption<VocabularyFilter>[] = FILTER_TABS.map((tab) => ({
+    value: tab,
+    label: t("vocabulary.filters.withCount", {
+      label: t(`vocabulary.filters.${tab}`),
+      count: filterCounts[tab],
+    }),
+  }));
+
   const dueCount = data?.summary.dueTodayCount ?? 0;
 
   // Defter dolmaya yaklaşınca sakin bir bilgi şeridi. Paywall'un dört
@@ -96,30 +123,18 @@ export default function VocabularyScreen() {
     [handlePressWord],
   );
 
-  const filterTabLabel = (tab: VocabularyFilter) => t(`vocabulary.filters.${tab}`);
-
   const hasAnySavedWord = (data?.words.length ?? 0) > 0;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
       <View style={styles.header}>
-        <Text style={[type.screenTitle, { color: theme.text.primary }]}>{t("vocabulary.title")}</Text>
-        {data ? (
-          <Text style={[monoType.summary, styles.summary, { color: theme.text.secondary }]}>
-            {t("vocabulary.summary", { total: data.summary.totalCount, due: data.summary.dueTodayCount })}
-          </Text>
-        ) : null}
+        <Text style={[type.screenTitle, styles.title, { color: theme.text.primary }]}>
+          {t("vocabulary.title")}
+        </Text>
       </View>
 
-      <View style={[styles.filters, { borderBottomColor: theme.border.hairline }]}>
-        {FILTER_TABS.map((tab) => (
-          <FilterTab
-            key={tab}
-            label={filterTabLabel(tab)}
-            selected={filter === tab}
-            onPress={() => handleSelectFilter(tab)}
-          />
-        ))}
+      <View style={styles.filters}>
+        <SegmentedControl options={segmentOptions} value={filter} onChange={handleSelectFilter} />
       </View>
 
       {showWordListStrip && subscription.data ? (
@@ -157,9 +172,15 @@ export default function VocabularyScreen() {
         <ErrorState message={t("vocabulary.error")} onRetry={() => void refetch()} />
       ) : words.length === 0 ? (
         hasAnySavedWord ? (
-          <EmptyState title={t("vocabulary.empty.noMatch.title")} description={t("vocabulary.empty.noMatch.description")} />
+          <EmptyState
+            title={t("vocabulary.empty.noMatch.title")}
+            description={t("vocabulary.empty.noMatch.description")}
+          />
         ) : (
-          <EmptyState title={t("vocabulary.empty.noWords.title")} description={t("vocabulary.empty.noWords.description")} />
+          <EmptyState
+            title={t("vocabulary.empty.noWords.title")}
+            description={t("vocabulary.empty.noWords.description")}
+          />
         )
       ) : (
         <FlashList
@@ -184,15 +205,12 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xxxl,
     paddingBottom: spacing.xs,
   },
-  summary: {
-    marginTop: spacing.xs,
+  title: {
+    textAlign: "center",
   },
   filters: {
-    flexDirection: "row",
-    gap: spacing.ml,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingBottom: spacing.md,
   },
   listContent: {
     paddingHorizontal: spacing.lg,

@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "İngilizce Hikaye"
+    "name": "Lingo"
   },
   "tabs": {
-    "home": "首页",
+    "home": "图书",
     "library": "书库",
-    "vocabulary": "我的单词",
-    "profile": "我的"
+    "vocabulary": "单词",
+    "profile": "设置"
   },
   "placeholder": {
     "comingSoon": "敬请期待"
@@ -24,7 +24,8 @@
     "dismiss": "关闭",
     "crashTitle": "出了点问题",
     "crashMessage": "这个页面没能加载出来，重试一下通常就好了。",
-    "ok": "好"
+    "ok": "好",
+    "close": "关闭"
   },
   "ui": {
     "levelBadge": {
@@ -123,6 +124,11 @@
       "accessibilitySafe_other": "连续阅读 {{count}} 天，今天已完成",
       "accessibilityAtRisk_one": "连续阅读 {{count}} 天，今天还没读",
       "accessibilityAtRisk_other": "连续阅读 {{count}} 天，今天还没读"
+    },
+    "collections": {
+      "title": "合集",
+      "popular": "热门",
+      "audiobooks": "有声书"
     }
   },
   "collections": {
@@ -235,7 +241,10 @@
       "back": "返回",
       "settings": "阅读设置",
       "playSpeech": "朗读",
-      "pauseSpeech": "暂停朗读"
+      "pauseSpeech": "暂停朗读",
+      "chapterList": "目录",
+      "quotaRemaining": "今天还剩 {{count}} 次翻译",
+      "bookWords": "来自本书的单词"
     },
     "wordSheet": {
       "pronounce": "发音",
@@ -258,7 +267,8 @@
         "conjunction": "（连）",
         "interjection": "（叹）",
         "other": ""
-      }
+      },
+      "moreDetail": "显示详情"
     },
     "sentenceTranslation": {
       "toggle": "显示整句翻译",
@@ -291,8 +301,8 @@
       "highlights": "高亮生词",
       "speechRate": "朗读速度",
       "speechRateOptions": {
-        "0.8": "慢",
         "1": "正常",
+        "0.8": "慢",
         "1.2": "快"
       },
       "voice": "单词发音音色",
@@ -300,7 +310,8 @@
         "premium": "高品质",
         "enhanced": "增强版"
       },
-      "voiceUpgradeHint": "朗读词典单词用的是设备自带语音。想听得更自然：设置 > 辅助功能 > 朗读内容 > 声音 > 英语，下载一个语音包即可，免费且只需一次。（章节朗读是另一回事，用的是录音棚配音。）"
+      "voiceUpgradeHint": "朗读词典单词用的是设备自带语音。想听得更自然：设置 > 辅助功能 > 朗读内容 > 声音 > 英语，下载一个语音包即可，免费且只需一次。（章节朗读是另一回事，用的是录音棚配音。）",
+      "title": "设置"
     },
     "chapterComplete": {
       "title": "本章读完了",
@@ -328,6 +339,16 @@
     "footer": {
       "nextChapter": "下一章",
       "finishBook": "读完本书"
+    },
+    "chapterList": {
+      "title": "目录"
+    },
+    "bookWords": {
+      "title": "来自本书的单词",
+      "favorites": "收藏",
+      "history": "历史",
+      "emptyFavorites": "收藏中还没有单词",
+      "emptyHistory": "还没有单词"
     }
   },
   "auth": {
@@ -414,7 +435,8 @@
     "filters": {
       "all": "全部",
       "due": "待复习",
-      "known": "已学会"
+      "known": "已掌握",
+      "withCount": "{{label}} ({{count}})"
     },
     "due": {
       "today": "今天",
@@ -637,6 +659,7 @@
     "manageTitle": "你的语言组合",
     "yourPairs": "你的组合",
     "addPair": "添加组合",
-    "activeBadge": "当前使用"
+    "activeBadge": "当前使用",
+    "interfaceLanguageSection": "界面语言"
   }
 }

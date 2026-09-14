@@ -49,3 +49,9 @@ expo-env.d.ts
 # service_role anahtariyla ayni siniftan bir sir: asla depoya girmez ve
 # asla uygulama tarafina kopyalanmaz (CLAUDE.md ADR-005).
 pipeline/gcloud-tts.json
+
+# Referans uygulama ekran goruntuleri: baska bir uygulamanin telifli
+# arayuzu, depo public -- yerelde kalir, olcum icin kullanilir.
+docs/reference/*.jpeg
+docs/reference/*.jpg
+docs/reference/*.png

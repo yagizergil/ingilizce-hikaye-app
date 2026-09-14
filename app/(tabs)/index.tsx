@@ -9,23 +9,20 @@ import { radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { ErrorState, Skeleton } from "@/components/ui";
-import { useOnboardingStatusQuery } from "@/features/onboarding";
-import { useProfileStatsQuery } from "@/features/profile";
 import {
   BookShelf,
   CategoryShelf,
+  CollectionShelf,
   CurrentlyReadingShelf,
   EmptyHome,
-  HomeHero,
   LevelGroupCard,
-  StreakChip,
   useCurrentlyReadingQuery,
   useHomeExtrasQuery,
   useRemoveFromCurrentlyReadingMutation,
 } from "@/features/home";
 import { LEVEL_GROUPS } from "@/features/library";
 
-import type { CategoryTag, CategoryTagNavTarget } from "@/features/home";
+import type { CategoryTag, CategoryTagNavTarget, CollectionCardData } from "@/features/home";
 import type { Book, LevelGroup } from "@/features/library";
 
 /** Loading placeholder: 3 skeleton shelves, never a blank screen while
@@ -59,10 +56,6 @@ export default function HomeScreen() {
   } = useHomeExtrasQuery();
   const { data: currentlyReading, refetch: refetchCurrentlyReading } = useCurrentlyReadingQuery();
   const removeFromCurrentlyReadingMutation = useRemoveFromCurrentlyReadingMutation();
-  const { data: onboarding } = useOnboardingStatusQuery();
-  // Seri ana ekranda görünüyor: Profil'in içinde kalan bir sayaç davranışı
-  // etkilemiyordu (bkz. StreakChip'in gerekçesi).
-  const { data: profileStats } = useProfileStatsQuery();
 
   useEffect(() => {
     trackEvent("home_viewed");
@@ -78,11 +71,6 @@ export default function HomeScreen() {
       void refetchCurrentlyReading();
     }, [refetchExtras, refetchCurrentlyReading]),
   );
-
-  const handleOpenStreak = useCallback(() => {
-    trackEvent("home_streak_pressed", { streak: profileStats?.currentStreak ?? 0 });
-    router.push("/profile");
-  }, [profileStats?.currentStreak, router]);
 
   const handleOpenBook = useCallback(
     (book: Book) => {
@@ -110,14 +98,6 @@ export default function HomeScreen() {
     [router],
   );
 
-  // Hero'nun "kitaplara göz at" eylemi: kullanıcının seviyesi varsa doğrudan
-  // o seviyeye filtreli açılıyor, yoksa tüm katalog.
-  const handleBrowseAtLevel = useCallback(() => {
-    const level = onboarding?.targetLevel;
-    trackEvent("home_hero_browse", { level: level ?? "none" });
-    router.push(level ? `/browse?q=${level}` : "/browse");
-  }, [router, onboarding?.targetLevel]);
-
   const handlePressLevelGroup = useCallback(
     (levelGroup: LevelGroup) => {
       trackEvent("home_level_group_pressed", { levelGroup });
@@ -132,6 +112,18 @@ export default function HomeScreen() {
       removeFromCurrentlyReadingMutation.mutate(book.id);
     },
     [removeFromCurrentlyReadingMutation],
+  );
+
+  const handlePressCollection = useCallback(
+    (collection: CollectionCardData) => {
+      trackEvent("home_collection_pressed", { key: collection.key });
+      const searchParams = new URLSearchParams();
+      searchParams.set("title", collection.label);
+      if (collection.key === "popular") searchParams.set("popular", "true");
+      if (collection.key === "audiobooks") searchParams.set("hasAudio", "true");
+      router.push(`/browse?${searchParams.toString()}`);
+    },
+    [router],
   );
 
   if (isExtrasLoading) {
@@ -168,23 +160,15 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
       {/*
-        Ust barda "+" dugmesi VARDI ve kaldirildi. Referans uygulamadan
-        alinmisti ama bu uygulamada kullanicinin ekleyebilecegi bir sey
-        yok (icerik yalnizca pipeline'dan gelir, urun ilkesi #3), bu
-        yuzden Kutuphane sekmesine gidiyordu. "+" evrensel olarak
-        "olustur/ekle" demek; kullanici ne yaptigini anlamadigini
-        bildirdi. Ustelik Kutuphane zaten alt barda kendi sekmesinde —
-        dugme hem yaniltici hem gereksizdi.
+        FAZ 2 (2026-09-14, referans uygulama eşleştirmesi): üst barda
+        tek kelimelik logotype dışında hiçbir şey yok -- ne "+" düğmesi
+        (üstteki eski not hâlâ geçerli: eklenebilecek bir şey yok), ne de
+        seri (streak) göstergesi. Seri zaten Profil ekranında görünüyor;
+        ana sayfanın üst barına taşınması yalnızca eski bir tasarım
+        denemesiydi, referansta karşılığı yok.
       */}
       <View style={styles.topBar}>
         <Text style={[type.wordmark, { color: theme.text.primary }]}>{t("app.name")}</Text>
-        <View style={styles.topBarActions}>
-          <StreakChip
-            streak={profileStats?.currentStreak ?? 0}
-            readToday={profileStats?.readToday ?? false}
-            onPress={handleOpenStreak}
-          />
-        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -192,14 +176,13 @@ export default function HomeScreen() {
           <EmptyHome />
         ) : (
           <>
-            <HomeHero
-              level={onboarding?.targetLevel ?? null}
-              continueBook={currentlyReading?.[0]?.book ?? null}
-              continuePercent={currentlyReading?.[0]?.progressPercent}
-              onContinue={handleOpenBook}
-              onBrowseLevel={handleBrowseAtLevel}
-            />
-
+            {/*
+              FAZ 4 (2026-09-14, referans uygulama eşleştirmesi): "Kaldığın
+              yer" hero kartı kaldırıldı -- referansta logotype'tan hemen
+              sonra doğrudan "Yeni kitaplar" rafı başlıyor, ayrı bir
+              "devam et" bloğu yok. Kaldığın yere dönme eylemi zaten
+              "Şu an okunuyor" rafında (aşağıda) karşılanıyor.
+            */}
             <BookShelf
               title={t("home.newBooks.title")}
               books={newBooks}
@@ -211,6 +194,8 @@ export default function HomeScreen() {
               onPressBook={handleOpenBook}
               onRemoveBook={handleRemoveCurrentlyReading}
             />
+
+            <CollectionShelf onPressCollection={handlePressCollection} />
 
             <CategoryShelf
               title={t("home.categories.title")}
@@ -246,11 +231,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  topBarActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-  },
   scrollContent: {
     paddingBottom: spacing.screenBottom,
   },
@@ -265,7 +245,7 @@ const styles = StyleSheet.create({
   levelGroups: {
     marginTop: spacing.sectionGap,
     marginHorizontal: spacing.lg,
-    borderRadius: radius.sm,
+    borderRadius: radius.cover,
     overflow: "hidden",
   },
   skeletonWrap: {

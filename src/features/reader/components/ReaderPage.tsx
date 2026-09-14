@@ -201,7 +201,7 @@ export function ReaderPage({
               isSaved={isSaved}
               savedUnderlineColor={readerColors.savedUnderline}
               spokenBackground={readerColors.spokenHighlight}
-              onPress={() =>
+              onPress={(event) =>
                 onWordTap({
                   surface,
                   lemma,
@@ -209,6 +209,7 @@ export function ReaderPage({
                   sentenceText: wordSentenceText,
                   sentenceCharOffset: wordSentenceCharOffset,
                   tapMs: Date.now(),
+                  anchorY: event.nativeEvent.pageY,
                 })
               }
               onLongPress={() =>

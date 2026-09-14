@@ -56,6 +56,16 @@ export interface ThemeColors {
     primary: string;
     /** Raised surface above --bg, e.g. reader.html .sheet-hint (#fff). */
     surface: string;
+    /**
+     * FAZ 1 EKLENTİSİ (2026-09-14): referans uygulamada ("dicto") okuma
+     * yüzeyi, uygulamanın geri kalanından bilerek daha koyu -- chrome
+     * (Kitaplar/Kelimeler/Ayarlar) soğuk lacivert-antrasit iken reader
+     * neredeyse saf siyah, "gerçek kitap" hissi veriyor. Light/sepia'da bu
+     * ayrım zaten var (kağıt zemin farklı bir "yüzey" gibi okunuyor), o
+     * yüzden orada `primary`'ye eşit bırakıldı; yalnızca dark'ta ayrı bir
+     * (daha koyu) değer tanımlı. Kullanan yer: useReaderThemeColors.ts.
+     */
+    reading: string;
   };
   text: {
     /** --ink. Headings, titles, body chrome text, active nav item. */
@@ -153,6 +163,7 @@ const light: ThemeColors = {
   bg: {
     primary: mockupLight.bg,
     surface: mockupLight.surfaceRaised,
+    reading: mockupLight.bg,
   },
   text: {
     primary: mockupLight.ink,
@@ -204,6 +215,7 @@ const sepia: ThemeColors = {
   bg: {
     primary: "#F1E4C9",
     surface: "#F8EFDB",
+    reading: "#F1E4C9",
   },
   text: {
     primary: "#2B2116",
@@ -230,52 +242,48 @@ const sepia: ThemeColors = {
 };
 
 /**
- * Dark — not shown in any mockup. REVISED per explicit product-owner
- * feedback on the first pass ("#1C1712" read as "boğucu koyu", too close
- * to pure black): shifted the whole ramp toward a genuinely GRAY warm-dark
- * (desaturated, higher lightness floor) rather than a near-black ink. This
- * is a deliberate, larger step than a simple hex swap — bg.primary moved
- * up ~2 lightness stops and had most of its warm saturation removed, so
- * the base surface reads as "dark gray paper" rather than "black with a
- * brown tint". bg.surface/border.hairline were re-derived from that new
- * floor (not just nudged) so raised surfaces and dividers stay visible and
- * proportionate instead of collapsing into bg.primary.
- *  - bg.primary: #211F1C — desaturated warm charcoal, several steps
- *    lighter than the previous #1C1712.
- *  - bg.surface: #2B2925 — the raised-surface step above bg.primary,
- *    proportionally the same distance as light's surface (#FFFFFF) is
- *    above light's bg (#FAF8F4), just compressed since dark surfaces need
- *    a smaller absolute jump to read as "raised" without blowing out.
- *  - text.primary/reading: kept warm off-white (unchanged) — the fix was
- *    to the background's saturation/lightness, not the ink.
- *  - accent: unchanged hue family, same reasoning as before (light's
- *    accent is too dark to read on a dark bg, lightened not rehued).
- *  - hairline: #3A3733 — recomputed from the new bg.primary at the same
- *    relative lightness step the old hairline had from the old bg.
+ * Dark — not shown in any mockup. FAZ 1 REVİZYONU (2026-09-14): önceki
+ * versiyon "desaturated warm charcoal" idi (#211F1C, sıcak/kahverengiye
+ * çalan). Referans uygulama ("dicto") ekran görüntüleri SOĞUK bir
+ * lacivert-antrasit kullanıyor (mavi-gri, kahverengi değil) ve reader
+ * yüzeyini chrome'dan bilerek daha koyu (neredeyse saf siyah) tutuyor --
+ * bkz. `bg.reading` yorumu. Bu revizyon rengi kahverengi ailesinden
+ * çıkarıp mavi-gri ailesine taşıyor; ton merdiveni (primary < surface,
+ * hairline surface'tan bir adım daha açık) aynı bağıl mantıkla korundu.
+ *  - bg.primary: #12151C — soğuk lacivert-antrasit (chrome zemini).
+ *  - bg.surface: #1E222C — kart/liste container zemini (referans "Seviyelere
+ *    Göre Kitaplar" container'ı, segment control zemini).
+ *  - bg.reading: #050607 — reader'a özel, chrome'dan daha koyu.
+ *  - text.primary: #F5F6F8 — soğuk kırık beyaz (eskiden sıcak #F3F1EA).
+ *  - text.secondary: #8B90A0 — mavi-gri (eskiden sıcak #9B968C).
+ *  - hairline: #2A2E3A — yeni bg.primary'den aynı bağıl adımla türetildi.
+ *  - accent/deep/highlight/vb. bu fazda DOKUNULMADI (Faz 1 kapsamı yalnızca
+ *    temel chrome/metin/okuma zemini) — sonraki fazda gözden geçirilecek.
  */
 const dark: ThemeColors = {
   bg: {
-    primary: "#211F1C",
-    surface: "#2B2925",
+    primary: "#12151C",
+    surface: "#1E222C",
+    reading: "#050607",
   },
   text: {
-    primary: "#F3F1EA",
-    secondary: "#9B968C",
-    tertiary: "#9B968C",
-    reading: "#F3F1EA",
-    inverse: "#211F1C",
-    onAccent: "#211F1C",
+    primary: "#F5F6F8",
+    secondary: "#8B90A0",
+    tertiary: "#8B90A0",
+    reading: "#F5F6F8",
+    inverse: "#12151C",
+    onAccent: "#12151C",
   },
   border: {
-    hairline: "#3A3733",
-    strong: "#F3F1EA",
+    hairline: "#2A2E3A",
+    strong: "#F5F6F8",
   },
   accent: "#C77B4A",
   deep: "#8FB4DE",
   onDeep: "#141C26",
   highlight: "#3A3020",
   accentMuted: "rgba(199, 123, 74, 0.2)",
-  secondaryMuted: "rgba(155, 150, 140, 0.2)", // dark text.secondary (#9B968C) @ 20%
+  secondaryMuted: "rgba(139, 144, 160, 0.2)", // dark text.secondary (#8B90A0) @ 20% -- Faz 1 renk revizyonuyla güncellendi
   spokenHighlight: "rgba(247, 208, 96, 0.26)", // koyu zeminde açık metin okunur kalsın
   danger: "#D98A7E",
   dangerMuted: "rgba(217, 138, 126, 0.2)",
@@ -332,6 +340,18 @@ export const onLevelAccent = "#FFFFFF";
  * series tags now show a real book cover when one exists (see
  * useHomeExtrasQuery.ts's `coverUrl` on `CategoryTag`), and this flat
  * single-color set is the fallback for tags with no cover to show. */
+/**
+ * FAZ 3 EKLENTİSİ (2026-09-14, referans uygulama eşleştirmesi): ana
+ * sayfadaki "Koleksiyonlar" rafının sabit kart renkleri (Popüler, Sesli
+ * kitaplar) -- referans uygulamanın kendi mor/turuncu paletinden, tema
+ * değişse de (light/sepia/dark) aynı kalması gereken bir kimlik rengi,
+ * `levelAccent`/`categoryTagColors` ile aynı gerekçe.
+ */
+export const collectionColors: Record<"popular" | "audiobooks", string> = {
+  popular: "#7C6FF5",
+  audiobooks: "#F2954A",
+};
+
 export const categoryTagColors: readonly string[] = [
   "#4E7FD4",
   "#D46B4E",

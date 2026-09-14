@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "İngilizce Hikaye"
+    "name": "Lingo"
   },
   "tabs": {
-    "home": "Ana Sayfa",
+    "home": "Kitaplar",
     "library": "Kütüphane",
-    "vocabulary": "Kelimelerim",
-    "profile": "Profil"
+    "vocabulary": "Kelimeler",
+    "profile": "Ayarlar"
   },
   "placeholder": {
     "comingSoon": "Yakında burada"
@@ -24,7 +24,8 @@
     "dismiss": "Kapat",
     "crashTitle": "Uygulama beklenmedik bir sorunla karşılaştı",
     "crashMessage": "Bu ekran yüklenemedi. Tekrar denemek sorunu genellikle çözer.",
-    "ok": "Tamam"
+    "ok": "Tamam",
+    "close": "Kapat"
   },
   "ui": {
     "levelBadge": {
@@ -123,6 +124,11 @@
       "accessibilitySafe_other": "{{count}} günlük seri, bugün tamamlandı",
       "accessibilityAtRisk_one": "{{count}} günlük seri, bugün henüz okumadın",
       "accessibilityAtRisk_other": "{{count}} günlük seri, bugün henüz okumadın"
+    },
+    "collections": {
+      "title": "Koleksiyonlar",
+      "popular": "Popüler",
+      "audiobooks": "Sesli kitaplar"
     }
   },
   "collections": {
@@ -235,7 +241,10 @@
       "back": "Geri",
       "settings": "Okuma ayarları",
       "playSpeech": "Sesli oku",
-      "pauseSpeech": "Sesli okumayı duraklat"
+      "pauseSpeech": "Sesli okumayı duraklat",
+      "chapterList": "İçerikler",
+      "quotaRemaining": "Bugün {{count}} çeviri hakkın kaldı",
+      "bookWords": "Kitaptan Kelimeler"
     },
     "wordSheet": {
       "pronounce": "Telaffuz et",
@@ -258,7 +267,8 @@
         "conjunction": "(bağlaç)",
         "interjection": "(ünlem)",
         "other": ""
-      }
+      },
+      "moreDetail": "Ayrıntıları göster"
     },
     "sentenceTranslation": {
       "toggle": "Cümle çevirisini göster",
@@ -291,8 +301,8 @@
       "highlights": "Bilinmeyen kelimeleri vurgula",
       "speechRate": "Sesli okuma hızı",
       "speechRateOptions": {
-        "0.8": "Yavaş",
         "1": "Normal",
+        "0.8": "Yavaş",
         "1.2": "Hızlı"
       },
       "voice": "Kelime telaffuz sesi",
@@ -300,7 +310,8 @@
         "premium": "yüksek kalite",
         "enhanced": "gelişmiş"
       },
-      "voiceUpgradeHint": "Sözlükteki kelimeleri okuyan cihaz sesi. Daha doğal duyulması için: Ayarlar > Erişilebilirlik > Sözlü İçerik > Sesler > İngilizce'den bir ses indir. Ücretsiz ve bir kerelik. (Bölüm seslendirmesi bundan bağımsız — o stüdyo kaydıyla yapılıyor.)"
+      "voiceUpgradeHint": "Sözlükteki kelimeleri okuyan cihaz sesi. Daha doğal duyulması için: Ayarlar > Erişilebilirlik > Sözlü İçerik > Sesler > İngilizce'den bir ses indir. Ücretsiz ve bir kerelik. (Bölüm seslendirmesi bundan bağımsız — o stüdyo kaydıyla yapılıyor.)",
+      "title": "Ayarlar"
     },
     "chapterComplete": {
       "title": "Bölüm tamamlandı",
@@ -328,6 +339,16 @@
     "footer": {
       "nextChapter": "SONRAKİ BÖLÜM",
       "finishBook": "KİTABI BİTİR"
+    },
+    "chapterList": {
+      "title": "İçerikler"
+    },
+    "bookWords": {
+      "title": "Kitaptan Kelimeler",
+      "favorites": "Favoriler",
+      "history": "Geçmiş",
+      "emptyFavorites": "Favorilere kelime eklenmedi",
+      "emptyHistory": "Henüz kelime yok"
     }
   },
   "auth": {
@@ -412,9 +433,10 @@
     "error": "Kelimeler yüklenemedi",
     "summary": "{{total}} kelime · bugün {{due}} tekrar",
     "filters": {
-      "all": "TÜMÜ",
-      "due": "TEKRAR BEKLEYEN",
-      "known": "ÖĞRENİLDİ"
+      "all": "Tümü",
+      "due": "Tekrar",
+      "known": "Öğrenildi",
+      "withCount": "{{label}} ({{count}})"
     },
     "due": {
       "today": "Bugün",
@@ -637,6 +659,7 @@
     "manageTitle": "Dil çiftlerin",
     "yourPairs": "OKUDUĞUN ÇİFTLER",
     "addPair": "YENİ ÇİFT EKLE",
-    "activeBadge": "Aktif"
+    "activeBadge": "Aktif",
+    "interfaceLanguageSection": "ARAYÜZ DİLİ"
   }
 }

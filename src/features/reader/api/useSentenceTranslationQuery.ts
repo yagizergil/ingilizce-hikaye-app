@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/analytics";
@@ -28,6 +28,8 @@ export interface SentenceTranslationResult {
  * tekrar kullanılabilirliği düşük bir çeviri, kalıcı bir tabloya değmez.
  */
 export function useSentenceTranslationQuery(sentence: string | null) {
+  const queryClient = useQueryClient();
+
   return useQuery({
     queryKey: ["reader", "sentenceTranslation", sentence],
     queryFn: async (): Promise<SentenceTranslationResult> => {
@@ -63,6 +65,10 @@ export function useSentenceTranslationQuery(sentence: string | null) {
 
         throw new Error(reason);
       }
+
+      // Üst çubuktaki "kalan çeviri hakkı" rozeti bu çeviriden sonra
+      // güncel kalsın diye -- bkz. useAiSentenceQuotaQuery.ts.
+      void queryClient.invalidateQueries({ queryKey: ["reader", "aiSentenceQuota"] });
 
       return { translation: data.translation };
     },

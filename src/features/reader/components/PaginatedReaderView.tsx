@@ -494,7 +494,6 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
           windowSize={3}
           initialNumToRender={2}
           maxToRenderPerBatch={2}
-          removeClippedSubviews
         />
       </View>
     );

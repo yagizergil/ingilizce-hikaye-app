@@ -1,17 +1,23 @@
-import { useMemo } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useMemo, useState } from "react";
+import { Alert, I18nManager, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import * as Updates from "expo-updates";
 
+import i18n from "@/i18n";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { LoadingState } from "@/components/ui";
-import { CONTENT_TARGET_LANGUAGES, getLanguage } from "@/lib/languages";
+import { CONTENT_TARGET_LANGUAGES, LANGUAGES, isRtlLanguage, getLanguage } from "@/lib/languages";
 
 import { useOwnedLanguagePairsQuery } from "@/features/languagePair/api/useActiveLanguagePairQuery";
 import { useSetLanguagePairMutation } from "@/features/languagePair/api/useSetLanguagePairMutation";
+
+import type { LanguageInfo } from "@/lib/languages";
+
+type Phase = "list" | "native" | "target";
 
 interface ManageLanguagePairsScreenProps {
   onClose: () => void;
@@ -41,6 +47,9 @@ export function ManageLanguagePairsScreen({
   const { data: owned, isLoading } = useOwnedLanguagePairsQuery();
   const setPair = useSetLanguagePairMutation();
 
+  const [phase, setPhase] = useState<Phase>("list");
+  const [pendingNative, setPendingNative] = useState<string | null>(null);
+
   const ownedTargets = useMemo(() => new Set((owned ?? []).map((p) => p.targetLanguage)), [owned]);
   const activePair = owned?.find((p) => p.isActive) ?? null;
 
@@ -51,18 +60,55 @@ export function ManageLanguagePairsScreen({
     );
   }, [activePair, ownedTargets]);
 
-  const handleSelect = (targetLanguage: string) => {
-    if (!activePair) return;
+  /**
+   * Yeni ana dil için hedef seçenekleri -- `nativeLanguage`, ŞU AN aktif
+   * hedeften (`activePair.targetLanguage`) farklıysa hedefi DEĞİŞTİRMEDEN
+   * devam edilebilir (bkz. `submitPair`'in "target === undefined" dalı).
+   * Bu liste yalnızca yeni ana dil ile şu anki hedef ÇAKIŞTIĞINDA (native ==
+   * target olamaz kısıtı, `set_language_pair`) devreye giriyor.
+   */
+  const targetOptionsForNewNative = useMemo(() => {
+    if (!pendingNative) return [];
+    return CONTENT_TARGET_LANGUAGES.filter((language) => language.code !== pendingNative);
+  }, [pendingNative]);
 
+  const applyNativeLanguageSideEffects = (nativeLanguage: string): boolean => {
+    void i18n.changeLanguage(nativeLanguage);
+    const needsRtlRestart = isRtlLanguage(nativeLanguage) !== I18nManager.isRTL;
+    if (needsRtlRestart) {
+      I18nManager.allowRTL(true);
+      I18nManager.forceRTL(isRtlLanguage(nativeLanguage));
+    }
+    return needsRtlRestart;
+  };
+
+  const submitPair = (nativeLanguage: string, targetLanguage: string, needsRtlRestart: boolean) => {
     setPair.mutate(
-      { nativeLanguage: activePair.nativeLanguage, targetLanguage },
+      { nativeLanguage, targetLanguage },
       {
         onSuccess: (result) => {
           if (result === "premium_required") {
             onNeedsPremium();
             return;
           }
-          onClose();
+
+          if (needsRtlRestart) {
+            Alert.alert(t("languagePair.restartTitle"), t("languagePair.restartBody"), [
+              {
+                text: t("languagePair.restartCta"),
+                onPress: () => {
+                  void Updates.reloadAsync().catch(() => {
+                    setPhase("list");
+                    setPendingNative(null);
+                  });
+                },
+              },
+            ]);
+            return;
+          }
+
+          setPhase("list");
+          setPendingNative(null);
         },
         onError: () => {
           Alert.alert(t("common.errorTitle"), t("languagePair.saveError"));
@@ -70,6 +116,83 @@ export function ManageLanguagePairsScreen({
       },
     );
   };
+
+  const handleSelectTarget = (targetLanguage: string) => {
+    if (!activePair) return;
+    submitPair(activePair.nativeLanguage, targetLanguage, false);
+  };
+
+  const handleSelectNewNative = (nativeLanguage: string) => {
+    if (!activePair) return;
+
+    // Ana dil, ŞU ANKİ hedefle çakışıyorsa (native == target olamaz) önce
+    // yeni bir hedef seçtiriyoruz -- restart/i18n değişikliği yalnızca son
+    // adımda, gerçek çift belirlendiğinde uygulanıyor.
+    if (nativeLanguage === activePair.targetLanguage) {
+      setPendingNative(nativeLanguage);
+      setPhase("target");
+      return;
+    }
+
+    const needsRtlRestart = applyNativeLanguageSideEffects(nativeLanguage);
+    submitPair(nativeLanguage, activePair.targetLanguage, needsRtlRestart);
+  };
+
+  const handleConfirmNewNativeTarget = (targetLanguage: string) => {
+    if (!pendingNative) return;
+    const needsRtlRestart = applyNativeLanguageSideEffects(pendingNative);
+    submitPair(pendingNative, targetLanguage, needsRtlRestart);
+  };
+
+  if (phase === "native" || phase === "target") {
+    const options = phase === "native" ? LANGUAGES : targetOptionsForNewNative;
+    return (
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.bg.primary }]}
+        edges={["top"]}
+      >
+        <View style={styles.topbar}>
+          <Pressable
+            onPress={() => {
+              setPhase("list");
+              setPendingNative(null);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={t("common.back")}
+            hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
+          >
+            <Ionicons name="close" size={22} color={theme.text.primary} />
+          </Pressable>
+        </View>
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={[type.display, { color: theme.text.primary }]}>
+            {t(phase === "native" ? "languagePair.nativeTitle" : "languagePair.targetTitle")}
+          </Text>
+          <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
+            {t(phase === "native" ? "languagePair.nativeBody" : "languagePair.targetBody")}
+          </Text>
+
+          {setPair.isPending ? (
+            <LoadingState />
+          ) : (
+            <View style={styles.list}>
+              {options.map((language) => (
+                <LanguageOptionRow
+                  key={language.code}
+                  language={language}
+                  onPress={() =>
+                    phase === "native"
+                      ? handleSelectNewNative(language.code)
+                      : handleConfirmNewNativeTarget(language.code)
+                  }
+                />
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
@@ -93,6 +216,35 @@ export function ManageLanguagePairsScreen({
           <LoadingState />
         ) : (
           <>
+            {activePair ? (
+              <View style={styles.section}>
+                <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                  {t("languagePair.interfaceLanguageSection")}
+                </Text>
+                <View style={styles.list}>
+                  <Pressable
+                    onPress={() => setPhase("native")}
+                    accessibilityRole="button"
+                    style={({ pressed }) => [
+                      styles.row,
+                      { borderColor: theme.border.hairline, opacity: pressed ? 0.6 : 1 },
+                    ]}
+                  >
+                    <View style={styles.rowLabel}>
+                      <Text style={styles.flag}>
+                        {getLanguage(activePair.nativeLanguage)?.flag}
+                      </Text>
+                      <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+                        {getLanguage(activePair.nativeLanguage)?.nativeName ??
+                          activePair.nativeLanguage}
+                      </Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={16} color={theme.text.secondary} />
+                  </Pressable>
+                </View>
+              </View>
+            ) : null}
+
             <View style={styles.section}>
               <Text style={[monoType.label, { color: theme.text.secondary }]}>
                 {t("languagePair.yourPairs")}
@@ -104,7 +256,9 @@ export function ManageLanguagePairsScreen({
                     native={pair.nativeLanguage}
                     target={pair.targetLanguage}
                     active={pair.isActive}
-                    onPress={pair.isActive ? undefined : () => handleSelect(pair.targetLanguage)}
+                    onPress={
+                      pair.isActive ? undefined : () => handleSelectTarget(pair.targetLanguage)
+                    }
                   />
                 ))}
               </View>
@@ -122,7 +276,7 @@ export function ManageLanguagePairsScreen({
                       native={activePair?.nativeLanguage ?? ""}
                       target={language.code}
                       active={false}
-                      onPress={() => handleSelect(language.code)}
+                      onPress={() => handleSelectTarget(language.code)}
                       showPremiumBadge
                     />
                   ))}
@@ -133,6 +287,31 @@ export function ManageLanguagePairsScreen({
         )}
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function LanguageOptionRow({ language, onPress }: { language: LanguageInfo; onPress: () => void }) {
+  const { theme } = useTheme();
+
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      style={({ pressed }) => [
+        styles.row,
+        { borderColor: theme.border.hairline, opacity: pressed ? 0.6 : 1 },
+      ]}
+    >
+      <View style={styles.rowLabel}>
+        <Text style={styles.flag}>{language.flag}</Text>
+        <View>
+          <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+            {language.nativeName}
+          </Text>
+          <Text style={[monoType.label, { color: theme.text.secondary }]}>{language.nameEn}</Text>
+        </View>
+      </View>
+    </Pressable>
   );
 }
 
@@ -167,9 +346,15 @@ function PairRow({
       ]}
       accessibilityRole="button"
     >
-      <Text style={[monoType.rowText, { color: theme.text.primary }]}>
-        {nativeInfo?.nativeName ?? native} → {targetInfo?.nativeName ?? target}
-      </Text>
+      <View style={styles.rowLabel}>
+        <Text style={styles.flag}>
+          {nativeInfo?.flag}
+          {targetInfo?.flag}
+        </Text>
+        <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+          {nativeInfo?.nativeName ?? native} → {targetInfo?.nativeName ?? target}
+        </Text>
+      </View>
       {active ? (
         <Text style={[monoType.label, { color: theme.accent }]}>
           {t("languagePair.activeBadge")}
@@ -211,5 +396,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 8,
+  },
+  rowLabel: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+  },
+  flag: {
+    fontSize: type.wordmark.fontSize,
   },
 });

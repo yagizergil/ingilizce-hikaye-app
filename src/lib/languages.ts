@@ -26,19 +26,98 @@ export interface LanguageInfo {
    * sağlam -- yine de aktif. B2/C1/C2 (klasikler) devam eden bir iş.
    */
   isContentTarget: boolean;
+  /**
+   * Bayrak emojisi, dil seçici satırlarında görsel tanınırlık için.
+   * Bilerek SVG/görsel asset değil: yeni bir bağımlılık ya da build adımı
+   * gerektirmeyen tek seçenek ("Basitlik önce gelir"). Bilinen sınırlama:
+   * bazı eski Android cihazlarda/bölge ayarlarında bayrak emojileri iki
+   * harfli ülke koduna düşebilir (sistem fontu bayrak glifi taşımıyorsa) --
+   * kabul edilen bir bedel, native isim zaten yanında duruyor.
+   */
+  flag: string;
 }
 
 export const LANGUAGES: readonly LanguageInfo[] = [
-  { code: "en", nameEn: "English", nativeName: "English", isRtl: false, isContentTarget: true },
-  { code: "es", nameEn: "Spanish", nativeName: "Español", isRtl: false, isContentTarget: true },
-  { code: "zh", nameEn: "Chinese", nativeName: "中文", isRtl: false, isContentTarget: true },
-  { code: "ar", nameEn: "Arabic", nativeName: "العربية", isRtl: true, isContentTarget: true },
-  { code: "fr", nameEn: "French", nativeName: "Français", isRtl: false, isContentTarget: true },
-  { code: "ru", nameEn: "Russian", nativeName: "Русский", isRtl: false, isContentTarget: true },
-  { code: "tr", nameEn: "Turkish", nativeName: "Türkçe", isRtl: false, isContentTarget: true },
-  { code: "de", nameEn: "German", nativeName: "Deutsch", isRtl: false, isContentTarget: true },
-  { code: "ja", nameEn: "Japanese", nativeName: "日本語", isRtl: false, isContentTarget: true },
-  { code: "it", nameEn: "Italian", nativeName: "Italiano", isRtl: false, isContentTarget: true },
+  {
+    code: "en",
+    nameEn: "English",
+    nativeName: "English",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇬🇧",
+  },
+  {
+    code: "es",
+    nameEn: "Spanish",
+    nativeName: "Español",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇪🇸",
+  },
+  {
+    code: "zh",
+    nameEn: "Chinese",
+    nativeName: "中文",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇨🇳",
+  },
+  {
+    code: "ar",
+    nameEn: "Arabic",
+    nativeName: "العربية",
+    isRtl: true,
+    isContentTarget: true,
+    flag: "🇸🇦",
+  },
+  {
+    code: "fr",
+    nameEn: "French",
+    nativeName: "Français",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇫🇷",
+  },
+  {
+    code: "ru",
+    nameEn: "Russian",
+    nativeName: "Русский",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇷🇺",
+  },
+  {
+    code: "tr",
+    nameEn: "Turkish",
+    nativeName: "Türkçe",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇹🇷",
+  },
+  {
+    code: "de",
+    nameEn: "German",
+    nativeName: "Deutsch",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇩🇪",
+  },
+  {
+    code: "ja",
+    nameEn: "Japanese",
+    nativeName: "日本語",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇯🇵",
+  },
+  {
+    code: "it",
+    nameEn: "Italian",
+    nativeName: "Italiano",
+    isRtl: false,
+    isContentTarget: true,
+    flag: "🇮🇹",
+  },
 ] as const;
 
 const BY_CODE = new Map(LANGUAGES.map((language) => [language.code, language]));

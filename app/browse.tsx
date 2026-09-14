@@ -33,12 +33,21 @@ export default function BrowseScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { theme } = useTheme();
-  const params = useLocalSearchParams<{ title?: string; levelGroup?: string; genre?: string; q?: string }>();
+  const params = useLocalSearchParams<{
+    title?: string;
+    levelGroup?: string;
+    genre?: string;
+    q?: string;
+    popular?: string;
+    hasAudio?: string;
+  }>();
   const { data, isLoading, isError, refetch } = useLibraryBooksQuery();
   const books = useLocalBookFilter(data, {
     query: params.q,
     levelGroup: params.levelGroup as LevelGroup | undefined,
     genre: params.genre,
+    popular: params.popular === "true",
+    hasAudio: params.hasAudio === "true",
   });
   const { data: favoritedBookIds } = useFavoritedBookIdsQuery();
   const toggleFavoriteMutation = useToggleFavoriteMutation();
@@ -85,7 +94,9 @@ export default function BrowseScreen() {
   );
 
   const renderBook: ListRenderItem<Book> = useCallback(
-    ({ item }) => <BookListRow book={item} onPress={handleOpenBook} onLongPress={handleToggleFavorite} />,
+    ({ item }) => (
+      <BookListRow book={item} onPress={handleOpenBook} onLongPress={handleToggleFavorite} />
+    ),
     [handleOpenBook, handleToggleFavorite],
   );
 

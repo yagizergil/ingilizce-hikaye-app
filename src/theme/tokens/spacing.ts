@@ -97,6 +97,10 @@ export const spacing = {
 export const radius = {
   sm: 6,
   md: 12,
+  /** FAZ 2 EKLENTİSİ (2026-09-14): referans uygulamanın kitap kapağı köşe
+   * yarıçapı gözle ~14-16px -- eski `sm` (6px) çok keskin kalıyordu. Kapak
+   * ve kapak-benzeri görsel kartlar için kullan. */
+  cover: 16,
   lg: 20,
   full: 999,
 } as const;

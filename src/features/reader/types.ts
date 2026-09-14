@@ -72,6 +72,21 @@ export interface ReaderWordTapPayload {
    * (örn. "a" kelimesine dokunulduğunda "heard" içindeki "a"ya denk gelmesi).
    */
   sentenceCharOffset?: number;
+  /**
+   * Dokunmanın EKRANDAKİ dikey konumu (`nativeEvent.pageY`).
+   *
+   * NEDEN GEREKLİ: sözlük kartı referans uygulamada (dicto) ekranın
+   * ortasında sabit durmuyor -- dokunulan kelimenin ALTINDA, kelime ekranın
+   * alt yarısındaysa ÜSTÜNDE açılıyor. Kart konumunu hesaplayabilmek için
+   * kelimenin nerede olduğunu bilmek gerekiyor.
+   *
+   * NEDEN DOKUNMA NOKTASI, KELİMENİN KUTUSU DEĞİL: kelimeler üst üste
+   * geçmiş `<Text>` düğümleri olarak render ediliyor (bkz. ReaderPage) ve
+   * satır içi `<Text>`'in kendi layout'u React Native'de güvenilir biçimde
+   * ölçülemiyor. Dokunma noktası kelimenin satır kutusunun İÇİNDE olduğu
+   * için pratikte aynı bilgiyi veriyor.
+   */
+  anchorY?: number;
 }
 
 /** Okuma pozisyonu ilerledikçe raporlanan yük. */

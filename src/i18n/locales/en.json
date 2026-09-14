@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "İngilizce Hikaye"
+    "name": "Lingo"
   },
   "tabs": {
-    "home": "Home",
+    "home": "Books",
     "library": "Library",
-    "vocabulary": "My Words",
-    "profile": "Profile"
+    "vocabulary": "Words",
+    "profile": "Settings"
   },
   "placeholder": {
     "comingSoon": "Coming soon"
@@ -24,7 +24,8 @@
     "dismiss": "Dismiss",
     "crashTitle": "Something went wrong",
     "crashMessage": "This screen could not load. Trying again usually fixes it.",
-    "ok": "OK"
+    "ok": "OK",
+    "close": "Close"
   },
   "ui": {
     "levelBadge": {
@@ -123,6 +124,11 @@
       "accessibilitySafe_other": "{{count}}-day streak, done for today",
       "accessibilityAtRisk_one": "{{count}}-day streak, you haven't read today",
       "accessibilityAtRisk_other": "{{count}}-day streak, you haven't read today"
+    },
+    "collections": {
+      "title": "Collections",
+      "popular": "Popular",
+      "audiobooks": "Audiobooks"
     }
   },
   "collections": {
@@ -235,7 +241,10 @@
       "back": "Back",
       "settings": "Reading settings",
       "playSpeech": "Read aloud",
-      "pauseSpeech": "Pause reading aloud"
+      "pauseSpeech": "Pause reading aloud",
+      "chapterList": "Contents",
+      "quotaRemaining": "{{count}} translations left today",
+      "bookWords": "Words from the Book"
     },
     "wordSheet": {
       "pronounce": "Pronounce",
@@ -258,7 +267,8 @@
         "conjunction": "(conj.)",
         "interjection": "(interj.)",
         "other": ""
-      }
+      },
+      "moreDetail": "Show details"
     },
     "sentenceTranslation": {
       "toggle": "Show sentence translation",
@@ -291,8 +301,8 @@
       "highlights": "Highlight unknown words",
       "speechRate": "Reading speed",
       "speechRateOptions": {
-        "0.8": "Slow",
         "1": "Normal",
+        "0.8": "Slow",
         "1.2": "Fast"
       },
       "voice": "Word pronunciation voice",
@@ -300,7 +310,8 @@
         "premium": "high quality",
         "enhanced": "enhanced"
       },
-      "voiceUpgradeHint": "The device voice that reads dictionary words aloud. For a more natural sound: Settings > Accessibility > Spoken Content > Voices > English, and download a voice. Free and one-off. (Chapter narration is separate — that uses a studio recording.)"
+      "voiceUpgradeHint": "The device voice that reads dictionary words aloud. For a more natural sound: Settings > Accessibility > Spoken Content > Voices > English, and download a voice. Free and one-off. (Chapter narration is separate — that uses a studio recording.)",
+      "title": "Settings"
     },
     "chapterComplete": {
       "title": "Chapter complete",
@@ -328,6 +339,16 @@
     "footer": {
       "nextChapter": "NEXT CHAPTER",
       "finishBook": "FINISH BOOK"
+    },
+    "chapterList": {
+      "title": "Contents"
+    },
+    "bookWords": {
+      "title": "Words from the Book",
+      "favorites": "Favorites",
+      "history": "History",
+      "emptyFavorites": "No words added to favorites",
+      "emptyHistory": "No words yet"
     }
   },
   "auth": {
@@ -412,9 +433,10 @@
     "error": "Couldn't load words",
     "summary": "{{total}} words · {{due}} due today",
     "filters": {
-      "all": "ALL",
-      "due": "DUE",
-      "known": "LEARNED"
+      "all": "All",
+      "due": "Due",
+      "known": "Known",
+      "withCount": "{{label}} ({{count}})"
     },
     "due": {
       "today": "Today",
@@ -637,6 +659,7 @@
     "manageTitle": "Your language pairs",
     "yourPairs": "YOUR PAIRS",
     "addPair": "ADD A PAIR",
-    "activeBadge": "Active"
+    "activeBadge": "Active",
+    "interfaceLanguageSection": "INTERFACE LANGUAGE"
   }
 }

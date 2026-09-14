@@ -595,6 +595,7 @@ AR_A2_BRIEFS: tuple[Brief, ...] = (
     Brief("mahrajan-alqarya", "صديقتان تنظمان الموسيقى لمهرجان القرية السنوي."),
     Brief("intiqal-saeb", "عائلة تنتقل إلى مدينة جديدة وطفل يشتاق إلى أصدقائه."),
     Brief("alkalb-almafqud", "طبيبة بيطرية شابة تحقق في سبب اختفاء عدة كلاب في الحي."),
+    Brief("hadiyat-almafajaa", "ولد يخطط لهدية مفاجئة لأخته الكبرى قبل سفرها."),
 )
 
 AR_B1_BRIEFS: tuple[Brief, ...] = (
@@ -608,6 +609,8 @@ AR_B1_BRIEFS: tuple[Brief, ...] = (
     Brief("alwazifa-almafquda", "رجل يفقد وظيفته ويجب أن يقرر إن كان سيقبل عرضاً سيبعده عن عائلته."),
     Brief("almunafasa-ghayr-alaadila", "امرأة شابة تكتشف أن منافساً غش في مسابقة مهمة بالنسبة لها."),
     Brief("audat-alakh", "أخ غادر منذ سنوات يعود إلى القرية وعائلته لا تعرف إن كانت ستسامحه."),
+    Brief("sirr-almuallima", "معلمة تكتشف أن أحد طلابها يخفي مشكلة كبيرة في بيته."),
+    Brief("bustan-aljadd", "حفيدة تحاول إنقاذ بستان جدها القديم من البيع."),
 )
 
 LANGS: dict[str, LangConfig] = {

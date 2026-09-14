@@ -99,28 +99,17 @@ export const badgePadding = {
 export const accentLineThickness = 2;
 
 /**
- * TOKEN ADDITION (post-launch, no mockup reference): the tab bar was
- * changed to show an icon above the mono label (product owner request —
- * "hem text hem icon olmasını istiyorum", text-only mockup wasn't final).
- * 20px keeps the icon visually subordinate to the mono label beneath it.
- *
- * Icons swap outline→filled (Ionicons `*-outline` vs. solid name) only on
- * the active tab, as a second "which tab am I on" signal alongside the
- * underline (the underline alone wasn't clear enough per product owner
- * feedback). This is a functional per-item state change on 4 icons, not
- * the "dolu ikon seti" the art-direction phase banned — that prohibition
- * was about using a filled/duotone icon set as blanket decoration
- * throughout the app, not about a single outline→filled toggle for the
- * one already-active nav item.
+ * FAZ 2 (2026-09-14, referans uygulama eşleştirmesi): "dicto" referansının
+ * alt gezinme çubuğunda ikonlar mockup'takinden belirgin şekilde büyük —
+ * 20px'ten 26px'e çıkarıldı. Aktif/inaktif ayrımı artık ALTÇİZGİ (underline)
+ * ile DEĞİL, yalnızca renk (beyaz/gri) + etiket kalınlığı (bold/regular) ile
+ * yapılıyor — referansta altçizgi göstergesi yok (bkz. `TabBarButton.tsx`).
  */
-export const tabBarIconSize = 20;
+export const tabBarIconSize = 26;
 
 /**
- * TOKEN ADDITION: the tab bar's own content height, independent of the
- * bottom safe-area inset (added separately in `app/(tabs)/_layout.tsx`
- * via `useSafeAreaInsets()` — a custom `tabBarStyle` disables React
- * Navigation's automatic safe-area padding, which was the bug that made
- * the bar sit flush against the home-indicator edge). Sized for icon
- * (`tabBarIconSize`) + label + underline + top/bottom breathing room.
+ * FAZ 2: 58 -> 64. Büyüyen ikon + altçizginin kalkmasıyla boşalan alan
+ * dikeyde biraz daha nefes payı olarak dağıtıldı — referans çubuğu
+ * mockup'takinden gözle belirgin şekilde daha ferah.
  */
-export const tabBarContentHeight = 58;
+export const tabBarContentHeight = 64;

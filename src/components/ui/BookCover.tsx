@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { StyleSheet, Text, View, type DimensionValue } from "react-native";
 
+import type { ReactNode } from "react";
+
 import { Image } from "expo-image";
 
 import { monoType, motion, radius, spacing, type } from "@/theme";
@@ -20,6 +22,12 @@ interface BookCoverProps {
   coverUrl?: string | null;
   width: DimensionValue;
   height: DimensionValue;
+  /** FAZ 2 (2026-09-14): referans uygulamada seviye rozeti kapağın
+   * ÜZERİNE bindirilmiş (sol-üst köşe), ayrı bir satırda değil. Kapak
+   * kendi konumlama bağlamını (`position: relative`) sağlıyor ki çağıran
+   * (örn. `ShelfBookCard`) rozeti/aksiyon şeridini üstüne mutlak
+   * konumlandırabilsin -- bkz. bu bileşenin altındaki `overlay` prop'u. */
+  overlay?: ReactNode;
 }
 
 /**
@@ -47,46 +55,65 @@ interface BookCoverProps {
  * every other flat/hairline surface). This is the one deliberate
  * deviation from the "flat, hairline-only" mockup rule.
  */
-export function BookCover({ title, author, coverUrl, width, height }: BookCoverProps) {
+export function BookCover({ title, author, coverUrl, width, height, overlay }: BookCoverProps) {
   // `slug` intentionally destructured out of the props type above but not
   // read here — see its @deprecated doc comment.
   const { theme } = useTheme();
   const [failed, setFailed] = useState(false);
   const showFallback = failed || !coverUrl;
 
-  if (!showFallback) {
-    return (
-      <Image
-        source={{ uri: coverUrl }}
-        style={[styles.image, { width, height, backgroundColor: theme.border.hairline, borderRadius: radius.sm }]}
-        contentFit="cover"
-        accessibilityLabel={title}
-        onError={() => setFailed(true)}
-        transition={motion.duration.base}
-      />
-    );
-  }
-
   return (
-    <View
-      style={[
-        styles.fallback,
-        { width, height, backgroundColor: theme.bg.surface, borderColor: theme.border.hairline, borderRadius: radius.sm },
-      ]}
-      accessibilityRole="image"
-      accessibilityLabel={`${title}, ${author}`}
-    >
-      <Text style={[type.bookTitleMd, styles.title, { color: theme.text.primary }]} numberOfLines={4}>
-        {title}
-      </Text>
-      <Text style={[monoType.author, styles.author, { color: theme.text.secondary }]} numberOfLines={1}>
-        {author}
-      </Text>
+    <View style={[styles.container, { width, height }]}>
+      {showFallback ? (
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            styles.fallback,
+            {
+              backgroundColor: theme.bg.surface,
+              borderColor: theme.border.hairline,
+              borderRadius: radius.cover,
+            },
+          ]}
+          accessibilityRole="image"
+          accessibilityLabel={`${title}, ${author}`}
+        >
+          <Text
+            style={[type.bookTitleMd, styles.title, { color: theme.text.primary }]}
+            numberOfLines={4}
+          >
+            {title}
+          </Text>
+          <Text
+            style={[monoType.author, styles.author, { color: theme.text.secondary }]}
+            numberOfLines={1}
+          >
+            {author}
+          </Text>
+        </View>
+      ) : (
+        <Image
+          source={{ uri: coverUrl }}
+          style={[
+            StyleSheet.absoluteFill,
+            styles.image,
+            { backgroundColor: theme.border.hairline, borderRadius: radius.cover },
+          ]}
+          contentFit="cover"
+          accessibilityLabel={title}
+          onError={() => setFailed(true)}
+          transition={motion.duration.base}
+        />
+      )}
+      {overlay}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    position: "relative",
+  },
   image: {
     overflow: "hidden",
   },

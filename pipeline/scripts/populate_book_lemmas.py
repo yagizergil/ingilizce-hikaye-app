@@ -1,0 +1,123 @@
+"""KRİTİK DÜZELTME (2026-09-14 gece, aynı oturum): `publish_multilang.py`
+ve `publish_classics.py` `book_lemmas` tablosunu HİÇ doldurmuyordu --
+ADR-013'ü yanlış yorumlamıştım: "kelime karşılığı artık `lemma_
+translations` ile çalışma anında geliyor" cümlesi yalnızca GLOSS'un
+(çeviri) kaynağının değiştiğini söylüyor, `book_lemmas` (kitap -> lemma
+kümesi eşlemesi) hâlâ gerekli -- `useUserLemmaStatesForBook.ts`
+(`enabled: lemmas.length > 0`) o küme BOŞSA hiç ÇALIŞMIYOR, `data`i
+sonsuza kadar `undefined` kalıyor, `ReaderScreen.tsx`nin
+`isVocabDataLoading` kapısı hiç açılmıyor -- SONUÇ: bu oturumda
+yayınlanan 229 kitabın HİÇBİRİ okuma ekranında sonsuz yükleme
+göstergesinden öteye geçemiyordu. Gerçek kullanıcı raporuyla bulundu.
+
+Bu betik `generate_stories_multi.py`nin ZATEN KURULU NLP adaptörlerini
+(spaCy/Stanza/CAMeL) yeniden kullanarak her kitabın metnini lemmatize
+edip `book_lemmas`e (book_id, lemma, count) yazıyor.
+
+ÇALIŞTIRMA:
+    .venv/Scripts/python.exe scripts/populate_book_lemmas.py --lang all
+"""
+
+from __future__ import annotations
+
+import argparse
+import io
+import sys
+from collections import Counter
+from pathlib import Path
+
+import spacy
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_stories_multi import LANGS, CamelNlpAdapter, StanzaNlpAdapter  # noqa: E402
+
+from src.db import connect, copy_rows  # noqa: E402
+from src.settings import load_settings  # noqa: E402
+
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+
+PIPELINE_ROOT = Path(__file__).resolve().parent.parent
+
+_NLP_CACHE: dict[str, object] = {}
+
+
+def _load_nlp(lang: str):
+    if lang in _NLP_CACHE:
+        return _NLP_CACHE[lang]
+    cfg = LANGS[lang]
+    if cfg.use_stanza:
+        import stanza
+
+        nlp = StanzaNlpAdapter(
+            stanza.Pipeline(cfg.spacy_model, processors="tokenize,pos,lemma", verbose=False)
+        )
+    elif cfg.use_camel:
+        from camel_tools.disambig.mle import MLEDisambiguator
+        from camel_tools.tokenizers.word import simple_word_tokenize
+
+        nlp = CamelNlpAdapter(MLEDisambiguator.pretrained("calima-msa-r13"), simple_word_tokenize)
+    else:
+        nlp = spacy.load(cfg.spacy_model)
+    _NLP_CACHE[lang] = nlp
+    return nlp
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--lang", required=True, choices=[*LANGS, "all"])
+    args = parser.parse_args()
+
+    langs = sorted(LANGS) if args.lang == "all" else [args.lang]
+    settings = load_settings()
+
+    with connect(settings.database_url) as conn:
+        for lang in langs:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "select id from public.books where target_language = %s and status = 'published'",
+                    (lang,),
+                )
+                book_ids = [row[0] for row in cur.fetchall()]
+            if not book_ids:
+                print(f"[{lang}] yayınlanmış kitap yok, atlanıyor.")
+                continue
+
+            print(f"[{lang}] {len(book_ids)} kitap, NLP yükleniyor...")
+            nlp = _load_nlp(lang)
+
+            for book_id in book_ids:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        select bp.text from public.book_paragraphs bp
+                        join public.book_sections bs on bs.id = bp.section_id
+                        where bs.book_id = %s
+                        """,
+                        (str(book_id),),
+                    )
+                    paragraphs = [row[0] for row in cur.fetchall()]
+                full_text = "\n\n".join(paragraphs)
+                doc = nlp(full_text)
+                counts: Counter[str] = Counter()
+                for token in doc:
+                    if not token.is_alpha:
+                        continue
+                    if token.pos_.upper() in ("PROPN", "NOUN_PROP"):
+                        continue
+                    lemma = (token.lemma_ or token.text).lower().strip()
+                    if lemma:
+                        counts[lemma] += 1
+
+                rows = [(str(book_id), lemma, count) for lemma, count in counts.items()]
+                with conn.transaction():
+                    with conn.cursor() as cur:
+                        cur.execute("delete from public.book_lemmas where book_id = %s", (str(book_id),))
+                    copy_rows(conn, "public.book_lemmas", ["book_id", "lemma", "count"], rows)
+                print(f"  {book_id} -> {len(rows)} benzersiz lemma")
+
+    print("Tamamlandı.")
+
+
+if __name__ == "__main__":
+    main()

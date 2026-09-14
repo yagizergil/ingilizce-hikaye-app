@@ -54,7 +54,13 @@ export function LevelGroupCard({ levelGroup, count, onPress, isLast }: LevelGrou
 
   return (
     <Pressable
-      style={[styles.row, !isLast && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.border.hairline }]}
+      style={[
+        styles.row,
+        !isLast && {
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderBottomColor: theme.border.hairline,
+        },
+      ]}
       onPress={() => onPress(levelGroup)}
       accessibilityRole="button"
       accessibilityLabel={t("home.levelGroups.accessibilityLabel", {
@@ -66,13 +72,20 @@ export function LevelGroupCard({ levelGroup, count, onPress, isLast }: LevelGrou
         <Text style={[monoType.badge, { color: onLevelAccent }]}>{badgeLevel}</Text>
       </View>
       <View style={styles.info}>
-        <Text style={[type.sectionHeading, { color: theme.text.primary }]}>{t(TITLE_KEY[levelGroup])}</Text>
+        <Text style={[type.sectionHeading, { color: theme.text.primary }]}>
+          {t(TITLE_KEY[levelGroup])}
+        </Text>
         <Text style={[monoType.meta, styles.range, { color: theme.text.secondary }]}>
           {t(CEFR_RANGE_KEY[levelGroup])}
         </Text>
       </View>
       <Text style={[monoType.statValueLg, { color: theme.text.primary }]}>{count}</Text>
-      <Ionicons name="chevron-forward" size={18} color={theme.text.secondary} style={styles.chevron} />
+      <Ionicons
+        name="chevron-forward"
+        size={18}
+        color={theme.text.secondary}
+        style={styles.chevron}
+      />
     </Pressable>
   );
 }
@@ -88,7 +101,7 @@ const styles = StyleSheet.create({
   badge: {
     width: spacing.xxxxl,
     height: spacing.xxxxl,
-    borderRadius: radius.sm,
+    borderRadius: radius.md,
     alignItems: "center",
     justifyContent: "center",
   },
