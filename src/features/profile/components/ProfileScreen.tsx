@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, DevSettings, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
@@ -114,12 +114,32 @@ export function ProfileScreen() {
       });
       if (!response.ok) throw new Error("delete failed");
 
-      await supabase.auth.signOut();
+      // `scope: "local"` -- sunucuya çıkış isteği GÖNDERMİYORUZ. Hesap bir
+      // satır önce silindi, yani elimizdeki jeton artık var olmayan bir
+      // kullanıcıya ait; sunucu çıkışı 403 döner ve bu, oturumu yerelde
+      // temizlemesi gereken adımı hataya çevirirdi.
+      await supabase.auth.signOut({ scope: "local" });
       const { error } = await supabase.auth.signInAnonymously();
       if (error) throw error;
 
       queryClient.clear();
-      router.replace("/");
+
+      /**
+       * UYGULAMAYI YENİDEN YÜKLÜYORUZ -- ekran değiştirmiyoruz.
+       *
+       * Önce `router.replace("/")` deniyordu ve düğme "çalışmıyor" gibi
+       * görünüyordu: onboarding kapısı hâlâ mount hâlindeydi ve kendi
+       * sorgusu eski oturumun cevabını (onboarding tamamlandı) taşıyordu,
+       * dolayısıyla akış yerine ana sayfa açılıyordu. Yeniden yükleme
+       * bütün durumu -- oturum, sorgu önbelleği, kapılar, i18n -- taze
+       * kurulumun yaptığı sırayla yeniden kuruyor. Zaten bu düğmenin
+       * taklit etmek istediği şey tam olarak taze kurulum.
+       */
+      if (Platform.OS === "web") {
+        window.location.reload();
+        return;
+      }
+      DevSettings.reload();
     } catch (error) {
       Alert.alert(
         t("common.errorTitle"),
