@@ -39,6 +39,13 @@ BUNDLES = [
          ("m20", "launch"), ("m30", "trophy-star")],
         "Günlük hedef satırlarındaki illüstrasyonlar (bkz. OnboardingDailyGoalStep).",
     ),
+    (
+        os.path.join("src", "features", "onboarding", "pathIconXml.ts"),
+        "pathIconXml",
+        [("daily", "fire"), ("audio", "earpods"), ("ai", "star"),
+         ("review", "customer")],
+        "\"Yolun\" ekranındaki özellik kutucukları (bkz. OnboardingProjectionStep).",
+    ),
 ]
 
 HEADER = """/**

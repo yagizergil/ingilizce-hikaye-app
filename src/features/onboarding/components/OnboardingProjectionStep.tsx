@@ -1,21 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import Svg, { Circle, Defs, LinearGradient, Path, Stop } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient, Path, Stop, SvgXml } from "react-native-svg";
 
-import { monoType, radius, spacing } from "@/theme";
+import { monoType, radius, spacing, type } from "@/theme";
 import { levelAccent } from "@/theme/tokens/colors";
 import { useTheme } from "@/theme/useTheme";
 
+import { pathIconXml } from "@/features/onboarding/pathIconXml";
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
 import { OnboardingScaffold } from "@/features/onboarding/components/OnboardingScaffold";
 
 import type { CefrLevel } from "@/features/onboarding/levelEstimate";
-import type { ComponentProps } from "react";
-
-type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
 /**
  * "Yolun" ekranı (referans: `docs/reference/bookvo-11-ilerleme-grafigi.jpeg`).
@@ -48,19 +45,16 @@ const LADDER: CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 /**
  * Alt kutucuklar.
  *
- * RENKLİ İKON ROZETLERİ KALDIRILDI: her kutucuğa ayrı bir renk vermek
- * (mavi/yeşil/sarı/kırmızı) hiçbir şey anlatmıyordu -- renkler bir
- * SINIFLAMA göstermiyordu, sadece süstü, ve ekranın geri kalanında renk
- * SEVİYE demek (A1 mavi, C2 mor). Aynı ekranda aynı rengin iki farklı iş
- * yapması, tasarımı "hazır şablon" gibi gösteren şeydi. İkonlar artık
- * metinle aynı ailede: tek renk, rozet yok.
+ * İllüstrasyonlar `assets/*.svg` (bkz. `pathIconXml`): ateş, kulaklık,
+ * yıldız, döngü. Arkalarında renkli rozet YOK -- görseller kendi
+ * renklerini taşıyor, ve ekranın geri kalanında renk "seviye" demek
+ * (baloncuklar). Aynı ekranda aynı rengin iki farklı iş yapması,
+ * tasarımı "hazır şablon" gibi gösteren şeydi.
  */
-const FEATURES: { icon: IoniconName; key: string }[] = [
-  { icon: "flame-outline", key: "daily" },
-  { icon: "headset-outline", key: "audio" },
-  { icon: "sparkles-outline", key: "ai" },
-  { icon: "repeat-outline", key: "review" },
-];
+const FEATURES = ["daily", "audio", "ai", "review"] as const;
+
+/** Kutucuk görselinin kenarı. */
+const FEATURE_ICON_SIZE = 28;
 
 const PLOT_HEIGHT = 200;
 const DOT_SIZE = 14;
@@ -303,21 +297,31 @@ export function OnboardingProjectionStep({
         <View style={styles.features}>
           {FEATURES.map((feature) => (
             <View
-              key={feature.key}
+              key={feature}
               style={[
                 styles.feature,
                 { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
               ]}
             >
-              <Ionicons name={feature.icon} size={18} color={theme.accent} />
+              <SvgXml
+                xml={pathIconXml[feature] as string}
+                width={FEATURE_ICON_SIZE}
+                height={FEATURE_ICON_SIZE}
+              />
               <View style={styles.featureText}>
-                <Text style={[monoType.rowText, { color: theme.text.primary }]} numberOfLines={2}>
-                  {feature.key === "daily" && dailyGoalMinutes
+                <Text
+                  style={[type.bookTitleMd, { color: theme.text.primary }]}
+                  numberOfLines={2}
+                >
+                  {feature === "daily" && dailyGoalMinutes
                     ? t("onboarding.goal.minutes", { count: dailyGoalMinutes })
-                    : t(`onboarding.path.features.${feature.key}.title`)}
+                    : t(`onboarding.path.features.${feature}.title`)}
                 </Text>
-                <Text style={[monoType.meta, { color: theme.text.secondary }]} numberOfLines={2}>
-                  {t(`onboarding.path.features.${feature.key}.body`)}
+                <Text
+                  style={[monoType.rowText, { color: theme.text.secondary }]}
+                  numberOfLines={2}
+                >
+                  {t(`onboarding.path.features.${feature}.body`)}
                 </Text>
               </View>
             </View>
@@ -382,6 +386,8 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   feature: {
+    // Başlık 13 -> 17 pt bold oldu; kutucuk iç boşluğu da onunla birlikte
+    // büyümezse metin kenarlara yapışık duruyor.
     flexBasis: "48%",
     flexGrow: 1,
     flexShrink: 1,
@@ -389,8 +395,8 @@ const styles = StyleSheet.create({
     // İkon başlığın ilk satırıyla hizalı; başlık iki satıra taşarsa ikon
     // ortaya kayıp satırı eğri göstermiyor.
     alignItems: "flex-start",
-    gap: spacing.xs,
-    padding: spacing.sm,
+    gap: spacing.sm,
+    padding: spacing.md,
     borderRadius: radius.md,
     borderWidth: StyleSheet.hairlineWidth,
   },
