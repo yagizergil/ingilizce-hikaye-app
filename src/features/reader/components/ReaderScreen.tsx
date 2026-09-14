@@ -713,6 +713,10 @@ export function ReaderScreen({
         onUnsave={handleUnsaveWord}
         onMarkKnown={handleMarkKnown}
         onUnmarkKnown={handleUnmarkKnown}
+        onSentenceQuotaExhausted={() => {
+          trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
+          router.push("/paywall?source=sentence_quota");
+        }}
         onDismiss={() => {
           setActiveWord(null);
           if (!resumeAfterSheetRef.current) return;

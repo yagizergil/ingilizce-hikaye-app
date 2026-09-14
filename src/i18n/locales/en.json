@@ -279,7 +279,9 @@
     "sentenceTranslation": {
       "toggle": "Show sentence translation",
       "loading": "Translating…",
-      "error": "Couldn't get the sentence translation, please try again"
+      "error": "Couldn't get the sentence translation, please try again",
+      "quotaExhausted": "You've used today's AI translations. Premium has a much higher daily quota.",
+      "failed": "Couldn't fetch the translation. Check your connection and try again."
     },
     "sentenceSheet": {
       "explainGrammar": "Explain grammar",

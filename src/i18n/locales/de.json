@@ -279,7 +279,9 @@
     "sentenceTranslation": {
       "toggle": "Satzübersetzung anzeigen",
       "loading": "Wird übersetzt…",
-      "error": "Die Satzübersetzung hat nicht geklappt, bitte versuch es noch einmal"
+      "error": "Die Satzübersetzung hat nicht geklappt, bitte versuch es noch einmal",
+      "quotaExhausted": "Deine KI-Übersetzungen für heute sind aufgebraucht. Premium hat ein viel höheres Tageskontingent.",
+      "failed": "Übersetzung nicht möglich. Prüfe deine Verbindung und versuch es erneut."
     },
     "sentenceSheet": {
       "explainGrammar": "Grammatik erklären",

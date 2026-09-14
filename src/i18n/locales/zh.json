@@ -279,7 +279,9 @@
     "sentenceTranslation": {
       "toggle": "显示整句翻译",
       "loading": "正在翻译…",
-      "error": "没能取到整句翻译，请再试一次"
+      "error": "没能取到整句翻译，请再试一次",
+      "quotaExhausted": "今天的 AI 翻译次数已用完。Premium 的每日额度高得多。",
+      "failed": "翻译获取失败。请检查网络后重试。"
     },
     "sentenceSheet": {
       "explainGrammar": "讲解语法",

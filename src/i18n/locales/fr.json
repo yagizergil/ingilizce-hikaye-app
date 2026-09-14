@@ -279,7 +279,9 @@
     "sentenceTranslation": {
       "toggle": "Afficher la traduction de la phrase",
       "loading": "Traduction en cours…",
-      "error": "La traduction de la phrase a échoué, réessaie"
+      "error": "La traduction de la phrase a échoué, réessaie",
+      "quotaExhausted": "Tu as utilisé tes traductions IA du jour. Premium offre un quota quotidien bien plus élevé.",
+      "failed": "Traduction indisponible. Vérifie ta connexion et réessaie."
     },
     "sentenceSheet": {
       "explainGrammar": "Expliquer la grammaire",

@@ -56,6 +56,18 @@ interface WordSheetProps {
   onMarkKnown: () => void;
   onUnmarkKnown: () => void;
   onDismiss: () => void;
+  /**
+   * Günlük AI cümle çevirisi hakkı bittiğinde çağrılır.
+   *
+   * ÇÖZDÜĞÜ SORUN: kota tavanına çarpıldığında sorgu hata veriyor ve bu
+   * dal ekranda HİÇBİR ŞEY göstermiyordu -- kullanıcı "çeviriyi göster"e
+   * basıyor, hiçbir şey olmuyordu. Arıza ile sınır ayırt edilemiyordu.
+   *
+   * İsteğe bağlı: onboarding'in ilk okuma adımı da bu kartı kullanıyor ve
+   * orada paywall'a gitmek anlamsız (kullanıcı henüz uygulamayı
+   * görmedi) -- verilmezse yalnızca açıklama metni gösteriliyor.
+   */
+  onSentenceQuotaExhausted?: () => void;
 }
 
 interface SentenceSegment {
@@ -142,6 +154,7 @@ export function WordSheet({
   onMarkKnown,
   onUnmarkKnown,
   onDismiss,
+  onSentenceQuotaExhausted,
 }: WordSheetProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -400,6 +413,20 @@ export function WordSheet({
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const sentenceTranslation = useSentenceTranslationQuery(word?.sentenceText ?? null);
 
+  /**
+   * Kota tavanı mı, başka bir arıza mı?
+   *
+   * Edge function sebebi hata mesajı olarak veriyor (`free_tier_daily_limit`
+   * / `rate_limited`); ikisi kullanıcı için aynı anlama geliyor: bugünlük
+   * hak bitti. Diğer hatalar (ağ, sağlayıcı) ayrı bir metin alıyor --
+   * "yarın tekrar dene" demek, aslında ağın koptuğu bir durumda yanlış
+   * olurdu.
+   */
+  const sentenceErrorReason =
+    sentenceTranslation.error instanceof Error ? sentenceTranslation.error.message : null;
+  const sentenceQuotaExhausted =
+    sentenceErrorReason === "free_tier_daily_limit" || sentenceErrorReason === "rate_limited";
+
   // Collapse the detail panel whenever a different word/sentence is
   // opened, so stale content from the previous word can't flash before
   // the new one is ready.
@@ -636,6 +663,23 @@ export function WordSheet({
                   ) : sentenceTranslation.data?.translation ? (
                     <Text style={[readingType.gloss, { color: readerColors.text }]}>
                       {sentenceTranslation.data.translation}
+                    </Text>
+                  ) : sentenceQuotaExhausted ? (
+                    /* Kota tavanı: eskiden bu dal `null` döndürüyordu, yani
+                       düğmeye basılıyor ve ekranda hiçbir şey olmuyordu --
+                       kullanıcı için arıza ile sınır ayırt edilemezdi. */
+                    <Pressable
+                      onPress={onSentenceQuotaExhausted}
+                      disabled={!onSentenceQuotaExhausted}
+                      accessibilityRole={onSentenceQuotaExhausted ? "button" : "text"}
+                    >
+                      <Text style={[readingType.gloss, { color: readerColors.textMuted }]}>
+                        {t("reader.sentenceTranslation.quotaExhausted")}
+                      </Text>
+                    </Pressable>
+                  ) : sentenceTranslation.isError ? (
+                    <Text style={[readingType.gloss, { color: readerColors.textMuted }]}>
+                      {t("reader.sentenceTranslation.failed")}
                     </Text>
                   ) : null}
 

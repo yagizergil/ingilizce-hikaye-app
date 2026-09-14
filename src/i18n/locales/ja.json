@@ -279,7 +279,9 @@
     "sentenceTranslation": {
       "toggle": "文の訳を表示",
       "loading": "翻訳しています…",
-      "error": "文の訳を取得できませんでした。もう一度お試しください"
+      "error": "文の訳を取得できませんでした。もう一度お試しください",
+      "quotaExhausted": "今日のAI翻訳の回数を使い切りました。Premiumなら1日の上限がずっと多くなります。",
+      "failed": "翻訳を取得できませんでした。接続を確認してもう一度お試しください。"
     },
     "sentenceSheet": {
       "explainGrammar": "文法を解説",

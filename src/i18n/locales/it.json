@@ -279,7 +279,9 @@
     "sentenceTranslation": {
       "toggle": "Mostra la traduzione della frase",
       "loading": "Traduzione in corso…",
-      "error": "Non è stato possibile tradurre la frase, riprova"
+      "error": "Non è stato possibile tradurre la frase, riprova",
+      "quotaExhausted": "Hai esaurito le traduzioni AI di oggi. Con Premium la quota giornaliera è molto più alta.",
+      "failed": "Traduzione non riuscita. Controlla la connessione e riprova."
     },
     "sentenceSheet": {
       "explainGrammar": "Spiega la grammatica",

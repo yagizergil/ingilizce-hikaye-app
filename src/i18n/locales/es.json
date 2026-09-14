@@ -279,7 +279,9 @@
     "sentenceTranslation": {
       "toggle": "Ver la traducción de la frase",
       "loading": "Traduciendo…",
-      "error": "No se pudo obtener la traducción de la frase, inténtalo de nuevo"
+      "error": "No se pudo obtener la traducción de la frase, inténtalo de nuevo",
+      "quotaExhausted": "Has usado tus traducciones con IA de hoy. Premium tiene una cuota diaria mucho mayor.",
+      "failed": "No se pudo traducir. Revisa tu conexión e inténtalo de nuevo."
     },
     "sentenceSheet": {
       "explainGrammar": "Explicar la gramática",

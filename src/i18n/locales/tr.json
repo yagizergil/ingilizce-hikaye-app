@@ -279,7 +279,9 @@
     "sentenceTranslation": {
       "toggle": "Cümle çevirisini göster",
       "loading": "Çevriliyor…",
-      "error": "Cümle çevirisi alınamadı, lütfen tekrar dene"
+      "error": "Cümle çevirisi alınamadı, lütfen tekrar dene",
+      "quotaExhausted": "Bugünlük AI çeviri hakkın doldu. Premium'da günlük kota çok daha yüksek.",
+      "failed": "Çeviri şu an alınamadı. Bağlantını kontrol edip tekrar dene."
     },
     "sentenceSheet": {
       "explainGrammar": "Gramerini açıkla",
