@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing } from "@/theme";
+import { monoType, radius, spacing, type } from "@/theme";
 import { levelAccent } from "@/theme/tokens/colors";
 import { useTheme } from "@/theme/useTheme";
 
@@ -65,13 +65,13 @@ export function OnboardingTrialTimeline({ trialDays }: OnboardingTrialTimelinePr
               <Ionicons name={row.icon} size={18} color={row.tint} />
             </View>
             <View style={styles.rowText}>
-              <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+              <Text style={[type.bookTitleMd, { color: theme.text.primary }]}>
                 {t(`onboarding.trial.rows.${row.key}.title`, {
                   // "6. gün" ve "7. gün" deneme süresinden türetiliyor.
                   day: index === 1 ? trialDays - 1 : trialDays,
                 })}
               </Text>
-              <Text style={[monoType.meta, { color: theme.text.secondary }]}>
+              <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
                 {t(`onboarding.trial.rows.${row.key}.body`)}
               </Text>
             </View>

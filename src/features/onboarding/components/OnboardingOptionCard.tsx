@@ -83,16 +83,16 @@ export function OnboardingOptionCard({
       ) : null}
 
       <View style={styles.textBlock}>
-        <Text style={[type.chapterRowTitle, { color: theme.text.primary }]}>{title}</Text>
+        <Text style={[type.bookTitleMd, { color: theme.text.primary }]}>{title}</Text>
         {subtitle ? (
-          <Text style={[monoType.meta, styles.subtitle, { color: theme.text.secondary }]}>
+          <Text style={[monoType.rowText, styles.subtitle, { color: theme.text.secondary }]}>
             {subtitle}
           </Text>
         ) : null}
       </View>
 
       {trailingLabel ? (
-        <Text style={[monoType.label, { color: theme.text.secondary }]}>{trailingLabel}</Text>
+        <Text style={[monoType.rowText, { color: theme.text.secondary }]}>{trailingLabel}</Text>
       ) : (
         <View
           style={[

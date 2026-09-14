@@ -114,7 +114,7 @@ export function OnboardingBookTasteStep({
             {likedIds.length > 0 ? (
               <Ionicons name="checkmark-circle" size={16} color={theme.accent} />
             ) : null}
-            <Text style={[monoType.meta, { color: theme.text.secondary }]}>
+            <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
               {t("onboarding.taste.counter", { count: likedIds.length })}
             </Text>
           </View>
@@ -125,7 +125,7 @@ export function OnboardingBookTasteStep({
                 <Image source={{ uri: current.coverUrl }} style={styles.coverImage} />
               ) : (
                 <View style={styles.coverFallback}>
-                  <Text style={[monoType.meta, { color: theme.text.secondary }]}>
+                  <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
                     {current.title}
                   </Text>
                 </View>
@@ -133,7 +133,7 @@ export function OnboardingBookTasteStep({
             </View>
           ) : (
             <View style={styles.doneBlock}>
-              <Text style={[monoType.meta, styles.doneText, { color: theme.text.secondary }]}>
+              <Text style={[monoType.rowText, styles.doneText, { color: theme.text.secondary }]}>
                 {t("onboarding.taste.done")}
               </Text>
             </View>

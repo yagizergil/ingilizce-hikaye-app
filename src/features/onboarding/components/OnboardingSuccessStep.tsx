@@ -4,7 +4,7 @@ import { Animated, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing, type } from "@/theme";
+import { radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
@@ -59,7 +59,7 @@ export function OnboardingSuccessStep({ premium, onContinue }: OnboardingSuccess
         <Text style={[type.display, styles.centered, { color: theme.text.primary }]}>
           {t("onboarding.success.title")}
         </Text>
-        <Text style={[monoType.rowText, styles.centered, { color: theme.text.secondary }]}>
+        <Text style={[type.chapterRowTitle, styles.centered, { color: theme.text.secondary }]}>
           {premium ? t("onboarding.success.bodyPremium") : t("onboarding.success.bodyFree")}
         </Text>
       </View>

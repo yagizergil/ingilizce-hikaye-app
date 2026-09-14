@@ -71,7 +71,7 @@ export function OnboardingWelcomeScreen({ onStart }: OnboardingWelcomeScreenProp
                 <SvgXml xml={welcomeIconXml[item] as string} width={ICON_SIZE} height={ICON_SIZE} />
               </View>
               <View style={styles.rowText}>
-                <Text style={[type.chapterRowTitle, { color: theme.text.primary }]}>
+                <Text style={[type.bookTitleMd, { color: theme.text.primary }]}>
                   {t(`onboarding.welcome.highlights.${item}.title`)}
                 </Text>
                 <Text style={[monoType.rowText, { color: theme.text.secondary }]}>

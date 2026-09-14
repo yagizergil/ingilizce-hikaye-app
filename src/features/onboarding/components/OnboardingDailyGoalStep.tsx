@@ -83,7 +83,7 @@ export function OnboardingDailyGoalStep({
             etiket listenin altında bir açıklama olarak veriliyor. */}
         <View style={styles.note}>
           <Ionicons name="information-circle-outline" size={16} color={theme.text.secondary} />
-          <Text style={[monoType.meta, styles.noteText, { color: theme.text.secondary }]}>
+          <Text style={[monoType.rowText, styles.noteText, { color: theme.text.secondary }]}>
             {t("onboarding.goal.recommendedNote")}
           </Text>
         </View>

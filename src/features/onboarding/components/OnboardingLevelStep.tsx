@@ -107,7 +107,7 @@ export function OnboardingLevelStep({
         <Text
           accessibilityRole="button"
           onPress={onTakeTest}
-          style={[monoType.meta, styles.testLink]}
+          style={[monoType.rowText, styles.testLink]}
         >
           {t("onboarding.level.takeTest")}
         </Text>

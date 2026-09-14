@@ -97,7 +97,7 @@ export function OnboardingPlanStep({ progress, tasks, onDone }: OnboardingPlanSt
                 size={20}
                 color={task.done ? theme.accent : theme.text.secondary}
               />
-              <Text style={[monoType.meta, styles.taskText, { color: theme.text.primary }]}>
+              <Text style={[monoType.rowText, styles.taskText, { color: theme.text.primary }]}>
                 {t(`onboarding.plan.tasks.${task.key}`)}
               </Text>
             </View>

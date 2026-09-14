@@ -60,7 +60,7 @@ export function OnboardingFooterButton({
         <>
           <Text
             style={[
-              type.chapterRowTitle,
+              type.bookTitleMd,
               { color: inactive ? theme.text.secondary : theme.text.onAccent },
             ]}
           >

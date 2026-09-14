@@ -285,7 +285,7 @@ export function OnboardingProjectionStep({
             {NODES.map((_, index) => (
               <Text
                 key={index}
-                style={[monoType.meta, styles.axisLabel, { color: theme.text.secondary }]}
+                style={[monoType.rowText, styles.axisLabel, { color: theme.text.secondary }]}
                 numberOfLines={1}
               >
                 {t(`onboarding.path.milestones.${index}`)}

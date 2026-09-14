@@ -152,7 +152,7 @@ export function OnboardingFirstReadStep({
             {/* Referanstaki "A1 · sana göre uyarlandı" rozetinin karşılığı:
                 pasajın gerçekten hangi seviyeden geldiğini söylüyor. */}
             <View style={[styles.levelPill, { backgroundColor: theme.bg.primary }]}>
-              <Text style={[monoType.label, { color: theme.text.secondary }]}>
+              <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
                 {t("onboarding.firstRead.levelPill", { level: level ?? "A1" })}
               </Text>
             </View>

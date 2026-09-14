@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing, type } from "@/theme";
+import { radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { LoadingState } from "@/components/ui";
 
@@ -162,7 +162,7 @@ export function OnboardingQuizStep({
                     },
                   ]}
                 >
-                  <Text style={[monoType.rowText, styles.optionText, { color: theme.text.primary }]}>
+                  <Text style={[type.bookTitleMd, styles.optionText, { color: theme.text.primary }]}>
                     {gloss}
                   </Text>
                   {chosen && correct ? (
