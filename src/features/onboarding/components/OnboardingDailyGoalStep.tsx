@@ -2,33 +2,35 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { SvgXml } from "react-native-svg";
 
 import { monoType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
+import { goalIconXml } from "@/features/onboarding/goalIconXml";
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
 import { OnboardingOptionCard } from "@/features/onboarding/components/OnboardingOptionCard";
 import { OnboardingScaffold } from "@/features/onboarding/components/OnboardingScaffold";
 
-import type { ComponentProps } from "react";
-
-type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
 /**
  * Günlük hedef (referans: `bookvo-10-gunluk-hedef.jpeg`).
  *
- * Referanstaki beş seçenek ve "Önerilen" rozeti aynen korundu; ikonlar
- * bizim ikon setimizden. Seçim `profiles.daily_goal_minutes`'a yazılıyor --
+ * Referanstaki beş seçenek ve "Önerilen" rozeti aynen korundu.
+ * İllüstrasyonlar `assets/*.svg` (bkz. `goalIconXml`) ve bir ARTIŞ
+ * anlatıyorlar: filiz -> takvim -> şimşek -> roket -> kupa. Rozet zemini
+ * nötr, çünkü görseller kendi renklerini taşıyor -- renkli bir görseli
+ * renkli bir dairenin üstüne koymak ikisini de bulanıklaştırırdı. Seçim `profiles.daily_goal_minutes`'a yazılıyor --
  * bu alan zaten vardı ve hatırlatma bildirimleri (ADR-010) ile ana
  * ekrandaki seri göstergesi onu okuyor. Yani bu ekran boşa dönen bir
  * anket değil, var olan bir ayarı dolduruyor.
  */
-const OPTIONS: { minutes: number; icon: IoniconName; recommended?: boolean }[] = [
-  { minutes: 5, icon: "leaf-outline" },
-  { minutes: 10, icon: "calendar-outline" },
-  { minutes: 15, icon: "flash-outline", recommended: true },
-  { minutes: 20, icon: "rocket-outline" },
-  { minutes: 30, icon: "trophy-outline" },
+const OPTIONS: { minutes: number; recommended?: boolean }[] = [
+  { minutes: 5 },
+  { minutes: 10 },
+  { minutes: 15, recommended: true },
+  { minutes: 20 },
+  { minutes: 30 },
 ];
 
 interface OnboardingDailyGoalStepProps {
@@ -67,8 +69,8 @@ export function OnboardingDailyGoalStep({
         {OPTIONS.map((option) => (
           <OnboardingOptionCard
             key={option.minutes}
-            badge={<Ionicons name={option.icon} size={22} color={theme.text.onAccent} />}
-            badgeColor={theme.accent}
+            badge={<SvgXml xml={goalIconXml[`m${option.minutes}`] as string} width={26} height={26} />}
+            badgeColor={theme.bg.primary}
             title={t("onboarding.goal.minutes", { count: option.minutes })}
             subtitle={t(`onboarding.goal.options.${option.minutes}`)}
             selected={selected === option.minutes}
