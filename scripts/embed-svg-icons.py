@@ -46,6 +46,12 @@ BUNDLES = [
          ("review", "customer")],
         "\"Yolun\" ekranındaki özellik kutucukları (bkz. OnboardingProjectionStep).",
     ),
+    (
+        os.path.join("src", "features", "onboarding", "welcomeIconXml.ts"),
+        "welcomeIconXml",
+        [("tapWord", "double-tap"), ("leveled", "income"), ("remember", "repeat")],
+        "Karşılama ekranındaki üç satır (bkz. OnboardingWelcomeScreen).",
+    ),
 ]
 
 HEADER = """/**

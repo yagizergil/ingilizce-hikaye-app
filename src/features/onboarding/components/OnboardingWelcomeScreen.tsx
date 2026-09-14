@@ -1,17 +1,15 @@
 import { StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { SvgXml } from "react-native-svg";
 
 import { monoType, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
+import { welcomeIconXml } from "@/features/onboarding/welcomeIconXml";
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
 
-import type { ComponentProps } from "react";
-
-type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
 /**
  * "Başla" ekranı: uygulamayı üç maddede anlatır.
@@ -27,11 +25,17 @@ type IoniconName = ComponentProps<typeof Ionicons>["name"];
  * Paywall kuralının (CLAUDE.md: bir fayda önce üründe çalışır, sonra
  * yazılır) buraya da uygulanması gerekiyor -- burası da bir vaat ekranı.
  */
-const HIGHLIGHTS: { icon: IoniconName; key: string }[] = [
-  { icon: "hand-left-outline", key: "tapWord" },
-  { icon: "library-outline", key: "leveled" },
-  { icon: "repeat-outline", key: "remember" },
-];
+/**
+ * İllüstrasyonlar `assets/*.svg` (bkz. `welcomeIconXml`): dokunma,
+ * yükselen basamaklar, döngü -- sırasıyla kelimeye dokunma, seviyeye göre
+ * hikâye ve aralıklı tekrar. Rozet zemini nötr: görseller kendi
+ * renklerini taşıyor, renkli zemin ikisini de bulanıklaştırırdı
+ * (onboarding'in diğer satırlarındaki kararın aynısı).
+ */
+const HIGHLIGHTS = ["tapWord", "leveled", "remember"] as const;
+
+/** Ölçüm: rozet 44 pt; görsel onun içinde nefes alacak kadar küçük. */
+const ICON_SIZE = 28;
 
 interface OnboardingWelcomeScreenProps {
   onStart: () => void;
@@ -57,21 +61,21 @@ export function OnboardingWelcomeScreen({ onStart }: OnboardingWelcomeScreenProp
         <View style={styles.list}>
           {HIGHLIGHTS.map((item) => (
             <View
-              key={item.key}
+              key={item}
               style={[
                 styles.row,
                 { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
               ]}
             >
-              <View style={[styles.iconBadge, { backgroundColor: theme.accent }]}>
-                <Ionicons name={item.icon} size={22} color={theme.text.onAccent} />
+              <View style={[styles.iconBadge, { backgroundColor: theme.bg.primary }]}>
+                <SvgXml xml={welcomeIconXml[item] as string} width={ICON_SIZE} height={ICON_SIZE} />
               </View>
               <View style={styles.rowText}>
                 <Text style={[type.chapterRowTitle, { color: theme.text.primary }]}>
-                  {t(`onboarding.welcome.highlights.${item.key}.title`)}
+                  {t(`onboarding.welcome.highlights.${item}.title`)}
                 </Text>
-                <Text style={[monoType.meta, { color: theme.text.secondary }]}>
-                  {t(`onboarding.welcome.highlights.${item.key}.body`)}
+                <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
+                  {t(`onboarding.welcome.highlights.${item}.body`)}
                 </Text>
               </View>
             </View>
