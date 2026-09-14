@@ -747,13 +747,31 @@
     "socialProof_many": "{{count}} قصة · من A1 إلى C2",
     "socialProof_other": "{{count}} قصة · من A1 إلى C2",
     "benefits": {
-      "studioAudio": "سرد بصوت الاستوديو لـ 63 قصة — مع إبراز كل كلمة أثناء قراءتها",
-      "secondLanguagePair": "افتح زوج لغات ثانٍ -- اقرأ بلغة أخرى أيضًا",
-      "unlimitedWords": "كلمات محفوظة بلا حدود — بلا سقف للدفتر",
-      "spacedRepetition": "مراجعة متباعدة: كل كلمة تعود إليك قبل أن تنساها",
-      "aiSentences": "{{premium}} ترجمة جملة بالذكاء الاصطناعي يوميًا (الخطة المجانية: {{free}})",
-      "aiSentencesGeneric": "حصة يومية أكبر بكثير لترجمة الجمل بالذكاء الاصطناعي",
-      "stats": "إحصاءات وقت القراءة والسلسلة والمستوى"
+      "studioAudio": {
+        "title": "استمع وافهم",
+        "body": "تسجيل استوديو مع إبراز الكلمة المنطوقة أثناء القراءة."
+      },
+      "aiSentences": {
+        "title": "فكّ أي جملة",
+        "body": "{{premium}} ترجمة جملة بالذكاء الاصطناعي يوميًا — {{free}} في الخطة المجانية.",
+        "bodyGeneric": "ترجمة بالذكاء الاصطناعي عند الجملة الصعبة، بحصة يومية أكبر بكثير."
+      },
+      "unlimitedWords": {
+        "title": "قائمة كلمات بلا حدود",
+        "body": "لا حدّ لعدد الكلمات التي تحفظها."
+      },
+      "spacedRepetition": {
+        "title": "لتبقى في ذاكرتك",
+        "body": "المراجعة المتباعدة تعيد كل كلمة قبل أن تنساها."
+      },
+      "secondLanguagePair": {
+        "title": "زوج لغات ثانٍ",
+        "body": "افتح زوجًا آخر واقرأ الكتب نفسها به."
+      },
+      "stats": {
+        "title": "تابع تقدّمك",
+        "body": "وقت القراءة والسلسلة والمستوى: كل الإحصاءات."
+      }
     },
     "plan": {
       "annual": "سنوي",
@@ -767,7 +785,9 @@
       "trialDays_many": "{{count}} يومًا مجانًا",
       "trialDays_other": "{{count}} يوم مجانًا",
       "periodYear": "سنة",
-      "periodMonth": "شهر"
+      "periodMonth": "شهر",
+      "savingsShort": "-{{percent}}٪",
+      "pricePerMonth": "{{price}}/شهر"
     },
     "ctaTrial_zero": "ابدأ الآن",
     "ctaTrial_one": "جرّبه مجانًا ليوم واحد",
@@ -805,7 +825,8 @@
     "retryPackages": "حاول مرة أخرى",
     "unavailableInExpoGo": "الشراء يعمل فقط في نسخة مُجمَّعة من التطبيق",
     "upgradeRow": "بريميوم",
-    "wordListFull": "دفتر كلماتك ممتلئ بنسبة {{count}}/{{limit}}"
+    "wordListFull": "دفتر كلماتك ممتلئ بنسبة {{count}}/{{limit}}",
+    "benefitsSectionTitle": "ما الذي يضيفه PREMIUM"
   },
   "reminders": {
     "settingsLabel": "التذكيرات",

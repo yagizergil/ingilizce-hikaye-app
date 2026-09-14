@@ -66,7 +66,16 @@ export default function RootLayout() {
                     <Stack.Screen name="favorites" />
                     <Stack.Screen name="browse" />
                     <Stack.Screen name="review" />
-                    <Stack.Screen name="paywall" options={{ presentation: "modal" }} />
+                    {/*
+                      Paywall MODAL DEĞİL, tam sayfa. Modal olarak
+                      açıldığında üstte kalan boşluk ve kavisli kenarlar
+                      referans tasarımın tam ekran yerleşimini (tepedeki taç,
+                      alttaki sabit CTA) bozuyordu; ayrıca modalın kendi
+                      kaydırma davranışı, Apple'ın 3.1.2(c) reddine sebep
+                      olan "alttaki yasal blok görünmüyor" durumunu geri
+                      getirme riski taşıyordu. Kapatma, ekranın kendi X
+                      düğmesiyle. */}
+                    <Stack.Screen name="paywall" />
                     <Stack.Screen name="language-settings" options={{ presentation: "modal" }} />
                     {/*
                       Kitap bitirme kutlaması. Modal DEĞİL: reader'dan

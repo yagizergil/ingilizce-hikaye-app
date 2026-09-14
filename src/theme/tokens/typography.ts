@@ -443,3 +443,104 @@ export function getReadingTypeScale(
     },
   };
 }
+
+/**
+ * Paywall'a özel tipografi -- ÖLÇÜLDÜ (docs/reference/paywall1.jpeg ve
+ * paywall2.jpeg, 945 px genişlik, 1pt = 2.4046px).
+ *
+ * NEDEN AYRI BİR ÖLÇEK: paywall referansı uygulamanın geri kalanından
+ * belirgin şekilde daha iri tipografi kullanıyor (başlık 28 pt, CTA 20 pt);
+ * bu ölçüleri paylaşılan `type` ölçeğine karıştırmak, paywall'ı düzeltirken
+ * kütüphaneyi bozmak demekti. Ölçüler burada, tek yerde.
+ *
+ * Kaynak ölçümler (piksel -> pt):
+ *   başlık "dicto Premium" gövde yüksekliği 51 px -> ~28 pt
+ *   alt başlık satırı 40 px -> ~18 pt
+ *   plan başlığı ("Yıllık") ~48 px -> 20 pt
+ *   plan fiyatı 20 pt, plan alt notu 15 pt
+ *   rozet metni ("3 gün ücretsiz") 37 px -> 13 pt
+ *   bölüm etiketi ("ABONELİK AVANTAJLARI") 13 pt, büyük harf
+ *   fayda başlığı 25 px -> 17 pt, fayda gövdesi 15 pt
+ *   CTA metni 38 px -> 20 pt kalın
+ *   yasal satır 13 pt
+ */
+export const paywallType = {
+  title: {
+    fontFamily: fontFamily.nunitoExtraBold,
+    fontSize: 28,
+    lineHeight: 34,
+    fontWeight: "800",
+    letterSpacing: -0.4,
+  },
+  subtitle: {
+    fontFamily: fontFamily.nunitoSemiBold,
+    fontSize: 18,
+    lineHeight: 24,
+    fontWeight: "600",
+    letterSpacing: 0,
+  },
+  sectionLabel: {
+    fontFamily: fontFamily.nunitoBold,
+    fontSize: 13,
+    lineHeight: 17,
+    fontWeight: "700",
+    letterSpacing: 1.2,
+    textTransform: "uppercase",
+  },
+  planTitle: {
+    fontFamily: fontFamily.nunitoBold,
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: "700",
+    letterSpacing: 0,
+  },
+  planPrice: {
+    fontFamily: fontFamily.nunitoSemiBold,
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: "600",
+    letterSpacing: 0,
+  },
+  planNote: {
+    fontFamily: fontFamily.nunitoMedium,
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: "500",
+    letterSpacing: 0,
+  },
+  planBadge: {
+    fontFamily: fontFamily.nunitoBold,
+    fontSize: 13,
+    lineHeight: 17,
+    fontWeight: "700",
+    letterSpacing: 0,
+  },
+  benefitTitle: {
+    fontFamily: fontFamily.nunitoBold,
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: "700",
+    letterSpacing: 0,
+  },
+  benefitBody: {
+    fontFamily: fontFamily.nunitoMedium,
+    fontSize: 15,
+    lineHeight: 21,
+    fontWeight: "500",
+    letterSpacing: 0,
+  },
+  cta: {
+    fontFamily: fontFamily.nunitoExtraBold,
+    fontSize: 20,
+    lineHeight: 26,
+    fontWeight: "800",
+    letterSpacing: 0,
+  },
+  legal: {
+    fontFamily: fontFamily.nunitoMedium,
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: "500",
+    letterSpacing: 0,
+  },
+} as const satisfies Record<string, TypeStyle>;

@@ -719,13 +719,31 @@
     "socialProof_one": "{{count}} の物語 · A1 から C2 まで",
     "socialProof_other": "{{count}} の物語 · A1 から C2 まで",
     "benefits": {
-      "studioAudio": "63 作品のスタジオ・ナレーション — 読まれる単語が順にハイライト",
-      "secondLanguagePair": "2つ目の言語ペアを解放 -- 別の言語でも読める",
-      "unlimitedWords": "保存できる単語は無制限 — 単語帳の上限なし",
-      "spacedRepetition": "間隔反復：忘れる前にすべての単語が再び出てきます",
-      "aiSentences": "1 日 {{premium}} 回の AI 文翻訳（無料プランは {{free}} 回）",
-      "aiSentencesGeneric": "AI 文翻訳の 1 日あたりの回数が大幅アップ",
-      "stats": "読書時間・連続日数・レベルの統計"
+      "studioAudio": {
+        "title": "聴いて理解する",
+        "body": "スタジオ音声。読み上げ中の単語がその場でハイライトされます。"
+      },
+      "aiSentences": {
+        "title": "詰まった文を解く",
+        "body": "1日 {{premium}} 回のAI文翻訳 — 無料プランは {{free}} 回。",
+        "bodyGeneric": "詰まった文でAI翻訳を、はるかに多い1日あたりの回数で。"
+      },
+      "unlimitedWords": {
+        "title": "単語帳が無制限",
+        "body": "保存できる単語数の上限がなくなります。"
+      },
+      "spacedRepetition": {
+        "title": "記憶に残す",
+        "body": "間隔反復が、忘れる直前に単語をもう一度出します。"
+      },
+      "secondLanguagePair": {
+        "title": "2つ目の言語ペア",
+        "body": "別の母語–学習言語ペアを開き、同じ本をその言語で読めます。"
+      },
+      "stats": {
+        "title": "進み具合を見る",
+        "body": "読書時間・連続日数・レベルの統計すべて。"
+      }
     },
     "plan": {
       "annual": "年額",
@@ -735,7 +753,9 @@
       "trialDays_one": "{{count}} 日間無料",
       "trialDays_other": "{{count}} 日間無料",
       "periodYear": "年",
-      "periodMonth": "月"
+      "periodMonth": "月",
+      "savingsShort": "-{{percent}}%",
+      "pricePerMonth": "{{price}}/月"
     },
     "ctaTrial_one": "{{count}} 日間無料で試す",
     "ctaTrial_other": "{{count}} 日間無料で試す",
@@ -765,7 +785,8 @@
     "retryPackages": "もう一度試す",
     "unavailableInExpoGo": "購入はビルド済みアプリでのみ動作します",
     "upgradeRow": "プレミアム",
-    "wordListFull": "単語帳は {{count}}/{{limit}} 使用中"
+    "wordListFull": "単語帳は {{count}}/{{limit}} 使用中",
+    "benefitsSectionTitle": "PREMIUM で増えること"
   },
   "reminders": {
     "settingsLabel": "リマインダー",

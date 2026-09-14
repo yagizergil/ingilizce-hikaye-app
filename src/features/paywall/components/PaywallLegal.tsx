@@ -16,6 +16,16 @@ interface PaywallLegalProps {
   trialDays: number | null;
   /** Seçili plan yıllık mı — yenileme dönemini doğru yazmak için. */
   periodLabel: string;
+  /**
+   * "Aboneliği geri yükle" -- referansta (paywall2.jpeg) yasal
+   * bağlantılarla AYNI satırda duruyor, ayrı bir düğme değil.
+   *
+   * NEDEN BURADA: geri yükleme de App Store'un aradığı şeylerden biri ve
+   * yasal blokla aynı yerde durması, ikisinin birlikte görünür kalmasını
+   * garantiliyor -- blok zaten kaydırmanın dışında.
+   */
+  onRestore?: () => void;
+  restoreBusy?: boolean;
 }
 
 /**
@@ -30,7 +40,13 @@ interface PaywallLegalProps {
  * Bağlantılar `expo-web-browser` ile uygulama içi tarayıcıda açılıyor:
  * kullanıcı Safari'ye atılıp satın alma akışını kaybetmiyor.
  */
-export function PaywallLegal({ priceString, trialDays, periodLabel }: PaywallLegalProps) {
+export function PaywallLegal({
+  priceString,
+  trialDays,
+  periodLabel,
+  onRestore,
+  restoreBusy = false,
+}: PaywallLegalProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -88,6 +104,15 @@ export function PaywallLegal({ priceString, trialDays, periodLabel }: PaywallLeg
             {t("paywall.legal.privacyMissing")}
           </Text>
         )}
+        {onRestore ? (
+          <>
+            <Text style={[monoType.footerNote, { color: theme.text.secondary }]}>·</Text>
+            <LegalLink
+              label={restoreBusy ? t("paywall.activatingCta") : t("paywall.restore")}
+              onPress={onRestore}
+            />
+          </>
+        ) : null}
       </View>
     </View>
   );

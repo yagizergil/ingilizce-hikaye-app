@@ -719,13 +719,31 @@
     "socialProof_one": "{{count}} HISTORIA · DE A1 A C2",
     "socialProof_other": "{{count}} HISTORIAS · DE A1 A C2",
     "benefits": {
-      "studioAudio": "Narración de estudio en 63 historias, con cada palabra resaltada mientras se lee",
-      "secondLanguagePair": "Desbloquea un segundo par de idiomas -- lee también en otro idioma",
-      "unlimitedWords": "Palabras guardadas sin límite: se acaba el tope del cuaderno",
-      "spacedRepetition": "Repaso espaciado: cada palabra vuelve antes de que la olvides",
-      "aiSentences": "{{premium}} traducciones de frases con IA al día (plan gratuito: {{free}})",
-      "aiSentencesGeneric": "Una cuota diaria mucho mayor para la traducción de frases con IA",
-      "stats": "Estadísticas de tiempo de lectura, racha y nivel"
+      "studioAudio": {
+        "title": "Escucha y entiende",
+        "body": "Narración de estudio con la palabra hablada resaltada mientras lees."
+      },
+      "aiSentences": {
+        "title": "Desatasca cualquier frase",
+        "body": "{{premium}} traducciones de frases con IA al día — {{free}} en el plan gratuito.",
+        "bodyGeneric": "Traducción con IA justo donde te atascas, con una cuota diaria mucho mayor."
+      },
+      "unlimitedWords": {
+        "title": "Lista de palabras sin límite",
+        "body": "Sin tope en las palabras que guardas."
+      },
+      "spacedRepetition": {
+        "title": "Para que se quede",
+        "body": "El repaso espaciado te devuelve cada palabra antes de olvidarla."
+      },
+      "secondLanguagePair": {
+        "title": "Un segundo par de idiomas",
+        "body": "Abre otro par y lee los mismos libros en ese idioma."
+      },
+      "stats": {
+        "title": "Mira tu progreso",
+        "body": "Tiempo de lectura, racha y nivel: todas las estadísticas."
+      }
     },
     "plan": {
       "annual": "Anual",
@@ -735,7 +753,9 @@
       "trialDays_one": "{{count}} día gratis",
       "trialDays_other": "{{count}} días gratis",
       "periodYear": "año",
-      "periodMonth": "mes"
+      "periodMonth": "mes",
+      "savingsShort": "-{{percent}} %",
+      "pricePerMonth": "{{price}}/mes"
     },
     "ctaTrial_one": "Pruébalo gratis {{count}} día",
     "ctaTrial_other": "Pruébalo gratis {{count}} días",
@@ -765,7 +785,8 @@
     "retryPackages": "Reintentar",
     "unavailableInExpoGo": "LAS COMPRAS SOLO FUNCIONAN EN UNA VERSIÓN COMPILADA",
     "upgradeRow": "Premium",
-    "wordListFull": "Tu cuaderno está {{count}}/{{limit}} lleno"
+    "wordListFull": "Tu cuaderno está {{count}}/{{limit}} lleno",
+    "benefitsSectionTitle": "LO QUE AÑADE PREMIUM"
   },
   "reminders": {
     "settingsLabel": "Recordatorios",

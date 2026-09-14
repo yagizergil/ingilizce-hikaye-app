@@ -719,13 +719,31 @@
     "socialProof_one": "{{count}} HISTOIRE · DE A1 À C2",
     "socialProof_other": "{{count}} HISTOIRES · DE A1 À C2",
     "benefits": {
-      "studioAudio": "Narration studio pour 63 histoires — chaque mot surligné au fil de la lecture",
-      "secondLanguagePair": "Débloque une deuxième paire de langues -- lis aussi dans une autre langue",
-      "unlimitedWords": "Mots enregistrés illimités — plus de limite dans le carnet",
-      "spacedRepetition": "Répétition espacée : chaque mot revient avant que tu ne l'oublies",
-      "aiSentences": "{{premium}} traductions de phrases par IA et par jour (offre gratuite : {{free}})",
-      "aiSentencesGeneric": "Un quota quotidien bien plus élevé pour la traduction de phrases par IA",
-      "stats": "Statistiques de temps de lecture, de série et de niveau"
+      "studioAudio": {
+        "title": "Écouter et comprendre",
+        "body": "Narration enregistrée en studio, le mot prononcé surligné au fil du texte."
+      },
+      "aiSentences": {
+        "title": "Débloquer une phrase",
+        "body": "{{premium}} traductions de phrases par IA par jour — {{free}} en version gratuite.",
+        "bodyGeneric": "Traduction IA là où tu bloques, avec un quota quotidien bien plus élevé."
+      },
+      "unlimitedWords": {
+        "title": "Carnet de mots illimité",
+        "body": "Plus de limite sur le nombre de mots enregistrés."
+      },
+      "spacedRepetition": {
+        "title": "Pour que ça reste",
+        "body": "La répétition espacée ramène chaque mot juste avant l'oubli."
+      },
+      "secondLanguagePair": {
+        "title": "Une deuxième paire de langues",
+        "body": "Ouvre une autre paire et lis les mêmes livres dedans."
+      },
+      "stats": {
+        "title": "Voir tes progrès",
+        "body": "Temps de lecture, série et niveau : toutes les statistiques."
+      }
     },
     "plan": {
       "annual": "Annuel",
@@ -735,7 +753,9 @@
       "trialDays_one": "{{count}} jour offert",
       "trialDays_other": "{{count}} jours offerts",
       "periodYear": "an",
-      "periodMonth": "mois"
+      "periodMonth": "mois",
+      "savingsShort": "-{{percent}} %",
+      "pricePerMonth": "{{price}}/mois"
     },
     "ctaTrial_one": "Essayer {{count}} jour gratuitement",
     "ctaTrial_other": "Essayer {{count}} jours gratuitement",
@@ -765,7 +785,8 @@
     "retryPackages": "Réessayer",
     "unavailableInExpoGo": "LES ACHATS NE FONCTIONNENT QUE DANS UNE VERSION COMPILÉE",
     "upgradeRow": "Premium",
-    "wordListFull": "Ton carnet est rempli à {{count}}/{{limit}}"
+    "wordListFull": "Ton carnet est rempli à {{count}}/{{limit}}",
+    "benefitsSectionTitle": "CE QU'APPORTE PREMIUM"
   },
   "reminders": {
     "settingsLabel": "Rappels",

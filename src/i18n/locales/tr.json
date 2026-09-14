@@ -719,13 +719,31 @@
     "socialProof_one": "{{count}} HİKÂYE · A1'DEN C2'YE",
     "socialProof_other": "{{count}} HİKÂYE · A1'DEN C2'YE",
     "benefits": {
-      "studioAudio": "63 hikâyede stüdyo seslendirmesi — okunan kelime vurgulanarak",
-      "secondLanguagePair": "İkinci bir dil çifti aç -- başka bir dilde de oku",
-      "unlimitedWords": "Sınırsız kelime kaydı — defter sınırı kalkar",
-      "spacedRepetition": "Aralıklı tekrar: her kelime unutmadan önce karşına çıkar",
-      "aiSentences": "Günde {{premium}} AI cümle çevirisi (ücretsiz katmanda {{free}})",
-      "aiSentencesGeneric": "AI cümle çevirisinde çok daha yüksek günlük kota",
-      "stats": "Okuma süresi, seri ve seviye istatistikleri"
+      "studioAudio": {
+        "title": "Dinlediğini anlama",
+        "body": "Stüdyo kaydıyla seslendirilmiş hikâyeleri, okunan kelime vurgulanarak dinle."
+      },
+      "aiSentences": {
+        "title": "Takıldığın cümleyi çöz",
+        "body": "Günde {{premium}} AI cümle çevirisi — ücretsiz katmanda {{free}}.",
+        "bodyGeneric": "Takıldığın cümlede AI çevirisi, çok daha yüksek günlük kotayla."
+      },
+      "unlimitedWords": {
+        "title": "Sınırsız kelime defteri",
+        "body": "Kaydettiğin kelimelerde sayı sınırı kalkar."
+      },
+      "spacedRepetition": {
+        "title": "Aklında kalsın",
+        "body": "Aralıklı tekrar her kelimeyi unutmadan önce karşına çıkarır."
+      },
+      "secondLanguagePair": {
+        "title": "İkinci bir dil çifti",
+        "body": "Başka bir ana dil–hedef dil çifti aç, aynı kitapları o dilde oku."
+      },
+      "stats": {
+        "title": "İlerlemeni gör",
+        "body": "Okuma süresi, seri ve seviye istatistiklerinin tamamı."
+      }
     },
     "plan": {
       "annual": "Yıllık",
@@ -735,7 +753,9 @@
       "trialDays_one": "{{count}} gün ücretsiz",
       "trialDays_other": "{{count}} gün ücretsiz",
       "periodYear": "yıl",
-      "periodMonth": "ay"
+      "periodMonth": "ay",
+      "savingsShort": "-%{{percent}}",
+      "pricePerMonth": "{{price}}/ay"
     },
     "ctaTrial_one": "{{count}} gün ücretsiz dene",
     "ctaTrial_other": "{{count}} gün ücretsiz dene",
@@ -765,7 +785,8 @@
     "retryPackages": "Tekrar dene",
     "unavailableInExpoGo": "SATIN ALMA YALNIZCA DERLENMİŞ UYGULAMADA ÇALIŞIR",
     "upgradeRow": "Premium",
-    "wordListFull": "Kelime defterin {{count}}/{{limit}} dolu"
+    "wordListFull": "Kelime defterin {{count}}/{{limit}} dolu",
+    "benefitsSectionTitle": "ABONELİK AVANTAJLARI"
   },
   "reminders": {
     "settingsLabel": "Hatırlatmalar",

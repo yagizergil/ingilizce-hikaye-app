@@ -719,13 +719,31 @@
     "socialProof_one": "{{count}} STORIA · DA A1 A C2",
     "socialProof_other": "{{count}} STORIE · DA A1 A C2",
     "benefits": {
-      "studioAudio": "Narrazione in studio per 63 storie — ogni parola evidenziata mentre viene letta",
-      "secondLanguagePair": "Sblocca una seconda coppia di lingue -- leggi anche in un'altra lingua",
-      "unlimitedWords": "Parole salvate illimitate — nessun limite nel quaderno",
-      "spacedRepetition": "Ripetizione dilazionata: ogni parola torna prima che tu la dimentichi",
-      "aiSentences": "{{premium}} traduzioni di frasi con l'IA al giorno (versione gratuita: {{free}})",
-      "aiSentencesGeneric": "Una quota giornaliera molto più alta per la traduzione di frasi con l'IA",
-      "stats": "Statistiche su tempo di lettura, serie e livello"
+      "studioAudio": {
+        "title": "Ascolta e capisci",
+        "body": "Narrazione registrata in studio, con la parola pronunciata evidenziata."
+      },
+      "aiSentences": {
+        "title": "Sblocca ogni frase",
+        "body": "{{premium}} traduzioni di frasi con AI al giorno — {{free}} nel piano gratuito.",
+        "bodyGeneric": "Traduzione AI dove ti blocchi, con una quota giornaliera molto più alta."
+      },
+      "unlimitedWords": {
+        "title": "Lista parole illimitata",
+        "body": "Nessun limite alle parole che salvi."
+      },
+      "spacedRepetition": {
+        "title": "Perché resti",
+        "body": "La ripetizione dilazionata ti ripropone ogni parola prima che la dimentichi."
+      },
+      "secondLanguagePair": {
+        "title": "Una seconda coppia di lingue",
+        "body": "Apri un'altra coppia e leggi gli stessi libri in quella lingua."
+      },
+      "stats": {
+        "title": "Vedi i progressi",
+        "body": "Tempo di lettura, serie e livello: tutte le statistiche."
+      }
     },
     "plan": {
       "annual": "Annuale",
@@ -735,7 +753,9 @@
       "trialDays_one": "{{count}} giorno gratis",
       "trialDays_other": "{{count}} giorni gratis",
       "periodYear": "anno",
-      "periodMonth": "mese"
+      "periodMonth": "mese",
+      "savingsShort": "-{{percent}}%",
+      "pricePerMonth": "{{price}}/mese"
     },
     "ctaTrial_one": "Prova gratis per {{count}} giorno",
     "ctaTrial_other": "Prova gratis per {{count}} giorni",
@@ -765,7 +785,8 @@
     "retryPackages": "Riprova",
     "unavailableInExpoGo": "GLI ACQUISTI FUNZIONANO SOLO IN UNA BUILD COMPILATA",
     "upgradeRow": "Premium",
-    "wordListFull": "Il tuo quaderno è pieno a {{count}}/{{limit}}"
+    "wordListFull": "Il tuo quaderno è pieno a {{count}}/{{limit}}",
+    "benefitsSectionTitle": "COSA AGGIUNGE PREMIUM"
   },
   "reminders": {
     "settingsLabel": "Promemoria",

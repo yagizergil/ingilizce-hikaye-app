@@ -1,9 +1,11 @@
+import { Fragment } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, spacing } from "@/theme";
+import { paywallMetrics, paywallType, radius, spacing } from "@/theme";
+import { levelAccent, onLevelAccent } from "@/theme/tokens/colors";
 import { useTheme } from "@/theme/useTheme";
 
 type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -11,42 +13,31 @@ type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
 /**
  * Premium'un ne KATTIĞI — neyi kilitlediği değil.
  *
- * Ücretsiz katmanda okuma, tüm kitaplar, kelimeye dokunup Türkçe karşılığı
- * görme ve offline önbellek sınırsız. Bu liste bilerek yalnızca eklenen
- * değeri anlatıyor (ürün ilkesi #2).
+ * Ücretsiz katmanda okuma, tüm kitaplar, kelimeye dokunup karşılığı görme
+ * ve offline önbellek sınırsız. Bu liste bilerek yalnızca eklenen değeri
+ * anlatıyor (ürün ilkesi #2).
  *
  * HER MADDE BUGÜN ÜRÜNDE VAR OLMAK ZORUNDA (denetim bulgusu, 2026-09-07):
- * liste eskiden "AI destekli açıklamalar" ve "sesli okuma" vaat ediyordu.
- * O tarihte sesli okuma diye bir özellik YOKTU — `expo-speech` yalnızca tek
- * kelime telaffuzu için kullanılıyordu. AI çevirisi ise vardı ama kotası
- * herkes için aynıydı, yani premium faydası değildi. İkisi de listeden
- * çıkarıldı; AI maddesi kotanın katmana bağlanmasıyla (migration 029)
- * dürüst hâle gelip geri döndü.
- *
- * `studioAudio` 2026-09-08'de eklendi ve aynı kuraldan geçti: 63 hikâyenin
- * 207 bölümü gerçekten seslendirildi, erişim sunucuda kısıtlanıyor
- * (migration 032 + `chapter-audio`) ve ücretsiz katmanda karşılığı yok.
- * Yani bu sefer madde, çalışan bir özelliği anlatıyor.
- *
- * `secondLanguagePair` 2026-09-13'te eklendi (v2, dil çiftleri): kural yine
- * aynı -- `set_language_pair()` (migration 033) bugün gerçekten çalışıyor,
- * premium bir kullanıcı gerçekten ikinci bir (ana dil, hedef dil) çifti
- * açıp mevcut 119 kitabı o dilden okuyabiliyor (karşılıklar
- * `translate-lemma`/`translate-sentence` ile anında üretiliyor). Hedef dil
- * sayısı bugün ikiyle (en, tr) sınırlı olsa da VAAT EDİLEN şey ("ikinci bir
- * dil çifti aç") tam olarak budur, fazlası değil.
- *
- * BURAYA BİR MADDE EKLEMEDEN ÖNCE: o özellik üründe çalışıyor mu ve
+ * liste eskiden "AI destekli açıklamalar" ve "sesli okuma" vaat ediyordu;
+ * o tarihte ikisi de yoktu. Referans paywall'da bizde OLMAYAN maddeler var
+ * ("kendi EPUB'ını yükle", "her hafta yeni kitaplar", "internetsiz
+ * öğrenme" premium olarak) -- düzen kopyalandı, o maddeler KOPYALANMADI.
+ * Buraya bir madde eklemeden önce: o özellik üründe çalışıyor mu ve
  * ücretsiz katmandan gerçekten farklı mı? İkisi de evet değilse madde
  * yanıltıcı metadatadır (Guideline 2.3.1).
+ *
+ * BAŞLIK + AÇIKLAMA (referans düzeni): tek satırlık maddeler yerine her
+ * fayda bir başlık ve onu açan bir cümle taşıyor. Renkli ikon kareleri de
+ * referanstan; burada renk bir SINIFLAMA değil, satırları birbirinden
+ * ayıran bir işaret -- o yüzden altı madde altı farklı renk.
  */
-const BENEFITS: { icon: IoniconName; key: string }[] = [
-  { icon: "headset-outline", key: "studioAudio" },
-  { icon: "language-outline", key: "secondLanguagePair" },
-  { icon: "bookmarks-outline", key: "unlimitedWords" },
-  { icon: "repeat-outline", key: "spacedRepetition" },
-  { icon: "sparkles-outline", key: "aiSentences" },
-  { icon: "stats-chart-outline", key: "stats" },
+const BENEFITS: { icon: IoniconName; key: string; tint: string }[] = [
+  { icon: "headset", key: "studioAudio", tint: levelAccent.C1 },
+  { icon: "sparkles", key: "aiSentences", tint: levelAccent.B1 },
+  { icon: "bookmarks", key: "unlimitedWords", tint: levelAccent.A1 },
+  { icon: "repeat", key: "spacedRepetition", tint: levelAccent.A2 },
+  { icon: "language", key: "secondLanguagePair", tint: levelAccent.C2 },
+  { icon: "stats-chart", key: "stats", tint: levelAccent.B2 },
 ];
 
 interface PaywallBenefitsProps {
@@ -63,40 +54,71 @@ export function PaywallBenefits({ aiFreeLimit, aiPremiumLimit }: PaywallBenefits
   const { t } = useTranslation();
   const { theme } = useTheme();
 
-  const hasAiNumbers = aiFreeLimit > 0 && aiPremiumLimit > aiFreeLimit;
+  const hasQuotas = aiFreeLimit > 0 && aiPremiumLimit > 0;
 
   return (
-    <View style={styles.list}>
-      {BENEFITS.map((benefit) => (
-        <View key={benefit.key} style={styles.row}>
-          <Ionicons name={benefit.icon} size={20} color={theme.accent} />
-          <Text style={[monoType.rowText, styles.label, { color: theme.text.primary }]}>
-            {benefit.key === "aiSentences"
-              ? hasAiNumbers
-                ? t("paywall.benefits.aiSentences", {
-                    premium: aiPremiumLimit,
-                    free: aiFreeLimit,
-                  })
-                : t("paywall.benefits.aiSentencesGeneric")
-              : t(`paywall.benefits.${benefit.key}`)}
-          </Text>
-        </View>
+    <View style={[styles.card, { backgroundColor: theme.bg.surface }]}>
+      {BENEFITS.map((benefit, index) => (
+        <Fragment key={benefit.key}>
+          {index > 0 ? (
+            <View style={[styles.divider, { backgroundColor: theme.border.hairline }]} />
+          ) : null}
+
+          <View style={styles.row}>
+            <View style={[styles.iconTile, { backgroundColor: benefit.tint }]}>
+              <Ionicons name={benefit.icon} size={17} color={onLevelAccent} />
+            </View>
+
+            <View style={styles.text}>
+              <Text style={[paywallType.benefitTitle, { color: theme.text.primary }]}>
+                {t(`paywall.benefits.${benefit.key}.title`)}
+              </Text>
+              <Text style={[paywallType.benefitBody, { color: theme.text.secondary }]}>
+                {benefit.key === "aiSentences"
+                  ? hasQuotas
+                    ? t("paywall.benefits.aiSentences.body", {
+                        premium: aiPremiumLimit,
+                        free: aiFreeLimit,
+                      })
+                    : /* Kotalar okunamadıysa rakamsız hâli -- yanlış bir
+                         sayı göstermektense hiç göstermemek. */
+                      t("paywall.benefits.aiSentences.bodyGeneric")
+                  : t(`paywall.benefits.${benefit.key}.body`)}
+              </Text>
+            </View>
+          </View>
+        </Fragment>
       ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  list: {
-    gap: spacing.sm,
-    paddingVertical: spacing.md,
+  card: {
+    borderRadius: radius.lg,
+    overflow: "hidden",
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    marginHorizontal: spacing.md,
   },
   row: {
     flexDirection: "row",
-    alignItems: "center",
+    // İkon başlığın ilk satırıyla hizalı; açıklama iki satıra taşarsa ikon
+    // ortaya kaymıyor (referanstaki hizalama).
+    alignItems: "flex-start",
     gap: spacing.sm,
+    padding: spacing.md,
   },
-  label: {
+  iconTile: {
+    width: paywallMetrics.benefitIcon,
+    height: paywallMetrics.benefitIcon,
+    borderRadius: radius.sm,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
     flex: 1,
+    gap: spacing.xxs,
   },
 });

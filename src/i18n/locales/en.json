@@ -719,13 +719,31 @@
     "socialProof_one": "{{count}} STORY · A1 TO C2",
     "socialProof_other": "{{count}} STORIES · A1 TO C2",
     "benefits": {
-      "studioAudio": "Studio narration for 63 stories — each word highlighted as it's read",
-      "secondLanguagePair": "Unlock a second language pair -- read in another language too",
-      "unlimitedWords": "Unlimited saved words — no notebook limit",
-      "spacedRepetition": "Spaced repetition: every word returns before you forget it",
-      "aiSentences": "{{premium}} AI sentence translations a day (free tier: {{free}})",
-      "aiSentencesGeneric": "A much higher daily quota for AI sentence translation",
-      "stats": "Reading time, streak and level statistics"
+      "studioAudio": {
+        "title": "Listen and understand",
+        "body": "Studio-recorded narration with the spoken word highlighted as you read."
+      },
+      "aiSentences": {
+        "title": "Unstick any sentence",
+        "body": "{{premium}} AI sentence translations a day — {{free}} on the free tier.",
+        "bodyGeneric": "AI sentence translation where you get stuck, with a much higher daily quota."
+      },
+      "unlimitedWords": {
+        "title": "Unlimited word list",
+        "body": "No cap on how many words you save."
+      },
+      "spacedRepetition": {
+        "title": "Make it stick",
+        "body": "Spaced repetition brings each word back just before you forget it."
+      },
+      "secondLanguagePair": {
+        "title": "A second language pair",
+        "body": "Open another native–target pair and read the same books in it."
+      },
+      "stats": {
+        "title": "See your progress",
+        "body": "Full reading-time, streak and level statistics."
+      }
     },
     "plan": {
       "annual": "Yearly",
@@ -735,7 +753,9 @@
       "trialDays_one": "{{count}} day free",
       "trialDays_other": "{{count}} days free",
       "periodYear": "year",
-      "periodMonth": "month"
+      "periodMonth": "month",
+      "savingsShort": "-{{percent}}%",
+      "pricePerMonth": "{{price}}/mo"
     },
     "ctaTrial_one": "Try free for {{count}} day",
     "ctaTrial_other": "Try free for {{count}} days",
@@ -765,7 +785,8 @@
     "retryPackages": "Try again",
     "unavailableInExpoGo": "PURCHASES ONLY WORK IN A COMPILED BUILD",
     "upgradeRow": "Premium",
-    "wordListFull": "Your notebook is {{count}}/{{limit}} full"
+    "wordListFull": "Your notebook is {{count}}/{{limit}} full",
+    "benefitsSectionTitle": "WHAT PREMIUM ADDS"
   },
   "reminders": {
     "settingsLabel": "Reminders",

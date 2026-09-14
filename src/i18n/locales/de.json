@@ -719,13 +719,31 @@
     "socialProof_one": "{{count}} GESCHICHTE · A1 BIS C2",
     "socialProof_other": "{{count}} GESCHICHTEN · A1 BIS C2",
     "benefits": {
-      "studioAudio": "Studiovertonung für 63 Geschichten — jedes Wort beim Lesen hervorgehoben",
-      "secondLanguagePair": "Schalte ein zweites Sprachpaar frei -- lies auch in einer anderen Sprache",
-      "unlimitedWords": "Unbegrenzt Wörter speichern — kein Limit im Wortheft",
-      "spacedRepetition": "Verteilte Wiederholung: Jedes Wort kommt zurück, bevor du es vergisst",
-      "aiSentences": "{{premium}} KI-Satzübersetzungen pro Tag (kostenlos: {{free}})",
-      "aiSentencesGeneric": "Ein deutlich höheres Tageskontingent für KI-Satzübersetzungen",
-      "stats": "Statistiken zu Lesezeit, Serie und Niveau"
+      "studioAudio": {
+        "title": "Hören und verstehen",
+        "body": "Studio-Vertonung, bei der das gesprochene Wort mitlaufend hervorgehoben wird."
+      },
+      "aiSentences": {
+        "title": "Jeden Satz knacken",
+        "body": "{{premium}} KI-Satzübersetzungen pro Tag — {{free}} in der Gratisversion.",
+        "bodyGeneric": "KI-Satzübersetzung genau dort, wo es hakt — mit deutlich höherem Tageskontingent."
+      },
+      "unlimitedWords": {
+        "title": "Unbegrenzte Wortliste",
+        "body": "Keine Obergrenze für gespeicherte Wörter."
+      },
+      "spacedRepetition": {
+        "title": "Damit es bleibt",
+        "body": "Verteilte Wiederholung holt jedes Wort zurück, bevor du es vergisst."
+      },
+      "secondLanguagePair": {
+        "title": "Ein zweites Sprachpaar",
+        "body": "Öffne ein weiteres Paar und lies dieselben Bücher darin."
+      },
+      "stats": {
+        "title": "Fortschritt sehen",
+        "body": "Lesezeit, Serie und Niveau — vollständige Statistik."
+      }
     },
     "plan": {
       "annual": "Jährlich",
@@ -735,7 +753,9 @@
       "trialDays_one": "{{count}} Tag gratis",
       "trialDays_other": "{{count}} Tage gratis",
       "periodYear": "Jahr",
-      "periodMonth": "Monat"
+      "periodMonth": "Monat",
+      "savingsShort": "-{{percent}} %",
+      "pricePerMonth": "{{price}}/Mon."
     },
     "ctaTrial_one": "{{count}} Tag gratis testen",
     "ctaTrial_other": "{{count}} Tage gratis testen",
@@ -765,7 +785,8 @@
     "retryPackages": "Erneut versuchen",
     "unavailableInExpoGo": "KÄUFE FUNKTIONIEREN NUR IN EINEM KOMPILIERTEN BUILD",
     "upgradeRow": "Premium",
-    "wordListFull": "Dein Wortheft ist zu {{count}}/{{limit}} voll"
+    "wordListFull": "Dein Wortheft ist zu {{count}}/{{limit}} voll",
+    "benefitsSectionTitle": "WAS PREMIUM BRINGT"
   },
   "reminders": {
     "settingsLabel": "Erinnerungen",

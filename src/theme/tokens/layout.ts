@@ -123,3 +123,25 @@ export const tabBarIconSize = 26;
  * mockup'takinden gözle belirgin şekilde daha ferah.
  */
 export const tabBarContentHeight = 64;
+
+/**
+ * Paywall ölçüleri -- ÖLÇÜLDÜ (docs/reference/paywall1.jpeg,
+ * 1pt = 2.4046px):
+ *   kart/CTA genişliği 867 px -> 361 pt (ekran - 2x16)
+ *   CTA yüksekliği 121 px -> 50 pt
+ *   taç rozeti alanı 342x268 px -> ~142x111 pt
+ *   kapat ikonu 52 px -> 22 pt
+ *   radyo düğmesi 58 px -> 24 pt
+ *   rozet yüksekliği 37 px -> 16 pt
+ *   plan satırı gövdesi ~52 pt (rozetli satırda daha yüksek)
+ *   fayda ikon karesi 67x67 px -> 28x28 pt
+ */
+export const paywallMetrics = {
+  ctaHeight: 50,
+  crownSize: 132,
+  closeIcon: 22,
+  radioSize: 24,
+  badgeHeight: 16,
+  planRowHeight: 52,
+  benefitIcon: 28,
+} as const;

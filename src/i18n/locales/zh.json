@@ -719,13 +719,31 @@
     "socialProof_one": "{{count}} 个故事 · A1 到 C2",
     "socialProof_other": "{{count}} 个故事 · A1 到 C2",
     "benefits": {
-      "studioAudio": "63 个故事的录音棚朗读 — 读到哪个词就高亮哪个词",
-      "secondLanguagePair": "解锁第二个语言组合——也能用另一种语言阅读",
-      "unlimitedWords": "单词收藏不限量 — 生词本没有上限",
-      "spacedRepetition": "间隔复习：每个词都在你忘记之前再次出现",
-      "aiSentences": "每天 {{premium}} 次 AI 整句翻译（免费版 {{free}} 次）",
-      "aiSentencesGeneric": "AI 整句翻译的每日额度大幅提升",
-      "stats": "阅读时长、连续天数与等级统计"
+      "studioAudio": {
+        "title": "边听边懂",
+        "body": "录音室朗读，正在读到的词会同步高亮。"
+      },
+      "aiSentences": {
+        "title": "读懂卡住的句子",
+        "body": "每天 {{premium}} 次 AI 句子翻译 —— 免费版 {{free}} 次。",
+        "bodyGeneric": "在卡住的句子上使用 AI 翻译，每日额度大幅提高。"
+      },
+      "unlimitedWords": {
+        "title": "生词本无上限",
+        "body": "保存多少词都可以。"
+      },
+      "spacedRepetition": {
+        "title": "让单词留下来",
+        "body": "间隔重复会在你忘记之前把每个词再次带到面前。"
+      },
+      "secondLanguagePair": {
+        "title": "第二个语言组合",
+        "body": "再开一个母语–目标语组合，用它读同样的书。"
+      },
+      "stats": {
+        "title": "看见进步",
+        "body": "阅读时长、连续天数和等级，统计一应俱全。"
+      }
     },
     "plan": {
       "annual": "包年",
@@ -735,7 +753,9 @@
       "trialDays_one": "免费 {{count}} 天",
       "trialDays_other": "免费 {{count}} 天",
       "periodYear": "年",
-      "periodMonth": "月"
+      "periodMonth": "月",
+      "savingsShort": "-{{percent}}%",
+      "pricePerMonth": "{{price}}/月"
     },
     "ctaTrial_one": "免费试用 {{count}} 天",
     "ctaTrial_other": "免费试用 {{count}} 天",
@@ -765,7 +785,8 @@
     "retryPackages": "再试一次",
     "unavailableInExpoGo": "购买功能仅在编译版本中可用",
     "upgradeRow": "会员",
-    "wordListFull": "生词本已用 {{count}}/{{limit}}"
+    "wordListFull": "生词本已用 {{count}}/{{limit}}",
+    "benefitsSectionTitle": "PREMIUM 带来什么"
   },
   "reminders": {
     "settingsLabel": "提醒",
