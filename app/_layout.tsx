@@ -21,6 +21,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useTheme } from "@/theme/useTheme";
 import { AuthGate, OnboardingGate } from "@/features/onboarding";
 import { ReminderScheduler } from "@/features/reminders";
+import { LanguagePairUiSync } from "@/features/languagePair";
 import { ErrorBoundary, ToastHost } from "@/components/ui";
 import { initAnalytics } from "@/lib/analytics";
 import { configurePurchases } from "@/lib/revenuecat";
@@ -96,6 +97,7 @@ export default function RootLayout() {
                     yapmıyor.
                   */}
                   <ReminderScheduler />
+                  <LanguagePairUiSync />
                 </OnboardingGate>
               </AuthGate>
             </ErrorBoundary>
