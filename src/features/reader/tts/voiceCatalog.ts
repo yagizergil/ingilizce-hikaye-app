@@ -1,7 +1,15 @@
 import * as Speech from "expo-speech";
 
 /**
- * Cihazdaki İngilizce seslerin kataloğu ve kalite sıralaması.
+ * Cihazdaki seslerin DİLE GÖRE kataloğu ve kalite sıralaması.
+ *
+ * ÇÖZÜLEN HATA (2026-09-15): bu modül yalnızca "en" (İngilizce) önekiyle
+ * başlayan sesleri listeliyordu -- uygulama tek dil çiftiyle (İngilizce
+ * içerik) başladığı dönemden kalma bir varsayımdı. On hedef dille
+ * çalışan bugünkü uygulamada Almanca bir kitapta kelime telaffuzu
+ * isteyen kullanıcı, cihazda kurulu Almanca sesler varken bile İngilizce
+ * bir sesle karşılaşıyordu. Artık her fonksiyon bir `languagePrefix`
+ * (BCP-47'nin dil kısmı, örn. "de") alıyor.
  *
  * NEDEN KİMLİĞE BAKIYORUZ, `quality` ALANINA DEĞİL
  * ------------------------------------------------
@@ -110,10 +118,12 @@ export function displayName(voice: Speech.Voice): string {
   return voice.language;
 }
 
-/** Kalite, sonra aksan, sonra ada göre sıralar. */
-export function rankVoices(voices: Speech.Voice[]): CatalogVoice[] {
+/** Kalite, sonra aksan, sonra ada göre sıralar -- yalnızca istenen dil. */
+export function rankVoices(voices: Speech.Voice[], languagePrefix: string): CatalogVoice[] {
   return voices
-    .filter((voice) => voice.language.startsWith("en") && !isNoveltyVoice(voice.identifier))
+    .filter(
+      (voice) => voice.language.startsWith(languagePrefix) && !isNoveltyVoice(voice.identifier),
+    )
     .map((voice) => ({
       identifier: voice.identifier,
       name: displayName(voice),
@@ -161,20 +171,31 @@ export function resolveVoice(
 }
 
 /**
- * Cihaz sorgusu oturum başına bir kez yapılıyor.
+ * Cihaz sorgusu DİL BAŞINA bir kez yapılıyor.
  *
- * `getAvailableVoicesAsync()` gerçek bir sistem çağrısı ve sonuç oturum
- * içinde değişmiyor. Kullanıcı Ayarlar'dan yeni bir ses indirirse
- * uygulamayı yeniden açması gerekiyor — bunu kabul ediyoruz; alternatifi
- * her konuşma başlangıcında sistem sorgusu yapmak.
+ * `getAvailableVoicesAsync()` gerçek bir sistem çağrısı ve TÜM dillerin
+ * seslerini tek seferde döndürüyor -- bu yüzden ham liste de dil başına
+ * ayrı ayrı değil, BİR KEZ önbelleğe alınıp her dil isteğinde yeniden
+ * filtreleniyor (`rankVoices`). Kullanıcı Ayarlar'dan yeni bir ses
+ * indirirse uygulamayı yeniden açması gerekiyor — bunu kabul ediyoruz;
+ * alternatifi her konuşma başlangıcında sistem sorgusu yapmak.
  */
-let cachedCatalog: Promise<CatalogVoice[]> | null = null;
+let cachedRawVoices: Promise<Speech.Voice[]> | null = null;
+const rankedCatalogByLanguage = new Map<string, CatalogVoice[]>();
 
-export function getVoiceCatalog(): Promise<CatalogVoice[]> {
-  if (!cachedCatalog) {
-    cachedCatalog = Speech.getAvailableVoicesAsync()
-      .then(rankVoices)
-      .catch(() => []);
+function getRawVoices(): Promise<Speech.Voice[]> {
+  if (!cachedRawVoices) {
+    cachedRawVoices = Speech.getAvailableVoicesAsync().catch(() => []);
   }
-  return cachedCatalog;
+  return cachedRawVoices;
+}
+
+export async function getVoiceCatalog(languagePrefix: string): Promise<CatalogVoice[]> {
+  const cached = rankedCatalogByLanguage.get(languagePrefix);
+  if (cached) return cached;
+
+  const raw = await getRawVoices();
+  const ranked = rankVoices(raw, languagePrefix);
+  rankedCatalogByLanguage.set(languagePrefix, ranked);
+  return ranked;
 }

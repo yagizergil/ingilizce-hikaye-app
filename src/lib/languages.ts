@@ -58,11 +58,31 @@ export interface LanguageInfo {
    * yerden değiştirilir.
    */
   popularity: number;
+  /**
+   * Kelime telaffuzu için BCP-47 ses kimliği (`expo-speech`'e verilen
+   * `language`).
+   *
+   * ÇÖZÜLEN HATA (2026-09-15): `WordSheet`'teki hoparlör her dilde
+   * `language: "en-US"` SABİT KODLANMIŞTI ve ses kataloğu (`voiceCatalog.ts`)
+   * yalnızca İngilizce sesleri listeliyordu -- yani Almanca ya da İtalyanca
+   * bir kitapta kelimeye dokunan kullanıcı, o kelimeyi İNGİLİZCE aksanla
+   * duyuyordu. Uygulama artık on hedef dilde çalışıyor (ADR-013) ve bu alan
+   * o zamandan kalma tek-dilli bir varsayımdı.
+   *
+   * Cihazın kendi sentezleyicisi (`expo-speech`) KULLANILMAYA DEVAM
+   * EDİYOR -- yeni bir ücretli servise geçmedik. Kelime telaffuzu ücretsiz
+   * kalacak kuralı (CLAUDE.md) bir motor değişikliği değil, doğru dil kodu
+   * gerektiriyordu: iOS/Android'in yerleşik sesleri zaten çoğu dilde
+   * yüksek kaliteli (Siri/Google Asistan'ın kullandığı sesler), sorun
+   * "düşük kalite" değil "yanlış dil"di.
+   */
+  ttsLocale: string;
 }
 
 export const LANGUAGES: readonly LanguageInfo[] = [
   {
     code: "en",
+    ttsLocale: "en-US",
     popularity: 1,
     flagCode: "gb",
     nameEn: "English",
@@ -73,6 +93,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "es",
+    ttsLocale: "es-ES",
     popularity: 2,
     flagCode: "es",
     nameEn: "Spanish",
@@ -83,6 +104,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "zh",
+    ttsLocale: "zh-CN",
     popularity: 3,
     flagCode: "cn",
     nameEn: "Chinese",
@@ -93,6 +115,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ar",
+    ttsLocale: "ar-SA",
     popularity: 5,
     flagCode: "sa",
     nameEn: "Arabic",
@@ -103,6 +126,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "fr",
+    ttsLocale: "fr-FR",
     popularity: 4,
     flagCode: "fr",
     nameEn: "French",
@@ -113,6 +137,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ru",
+    ttsLocale: "ru-RU",
     popularity: 6,
     flagCode: "ru",
     nameEn: "Russian",
@@ -123,6 +148,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "tr",
+    ttsLocale: "tr-TR",
     popularity: 10,
     flagCode: "tr",
     nameEn: "Turkish",
@@ -133,6 +159,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "de",
+    ttsLocale: "de-DE",
     popularity: 7,
     flagCode: "de",
     nameEn: "German",
@@ -143,6 +170,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "ja",
+    ttsLocale: "ja-JP",
     popularity: 8,
     flagCode: "jp",
     nameEn: "Japanese",
@@ -153,6 +181,7 @@ export const LANGUAGES: readonly LanguageInfo[] = [
   },
   {
     code: "it",
+    ttsLocale: "it-IT",
     popularity: 9,
     flagCode: "it",
     nameEn: "Italian",

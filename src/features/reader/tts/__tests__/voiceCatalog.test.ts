@@ -55,7 +55,7 @@ describe("rankVoices", () => {
   ];
 
   it("en iyi kaliteyi başa alır", () => {
-    expect(rankVoices(catalog)[0]?.tier).toBe("premium");
+    expect(rankVoices(catalog, "en")[0]?.tier).toBe("premium");
   });
 
   it("aynı kalite ve cinsiyette tanıdık aksanı öne alır", () => {
@@ -66,7 +66,7 @@ describe("rankVoices", () => {
       voice("com.apple.voice.enhanced.en-GB.Serena", "en-GB"),
       voice("com.apple.voice.enhanced.en-US.Ava", "en-US"),
     ];
-    expect(rankVoices(sameTierSameGender).map((entry) => entry.language)).toEqual([
+    expect(rankVoices(sameTierSameGender, "en").map((entry) => entry.language)).toEqual([
       "en-US",
       "en-GB",
       "en-AU",
@@ -80,7 +80,7 @@ describe("rankVoices", () => {
       voice("com.apple.voice.enhanced.en-US.Tom"),
       voice("com.apple.voice.enhanced.en-US.Ava"),
     ];
-    expect(rankVoices(sameTier)[0]?.name).toBe("Ava");
+    expect(rankVoices(sameTier, "en")[0]?.name).toBe("Ava");
   });
 
   it("kaliteyi cinsiyetin ÖNÜNDE tutar", () => {
@@ -89,22 +89,33 @@ describe("rankVoices", () => {
       voice("com.apple.voice.compact.en-US.Ava"),
       voice("com.apple.voice.premium.en-US.Tom"),
     ];
-    expect(rankVoices(mixed)[0]?.name).toBe("Tom");
+    expect(rankVoices(mixed, "en")[0]?.name).toBe("Tom");
   });
 
-  it("İngilizce olmayan sesleri eler", () => {
-    expect(rankVoices(catalog).some((entry) => entry.language.startsWith("tr"))).toBe(false);
+  it("istenen dil dışındaki sesleri eler", () => {
+    expect(rankVoices(catalog, "en").some((entry) => entry.language.startsWith("tr"))).toBe(false);
+  });
+
+  it("ÇÖZÜLEN HATA (2026-09-15): dil öneki değiştiğinde o dilin sesini döndürür", () => {
+    // Eskiden bu fonksiyon "en" ile SABİTLENMİŞTİ -- Almanca bir kitapta
+    // kelime telaffuzu isteyen kullanıcı, cihazda Türkçe ses kurulu
+    // olsa bile hiçbir zaman onu göremiyordu.
+    const turkish = rankVoices(catalog, "tr");
+    expect(turkish).toHaveLength(1);
+    expect(turkish[0]?.language).toBe("tr-TR");
   });
 
   it("şaka seslerini eler", () => {
     // Eski iOS'un "Bad News"/"Bells" sesleri hikâye okumak için
     // kullanılamaz; listede görünmeleri kullanıcıyı yanıltır.
     const withNovelty = [...catalog, voice("com.apple.speech.synthesis.voice.Bells")];
-    expect(rankVoices(withNovelty).some((entry) => entry.identifier.includes("Bells"))).toBe(false);
+    expect(rankVoices(withNovelty, "en").some((entry) => entry.identifier.includes("Bells"))).toBe(
+      false,
+    );
   });
 
   it("boş listede çökmez", () => {
-    expect(rankVoices([])).toEqual([]);
+    expect(rankVoices([], "en")).toEqual([]);
   });
 });
 
@@ -122,10 +133,10 @@ describe("displayName", () => {
 });
 
 describe("resolveVoice", () => {
-  const voices = rankVoices([
-    voice("com.apple.voice.compact.en-US.Samantha"),
-    voice("com.apple.voice.premium.en-US.Ava"),
-  ]);
+  const voices = rankVoices(
+    [voice("com.apple.voice.compact.en-US.Samantha"), voice("com.apple.voice.premium.en-US.Ava")],
+    "en",
+  );
 
   it("kullanıcının seçtiği sesi döndürür", () => {
     const chosen = resolveVoice(voices, "com.apple.voice.compact.en-US.Samantha");
@@ -149,12 +160,12 @@ describe("resolveVoice", () => {
 describe("hasHighQualityVoice", () => {
   it("yalnızca compact ses varken false döner", () => {
     // Bu durumda kullanıcıya indirme ipucu gösteriliyor.
-    const voices = rankVoices([voice("com.apple.voice.compact.en-US.Samantha")]);
+    const voices = rankVoices([voice("com.apple.voice.compact.en-US.Samantha")], "en");
     expect(hasHighQualityVoice(voices)).toBe(false);
   });
 
   it("gelişmiş ya da premium ses varken true döner", () => {
-    const voices = rankVoices([voice("com.apple.voice.enhanced.en-US.Ava")]);
+    const voices = rankVoices([voice("com.apple.voice.enhanced.en-US.Ava")], "en");
     expect(hasHighQualityVoice(voices)).toBe(true);
   });
 });

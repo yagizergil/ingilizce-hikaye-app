@@ -18,9 +18,11 @@ import { radius, spacing, monoType, readingType, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { LevelBadge, Skeleton } from "@/components/ui";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
-import { getVoiceIdentifier } from "@/features/reader/tts/englishVoice";
+import { getVoiceIdentifier } from "@/features/reader/tts/pronunciationVoice";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
 import { pairLemmaQueryKey, usePairLemmaLookup } from "@/features/reader/api/usePairLemmaLookup";
+import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { getLanguage } from "@/lib/languages";
 import { useGlobalLemmaLookup } from "@/features/reader/api/useGlobalLemmaLookup";
 import { useLiveWordTranslation } from "@/features/reader/api/useLiveWordTranslation";
 import { useSentenceTranslationQuery } from "@/features/reader/api/useSentenceTranslationQuery";
@@ -294,8 +296,7 @@ export function WordSheet({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mutation nesnesi bilerek dışarıda (her render'da yeniden çalışırdı)
   }, [word?.lemma]);
 
-  const liveBelongsToWord =
-    word !== null && liveTranslation.variables?.lemma === word.lemma;
+  const liveBelongsToWord = word !== null && liveTranslation.variables?.lemma === word.lemma;
 
   const liveEntry: BookLemmaEntry | undefined =
     liveTranslation.data && liveBelongsToWord
@@ -385,16 +386,33 @@ export function WordSheet({
     [word],
   );
 
+  /**
+   * Kelimenin GERÇEK dilinde okunacak locale.
+   *
+   * ÇÖZÜLEN HATA (2026-09-15): burada `language: "en-US"` SABİT
+   * KODLANMIŞTI -- Almanca ya da İtalyanca bir kitapta kelimeye dokunan
+   * kullanıcı, kelimeyi her zaman İngilizce aksanla duyuyordu. Kelimenin
+   * dili kitabın hedef dili, yani kullanıcının AKTİF dil çiftinin
+   * `targetLanguage`'ı; ana dili (arayüz dili) DEĞİL.
+   *
+   * Sorgu zaten 5 dakika taze kalıyor (`useActiveLanguagePairQuery`), yani
+   * her kelime kartında yeniden ağa gitmiyor.
+   */
+  const activePairQuery = useActiveLanguagePairQuery();
+  const ttsLocale = getLanguage(activePairQuery.data?.targetLanguage ?? "en")?.ttsLocale ?? "en-US";
+  const ttsLanguagePrefix = ttsLocale.split("-")[0] ?? "en";
+
   const handlePronounce = useCallback(() => {
     if (!word) return;
-    // Sesli okumayla AYNI sesi kullanıyor: kullanıcının seçimi tek yerde.
-    void getVoiceIdentifier(speechVoiceId).then((voice) => {
+    // Sözlük hoparlörü bölüm seslendirmesinden BAĞIMSIZ: o stüdyo
+    // kaydıyla yapılıyor (ADR-012), burası cihazın kendi sentezleyicisi.
+    void getVoiceIdentifier(speechVoiceId, ttsLanguagePrefix).then((voice) => {
       Speech.speak(word.surface, {
-        language: "en-US",
+        language: ttsLocale,
         ...(voice ? { voice } : {}),
       });
     });
-  }, [speechVoiceId, word]);
+  }, [speechVoiceId, word, ttsLocale, ttsLanguagePrefix]);
 
   // Stop any in-flight speech whenever the sheet closes -- either via the
   // user dismissing it (onDismiss) or the component unmounting outright
