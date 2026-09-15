@@ -1,6 +1,6 @@
 ---
 title: "Un Nuovo Inizio a Torino"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: it
 genres: [drama, everyday-life]

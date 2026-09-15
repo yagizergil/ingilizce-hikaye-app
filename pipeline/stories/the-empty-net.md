@@ -1,6 +1,6 @@
 ---
 title: The Empty Net
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [sports, drama]
 themes: [perseverance, family]

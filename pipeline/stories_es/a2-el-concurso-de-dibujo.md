@@ -1,6 +1,6 @@
 ---
 title: "El Dibujo de Marta"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: es
 genres: [everyday-life, drama]

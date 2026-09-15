@@ -64,7 +64,7 @@ like a real step up, not a longer A2 story.
 ```
 ---
 title: "<Turkish title>"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: tr
 genres: [<1-3 from: adventure, mystery, romance, comedy, drama, fantasy,

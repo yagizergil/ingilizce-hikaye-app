@@ -1,6 +1,6 @@
 ---
 title: "La Recette de Grand-Mère"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: fr
 genres: [drama, everyday-life]

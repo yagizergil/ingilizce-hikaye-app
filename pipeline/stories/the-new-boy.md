@@ -1,6 +1,6 @@
 ---
 title: The New Boy
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A1
 genres: [drama, slice-of-life]
 themes: [friendship, kindness]

@@ -1,6 +1,6 @@
 ---
 title: "兄と弟の試験"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: ja
 genres: [everyday-life, drama]

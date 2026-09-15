@@ -1,6 +1,6 @@
 ---
 title: The Yellow Van
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, family]
 themes: [family, change]

@@ -1,6 +1,6 @@
 ---
 title: "يوم ممطر في البيت"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: ar
 genres: [everyday-life, comedy]

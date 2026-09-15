@@ -1,6 +1,6 @@
 ---
 title: The Bar Across the Door
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [mystery, drama]
 themes: [courage, truth]

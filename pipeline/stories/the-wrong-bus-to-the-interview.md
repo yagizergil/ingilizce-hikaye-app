@@ -1,6 +1,6 @@
 ---
 title: The North Yard
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama]
 themes: [perseverance, chance]

@@ -1,6 +1,6 @@
 ---
 title: "لغز الكلاب المفقودة"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: ar
 genres: [mystery, everyday-life]

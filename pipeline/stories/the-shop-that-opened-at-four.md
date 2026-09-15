@@ -1,6 +1,6 @@
 ---
 title: The Card in the Window
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama, slice-of-life]
 themes: [ageing, friendship]

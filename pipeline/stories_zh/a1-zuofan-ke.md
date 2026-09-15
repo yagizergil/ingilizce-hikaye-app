@@ -1,6 +1,6 @@
 ---
 title: "做饭课的一天"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: zh
 genres: [comedy, everyday-life]

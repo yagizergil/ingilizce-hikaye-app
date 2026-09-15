@@ -1,6 +1,6 @@
 ---
 title: "Der seltsame Nachbar"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: de
 genres: [mystery, everyday-life]

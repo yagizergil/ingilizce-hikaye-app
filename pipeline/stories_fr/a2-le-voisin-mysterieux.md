@@ -1,6 +1,6 @@
 ---
 title: "Le voisin de la nuit"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: fr
 genres: [mystery, everyday-life]

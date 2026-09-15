@@ -46,7 +46,7 @@ conditional. Passive voice, complex relative clauses.
 ```
 ---
 title: "<Italian title>"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: it
 genres: [<1-3 from: adventure, mystery, romance, comedy, drama, fantasy,

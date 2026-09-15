@@ -1,6 +1,6 @@
 ---
 title: The Coach Who Stayed
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama, sports]
 themes: [loyalty, growing-up]

@@ -1,6 +1,6 @@
 ---
 title: "妈妈的生日惊喜"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: zh
 genres: [everyday-life, comedy]

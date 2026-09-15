@@ -1,6 +1,6 @@
 ---
 title: The White Cloud on the Mountain
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [adventure, drama]
 themes: [courage, nature]

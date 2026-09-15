@@ -1,6 +1,6 @@
 ---
 title: The Box with One Key
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [mystery, school]
 themes: [trust, friendship]

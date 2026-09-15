@@ -1,6 +1,6 @@
 ---
 title: "Yağmurlu Bir Gün"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: tr
 genres: [everyday-life, comedy]

@@ -1,6 +1,6 @@
 ---
 title: "Sandıktaki Mektup"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: tr
 genres: [drama, mystery, everyday-life]

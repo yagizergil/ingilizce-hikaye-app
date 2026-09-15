@@ -1,6 +1,6 @@
 ---
 title: "El Misterio de los Perros Perdidos"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: es
 genres: [mystery, drama]

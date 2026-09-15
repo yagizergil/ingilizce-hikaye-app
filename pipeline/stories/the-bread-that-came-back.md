@@ -1,6 +1,6 @@
 ---
 title: The Shelf in the Doorway
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama, slice-of-life]
 themes: [kindness, community]

@@ -1,6 +1,6 @@
 ---
 title: "Урок кулинарии"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: ru
 genres: [comedy, everyday-life]

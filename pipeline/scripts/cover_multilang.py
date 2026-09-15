@@ -73,7 +73,7 @@ def _display_font_for(lang: str) -> Path:
 
 
 def _mono_font_for(lang: str) -> Path:
-    # Yazar adı/seviye rozeti her zaman Latin (İngilizce Hikaye Stüdyosu,
+    # Yazar adı/seviye rozeti her zaman Latin (Lingo Studio,
     # "A1" gibi) -- CJK/Arapça font gerekmiyor, mevcut mono font yeterli.
     return _LATIN_MONO_FONT
 

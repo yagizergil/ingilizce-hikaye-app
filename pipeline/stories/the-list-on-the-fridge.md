@@ -1,6 +1,6 @@
 ---
 title: The Last Line of the List
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama, family]
 themes: [grief, memory]

@@ -1,6 +1,6 @@
 ---
 title: The Brown Wallet
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, slice-of-life]
 themes: [honesty, family]

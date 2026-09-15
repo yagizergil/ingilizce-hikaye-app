@@ -1,6 +1,6 @@
 ---
 title: "おばあちゃんの味"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: ja
 genres: [drama, everyday-life]

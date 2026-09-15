@@ -1,6 +1,6 @@
 ---
 title: "Der faire Preis"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: de
 genres: [everyday-life, drama]

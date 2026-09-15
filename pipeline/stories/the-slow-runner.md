@@ -1,6 +1,6 @@
 ---
 title: The Slow Runner
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [sports, drama]
 themes: [courage, self-belief]

@@ -64,7 +64,7 @@ before or after:
 ```
 ---
 title: "<French title>"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: fr
 genres: [<1-3 from: adventure, mystery, romance, comedy, drama, fantasy,

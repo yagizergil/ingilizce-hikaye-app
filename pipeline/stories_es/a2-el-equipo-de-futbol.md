@@ -1,6 +1,6 @@
 ---
 title: "Un Nuevo Equipo"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: es
 genres: [everyday-life, drama]

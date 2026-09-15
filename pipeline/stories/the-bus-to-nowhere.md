@@ -1,6 +1,6 @@
 ---
 title: The Bus to Nowhere
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, adventure]
 themes: [independence, trust]

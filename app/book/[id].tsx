@@ -233,10 +233,13 @@ export default function BookDetailScreen() {
           boş bir başlık bırakmak, eksikliği daha görünür yapardı. */}
       {book.description ? (
         <View style={styles.about}>
-          <Text style={[type.bookTitleMd, { color: theme.text.primary }]}>
-            {t("bookDetail.about")}
-          </Text>
-          <Text style={[type.aboutBody, { color: theme.text.secondary }]}>{book.description}</Text>
+          {/* BAŞLIK YOK -- referansta (referance3.jpeg) metnin üstünde
+              "Kitap hakkında" gibi bir etiket bulunmuyor. Metin zaten ne
+              olduğunu kendisi anlatıyor; başlık koymak ekranın en uzun
+              bloğunun önüne gereksiz bir katman ekliyordu. Renk de ikincil
+              değil BİRİNCİL: referansta bu paragraf ekranın okunacak asıl
+              içeriği, soluk bir yardımcı metin değil. */}
+          <Text style={[type.aboutBody, { color: theme.text.primary }]}>{book.description}</Text>
         </View>
       ) : null}
 

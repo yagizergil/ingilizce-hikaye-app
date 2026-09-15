@@ -1,6 +1,6 @@
 ---
 title: Six Days Before the Wedding
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [family, drama]
 themes: [family, tradition]

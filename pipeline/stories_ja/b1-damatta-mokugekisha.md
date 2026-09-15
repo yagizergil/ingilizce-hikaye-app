@@ -1,6 +1,6 @@
 ---
 title: "隣の部屋の声"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: ja
 genres: [drama, mystery, everyday-life]

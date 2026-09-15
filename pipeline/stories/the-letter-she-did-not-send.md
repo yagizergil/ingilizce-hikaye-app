@@ -1,6 +1,6 @@
 ---
 title: The Clock She Never Collected
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama]
 themes: [regret, second-chances]

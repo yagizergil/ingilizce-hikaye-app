@@ -1,6 +1,6 @@
 ---
 title: The Second Guitar
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, music]
 themes: [friendship, courage]

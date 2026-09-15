@@ -1,6 +1,6 @@
 ---
 title: "Le Mystère des Chiens Disparus"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: fr
 genres: [mystery, adventure, everyday-life]

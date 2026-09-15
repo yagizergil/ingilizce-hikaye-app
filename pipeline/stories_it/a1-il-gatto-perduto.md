@@ -1,6 +1,6 @@
 ---
 title: "Il Gatto di Sara"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: it
 genres: [everyday-life, adventure]

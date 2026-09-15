@@ -1,6 +1,6 @@
 ---
 title: The Cat by the Bread Shop
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, slice of life]
 themes: [kindness, community]

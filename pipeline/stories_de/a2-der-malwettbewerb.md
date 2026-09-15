@@ -1,6 +1,6 @@
 ---
 title: "Die Farben von Lena"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: de
 genres: [everyday-life, drama]

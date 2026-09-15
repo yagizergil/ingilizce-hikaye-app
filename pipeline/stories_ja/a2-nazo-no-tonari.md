@@ -1,6 +1,6 @@
 ---
 title: "隣の静かな部屋"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: ja
 genres: [mystery, everyday-life]

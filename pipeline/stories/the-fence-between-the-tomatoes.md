@@ -1,6 +1,6 @@
 ---
 title: The Fence Between the Tomatoes
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, comedy]
 themes: [neighbors, friendship]

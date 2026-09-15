@@ -1,6 +1,6 @@
 ---
 title: "新家的朋友"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: zh
 genres: [everyday-life, drama]

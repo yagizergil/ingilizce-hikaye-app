@@ -1,6 +1,6 @@
 ---
 title: Between Two and Eight
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama, adventure]
 themes: [problem-solving, community]

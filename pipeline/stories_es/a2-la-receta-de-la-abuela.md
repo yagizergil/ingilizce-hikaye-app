@@ -1,6 +1,6 @@
 ---
 title: "El pastel de la abuela"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: es
 genres: [drama, everyday-life]

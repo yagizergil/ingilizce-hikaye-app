@@ -1,6 +1,6 @@
 ---
 title: "سر الطابق الرابع"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: ar
 genres: [mystery, drama, everyday-life]

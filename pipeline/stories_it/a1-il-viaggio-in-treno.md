@@ -1,6 +1,6 @@
 ---
 title: "Il Viaggio di Anna"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: it
 genres: [everyday-life, drama]

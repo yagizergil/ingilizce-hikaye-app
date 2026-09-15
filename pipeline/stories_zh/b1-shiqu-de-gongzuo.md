@@ -1,6 +1,6 @@
 ---
 title: "留下的决定"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: zh
 genres: [drama, everyday-life]

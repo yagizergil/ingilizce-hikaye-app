@@ -1,6 +1,6 @@
 ---
 title: "Mutfakta Kaos"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: tr
 genres: [comedy, everyday-life]

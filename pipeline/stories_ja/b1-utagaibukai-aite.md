@@ -1,6 +1,6 @@
 ---
 title: "ひだまり食堂の秘密"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: ja
 genres: [drama, everyday-life]

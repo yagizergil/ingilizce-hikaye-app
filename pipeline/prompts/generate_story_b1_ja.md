@@ -60,7 +60,7 @@ Japanese — not a translation. Roughly twice as long as the A2 prompt.
 ```
 ---
 title: "<Japanese title>"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: ja
 genres: [<1-3 from: adventure, mystery, romance, comedy, drama, fantasy,

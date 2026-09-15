@@ -55,7 +55,7 @@ translation.
 ```
 ---
 title: "<Russian title>"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: ru
 genres: [<1-3 from: adventure, mystery, romance, comedy, drama, fantasy,

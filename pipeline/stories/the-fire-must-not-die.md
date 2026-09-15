@@ -1,6 +1,6 @@
 ---
 title: The Fire Must Not Die
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, family]
 themes: [work, courage]

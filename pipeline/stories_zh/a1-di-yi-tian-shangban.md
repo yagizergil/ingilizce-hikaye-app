@@ -1,6 +1,6 @@
 ---
 title: "面包店的第一天"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: zh
 genres: [everyday-life, drama]

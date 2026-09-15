@@ -1,6 +1,6 @@
 ---
 title: "Новый город"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: ru
 genres: [drama, everyday-life]

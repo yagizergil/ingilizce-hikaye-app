@@ -1,6 +1,6 @@
 ---
 title: "Le Bruit dans l'Escalier"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: fr
 genres: [mystery, drama, thought]

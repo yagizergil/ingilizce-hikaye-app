@@ -1,6 +1,6 @@
 ---
 title: "小雨的画"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: zh
 genres: [drama, everyday-life]

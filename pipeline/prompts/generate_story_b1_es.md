@@ -70,7 +70,7 @@ feel like a real step up, not a longer A2 story.
 ```
 ---
 title: "<Spanish title>"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: es
 genres: [<1-3 from: adventure, mystery, romance, comedy, drama, fantasy,

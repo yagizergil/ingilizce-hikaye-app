@@ -1,6 +1,6 @@
 ---
 title: The Dog and the Night Train
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [adventure, drama]
 themes: [family, courage]

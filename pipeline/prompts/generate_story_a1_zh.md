@@ -61,7 +61,7 @@ before or after:
 ```
 ---
 title: "<Chinese title>"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: zh
 genres: [<1-3 from: adventure, mystery, romance, comedy, drama, fantasy,

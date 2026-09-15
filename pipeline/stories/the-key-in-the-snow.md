@@ -1,6 +1,6 @@
 ---
 title: The Key in the Snow
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, mystery]
 themes: [family, responsibility]

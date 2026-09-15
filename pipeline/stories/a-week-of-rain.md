@@ -1,6 +1,6 @@
 ---
 title: Seven Weeks of Blue Sky
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama]
 themes: [patience, nature]

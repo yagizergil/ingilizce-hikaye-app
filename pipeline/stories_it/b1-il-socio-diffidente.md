@@ -1,6 +1,6 @@
 ---
 title: "Il Sapore della Verità"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: it
 genres: [drama, mystery, everyday-life]

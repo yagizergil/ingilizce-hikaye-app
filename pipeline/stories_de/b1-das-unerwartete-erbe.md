@@ -1,6 +1,6 @@
 ---
 title: "Ein Brief aus einer anderen Zeit"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: de
 genres: [drama, mystery, everyday-life]

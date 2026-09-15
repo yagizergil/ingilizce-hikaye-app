@@ -1,6 +1,6 @@
 ---
 title: Room Twelve
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, comedy]
 themes: [independence, communication]

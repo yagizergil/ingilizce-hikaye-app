@@ -178,7 +178,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 PIPELINE_ROOT = Path(__file__).resolve().parent.parent
-AUTHOR = "İngilizce Hikaye Stüdyosu"
+AUTHOR = "Lingo Studio"
 MODEL = "claude-sonnet-5"
 MAX_TOKENS = 16000
 MAX_ATTEMPTS = 3

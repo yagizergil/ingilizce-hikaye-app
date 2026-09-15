@@ -1,6 +1,6 @@
 ---
 title: The Bag on Bus 42
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, mystery]
 themes: [trust, city life]

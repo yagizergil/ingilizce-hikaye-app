@@ -1,6 +1,6 @@
 ---
 title: "Тайна квартиры номер три"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: ru
 genres: [mystery, everyday-life]

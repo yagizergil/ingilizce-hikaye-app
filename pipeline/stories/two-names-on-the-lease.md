@@ -1,6 +1,6 @@
 ---
 title: The Third Tenant
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama, comedy]
 themes: [conflict, friendship]

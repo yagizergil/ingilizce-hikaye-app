@@ -1,6 +1,6 @@
 ---
 title: The Room Above the Shop
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [mystery, drama]
 themes: [memory, identity]

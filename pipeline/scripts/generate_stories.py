@@ -57,7 +57,7 @@ STORIES_DIR = PIPELINE_ROOT / "stories"
 REJECTED_DIR = PIPELINE_ROOT / "work" / "rejected"
 
 #: Hikâyelerin künyesindeki yazar adı — mevcut 38 A2 hikâyesiyle aynı.
-AUTHOR = "İngilizce Hikaye Stüdyosu"
+AUTHOR = "Lingo Studio"
 
 #: Varsayılan model. Katalog bu ürünün çekirdek varlığı; hikâye kalitesi
 #: doğrudan ürün kalitesi demek. `--model claude-sonnet-5` ile daha ucuz

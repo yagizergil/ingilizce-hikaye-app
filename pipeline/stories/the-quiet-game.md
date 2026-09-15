@@ -1,6 +1,6 @@
 ---
 title: The Quiet Game
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, sports]
 themes: [family, patience]

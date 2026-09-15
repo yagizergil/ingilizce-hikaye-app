@@ -119,7 +119,7 @@ NELER VAR
 - Koyu tema, yazı tipi ve punto ayarı
 
 Klasik eserler telif hakkı sona ermiş, herkesin serbestçe kullanabileceği
-kaynaklardan alınmıştır. Seviyeli hikâyeler İngilizce Hikaye Stüdyosu
+kaynaklardan alınmıştır. Seviyeli hikâyeler Lingo Studio
 tarafından bu uygulama için yazılmıştır.
 ```
 

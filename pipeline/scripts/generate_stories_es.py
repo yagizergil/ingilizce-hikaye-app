@@ -52,7 +52,7 @@ STORIES_DIR = PIPELINE_ROOT / "stories_es"
 REJECTED_DIR = PIPELINE_ROOT / "work" / "rejected_es"
 ELELEX_CSV = PIPELINE_ROOT / "data" / "elelex-vocabulary-profile-es-1.0.csv"
 
-AUTHOR = "İngilizce Hikaye Stüdyosu"
+AUTHOR = "Lingo Studio"
 
 #: Sonnet 5 -- A1 kelime dağarcığı zaten çok kısıtlı, Opus'un
 #: yaratıcılık avantajı burada gerekmiyor (bkz. araştırma raporu §3.3

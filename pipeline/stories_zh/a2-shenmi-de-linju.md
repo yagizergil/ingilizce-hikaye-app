@@ -1,6 +1,6 @@
 ---
 title: "邻居的秘密"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: zh
 genres: [mystery, everyday-life, comedy]

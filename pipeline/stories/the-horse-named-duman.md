@@ -1,6 +1,6 @@
 ---
 title: The Horse Named Duman
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, family]
 themes: [loyalty, growing up]

@@ -1,6 +1,6 @@
 ---
 title: "Die Überraschung für Mama"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: de
 genres: [everyday-life, comedy]

@@ -1,6 +1,6 @@
 ---
 title: "هدية قبل السفر"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: ar
 genres: [everyday-life, drama]

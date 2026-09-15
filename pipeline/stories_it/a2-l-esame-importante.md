@@ -1,6 +1,6 @@
 ---
 title: "L'Esame di Marco"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: it
 genres: [everyday-life, drama]

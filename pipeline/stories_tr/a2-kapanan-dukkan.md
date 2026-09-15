@@ -1,6 +1,6 @@
 ---
 title: "Mahallenin Bakkalı"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: tr
 genres: [everyday-life, drama]

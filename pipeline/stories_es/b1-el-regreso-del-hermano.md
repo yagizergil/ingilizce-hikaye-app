@@ -1,6 +1,6 @@
 ---
 title: "El hijo que volvió"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: es
 genres: [drama, everyday-life]

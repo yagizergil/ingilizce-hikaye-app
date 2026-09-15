@@ -1,6 +1,6 @@
 ---
 title: "楼里的秘密"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: zh
 genres: [mystery, drama, everyday-life]

@@ -1,6 +1,6 @@
 ---
 title: "Une Fête Pour Maman"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A1
 target_language: fr
 genres: [everyday-life, comedy]

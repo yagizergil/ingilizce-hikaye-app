@@ -1,6 +1,6 @@
 ---
 title: "La Valigia sul Letto"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: it
 genres: [drama, everyday-life]

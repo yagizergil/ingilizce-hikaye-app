@@ -1,6 +1,6 @@
 ---
 title: "Une Recette de Confiance"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: fr
 genres: [drama, everyday-life]

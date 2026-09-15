@@ -1,6 +1,6 @@
 ---
 title: The Wrong Sugar
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [comedy, family]
 themes: [food, family]

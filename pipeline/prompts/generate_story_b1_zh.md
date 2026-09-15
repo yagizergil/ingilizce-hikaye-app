@@ -53,7 +53,7 @@ literary/classical vocabulary (成语 beyond the most common).
 ```
 ---
 title: "<Chinese title>"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: zh
 genres: [<1-3 from: adventure, mystery, romance, comedy, drama, fantasy,

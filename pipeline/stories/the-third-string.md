@@ -1,6 +1,6 @@
 ---
 title: The Third String
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, music]
 themes: [courage, family]

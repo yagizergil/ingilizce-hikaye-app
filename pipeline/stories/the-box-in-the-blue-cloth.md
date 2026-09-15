@@ -1,6 +1,6 @@
 ---
 title: The Box in the Blue Cloth
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [drama, mystery]
 themes: [family, promise]

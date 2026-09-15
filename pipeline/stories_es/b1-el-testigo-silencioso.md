@@ -1,6 +1,6 @@
 ---
 title: "El vecino del quinto piso"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: es
 genres: [mystery, drama, everyday-life]

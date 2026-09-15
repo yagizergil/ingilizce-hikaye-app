@@ -1,6 +1,6 @@
 ---
 title: "Le Nouveau Numéro Sept"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: fr
 genres: [everyday-life, drama]

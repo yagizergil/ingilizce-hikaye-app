@@ -1,6 +1,6 @@
 ---
 title: The Red Stick
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: A2
 genres: [sport, drama]
 themes: [friendship, teamwork]

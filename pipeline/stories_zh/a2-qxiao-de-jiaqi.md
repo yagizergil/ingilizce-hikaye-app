@@ -1,6 +1,6 @@
 ---
 title: "突然改变的假期"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: A2
 target_language: zh
 genres: [everyday-life, drama]

@@ -1,6 +1,6 @@
 ---
 title: One Name Only
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 level: B2
 target_level: B2
 genres: [drama]

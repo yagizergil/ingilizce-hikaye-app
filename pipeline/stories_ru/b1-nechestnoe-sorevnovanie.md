@@ -1,6 +1,6 @@
 ---
 title: "Честная партия"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: ru
 genres: [drama, mystery, thought]

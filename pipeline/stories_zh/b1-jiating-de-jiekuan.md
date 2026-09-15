@@ -1,6 +1,6 @@
 ---
 title: "十年前的钱"
-author: "İngilizce Hikaye Stüdyosu"
+author: "Lingo Studio"
 target_level: B1
 target_language: zh
 genres: [drama, everyday-life]

@@ -1,6 +1,6 @@
 ---
 title: The Last Seat on the Left
-author: İngilizce Hikaye Stüdyosu
+author: Lingo Studio
 target_level: B1
 genres: [drama]
 themes: [kindness, loneliness]
