@@ -64,17 +64,40 @@ def cover_url_for(gutenberg_id: int) -> str:
 
 
 def to_cover_jpeg(raw: bytes) -> bytes:
+    """Kapağı 600x900 ÇERÇEVEYİ DOLDURACAK şekilde ölçekler.
+
+    ÖNCE SIĞDIRMA (thumbnail + ortalama) yapılıyordu ve sonuç ekranda
+    küçücük kalıyordu: Gutenberg kapakları yalnızca ~200x300 piksel
+    (ölçüldü), 600x900 tuvalin ortasına konduğunda etrafında kocaman bir
+    boşluk oluşuyordu. Uygulamadaki kapak kutusu 132x194 pt ve çerçevenin
+    TAMAMINI dolduruyor -- yer tutucu kapaklar da öyle. İki farklı
+    doluluk aynı rafta yan yana durunca fark hemen görünüyordu.
+
+    Şimdi kısa kenar hedefe eşitlenip uzun kenardan ORTADAN kırpılıyor.
+    Kitap kapakları zaten ~1.5 oranında olduğu için kırpılan miktar
+    küçük; kırpma ortadan yapıldığı için de başlık genellikle korunuyor.
+    """
     image = Image.open(io.BytesIO(raw)).convert("RGB")
-    # Kapak oranını korumak için kırpma değil, sığdırma + zemin: kırpmak
-    # başlığı kesebiliyor.
-    image.thumbnail(TARGET_SIZE, Image.LANCZOS)
-    canvas = Image.new("RGB", TARGET_SIZE, (18, 21, 28))
-    canvas.paste(
-        image,
-        ((TARGET_SIZE[0] - image.width) // 2, (TARGET_SIZE[1] - image.height) // 2),
-    )
+
+    target_ratio = TARGET_SIZE[0] / TARGET_SIZE[1]
+    source_ratio = image.width / image.height
+
+    if source_ratio > target_ratio:
+        # Kaynak daha geniş: yüksekliği eşitle, yanlardan kırp.
+        new_height = TARGET_SIZE[1]
+        new_width = max(TARGET_SIZE[0], round(image.width * new_height / image.height))
+    else:
+        # Kaynak daha dar: genişliği eşitle, üstten/alttan kırp.
+        new_width = TARGET_SIZE[0]
+        new_height = max(TARGET_SIZE[1], round(image.height * new_width / image.width))
+
+    image = image.resize((new_width, new_height), Image.LANCZOS)
+    left = (new_width - TARGET_SIZE[0]) // 2
+    top = (new_height - TARGET_SIZE[1]) // 2
+    image = image.crop((left, top, left + TARGET_SIZE[0], top + TARGET_SIZE[1]))
+
     buffer = io.BytesIO()
-    canvas.save(buffer, "JPEG", quality=JPEG_QUALITY, optimize=True)
+    image.save(buffer, "JPEG", quality=JPEG_QUALITY, optimize=True)
     return buffer.getvalue()
 
 

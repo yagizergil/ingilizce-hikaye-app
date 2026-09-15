@@ -34,6 +34,10 @@ from generate_stories_multi import LANGS, CamelNlpAdapter, StanzaNlpAdapter  # n
 from src.db import connect, copy_rows  # noqa: E402
 from src.settings import load_settings  # noqa: E402
 
+#: spaCy sert siniri 1.000.000 karakter; 200.000 hem guvenli hem bellek
+#: acisindan makul (~100.000 karakter basina ~1 GB gecici bellek).
+NLP_CHUNK_CHARS = 200_000
+
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
@@ -97,17 +101,39 @@ def main() -> None:
                         (str(book_id),),
                     )
                     paragraphs = [row[0] for row in cur.fetchall()]
-                full_text = "\n\n".join(paragraphs)
-                doc = nlp(full_text)
+                # METİN PARÇALANARAK İŞLENİYOR.
+                #
+                # spaCy tek çağrıda 1.000.000 karakterle sınırlı ve uzun
+                # klasikler bunu kolayca aşıyor (ölçüldü: Almanca rafında
+                # 2.173.236 karakterlik bir kitap). Tek dev çağrı
+                # `ValueError [E088]` ile düşüyor ve o kitabın sözlüğü hiç
+                # üretilmiyordu -- yani kitap okuma ekranında AÇILMIYORDU.
+                # Paragraf sınırında bölmek lemmatizasyonu etkilemiyor:
+                # lemma kararı cümle içinde veriliyor, paragraflar arasında
+                # taşınan bir bağlam zaten yok.
                 counts: Counter[str] = Counter()
-                for token in doc:
-                    if not token.is_alpha:
-                        continue
-                    if token.pos_.upper() in ("PROPN", "NOUN_PROP"):
-                        continue
-                    lemma = (token.lemma_ or token.text).lower().strip()
-                    if lemma:
-                        counts[lemma] += 1
+                chunk_texts: list[str] = []
+                current: list[str] = []
+                current_len = 0
+                for paragraph in paragraphs:
+                    if current and current_len + len(paragraph) > NLP_CHUNK_CHARS:
+                        chunk_texts.append("\n\n".join(current))
+                        current, current_len = [], 0
+                    current.append(paragraph)
+                    current_len += len(paragraph)
+                if current:
+                    chunk_texts.append("\n\n".join(current))
+
+                for chunk_text in chunk_texts:
+                    doc = nlp(chunk_text)
+                    for token in doc:
+                        if not token.is_alpha:
+                            continue
+                        if token.pos_.upper() in ("PROPN", "NOUN_PROP"):
+                            continue
+                        lemma = (token.lemma_ or token.text).lower().strip()
+                        if lemma:
+                            counts[lemma] += 1
 
                 rows = [(str(book_id), lemma, count) for lemma, count in counts.items()]
                 with conn.transaction():
