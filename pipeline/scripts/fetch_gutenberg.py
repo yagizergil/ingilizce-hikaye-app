@@ -52,13 +52,43 @@ def _strip_boilerplate(raw: str) -> str:
     return raw[start:end].strip()
 
 
+#: Gutendex bir gönüllü hizmeti ve sayfa 2+ isteklerinde 503 döndürebiliyor.
+#: ÖLÇÜLDÜ (2026-09-15): fr/de/it için ikinci sayfa isteği 503 ile düştü ve
+#: betik yeniden denemeden çıktı -- yani "70 kitap indir" komutu sessizce
+#: 30'da kaldı. Geri çekilmeli yeniden deneme, bu tek hatayı kalıcı bir
+#: içerik eksiğine dönüşmekten çıkarıyor.
+CATALOG_RETRIES = 4
+CATALOG_BACKOFF_SECONDS = 3
+
+
+def _get_with_retry(client: httpx.Client, url: str) -> httpx.Response:
+    last_error: Exception | None = None
+    for attempt in range(CATALOG_RETRIES):
+        try:
+            resp = client.get(url)
+            # 5xx geçici; 4xx kalıcı, onu yeniden denemek anlamsız.
+            if resp.status_code >= 500:
+                raise httpx.HTTPStatusError(
+                    f"HTTP {resp.status_code}", request=resp.request, response=resp
+                )
+            resp.raise_for_status()
+            return resp
+        except (httpx.HTTPStatusError, httpx.TransportError) as error:
+            last_error = error
+            if attempt == CATALOG_RETRIES - 1:
+                break
+            wait = CATALOG_BACKOFF_SECONDS * (2**attempt)
+            print(f"    [yeniden dene {attempt + 1}/{CATALOG_RETRIES}] {wait} sn sonra: {error}")
+            time.sleep(wait)
+    raise RuntimeError(f"katalog alınamadı: {url}") from last_error
+
+
 def fetch_catalog(lang: str, count: int) -> list[dict]:
     books: list[dict] = []
     url = f"https://gutendex.com/books/?languages={lang}&author_year_end=1955"
     with httpx.Client(headers=HEADERS, follow_redirects=True, timeout=30.0) as client:
         while url and len(books) < count:
-            resp = client.get(url)
-            resp.raise_for_status()
+            resp = _get_with_retry(client, url)
             data = resp.json()
             for item in data["results"]:
                 txt_url = item["formats"].get("text/plain; charset=utf-8") or item["formats"].get(
