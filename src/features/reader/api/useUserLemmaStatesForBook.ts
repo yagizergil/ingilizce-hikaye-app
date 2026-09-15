@@ -71,8 +71,23 @@ async function fetchUnknownLemmas(lemmas: string[]): Promise<Set<string>> {
 export function useUserLemmaStatesForBook(lemmas: string[]) {
   return useQuery({
     queryKey: readerQueryKeys.userLemmaStates(lemmas),
-    queryFn: () => fetchUnknownLemmas(lemmas),
-    enabled: lemmas.length > 0,
+    /**
+     * BOŞ LİSTE SORGUYU DEVRE DIŞI BIRAKMIYOR, BOŞ KÜME DÖNDÜRÜYOR.
+     *
+     * ÇÖZÜLEN HATA (2026-09-15): burada `enabled: lemmas.length > 0`
+     * vardı. Kelime sözlüğü olmayan bir kitapta (`book_lemmas` boş --
+     * yeni eklenen 120 klasiğin hepsi böyleydi) sorgu hiç çalışmıyor,
+     * `data` sonsuza kadar `undefined` kalıyordu. `ReaderScreen` ise
+     * `!unknownLemmas` iken yükleme ekranını gösteriyor, yani okuyucu
+     * ASLA açılmıyordu -- kullanıcı "oku"ya basıyor ve dönen bir
+     * göstergeden başka bir şey görmüyordu.
+     *
+     * Sözlüğü olmayan kitap okunabilir olmalı: kelimeye dokunma zaten
+     * genel sözlüğe ve AI'a düşüyor (bkz. WordSheet'in üç katmanlı
+     * araması). Eksik sözlük bir eksiklik, okumayı engelleyen bir hata
+     * değil.
+     */
+    queryFn: () => (lemmas.length === 0 ? Promise.resolve(new Set<string>()) : fetchUnknownLemmas(lemmas)),
     staleTime: 60 * 1000,
   });
 }
