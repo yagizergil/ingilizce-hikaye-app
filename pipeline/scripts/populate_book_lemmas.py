@@ -34,9 +34,21 @@ from generate_stories_multi import LANGS, CamelNlpAdapter, StanzaNlpAdapter  # n
 from src.db import connect, copy_rows  # noqa: E402
 from src.settings import load_settings  # noqa: E402
 
-#: spaCy sert siniri 1.000.000 karakter; 200.000 hem guvenli hem bellek
-#: acisindan makul (~100.000 karakter basina ~1 GB gecici bellek).
-NLP_CHUNK_CHARS = 200_000
+#: Parça boyutu DİLE GÖRE değişiyor çünkü sınırı koyan araç değişiyor.
+#:
+#: spaCy'nin sınırı 1.000.000 KARAKTER (bellek kaynaklı); 200.000 güvenli
+#: bir pay bırakıyor. SudachiPy (Japonca) ise 49.149 BAYT ile sınırlı ve
+#: Japonca karakterler UTF-8'de 3 bayt tutuyor -- yani 200.000 karakterlik
+#: bir parça 600 KB olur ve tokenizer düşer (ölçüldü: 346.008 baytlık bir
+#: parçada `SudachiError: Input is too long`). 12.000 karakter ~36 KB,
+#: sınırın rahat altında.
+NLP_CHUNK_CHARS_DEFAULT = 200_000
+NLP_CHUNK_CHARS_BY_LANG = {
+    "ja": 12_000,
+    # Çince de karakter başına 3 bayt ama Stanza'nın böyle bir bayt
+    # sınırı yok; yine de büyük parçalar belleği zorluyor.
+    "zh": 50_000,
+}
 
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -79,7 +91,12 @@ def main() -> None:
         for lang in langs:
             with conn.cursor() as cur:
                 cur.execute(
-                    "select id from public.books where target_language = %s and status = 'published'",
+                    # needs_review de dahil: klasikler yayina alinmadan
+                    # ONCE sozlukleri uretilmeli, cunku yayin kapisi
+                    # (publish_vetted.py) okunabilirligi sart kosuyor ve
+                    # sozluksuz kitap okuma ekraninda acilmiyor.
+                    "select id from public.books where target_language = %s"
+                    " and status in ('published', 'needs_review')",
                     (lang,),
                 )
                 book_ids = [row[0] for row in cur.fetchall()]
@@ -111,12 +128,13 @@ def main() -> None:
                 # Paragraf sınırında bölmek lemmatizasyonu etkilemiyor:
                 # lemma kararı cümle içinde veriliyor, paragraflar arasında
                 # taşınan bir bağlam zaten yok.
+                chunk_limit = NLP_CHUNK_CHARS_BY_LANG.get(lang, NLP_CHUNK_CHARS_DEFAULT)
                 counts: Counter[str] = Counter()
                 chunk_texts: list[str] = []
                 current: list[str] = []
                 current_len = 0
                 for paragraph in paragraphs:
-                    if current and current_len + len(paragraph) > NLP_CHUNK_CHARS:
+                    if current and current_len + len(paragraph) > chunk_limit:
                         chunk_texts.append("\n\n".join(current))
                         current, current_len = [], 0
                     current.append(paragraph)

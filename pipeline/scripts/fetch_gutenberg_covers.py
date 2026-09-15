@@ -56,6 +56,9 @@ JPEG_QUALITY = 88
 #: üretilenler 3 KB'ın altında.
 MIN_COVER_BYTES = 6000
 
+#: Kapak görseli her değiştiğinde ARTIRILIR (bkz. `upload`).
+COVER_VERSION = 2
+
 LANGUAGES = ["de", "es", "fr", "it", "ja", "ru", "zh", "en"]
 
 
@@ -114,7 +117,13 @@ def upload(settings, slug: str, data: bytes) -> str:
         timeout=60.0,
     )
     response.raise_for_status()
-    return f"{settings.supabase_url}/storage/v1/object/public/{BUCKET}/{slug}.jpg"
+    # SÜRÜM PARAMETRESİ ZORUNLU: aynı adrese yeniden yükleme yapıldığında
+    # hem Supabase CDN'i hem de cihazdaki `expo-image` önbelleği ESKİ
+    # görseli sunmaya devam ediyor (ölçüldü: kapaklar düzeltildiği hâlde
+    # telefonda eski, siyah bantlı hâli görünüyordu). URL'yi değiştirmek
+    # her iki önbelleği de atlatıyor; içerik değişmediyse aynı sürüm
+    # kalıyor, yani gereksiz indirme olmuyor.
+    return f"{settings.supabase_url}/storage/v1/object/public/{BUCKET}/{slug}.jpg?v={COVER_VERSION}"
 
 
 def main() -> None:
