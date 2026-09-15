@@ -190,6 +190,15 @@ def main() -> None:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", required=True)
+    # Klasikler `needs_review` ile yayınlanıyor (bkz. publish_classics.py);
+    # kapakları da o aşamada üretilebilmeli, yayına alınmayı beklemeden --
+    # yoksa "kapaksız kitabı yayına al, sonra kapak üret" gibi ters bir
+    # sıra çıkıyor ve arada kapaksız kitap canlıda görünüyor.
+    parser.add_argument(
+        "--status",
+        default="published",
+        help="Hangi durumdaki kitaplara kapak üretilsin (published | needs_review)",
+    )
     args = parser.parse_args()
 
     settings = load_settings()
@@ -201,9 +210,9 @@ def main() -> None:
                 """
                 select id, slug, title, author, cefr_level, target_language
                 from public.books
-                where target_language = any(%s) and status = 'published' and cover_url is null
+                where target_language = any(%s) and status = %s and cover_url is null
                 """,
-                (langs,),
+                (langs, args.status),
             )
             rows = cur.fetchall()
 
