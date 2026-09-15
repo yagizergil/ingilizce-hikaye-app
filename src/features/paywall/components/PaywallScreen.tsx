@@ -15,7 +15,6 @@ import { Button, LoadingState } from "@/components/ui";
 
 import { useOfferingsQuery } from "@/features/paywall/api/useOfferingsQuery";
 import { usePaywallFactsQuery } from "@/features/paywall/api/usePaywallFactsQuery";
-import { subscriptionQueryKeys } from "@/features/paywall/api/useSubscriptionQuery";
 import { waitForServerPremium } from "@/features/paywall/api/waitForServerPremium";
 import { PaywallBenefits } from "@/features/paywall/components/PaywallBenefits";
 import { PaywallLegal } from "@/features/paywall/components/PaywallLegal";
@@ -144,8 +143,28 @@ export function PaywallScreen({
     onClose();
   }, [onClose, options.length, selected, source]);
 
+  /**
+   * Premium AÇILDIKTAN SONRA HER ŞEYİN yenilenmesi gerekiyor -- yalnızca
+   * abonelik durumunun değil.
+   *
+   * ÇÖZÜLEN HATA (2026-09-15): burada yalnızca `subscriptionQueryKeys.all`
+   * invalidate ediliyordu. Ama premium'a bağlı başka sorgular AYRI query
+   * key'ler kullanıyor -- `bookAudioAccessKeys` ("Dinle" düğmesinin
+   * görünürlüğü), `wordQuotaQueryKey` (kelime çevirisi rozeti), cümle
+   * çevirisi kotası. Bunlar kendi `staleTime`'ları dolana kadar (bazıları
+   * 60 saniye) ESKİ "ücretsiz" durumu göstermeye devam ediyordu: kullanıcı
+   * paywall'dan satın alıp kitap detayına döndüğünde "Dinle" düğmesi
+   * HÂLÂ görünmüyordu -- ki bu tam olarak ADR-012'nin "erişim yoksa
+   * düğme hiç görünmez" kuralı yüzünden fark edilmesi zor bir sessiz
+   * hataydı: kullanıcı arıza mı yoksa satın almanın işlemediğini mi
+   * düşüneceğini bilemezdi.
+   *
+   * Parametresiz `invalidateQueries()` TÜM önbelleği geçersiz kılıyor.
+   * Maliyeti kabul edilebilir: bu yalnızca satın alma/geri yükleme
+   * BAŞARILI olduğunda, oturum başına birkaç kez çalışan bir olay.
+   */
   const refreshStatus = useCallback(() => {
-    void queryClient.invalidateQueries({ queryKey: subscriptionQueryKeys.all });
+    void queryClient.invalidateQueries();
   }, [queryClient]);
 
   const handlePurchase = useCallback(async () => {
