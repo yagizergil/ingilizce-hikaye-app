@@ -19,7 +19,7 @@ import { useSetLanguagePairMutation } from "@/features/languagePair/api/useSetLa
 import type { LanguageInfo } from "@/lib/languages";
 import type { OwnedLanguagePair } from "@/features/languagePair/api/useActiveLanguagePairQuery";
 
-type Phase = "list" | "native" | "target";
+type Phase = "list" | "native" | "target" | "history";
 
 interface ManageLanguagePairsScreenProps {
   onClose: () => void;
@@ -194,6 +194,47 @@ export function ManageLanguagePairsScreen({
     submitPair(pendingNative, targetLanguage, needsRtlRestart);
   };
 
+  if (phase === "history") {
+    return (
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.bg.primary }]}
+        edges={["top"]}
+      >
+        <View style={styles.topbar}>
+          <Pressable
+            onPress={() => setPhase("list")}
+            accessibilityRole="button"
+            accessibilityLabel={t("common.back")}
+            hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
+          >
+            <Ionicons name="close" size={22} color={theme.text.primary} />
+          </Pressable>
+        </View>
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={[type.display, { color: theme.text.primary }]}>
+            {t("languagePair.historyPairs")}
+          </Text>
+
+          {setPair.isPending ? (
+            <LoadingState />
+          ) : (
+            <View style={styles.list}>
+              {historyPairs.map((pair) => (
+                <PairRow
+                  key={`history-${pair.nativeLanguage}-${pair.targetLanguage}`}
+                  native={pair.nativeLanguage}
+                  target={pair.targetLanguage}
+                  active={false}
+                  onPress={() => handleSelectHistoryPair(pair)}
+                />
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   if (phase === "native" || phase === "target") {
     const options = phase === "native" ? LANGUAGES : targetOptionsForNewNative;
     return (
@@ -334,20 +375,24 @@ export function ManageLanguagePairsScreen({
 
             {historyPairs.length > 0 ? (
               <View style={styles.section}>
-                <Text style={[monoType.label, { color: theme.text.secondary }]}>
-                  {t("languagePair.historyPairs")}
-                </Text>
-                <View style={styles.list}>
-                  {historyPairs.map((pair) => (
-                    <PairRow
-                      key={`history-${pair.nativeLanguage}-${pair.targetLanguage}`}
-                      native={pair.nativeLanguage}
-                      target={pair.targetLanguage}
-                      active={false}
-                      onPress={() => handleSelectHistoryPair(pair)}
-                    />
-                  ))}
-                </View>
+                <Pressable
+                  onPress={() => setPhase("history")}
+                  accessibilityRole="button"
+                  style={({ pressed }) => [
+                    styles.row,
+                    { borderColor: theme.border.hairline, opacity: pressed ? 0.6 : 1 },
+                  ]}
+                >
+                  <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+                    {t("languagePair.historyPairs")}
+                  </Text>
+                  <View style={styles.rowLabel}>
+                    <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                      {historyPairs.length}
+                    </Text>
+                    <Ionicons name="chevron-forward" size={16} color={theme.text.secondary} />
+                  </View>
+                </Pressable>
               </View>
             ) : null}
           </>
