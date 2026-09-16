@@ -256,19 +256,44 @@ Deno.serve(async (req: Request) => {
 
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const { count, error: usageCountError } = await adminClient
-    .from("ai_usage")
-    .select("id", { count: "exact", head: true })
+  // ÇÖZÜLEN HATA (kullanıcı bulgusu, 2026-09-16): bu limit HER kullanıcıya
+  // -- premium dahil -- düz 30/gün uyguluyordu. Türkçe→İngilizce dışındaki
+  // HER dil çifti için bu fonksiyon artık "nadir bir 3. seviye fallback"
+  // değil, kelime çevirisinin TEK yolu (bkz. dosyanın en üstündeki
+  // genelleştirme notu ve WordSheet.tsx'teki `nativeIsTurkish` ayrımı) --
+  // yani bir Almanca/Fransızca/... okuyan premium kullanıcı, "sınırsız
+  // kelime çevirisi" vaadine rağmen günde 30 kelimeden sonra hiç karşılık
+  // alamıyordu. Ölçüldü: premium bir hesap tam 30 çağrıda tıkandı.
+  //
+  // Düzeltme: limit yalnızca ÜCRETSİZ katmana uygulanıyor. Zaten ücretsiz
+  // kullanıcı bu fonksiyona hiç ulaşmadan önce `consume_word_lookup()`
+  // (migration 038) günde 15 sözlük açılışında duruyor -- yani ücretsiz
+  // kullanıcı pratikte asla 30'a yaklaşamıyor, bu limit onun için sadece
+  // bir güvenlik payı. Premium'da tamamen kaldırılıyor.
+  const { data: entitlement } = await adminClient
+    .from("user_entitlements")
+    .select("tier, expires_at")
     .eq("user_id", user.id)
-    .eq("feature", "live_word_translation")
-    .gte("created_at", since);
+    .maybeSingle();
+  const isPremium =
+    entitlement?.tier === "premium" &&
+    (!entitlement.expires_at || new Date(entitlement.expires_at) > new Date());
 
-  if (usageCountError) {
-    return jsonResponse({ status: "unavailable", reason: "rate_limit_check_failed" }, 200);
-  }
-  if ((count ?? 0) >= DAILY_LIMIT) {
-    return jsonResponse({ status: "unavailable", reason: "rate_limited" }, 200);
+  if (!isPremium) {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count, error: usageCountError } = await adminClient
+      .from("ai_usage")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("feature", "live_word_translation")
+      .gte("created_at", since);
+
+    if (usageCountError) {
+      return jsonResponse({ status: "unavailable", reason: "rate_limit_check_failed" }, 200);
+    }
+    if ((count ?? 0) >= DAILY_LIMIT) {
+      return jsonResponse({ status: "unavailable", reason: "rate_limited" }, 200);
+    }
   }
 
   const lemma = body.lemma.trim().toLowerCase();
