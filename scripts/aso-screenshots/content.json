@@ -1,0 +1,1044 @@
+{
+  "tr": {
+    "lang": "tr",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "Kütüphane",
+      "tabVocabulary": "Kelimeler",
+      "tabProfile": "Ayarlar",
+      "statWords": "Kelime",
+      "statChapters": "Bölüm",
+      "statMinutes": "Dakika",
+      "continueAction": "Okumaya devam et",
+      "freeAlwaysNote": "TÜM KİTAPLAR HER ZAMAN ÜCRETSİZ KALIR",
+      "listenCta": "Dinle",
+      "saveCta": "Kaydet",
+      "pronounceCta": "Telaffuz et",
+      "dueToday": "Bugün",
+      "dueTomorrow": "Yarın",
+      "filterAll": "Tümü",
+      "filterDue": "Tekrar",
+      "filterKnown": "Öğrenildi",
+      "nativeTitle": "Hangi dili konuşuyorsun?",
+      "interfaceLanguageSection": "ARAYÜZ DİLİ",
+      "ctaSubscribe": "Premium'a geç",
+      "planAnnual": "Yıllık",
+      "planSavings": "%42 TASARRUF",
+      "trialCta": "7 gün ücretsiz dene",
+      "benefitAudio": "Dinlediğini anlama",
+      "benefitLookups": "Sınırsız kelime çevirisi",
+      "benefitSecondPair": "İkinci bir dil çifti",
+      "statMinutesLabel": "Dakika",
+      "posNoun": "İsim",
+      "posAdjective": "Sıfat",
+      "dueDays3": "3 gün",
+      "dueWeeks1": "1 hafta"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "umut",
+      "pos": "İsim",
+      "sentence": "Onun en yakın dostlarından biri bir tüccardı; talihsizlikler yüzünden zenginlikten yoksulluğa düşmüştü."
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "HİKÂYELERLE DİL ÖĞREN",
+        "headline": "Hikâye oku, dil öğren",
+        "sub": "Sevdiğin hikâyeyi oku; takıldığın kelimeye dokun, karşılığı anında gelsin.",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "Kütüphane",
+        "headline": "Dokun, anla",
+        "sub": "Bilmediğin kelimeye dokun, karşılığını hemen gör.",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "Kütüphane",
+        "headline": "Takıldığın cümleyi çöz",
+        "sub": "Takıldığın cümlede AI çevirisi, çok daha yüksek günlük kotayla.",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "TÜM KİTAPLAR HER ZAMAN ÜCRETSİZ KALIR",
+        "headline": "Seviyene göre",
+        "sub": "A1'den C2'ye, sana uygun hikâyeler.",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "Kelimeler",
+        "headline": "Aklında kalsın",
+        "sub": "Kaydettiğin kelimeler doğru zamanda karşına çıkar.",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "Dinlediğini anlama",
+        "sub": "Stüdyo kaydıyla seslendirilmiş hikâyeleri, okunan kelime vurgulanarak dinle.",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "ARAYÜZ DİLİ",
+        "headline": "Hangi dili konuşuyorsun?",
+        "sub": "Uygulama arayüzü ve kelime karşılıkları bu dilde gösterilecek.",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "TÜM KİTAPLAR HER ZAMAN ÜCRETSİZ KALIR",
+        "headline": "Okuduğun kelimeler aklında kalsın",
+        "sub": "Hikâyeler her zaman ücretsiz. Premium, öğrendiğini kalıcı kılar.",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "en": {
+    "lang": "en",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "Library",
+      "tabVocabulary": "Words",
+      "tabProfile": "Settings",
+      "statWords": "Words",
+      "statChapters": "Chapters",
+      "statMinutes": "Minutes",
+      "continueAction": "Continue reading",
+      "freeAlwaysNote": "EVERY BOOK STAYS FREE, ALWAYS",
+      "listenCta": "Listen",
+      "saveCta": "Save",
+      "pronounceCta": "Pronounce",
+      "dueToday": "Today",
+      "dueTomorrow": "Tomorrow",
+      "filterAll": "All",
+      "filterDue": "Due",
+      "filterKnown": "Known",
+      "nativeTitle": "What language do you speak?",
+      "interfaceLanguageSection": "INTERFACE LANGUAGE",
+      "ctaSubscribe": "Go Premium",
+      "planAnnual": "Yearly",
+      "planSavings": "SAVE 42%",
+      "trialCta": "Try free for 7 days",
+      "benefitAudio": "Listen and understand",
+      "benefitLookups": "Unlimited word translations",
+      "benefitSecondPair": "A second language pair",
+      "statMinutesLabel": "Minutes",
+      "posNoun": "Noun",
+      "posAdjective": "Adjective",
+      "dueDays3": "3 days",
+      "dueWeeks1": "1 weeks"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "hope",
+      "pos": "Noun",
+      "sentence": "One of his closest friends was a merchant who, through repeated misfortune, fell from wealth into poverty."
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "LEARN A LANGUAGE THROUGH STORIES",
+        "headline": "Read stories, learn a language",
+        "sub": "Read a story you enjoy — tap any word you don't know and see it instantly.",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "Library",
+        "headline": "Tap to understand",
+        "sub": "Tap an unfamiliar word and see its meaning right away.",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "Library",
+        "headline": "Unstick any sentence",
+        "sub": "AI sentence translation where you get stuck, with a much higher daily quota.",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "EVERY BOOK STAYS FREE, ALWAYS",
+        "headline": "At your level",
+        "sub": "Stories that fit you, from A1 to C2.",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "Words",
+        "headline": "Made to stick",
+        "sub": "Saved words come back at the right moment.",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "Listen and understand",
+        "sub": "Studio-recorded narration with the spoken word highlighted as you read.",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "INTERFACE LANGUAGE",
+        "headline": "What language do you speak?",
+        "sub": "The app and word translations will show in this language.",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "EVERY BOOK STAYS FREE, ALWAYS",
+        "headline": "Make the words you read stick",
+        "sub": "Stories are always free. Premium helps you keep what you learn.",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "de": {
+    "lang": "de",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "Bibliothek",
+      "tabVocabulary": "Wörter",
+      "tabProfile": "Einstellungen",
+      "statWords": "Wörter",
+      "statChapters": "Kapitel",
+      "statMinutes": "Minuten",
+      "continueAction": "Weiterlesen",
+      "freeAlwaysNote": "ALLE BÜCHER BLEIBEN IMMER KOSTENLOS",
+      "listenCta": "Anhören",
+      "saveCta": "Speichern",
+      "pronounceCta": "Aussprechen",
+      "dueToday": "Heute",
+      "dueTomorrow": "Morgen",
+      "filterAll": "Alle",
+      "filterDue": "Fällig",
+      "filterKnown": "Gelernt",
+      "nativeTitle": "Welche Sprache sprichst du?",
+      "interfaceLanguageSection": "OBERFLÄCHENSPRACHE",
+      "ctaSubscribe": "Premium holen",
+      "planAnnual": "Jährlich",
+      "planSavings": "42 % SPAREN",
+      "trialCta": "7 Tage gratis testen",
+      "benefitAudio": "Hören und verstehen",
+      "benefitLookups": "Unbegrenzte Wortübersetzungen",
+      "benefitSecondPair": "Ein zweites Sprachpaar",
+      "statMinutesLabel": "Minuten",
+      "posNoun": "Substantiv",
+      "posAdjective": "Adjektiv",
+      "dueDays3": "3 Tage",
+      "dueWeeks1": "1 Wochen"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "Hoffnung",
+      "pos": "Nomen",
+      "sentence": "Einer seiner engsten Freunde war ein Kaufmann, der durch wiederholtes Unglück vom Wohlstand in die Armut fiel."
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "MIT GESCHICHTEN SPRACHEN LERNEN",
+        "headline": "Geschichten lesen, Sprache lernen",
+        "sub": "Lies eine Geschichte, die dir gefällt — tippe auf jedes unbekannte Wort und sieh es sofort.",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "Bibliothek",
+        "headline": "Antippen, verstehen",
+        "sub": "Tippe ein unbekanntes Wort an und sieh sofort die Bedeutung.",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "Bibliothek",
+        "headline": "Jeden Satz knacken",
+        "sub": "KI-Satzübersetzung genau dort, wo es hakt — mit deutlich höherem Tageskontingent.",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "ALLE BÜCHER BLEIBEN IMMER KOSTENLOS",
+        "headline": "Auf deinem Niveau",
+        "sub": "Passende Geschichten von A1 bis C2.",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "Wörter",
+        "headline": "Bleibt hängen",
+        "sub": "Gespeicherte Wörter kommen im richtigen Moment zurück.",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "Hören und verstehen",
+        "sub": "Studio-Vertonung, bei der das gesprochene Wort mitlaufend hervorgehoben wird.",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "OBERFLÄCHENSPRACHE",
+        "headline": "Welche Sprache sprichst du?",
+        "sub": "Die App und die Wortübersetzungen werden in dieser Sprache angezeigt.",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "ALLE BÜCHER BLEIBEN IMMER KOSTENLOS",
+        "headline": "Damit die Wörter hängen bleiben",
+        "sub": "Geschichten sind immer kostenlos. Premium hilft dir, das Gelernte zu behalten.",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "fr": {
+    "lang": "fr",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "Bibliothèque",
+      "tabVocabulary": "Mots",
+      "tabProfile": "Réglages",
+      "statWords": "Mots",
+      "statChapters": "Chapitres",
+      "statMinutes": "Minutes",
+      "continueAction": "Continuer la lecture",
+      "freeAlwaysNote": "TOUS LES LIVRES RESTENT GRATUITS, POUR TOUJOURS",
+      "listenCta": "Écouter",
+      "saveCta": "Enregistrer",
+      "pronounceCta": "Prononcer",
+      "dueToday": "Aujourd'hui",
+      "dueTomorrow": "Demain",
+      "filterAll": "Tout",
+      "filterDue": "À réviser",
+      "filterKnown": "Sues",
+      "nativeTitle": "Quelle langue parles-tu ?",
+      "interfaceLanguageSection": "LANGUE DE L'INTERFACE",
+      "ctaSubscribe": "Passer à Premium",
+      "planAnnual": "Annuel",
+      "planSavings": "-42 %",
+      "trialCta": "7 jours offerts",
+      "benefitAudio": "Écouter et comprendre",
+      "benefitLookups": "Traductions de mots illimitées",
+      "benefitSecondPair": "Une deuxième paire de langues",
+      "statMinutesLabel": "Minutes",
+      "posNoun": "Nom",
+      "posAdjective": "Adjectif",
+      "dueDays3": "3 jours",
+      "dueWeeks1": "1 semaines"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "espoir",
+      "pos": "Nom",
+      "sentence": "L'un de ses amis les plus proches était un marchand qui, par une suite de malheurs, tomba de la richesse dans la pauvreté."
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "APPRENDRE UNE LANGUE PAR LES HISTOIRES",
+        "headline": "Lis des histoires, apprends une langue",
+        "sub": "Lis une histoire qui te plaît — touche un mot inconnu et vois-le aussitôt.",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "Bibliothèque",
+        "headline": "Touche, comprends",
+        "sub": "Touche un mot inconnu et vois son sens immédiatement.",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "Bibliothèque",
+        "headline": "Débloquer une phrase",
+        "sub": "Traduction IA là où tu bloques, avec un quota quotidien bien plus élevé.",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "TOUS LES LIVRES RESTENT GRATUITS, POUR TOUJOURS",
+        "headline": "À ton niveau",
+        "sub": "Des histoires adaptées, de A1 à C2.",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "Mots",
+        "headline": "Ça reste",
+        "sub": "Les mots enregistrés reviennent au bon moment.",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "Écouter et comprendre",
+        "sub": "Narration enregistrée en studio, le mot prononcé surligné au fil du texte.",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "LANGUE DE L'INTERFACE",
+        "headline": "Quelle langue parles-tu ?",
+        "sub": "L'application et les traductions de mots s'afficheront dans cette langue.",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "TOUS LES LIVRES RESTENT GRATUITS, POUR TOUJOURS",
+        "headline": "Retiens les mots que tu lis",
+        "sub": "Les histoires sont toujours gratuites. Premium t'aide à garder ce que tu apprends.",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "it": {
+    "lang": "it",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "Libreria",
+      "tabVocabulary": "Parole",
+      "tabProfile": "Impostazioni",
+      "statWords": "Parole",
+      "statChapters": "Capitoli",
+      "statMinutes": "Minuti",
+      "continueAction": "Continua a leggere",
+      "freeAlwaysNote": "TUTTI I LIBRI RESTANO GRATIS, PER SEMPRE",
+      "listenCta": "Ascolta",
+      "saveCta": "Salva",
+      "pronounceCta": "Pronuncia",
+      "dueToday": "Oggi",
+      "dueTomorrow": "Domani",
+      "filterAll": "Tutti",
+      "filterDue": "Da rivedere",
+      "filterKnown": "Imparate",
+      "nativeTitle": "Che lingua parli?",
+      "interfaceLanguageSection": "LINGUA DELL'INTERFACCIA",
+      "ctaSubscribe": "Passa a Premium",
+      "planAnnual": "Annuale",
+      "planSavings": "RISPARMIA 42%",
+      "trialCta": "Prova gratis per 7 giorni",
+      "benefitAudio": "Ascolta e capisci",
+      "benefitLookups": "Traduzioni di parole illimitate",
+      "benefitSecondPair": "Una seconda coppia di lingue",
+      "statMinutesLabel": "Minuti",
+      "posNoun": "Sostantivo",
+      "posAdjective": "Aggettivo",
+      "dueDays3": "3 giorni",
+      "dueWeeks1": "1 settimane"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "speranza",
+      "pos": "Sostantivo",
+      "sentence": "Uno dei suoi amici più cari era un mercante che, per una serie di disgrazie, cadde dalla ricchezza alla povertà."
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "IMPARA UNA LINGUA CON LE STORIE",
+        "headline": "Leggi storie, impara una lingua",
+        "sub": "Leggi una storia che ti piace — tocca una parola che non conosci e vedila subito.",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "Libreria",
+        "headline": "Tocca e capisci",
+        "sub": "Tocca una parola sconosciuta e vedine subito il significato.",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "Libreria",
+        "headline": "Sblocca ogni frase",
+        "sub": "Traduzione AI dove ti blocchi, con una quota giornaliera molto più alta.",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "TUTTI I LIBRI RESTANO GRATIS, PER SEMPRE",
+        "headline": "Al tuo livello",
+        "sub": "Storie adatte a te, dall'A1 al C2.",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "Parole",
+        "headline": "Resta impresso",
+        "sub": "Le parole salvate tornano al momento giusto.",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "Ascolta e capisci",
+        "sub": "Narrazione registrata in studio, con la parola pronunciata evidenziata.",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "LINGUA DELL'INTERFACCIA",
+        "headline": "Che lingua parli?",
+        "sub": "L'app e le traduzioni delle parole verranno mostrate in questa lingua.",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "TUTTI I LIBRI RESTANO GRATIS, PER SEMPRE",
+        "headline": "Fai restare le parole che leggi",
+        "sub": "Le storie sono sempre gratuite. Premium ti aiuta a non perdere quello che impari.",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "es": {
+    "lang": "es",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "Biblioteca",
+      "tabVocabulary": "Palabras",
+      "tabProfile": "Ajustes",
+      "statWords": "Palabras",
+      "statChapters": "Capítulos",
+      "statMinutes": "Minutos",
+      "continueAction": "Seguir leyendo",
+      "freeAlwaysNote": "TODOS LOS LIBROS SIGUEN SIENDO GRATIS, SIEMPRE",
+      "listenCta": "Escuchar",
+      "saveCta": "Guardar",
+      "pronounceCta": "Pronunciar",
+      "dueToday": "Hoy",
+      "dueTomorrow": "Mañana",
+      "filterAll": "Todo",
+      "filterDue": "Repaso",
+      "filterKnown": "Aprendidas",
+      "nativeTitle": "¿Qué idioma hablas?",
+      "interfaceLanguageSection": "IDIOMA DE LA INTERFAZ",
+      "ctaSubscribe": "Pasar a Premium",
+      "planAnnual": "Anual",
+      "planSavings": "AHORRA UN 42 %",
+      "trialCta": "Pruébalo gratis 7 días",
+      "benefitAudio": "Escucha y entiende",
+      "benefitLookups": "Traducciones de palabras sin límite",
+      "benefitSecondPair": "Un segundo par de idiomas",
+      "statMinutesLabel": "Minutos",
+      "posNoun": "Sustantivo",
+      "posAdjective": "Adjetivo",
+      "dueDays3": "3 días",
+      "dueWeeks1": "1 semanas"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "esperanza",
+      "pos": "Sustantivo",
+      "sentence": "Uno de sus amigos más íntimos era un comerciante que, por sucesivas desgracias, cayó de la riqueza a la pobreza."
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "APRENDE UN IDIOMA CON HISTORIAS",
+        "headline": "Lee historias, aprende un idioma",
+        "sub": "Lee una historia que te guste — toca cualquier palabra que no sepas y verás su significado al instante.",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "Biblioteca",
+        "headline": "Toca y entiende",
+        "sub": "Toca una palabra desconocida y ve su significado al momento.",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "Biblioteca",
+        "headline": "Desatasca cualquier frase",
+        "sub": "Traducción con IA justo donde te atascas, con una cuota diaria mucho mayor.",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "TODOS LOS LIBROS SIGUEN SIENDO GRATIS, SIEMPRE",
+        "headline": "A tu nivel",
+        "sub": "Historias a tu medida, de A1 a C2.",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "Palabras",
+        "headline": "Se te queda",
+        "sub": "Las palabras guardadas vuelven en el momento justo.",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "Escucha y entiende",
+        "sub": "Narración de estudio con la palabra hablada resaltada mientras lees.",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "IDIOMA DE LA INTERFAZ",
+        "headline": "¿Qué idioma hablas?",
+        "sub": "La app y las traducciones de palabras se mostrarán en este idioma.",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "TODOS LOS LIBROS SIGUEN SIENDO GRATIS, SIEMPRE",
+        "headline": "Que las palabras que lees se te queden",
+        "sub": "Las historias son siempre gratis. Premium te ayuda a retener lo que aprendes.",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "ru": {
+    "lang": "ru",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "Библиотека",
+      "tabVocabulary": "Слова",
+      "tabProfile": "Настройки",
+      "statWords": "Слова",
+      "statChapters": "Главы",
+      "statMinutes": "Минуты",
+      "continueAction": "Продолжить чтение",
+      "freeAlwaysNote": "ВСЕ КНИГИ ОСТАЮТСЯ БЕСПЛАТНЫМИ, ВСЕГДА",
+      "listenCta": "Слушать",
+      "saveCta": "Сохранить",
+      "pronounceCta": "Произнести",
+      "dueToday": "Сегодня",
+      "dueTomorrow": "Завтра",
+      "filterAll": "Все",
+      "filterDue": "К повтору",
+      "filterKnown": "Изучено",
+      "nativeTitle": "На каком языке вы говорите?",
+      "interfaceLanguageSection": "ЯЗЫК ИНТЕРФЕЙСА",
+      "ctaSubscribe": "Перейти на Премиум",
+      "planAnnual": "Годовая",
+      "planSavings": "ВЫГОДА 42 %",
+      "trialCta": "7 дня бесплатно",
+      "benefitAudio": "Слушай и понимай",
+      "benefitLookups": "Перевод слов без ограничений",
+      "benefitSecondPair": "Вторая языковая пара",
+      "statMinutesLabel": "Минуты",
+      "posNoun": "Существительное",
+      "posAdjective": "Прилагательное",
+      "dueDays3": "3 дн.",
+      "dueWeeks1": "1 нед."
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "надежда",
+      "pos": "Существительное",
+      "sentence": "Один из его самых близких друзей был купцом, который из-за череды несчастий обеднел, лишившись богатства."
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "УЧИТЕ ЯЗЫК ЧЕРЕЗ ИСТОРИИ",
+        "headline": "Читайте истории, учите язык",
+        "sub": "Читайте историю, которая вам нравится — коснитесь незнакомого слова и сразу увидите перевод.",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "Библиотека",
+        "headline": "Коснитесь и поймите",
+        "sub": "Коснитесь незнакомого слова и сразу увидите значение.",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "Библиотека",
+        "headline": "Разобрать любое предложение",
+        "sub": "ИИ-перевод там, где сложно, с гораздо большей дневной нормой.",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "ВСЕ КНИГИ ОСТАЮТСЯ БЕСПЛАТНЫМИ, ВСЕГДА",
+        "headline": "По вашему уровню",
+        "sub": "Подходящие истории от A1 до C2.",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "Слова",
+        "headline": "Чтобы запомнилось",
+        "sub": "Сохранённые слова вернутся в нужный момент.",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "Слушай и понимай",
+        "sub": "Студийная озвучка: произносимое слово подсвечивается по ходу чтения.",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "ЯЗЫК ИНТЕРФЕЙСА",
+        "headline": "На каком языке вы говорите?",
+        "sub": "Приложение и переводы слов будут показаны на этом языке.",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "ВСЕ КНИГИ ОСТАЮТСЯ БЕСПЛАТНЫМИ, ВСЕГДА",
+        "headline": "Пусть прочитанные слова останутся с вами",
+        "sub": "Истории всегда бесплатны. Премиум помогает удержать то, что вы выучили.",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "ar": {
+    "lang": "ar",
+    "dir": "rtl",
+    "chrome": {
+      "tabLibrary": "المكتبة",
+      "tabVocabulary": "الكلمات",
+      "tabProfile": "الإعدادات",
+      "statWords": "كلمة",
+      "statChapters": "فصل",
+      "statMinutes": "دقيقة",
+      "continueAction": "متابعة القراءة",
+      "freeAlwaysNote": "كل الكتب تبقى مجانية دائمًا",
+      "listenCta": "استمع",
+      "saveCta": "حفظ",
+      "pronounceCta": "استمع إلى النطق",
+      "dueToday": "اليوم",
+      "dueTomorrow": "غدًا",
+      "filterAll": "الكل",
+      "filterDue": "المستحقة",
+      "filterKnown": "معروفة",
+      "nativeTitle": "ما هي لغتك؟",
+      "interfaceLanguageSection": "لغة الواجهة",
+      "ctaSubscribe": "اشترك في بريميوم",
+      "planAnnual": "سنوي",
+      "planSavings": "وفّر 42%",
+      "trialCta": "جرّبه مجانًا 7 يوم",
+      "benefitAudio": "استمع وافهم",
+      "benefitLookups": "ترجمة كلمات بلا حدود",
+      "benefitSecondPair": "زوج لغات ثانٍ",
+      "statMinutesLabel": "دقيقة",
+      "posNoun": "اسم",
+      "posAdjective": "صفة",
+      "dueDays3": "بعد 3 يوم",
+      "dueWeeks1": "بعد 1 أسبوع"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "أمل",
+      "pos": "اسم",
+      "sentence": "كان أحد أعز أصدقائه تاجرًا سقط من الثراء إلى الفقر بسبب سلسلة من المحن."
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "تعلّم لغة من خلال القصص",
+        "headline": "اقرأ القصص، وتعلّم لغة",
+        "sub": "اقرأ قصة تحبها — والمس أي كلمة لا تعرفها لترى معناها فورًا.",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "المكتبة",
+        "headline": "المس لتفهم",
+        "sub": "المس كلمة لا تعرفها لترى معناها في الحال.",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "المكتبة",
+        "headline": "فكّ أي جملة",
+        "sub": "ترجمة بالذكاء الاصطناعي عند الجملة الصعبة، بحصة يومية أكبر بكثير.",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "كل الكتب تبقى مجانية دائمًا",
+        "headline": "على مستواك",
+        "sub": "قصص تناسبك، من A1 إلى C2.",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "الكلمات",
+        "headline": "لتبقى في ذاكرتك",
+        "sub": "الكلمات المحفوظة تعود إليك في الوقت المناسب.",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "استمع وافهم",
+        "sub": "تسجيل استوديو مع إبراز الكلمة المنطوقة أثناء القراءة.",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "لغة الواجهة",
+        "headline": "ما هي لغتك؟",
+        "sub": "سيظهر التطبيق وترجمات الكلمات بهذه اللغة.",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "كل الكتب تبقى مجانية دائمًا",
+        "headline": "اجعل ما تقرأه يبقى في ذاكرتك",
+        "sub": "القصص مجانية دائمًا. بريميوم يساعدك على الاحتفاظ بما تتعلّمه.",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "zh": {
+    "lang": "zh",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "书库",
+      "tabVocabulary": "单词",
+      "tabProfile": "设置",
+      "statWords": "词数",
+      "statChapters": "章数",
+      "statMinutes": "分钟",
+      "continueAction": "继续阅读",
+      "freeAlwaysNote": "所有书籍永远免费",
+      "listenCta": "收听",
+      "saveCta": "收藏",
+      "pronounceCta": "发音",
+      "dueToday": "今天",
+      "dueTomorrow": "明天",
+      "filterAll": "全部",
+      "filterDue": "待复习",
+      "filterKnown": "已掌握",
+      "nativeTitle": "你说什么语言？",
+      "interfaceLanguageSection": "界面语言",
+      "ctaSubscribe": "开通会员",
+      "planAnnual": "包年",
+      "planSavings": "省 42%",
+      "trialCta": "免费试用 7 天",
+      "benefitAudio": "边听边懂",
+      "benefitLookups": "单词翻译无限制",
+      "benefitSecondPair": "第二个语言组合",
+      "statMinutesLabel": "分钟",
+      "posNoun": "名词",
+      "posAdjective": "形容词",
+      "dueDays3": "3 天后",
+      "dueWeeks1": "1 周后"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "希望",
+      "pos": "名词",
+      "sentence": "他最亲密的朋友之一是一位商人,因屡遭不幸而从富有沦为贫穷。"
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "用故事学语言",
+        "headline": "读故事，学语言",
+        "sub": "读你喜欢的故事——点一下不认识的词，立刻看到意思。",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "书库",
+        "headline": "点一下就懂",
+        "sub": "点击不认识的词，立刻看到它的意思。",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "书库",
+        "headline": "读懂卡住的句子",
+        "sub": "在卡住的句子上使用 AI 翻译，每日额度大幅提高。",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "所有书籍永远免费",
+        "headline": "适合你的难度",
+        "sub": "从 A1 到 C2，都有适合你的故事。",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "单词",
+        "headline": "记得住",
+        "sub": "收藏的词会在合适的时候再次出现。",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "边听边懂",
+        "sub": "录音室朗读，正在读到的词会同步高亮。",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "界面语言",
+        "headline": "你说什么语言？",
+        "sub": "应用界面和词语翻译将以这种语言显示。",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "所有书籍永远免费",
+        "headline": "让读过的词真正记住",
+        "sub": "故事永远免费。会员帮你把学到的东西留下来。",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "ja": {
+    "lang": "ja",
+    "dir": "ltr",
+    "chrome": {
+      "tabLibrary": "ライブラリ",
+      "tabVocabulary": "単語",
+      "tabProfile": "設定",
+      "statWords": "語数",
+      "statChapters": "章数",
+      "statMinutes": "分",
+      "continueAction": "続きを読む",
+      "freeAlwaysNote": "すべての本は、これからもずっと無料",
+      "listenCta": "聴く",
+      "saveCta": "保存",
+      "pronounceCta": "発音を聞く",
+      "dueToday": "今日",
+      "dueTomorrow": "明日",
+      "filterAll": "すべて",
+      "filterDue": "復習",
+      "filterKnown": "習得済み",
+      "nativeTitle": "話す言語を選んでください",
+      "interfaceLanguageSection": "インターフェース言語",
+      "ctaSubscribe": "プレミアムにする",
+      "planAnnual": "年額",
+      "planSavings": "42% おトク",
+      "trialCta": "7 日間無料で試す",
+      "benefitAudio": "聴いて理解する",
+      "benefitLookups": "単語翻訳が無制限",
+      "benefitSecondPair": "2つ目の言語ペア",
+      "statMinutesLabel": "分",
+      "posNoun": "名詞",
+      "posAdjective": "形容詞",
+      "dueDays3": "3 日後",
+      "dueWeeks1": "1 週間後"
+    },
+    "sample": {
+      "word": "hope",
+      "gloss": "希望",
+      "pos": "名詞",
+      "sentence": "彼の最も親しい友人の一人は商人で、度重なる不運によって裕福な身から貧しさに落ちぶれた。"
+    },
+    "screens": [
+      {
+        "id": "hero",
+        "eyebrow": "物語で言語を学ぶ",
+        "headline": "物語を読んで、言語を学ぶ",
+        "sub": "好きな物語を読みましょう。わからない単語をタップすれば、意味がすぐに表示されます。",
+        "phone": "home"
+      },
+      {
+        "id": "tap-word",
+        "eyebrow": "ライブラリ",
+        "headline": "タップしてわかる",
+        "sub": "わからない単語をタップすると、すぐに意味が表示されます。",
+        "phone": "reader-word"
+      },
+      {
+        "id": "sentence-ai",
+        "eyebrow": "ライブラリ",
+        "headline": "詰まった文を解く",
+        "sub": "詰まった文でAI翻訳を、はるかに多い1日あたりの回数で。",
+        "phone": "reader-sentence"
+      },
+      {
+        "id": "free-library",
+        "eyebrow": "すべての本は、これからもずっと無料",
+        "headline": "あなたのレベルで",
+        "sub": "A1 から C2 まで、ぴったりの物語があります。",
+        "phone": "library"
+      },
+      {
+        "id": "remember",
+        "eyebrow": "単語",
+        "headline": "記憶に残る",
+        "sub": "保存した単語は、ちょうどよいタイミングでまた出てきます。",
+        "phone": "vocabulary"
+      },
+      {
+        "id": "studio-audio",
+        "headline": "聴いて理解する",
+        "sub": "スタジオ音声。読み上げ中の単語がその場でハイライトされます。",
+        "phone": "book-detail"
+      },
+      {
+        "id": "your-language",
+        "eyebrow": "インターフェース言語",
+        "headline": "話す言語を選んでください",
+        "sub": "アプリの表示と単語の意味はこの言語で表示されます。",
+        "phone": "language-picker"
+      },
+      {
+        "id": "premium",
+        "eyebrow": "すべての本は、これからもずっと無料",
+        "headline": "読んだ言葉を、記憶に残す",
+        "sub": "物語はいつでも無料。プレミアムは、覚えたことを定着させます。",
+        "phone": "paywall"
+      }
+    ]
+  },
+  "__languagePicker": [
+    {
+      "code": "en",
+      "flagCode": "gb",
+      "nativeName": "English"
+    },
+    {
+      "code": "es",
+      "flagCode": "es",
+      "nativeName": "Español"
+    },
+    {
+      "code": "zh",
+      "flagCode": "cn",
+      "nativeName": "中文"
+    },
+    {
+      "code": "fr",
+      "flagCode": "fr",
+      "nativeName": "Français"
+    },
+    {
+      "code": "ar",
+      "flagCode": "sa",
+      "nativeName": "العربية"
+    },
+    {
+      "code": "ru",
+      "flagCode": "ru",
+      "nativeName": "Русский"
+    },
+    {
+      "code": "de",
+      "flagCode": "de",
+      "nativeName": "Deutsch"
+    },
+    {
+      "code": "ja",
+      "flagCode": "jp",
+      "nativeName": "日本語"
+    },
+    {
+      "code": "it",
+      "flagCode": "it",
+      "nativeName": "Italiano"
+    },
+    {
+      "code": "tr",
+      "flagCode": "tr",
+      "nativeName": "Türkçe"
+    }
+  ]
+}

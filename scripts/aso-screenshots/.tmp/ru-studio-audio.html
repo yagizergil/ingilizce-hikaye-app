@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<title>ru-studio-audio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body{ margin:0; padding:0; direction:ltr; }
+  body{
+    width:1290px; height:2796px; background:#1F3A5F; color:#FAF8F4;
+    -webkit-font-smoothing:antialiased; overflow:hidden; position:relative;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  
+  *{box-sizing:border-box;}
+  .phone-body{ margin:0; width:390px; height:844px; overflow:hidden; background:#FAF8F4; color:#1E1C19;
+    -webkit-font-smoothing:antialiased; position:relative; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .reading{ font-family:'Literata', Georgia, serif; }
+  .status{ height:14px; }
+  [dir="rtl"] .phone-body{ direction:rtl; }
+
+  .canvas{ display:flex; flex-direction:column; align-items:center; width:100%; height:100%; padding:110px 90px 0; }
+  .eyebrow{ font-size:28px; letter-spacing:.14em; text-transform:uppercase; color:#A6572E; text-align:center; font-weight:600; direction:ltr; }
+  .headline{ font-family:'Fraunces', Georgia, serif; font-weight:700; font-size:76px; line-height:1.1;
+    letter-spacing:-.01em; text-align:center; margin:22px 0 0; max-width:1080px; text-wrap:balance; color:#FAF8F4; direction:ltr; }
+  .sub{ font-family:'Literata', Georgia, serif; font-size:34px; line-height:1.4; text-align:center;
+    color:#B9C9DC; margin:24px 0 0; max-width:920px; direction:ltr; }
+  .device{ margin-top:56px; position:relative; width:898px; height:1911px; border-radius:64px;
+    background:#0c0c0c; box-shadow:0 60px 120px rgba(0,0,0,.35); flex-shrink:0; }
+  .device .screen{ position:absolute; top:14px; left:14px;
+    width:390px; height:844px; border-radius:52px; overflow:hidden;
+    transform-origin:top left; transform: scale(2.23077); direction:ltr; }
+  .notch{ position:absolute; top:14px; left:50%; transform:translateX(-50%); width:120px; height:34px;
+    background:#0c0c0c; border-radius:20px; z-index:5; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    
+    <div class="headline">Слушай и понимай</div>
+    <div class="sub">Студийная озвучка: произносимое слово подсвечивается по ходу чтения.</div>
+    <div class="device">
+      <div class="notch"></div>
+      <div class="screen phone-body" dir="ltr">
+        
+  <div class="status"></div>
+  <div style="padding:14px 20px;"><span class="mono" style="font-size:11px;color:#8A8378;">← Библиотека</span></div>
+  <div style="display:grid;grid-template-columns:104px 1fr;gap:18px;padding:8px 20px 24px;">
+    <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/mary-shelley-frankenstein.jpg" style="width:104px;height:156px;object-fit:cover;display:block;" />
+    <div style="display:flex;flex-direction:column;justify-content:space-between;">
+      <div class="mono" style="font-size:10px;letter-spacing:.05em;border:1px solid #1E1C19;padding:2px 6px;align-self:flex-start;">C1</div>
+      <div class="title display" style="font-size:26px;font-weight:600;line-height:1.08;margin:10px 0 4px;letter-spacing:-.01em;">Frankenstein</div>
+      <div class="mono" style="font-size:12px;color:#8A8378;">Mary Shelley</div>
+    </div>
+  </div>
+  <div style="margin:0 20px 22px; padding:16px; background:#1F3A5F; border-radius:16px; display:flex; align-items:center; justify-content:space-between;">
+    <div>
+      <div class="mono" style="color:#FAF8F4; font-size:13px; letter-spacing:.04em;">Слушать — Chapter I</div>
+      <div class="mono" style="color:#8FB4DE; font-size:10px; margin-top:4px;">9:12</div>
+    </div>
+    <div style="width:36px;height:36px;border-radius:50%;background:#FAF8F4;display:flex;align-items:center;justify-content:center;color:#1F3A5F;font-size:14px;">▶</div>
+  </div>
+  <div style="padding:0 20px 12px;"><div class="display" style="font-size:18px;font-weight:600;">Bölümler</div></div>
+  <div style="padding:0 20px;">
+    
+      <div style="display:flex;align-items:baseline;gap:14px;padding:12px 0;border-bottom:1px solid #E7E2D8;">
+        <div class="mono" style="font-size:11px;color:#8A8378;width:20px;">01</div>
+        <div class="title display" style="font-size:15px;font-weight:500;flex:1;">Letter I</div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:14px;padding:12px 0;border-bottom:1px solid #E7E2D8;">
+        <div class="mono" style="font-size:11px;color:#8A8378;width:20px;">02</div>
+        <div class="title display" style="font-size:15px;font-weight:500;flex:1;">Letter II</div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:14px;padding:12px 0;border-bottom:1px solid #E7E2D8;">
+        <div class="mono" style="font-size:11px;color:#8A8378;width:20px;">03</div>
+        <div class="title display" style="font-size:15px;font-weight:500;flex:1;">Chapter I</div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:14px;padding:12px 0;border-bottom:1px solid #E7E2D8;">
+        <div class="mono" style="font-size:11px;color:#8A8378;width:20px;">04</div>
+        <div class="title display" style="font-size:15px;font-weight:500;flex:1;">Chapter II</div>
+      </div>
+  </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

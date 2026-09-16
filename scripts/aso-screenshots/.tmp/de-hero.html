@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<title>de-hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body{ margin:0; padding:0; direction:ltr; }
+  body{
+    width:1290px; height:2796px; background:#FAF8F4; color:#1E1C19;
+    -webkit-font-smoothing:antialiased; overflow:hidden; position:relative;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  
+  *{box-sizing:border-box;}
+  .phone-body{ margin:0; width:390px; height:844px; overflow:hidden; background:#FAF8F4; color:#1E1C19;
+    -webkit-font-smoothing:antialiased; position:relative; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .display{ font-family:'Fraunces', Georgia, serif; }
+  .reading{ font-family:'Literata', Georgia, serif; }
+  .status{ height:14px; }
+  [dir="rtl"] .phone-body{ direction:rtl; }
+
+  .canvas{ display:flex; flex-direction:column; align-items:center; width:100%; height:100%; padding:110px 90px 0; }
+  .eyebrow{ font-size:28px; letter-spacing:.14em; text-transform:uppercase; color:#A6572E; text-align:center; font-weight:600; direction:ltr; }
+  .headline{ font-family:'Fraunces', Georgia, serif; font-weight:700; font-size:76px; line-height:1.1;
+    letter-spacing:-.01em; text-align:center; margin:22px 0 0; max-width:1080px; text-wrap:balance; color:#1E1C19; direction:ltr; }
+  .sub{ font-family:'Literata', Georgia, serif; font-size:34px; line-height:1.4; text-align:center;
+    color:#8A8378; margin:24px 0 0; max-width:920px; direction:ltr; }
+  .device{ margin-top:56px; position:relative; width:898px; height:1911px; border-radius:64px;
+    background:#0c0c0c; box-shadow:0 60px 120px rgba(0,0,0,.35); flex-shrink:0; }
+  .device .screen{ position:absolute; top:14px; left:14px;
+    width:390px; height:844px; border-radius:52px; overflow:hidden;
+    transform-origin:top left; transform: scale(2.23077); direction:ltr; }
+  .notch{ position:absolute; top:14px; left:50%; transform:translateX(-50%); width:120px; height:34px;
+    background:#0c0c0c; border-radius:20px; z-index:5; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="eyebrow">MIT GESCHICHTEN SPRACHEN LERNEN</div>
+    <div class="headline">Geschichten lesen, Sprache lernen</div>
+    <div class="sub">Lies eine Geschichte, die dir gefällt — tippe auf jedes unbekannte Wort und sieh es sofort.</div>
+    <div class="device">
+      <div class="notch"></div>
+      <div class="screen phone-body" dir="ltr">
+        
+  <div class="status"></div>
+  <header style="padding:28px 20px 6px;">
+    <div class="eyebrow mono" style="font-size:11px;letter-spacing:.06em;color:#8A8378;text-transform:uppercase;">Bibliothek</div>
+    <h1 class="display" style="font-size:32px;font-weight:600;margin:8px 0 0;letter-spacing:-.01em;">Bibliothek</h1>
+  </header>
+  <div style="margin:24px 20px 0;display:grid;grid-template-columns:64px 1fr;gap:16px;padding-bottom:22px;border-bottom:1px solid #E7E2D8;">
+    <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/mary-shelley-frankenstein.jpg" style="width:64px;height:96px;object-fit:cover;display:block;" />
+    <div style="display:flex;flex-direction:column;justify-content:space-between;padding-top:2px;">
+      <div>
+        <div class="title display" style="font-size:20px;font-weight:600;line-height:1.15;margin:5px 0;">Frankenstein</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="flex:1;height:2px;background:#E7E2D8;position:relative;"><i style="position:absolute;inset:0;width:42%;background:#A6572E;display:block;"></i></div>
+        <div class="mono" style="font-size:11px;color:#A6572E;">%42</div>
+      </div>
+    </div>
+  </div>
+  
+    <div style="margin:0 20px;display:grid;grid-template-columns:52px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid #E7E2D8;">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/arthur-conan-doyle-the-adventures-of-sherlock-holmes.jpg" style="width:52px;height:78px;object-fit:cover;display:block;" />
+      <div>
+        <div class="title display" style="font-size:16px;font-weight:600;line-height:1.25;margin-bottom:4px;">The Adventures of Sherlock Holmes</div>
+        <div class="mono" style="font-size:10px;color:#8A8378;letter-spacing:.03em;">B1</div>
+      </div>
+    </div>
+    <div style="margin:0 20px;display:grid;grid-template-columns:52px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid #E7E2D8;">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/l-frank-baum-the-wonderful-wizard-of-oz.jpg" style="width:52px;height:78px;object-fit:cover;display:block;" />
+      <div>
+        <div class="title display" style="font-size:16px;font-weight:600;line-height:1.25;margin-bottom:4px;">The Wonderful Wizard of Oz</div>
+        <div class="mono" style="font-size:10px;color:#8A8378;letter-spacing:.03em;">B1</div>
+      </div>
+    </div>
+    <div style="margin:0 20px;display:grid;grid-template-columns:52px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid #E7E2D8;">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/jack-london-the-call-of-the-wild.jpg" style="width:52px;height:78px;object-fit:cover;display:block;" />
+      <div>
+        <div class="title display" style="font-size:16px;font-weight:600;line-height:1.25;margin-bottom:4px;">The Call of the Wild</div>
+        <div class="mono" style="font-size:10px;color:#8A8378;letter-spacing:.03em;">B2</div>
+      </div>
+    </div>
+    <div style="margin:0 20px;display:grid;grid-template-columns:52px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid #E7E2D8;">
+      <img src="https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/book-covers/oscar-wilde-childrens-stories.jpg" style="width:52px;height:78px;object-fit:cover;display:block;" />
+      <div>
+        <div class="title display" style="font-size:16px;font-weight:600;line-height:1.25;margin-bottom:4px;">Children&#39;s Stories</div>
+        <div class="mono" style="font-size:10px;color:#8A8378;letter-spacing:.03em;">B2</div>
+      </div>
+    </div>
+  <nav style="display:flex;justify-content:space-between;padding:16px 20px 26px;border-top:1px solid #E7E2D8;margin-top:4px;position:absolute;bottom:0;left:0;right:0;">
+    <div class="mono" style="font-size:10px;letter-spacing:.06em;color:#1E1C19;">Bibliothek</div>
+    <div class="mono" style="font-size:10px;letter-spacing:.06em;color:#8A8378;">Wörter</div>
+    <div class="mono" style="font-size:10px;letter-spacing:.06em;color:#8A8378;">Einstellungen</div>
+  </nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
