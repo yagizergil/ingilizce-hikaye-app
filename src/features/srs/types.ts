@@ -12,8 +12,10 @@ export interface SrsReviewCard extends SrsCardState {
   lemma: string;
   /** Kelimenin metinde göründüğü hali (çekimli olabilir). */
   surface: string;
-  /** Türkçe karşılık. Sözlükte yoksa null — kart yine gösterilir. */
-  trGloss: string | null;
+  /** Aktif dil çiftinin ana dilindeki karşılık (yalnızca Türkçe DEĞİL --
+   * bkz. `fetchLemmaGlossesBatch`). Sözlükte yoksa null — kart yine
+   * gösterilir. */
+  gloss: string | null;
   /** Kelimenin ilk kaydedildiği cümle. */
   contextText: string | null;
   /** Kelimenin kaydedildiği kitabın adı. */

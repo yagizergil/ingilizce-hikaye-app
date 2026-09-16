@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
+import { fetchLemmaGlossesBatch } from "@/lib/lemmaGlossBatch";
+import { fetchActiveLanguagePair } from "@/features/languagePair";
 
 import { vocabularyQueryKeys } from "@/features/vocabulary/api/queryKeys";
 
@@ -11,13 +13,6 @@ interface SavedWordRow {
   lemma: string;
   created_at: string;
   books: { title: string } | null;
-}
-
-interface LemmaCanonicalRow {
-  lemma: string;
-  pos: string | null;
-  cefr_level: string | null;
-  tr_gloss: string | null;
 }
 
 interface SrsCardRow {
@@ -65,25 +60,33 @@ export async function fetchVocabularyData(): Promise<VocabularyData> {
     return { words: [], summary: { totalCount: 0, dueTodayCount: 0 } };
   }
 
-  const [{ data: canonicalRows, error: canonicalError }, { data: cardRows, error: cardError }, { data: stateRows, error: stateError }] =
-    await Promise.all([
-      supabase
-        .from("lemma_canonical")
-        .select("lemma, pos, cefr_level, tr_gloss")
-        .in("lemma", lemmas)
-        .returns<LemmaCanonicalRow[]>(),
-      supabase
-        .from("srs_cards")
-        .select("lemma, due_at")
-        .eq("card_type", "recognition")
-        .in("lemma", lemmas)
-        .returns<SrsCardRow[]>(),
-      supabase.from("user_lemma_state").select("lemma, state").in("lemma", lemmas).returns<LemmaStateRow[]>(),
-    ]);
+  // ÇÖZÜLEN KRİTİK HATA (kullanıcı bulgusu, 2026-09-16): bu sorgu
+  // `lemma_canonical.tr_gloss`'u KOŞULSUZ okuyordu -- ana dili Türkçe
+  // olmayan bir kullanıcı, okurken doğru (kendi ana dilindeki) karşılığı
+  // görüp kelimeyi kaydettiğinde, bu ekranda aynı kelimenin TÜRKÇE
+  // karşılığı çıkıyordu. Artık WordSheet'in kullandığı AYNI dil-çiftine
+  // duyarlı kaynağı okuyor -- bkz. `fetchLemmaGlossesBatch`'in doc comment'i.
+  const activePair = await fetchActiveLanguagePair();
 
-  if (canonicalError) {
-    throw canonicalError;
-  }
+  const [
+    glossByLemma,
+    { data: cardRows, error: cardError },
+    { data: stateRows, error: stateError },
+  ] = await Promise.all([
+    fetchLemmaGlossesBatch(lemmas, activePair.nativeLanguage, activePair.targetLanguage),
+    supabase
+      .from("srs_cards")
+      .select("lemma, due_at")
+      .eq("card_type", "recognition")
+      .in("lemma", lemmas)
+      .returns<SrsCardRow[]>(),
+    supabase
+      .from("user_lemma_state")
+      .select("lemma, state")
+      .in("lemma", lemmas)
+      .returns<LemmaStateRow[]>(),
+  ]);
+
   if (cardError) {
     throw cardError;
   }
@@ -91,21 +94,20 @@ export async function fetchVocabularyData(): Promise<VocabularyData> {
     throw stateError;
   }
 
-  const canonicalByLemma = new Map((canonicalRows ?? []).map((row) => [row.lemma, row]));
   const cardByLemma = new Map((cardRows ?? []).map((row) => [row.lemma, row]));
   const stateByLemma = new Map((stateRows ?? []).map((row) => [row.lemma, row]));
 
   const mapped: VocabularyWord[] = words.map((row) => {
-    const canonical = canonicalByLemma.get(row.lemma);
+    const gloss = glossByLemma.get(row.lemma);
     const card = cardByLemma.get(row.lemma);
     const state = stateByLemma.get(row.lemma);
 
     return {
       id: row.id,
       lemma: row.lemma,
-      gloss: canonical?.tr_gloss ?? null,
-      pos: canonical?.pos ?? null,
-      cefrLevel: canonical?.cefr_level ?? null,
+      gloss: gloss?.gloss ?? null,
+      pos: gloss?.pos ?? null,
+      cefrLevel: gloss?.cefrLevel ?? null,
       sourceTitle: row.books?.title ?? null,
       dueAt: card?.due_at ?? null,
       state: state?.state ?? null,
@@ -114,7 +116,9 @@ export async function fetchVocabularyData(): Promise<VocabularyData> {
   });
 
   const now = Date.now();
-  const dueTodayCount = mapped.filter((word) => word.dueAt !== null && new Date(word.dueAt).getTime() <= now).length;
+  const dueTodayCount = mapped.filter(
+    (word) => word.dueAt !== null && new Date(word.dueAt).getTime() <= now,
+  ).length;
 
   return {
     words: mapped,

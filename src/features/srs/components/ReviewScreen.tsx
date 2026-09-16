@@ -108,9 +108,7 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
           <Text style={[type.sectionHeading, { color: theme.text.primary }]}>
             {reviewedCount > 0 ? t("srs.doneTitle") : t("srs.emptyTitle")}
           </Text>
-          <Text
-            style={[monoType.rowText, styles.centeredText, { color: theme.text.secondary }]}
-          >
+          <Text style={[monoType.rowText, styles.centeredText, { color: theme.text.secondary }]}>
             {reviewedCount > 0
               ? t("srs.doneMessage", { count: reviewedCount })
               : t("srs.emptyMessage")}
@@ -135,10 +133,7 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
         accessibilityRole="button"
         accessibilityLabel={revealed ? card.lemma : t("srs.revealHint")}
       >
-        <ScrollView
-          contentContainerStyle={styles.cardContent}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView contentContainerStyle={styles.cardContent} showsVerticalScrollIndicator={false}>
           <Text style={[type.display, styles.word, { color: theme.text.primary }]}>
             {card.surface}
           </Text>
@@ -146,13 +141,11 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
           {revealed ? (
             <View style={styles.answer}>
               <Text style={[type.sectionHeading, styles.gloss, { color: theme.accent }]}>
-                {card.trGloss ?? t("srs.noGloss")}
+                {card.gloss ?? t("srs.noGloss")}
               </Text>
 
               {card.contextText ? (
-                <Text
-                  style={[monoType.rowText, styles.context, { color: theme.text.secondary }]}
-                >
+                <Text style={[monoType.rowText, styles.context, { color: theme.text.secondary }]}>
                   {card.contextText}
                 </Text>
               ) : null}

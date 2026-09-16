@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
+import { fetchLemmaGlossesBatch } from "@/lib/lemmaGlossBatch";
+import { fetchActiveLanguagePair } from "@/features/languagePair";
 
 import { srsQueryKeys } from "@/features/srs/api/queryKeys";
 
@@ -32,11 +34,6 @@ interface SavedWordRow {
   books: { title: string } | null;
 }
 
-interface GlossRow {
-  lemma: string;
-  tr_gloss: string | null;
-}
-
 /**
  * Vadesi gelmiş kartları, gösterim için gereken bağlamla birlikte getirir.
  *
@@ -46,7 +43,11 @@ interface GlossRow {
 export async function fetchDueCards(): Promise<SrsDueData> {
   const nowIso = new Date().toISOString();
 
-  const { data: cardRows, error: cardError, count } = await supabase
+  const {
+    data: cardRows,
+    error: cardError,
+    count,
+  } = await supabase
     .from("srs_cards")
     .select("id, lemma, interval_days, ease, repetitions, lapses", { count: "exact" })
     .eq("card_type", "recognition")
@@ -64,25 +65,23 @@ export async function fetchDueCards(): Promise<SrsDueData> {
 
   const lemmas = Array.from(new Set(cards.map((card) => card.lemma)));
 
-  const [{ data: wordRows, error: wordError }, { data: glossRows, error: glossError }] =
-    await Promise.all([
-      supabase
-        .from("user_saved_words")
-        .select("lemma, surface, context_text, books(title)")
-        .in("lemma", lemmas)
-        .returns<SavedWordRow[]>(),
-      supabase
-        .from("lemma_canonical")
-        .select("lemma, tr_gloss")
-        .in("lemma", lemmas)
-        .returns<GlossRow[]>(),
-    ]);
+  // ÇÖZÜLEN KRİTİK HATA (kullanıcı bulgusu, 2026-09-16) -- bkz.
+  // useVocabularyQuery.ts'teki AYNI düzeltmenin doc comment'i: bu ekran da
+  // `lemma_canonical.tr_gloss`'u koşulsuz okuyordu.
+  const activePair = await fetchActiveLanguagePair();
+
+  const [{ data: wordRows, error: wordError }, glossByLemma] = await Promise.all([
+    supabase
+      .from("user_saved_words")
+      .select("lemma, surface, context_text, books(title)")
+      .in("lemma", lemmas)
+      .returns<SavedWordRow[]>(),
+    fetchLemmaGlossesBatch(lemmas, activePair.nativeLanguage, activePair.targetLanguage),
+  ]);
 
   if (wordError) throw wordError;
-  if (glossError) throw glossError;
 
   const wordByLemma = new Map((wordRows ?? []).map((row) => [row.lemma, row]));
-  const glossByLemma = new Map((glossRows ?? []).map((row) => [row.lemma, row.tr_gloss]));
 
   const reviewCards: SrsReviewCard[] = cards.map((card) => {
     const word = wordByLemma.get(card.lemma);
@@ -92,7 +91,7 @@ export async function fetchDueCards(): Promise<SrsDueData> {
       // Kaydedilen satır bir şekilde silinmişse yüzey biçimi olarak
       // lemma'nın kendisini göster — kart yine de çalışılabilir.
       surface: word?.surface ?? card.lemma,
-      trGloss: glossByLemma.get(card.lemma) ?? null,
+      gloss: glossByLemma.get(card.lemma)?.gloss ?? null,
       contextText: word?.context_text ?? null,
       bookTitle: word?.books?.title ?? null,
       intervalDays: Number(card.interval_days),

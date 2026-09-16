@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
+import { fetchLemmaGlossesBatch } from "@/lib/lemmaGlossBatch";
+import { fetchActiveLanguagePair } from "@/features/languagePair";
 
 import type { VocabularyWord } from "@/features/vocabulary/types";
 
@@ -8,13 +10,6 @@ interface SavedWordRow {
   id: string;
   lemma: string;
   created_at: string;
-}
-
-interface LemmaCanonicalRow {
-  lemma: string;
-  pos: string | null;
-  cefr_level: string | null;
-  tr_gloss: string | null;
 }
 
 interface LemmaStateRow {
@@ -62,15 +57,12 @@ export function useBookSavedWordsQuery(bookId: string | null) {
 
       if (lemmas.length === 0) return { favorites: [], history: [] };
 
-      const [
-        { data: canonicalRows, error: canonicalError },
-        { data: stateRows, error: stateError },
-      ] = await Promise.all([
-        supabase
-          .from("lemma_canonical")
-          .select("lemma, pos, cefr_level, tr_gloss")
-          .in("lemma", lemmas)
-          .returns<LemmaCanonicalRow[]>(),
+      // ÇÖZÜLEN KRİTİK HATA (kullanıcı bulgusu, 2026-09-16) -- bkz.
+      // useVocabularyQuery.ts'teki AYNI düzeltmenin doc comment'i.
+      const activePair = await fetchActiveLanguagePair();
+
+      const [glossByLemma, { data: stateRows, error: stateError }] = await Promise.all([
+        fetchLemmaGlossesBatch(lemmas, activePair.nativeLanguage, activePair.targetLanguage),
         supabase
           .from("user_lemma_state")
           .select("lemma, state")
@@ -78,22 +70,20 @@ export function useBookSavedWordsQuery(bookId: string | null) {
           .returns<LemmaStateRow[]>(),
       ]);
 
-      if (canonicalError) throw canonicalError;
       if (stateError) throw stateError;
 
-      const canonicalByLemma = new Map((canonicalRows ?? []).map((row) => [row.lemma, row]));
       const stateByLemma = new Map((stateRows ?? []).map((row) => [row.lemma, row]));
 
       const mapped: VocabularyWord[] = rows.map((row) => {
-        const canonical = canonicalByLemma.get(row.lemma);
+        const gloss = glossByLemma.get(row.lemma);
         const state = stateByLemma.get(row.lemma);
 
         return {
           id: row.id,
           lemma: row.lemma,
-          gloss: canonical?.tr_gloss ?? null,
-          pos: canonical?.pos ?? null,
-          cefrLevel: canonical?.cefr_level ?? null,
+          gloss: gloss?.gloss ?? null,
+          pos: gloss?.pos ?? null,
+          cefrLevel: gloss?.cefrLevel ?? null,
           sourceTitle: null,
           dueAt: null,
           state: state?.state ?? null,
