@@ -82,7 +82,6 @@ export interface ReaderPageProps {
   page: Page;
   paragraphs: ReaderChapter["paragraphs"];
   textStyle: TypeStyle;
-  savedLemmas: Set<string>;
   onWordTap: (payload: ReaderWordTapPayload) => void;
   onSentenceLongPress: (payload: { sentenceText: string; paragraphId: string }) => void;
 }
@@ -107,7 +106,6 @@ export function ReaderPage({
   page,
   paragraphs,
   textStyle,
-  savedLemmas,
   onWordTap,
   onSentenceLongPress,
 }: ReaderPageProps): ReactElement {
@@ -182,14 +180,6 @@ export function ReaderPage({
           // match of `surface` (see ReaderWordTapPayload's doc comment).
           const wordSentenceCharOffset = sentence ? token.start - sentence.start : undefined;
 
-          // Saved words get a subtle underline so a reader can see at a
-          // glance which words they've already added to their vocabulary
-          // list, without opening the sheet — this is the ONLY visual
-          // decoration on word text (per explicit product owner request:
-          // "highlight olmayacak sadece altı çizili"). There is no
-          // "unknown word" background tint at all, not even opt-in.
-          const isSaved = savedLemmas.has(lemma);
-
           currentSentenceTokens.push(
             <ReaderWord
               key={`w-${token.start}-${tokenIndex}`}
@@ -198,7 +188,10 @@ export function ReaderPage({
               // buluyor. `ttsPlan` konuşulacak metni ÜRETİRKEN aynı formülü
               // kullanıyor; ikisi eşleşmezse vurgu hiç görünmez.
               wordKey={wordKey(paragraph.id, segment.charStart, token.start)}
-              isSaved={isSaved}
+              // Kaydedilmiş mi -- artık burada HESAPLANMIYOR, ReaderWord
+              // kendi Zustand seçicisiyle soruyor (bkz. useSavedLemmasStore).
+              // Bu sayede kelime kaydetmek bu memo'yu TETİKLEMİYOR.
+              lemma={lemma}
               savedUnderlineColor={readerColors.savedUnderline}
               spokenBackground={readerColors.spokenHighlight}
               onPress={(event) =>
@@ -245,7 +238,7 @@ export function ReaderPage({
         ),
       };
     });
-  }, [page, paragraphById, textStyle, savedLemmas, onWordTap, onSentenceLongPress, readerColors]);
+  }, [page, paragraphById, textStyle, onWordTap, onSentenceLongPress, readerColors]);
 
   return (
     <Text style={styles.pageContainer}>{renderedParagraphs.map((rendered) => rendered.node)}</Text>

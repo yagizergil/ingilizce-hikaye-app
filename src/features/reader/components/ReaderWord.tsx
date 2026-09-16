@@ -1,6 +1,7 @@
 import { Text } from "react-native";
 
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
+import { useIsWordSaved } from "@/features/reader/hooks/useSavedLemmasStore";
 
 import type { GestureResponderEvent } from "react-native";
 
@@ -8,7 +9,10 @@ interface ReaderWordProps {
   text: string;
   /** `ttsPlan.wordKey` ile üretilen anahtar; seslendirme bununla eşleşiyor. */
   wordKey: string;
-  isSaved: boolean;
+  /** Kaydedilme durumu artık PROP değil -- bkz. `useSavedLemmasStore`'un
+   * doc comment'i. Bu kelimenin sözlük kökü, kaydedilmiş mi diye kendi
+   * seçicisiyle sormak için. */
+  lemma: string;
   savedUnderlineColor: string;
   /** Sesli okuma sırasındaki geçici vurgu rengi. */
   spokenBackground: string;
@@ -47,13 +51,14 @@ interface ReaderWordProps {
 export function ReaderWord({
   text,
   wordKey,
-  isSaved,
+  lemma,
   savedUnderlineColor,
   spokenBackground,
   onPress,
   onLongPress,
 }: ReaderWordProps) {
   const isSpoken = useTtsStore((state) => state.spokenKey === wordKey);
+  const isSaved = useIsWordSaved(lemma);
 
   return (
     <Text

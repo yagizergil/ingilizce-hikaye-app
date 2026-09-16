@@ -28,6 +28,7 @@ import {
   flushPendingWordActionsQueue,
 } from "@/features/reader/api/useSavedWordsQuery";
 import { useReaderPosition } from "@/features/reader/hooks/useReaderPosition";
+import { useSavedLemmasStore } from "@/features/reader/hooks/useSavedLemmasStore";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { ReaderHeader } from "@/features/reader/components/ReaderHeader";
@@ -114,6 +115,13 @@ export function ReaderScreen({
   } = useUserLemmaStatesForBook(lemmasForBook);
 
   const { data: savedLemmasData } = useSavedLemmas();
+  // Prop olarak AŞAĞI GEÇİLMİYOR artık -- global Zustand store'a yazılıyor,
+  // `ReaderWord` kendi seçicisiyle okuyor (bkz. useSavedLemmasStore'un doc
+  // comment'i, performans denetimi 2026-09-16). Bu, bir kelime kaydetmenin
+  // ekrandaki sayfaların tamamını yeniden tokenize etmesini engelliyor.
+  useEffect(() => {
+    if (savedLemmasData) useSavedLemmasStore.getState().setSavedLemmas(savedLemmasData);
+  }, [savedLemmasData]);
   const getLemmaState = useLemmaState();
   const saveWordMutation = useSaveWordMutation();
   const unsaveWordMutation = useUnsaveWordMutation();
@@ -654,7 +662,6 @@ export function ReaderScreen({
             fontFamily: settings.fontFamily,
             marginScale: settings.marginScale,
           }}
-          savedLemmas={savedLemmasData ?? new Set<string>()}
           highlightsEnabled={settings.highlightsEnabled}
           restorePosition={restorePosition}
           onWordTap={handleWordTap}

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Alert } from "react-native";
 
 import { useMutation, useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
@@ -77,14 +77,34 @@ export function useLemmaState(): (lemma: string | null) => LemmaState {
 }
 
 /** Back-compat set view (`state === "learning"`) for callers that only
- * need a boolean "is this lemma saved" (e.g. PaginatedReaderView's saved-
- * word highlighting), so they don't need to know about the 3-state model. */
+ * need a boolean "is this lemma saved" (e.g. `useSavedLemmasStore`'un
+ * kaynağı olarak ReaderScreen).
+ *
+ * ÇÖZÜLEN HATA (performans denetimi, 2026-09-16): bu hook her render'da
+ * -- `query.data` DEĞİŞMESE bile -- yeni bir `Set` nesnesi üretiyordu.
+ * ReaderScreen bu değeri bir `useEffect([savedLemmasData])` ile global bir
+ * Zustand store'a yazdığı için (kelime kaydetmenin sayfaları yeniden
+ * tokenize etmesini önleyen düzeltme), memoize edilmemiş bu Set, sayfa
+ * çevirme gibi ReaderScreen'i yeniden render eden HER etkileşimde store'un
+ * gereksiz yere güncellenmesine (ve o an ekrandaki tüm `ReaderWord`
+ * seçicilerinin yeniden çalışmasına) yol açıyordu -- düzeltmenin önlemeye
+ * çalıştığı israfı bir katman yukarı taşımış oluyordu. `useMemo` ile Set
+ * yalnızca `query.data` (TanStack Query'nin kendi önbelleği, gerçek veri
+ * değişmedikçe referansı sabit) değiştiğinde yeniden kuruluyor.
+ */
 export function useSavedLemmas() {
   const query = useLemmaStates();
-  const data =
-    query.data === undefined
-      ? undefined
-      : new Set(Array.from(query.data.entries()).filter(([, s]) => s === "learning").map(([l]) => l));
+  const data = useMemo(
+    () =>
+      query.data === undefined
+        ? undefined
+        : new Set(
+            Array.from(query.data.entries())
+              .filter(([, s]) => s === "learning")
+              .map(([l]) => l),
+          ),
+    [query.data],
+  );
   return { ...query, data };
 }
 
@@ -312,14 +332,17 @@ function useWordActionMutation(type: WordActionType, errorMessageKey: string) {
         // Keep the optimistic state applied: the action WILL eventually
         // succeed once the queue flushes, so reverting it here would just
         // flicker the UI back and forth.
-        queryClient.setQueryData(lemmaStatesQueryKey, (current: Map<string, LemmaState> | undefined) => {
-          const base = current ?? readLemmaStates(queryClient);
-          const nextStates = new Map(base);
-          const nextState = OPTIMISTIC_NEXT_STATE[type];
-          if (nextState === "new") nextStates.delete(input.lemma);
-          else nextStates.set(input.lemma, nextState);
-          return nextStates;
-        });
+        queryClient.setQueryData(
+          lemmaStatesQueryKey,
+          (current: Map<string, LemmaState> | undefined) => {
+            const base = current ?? readLemmaStates(queryClient);
+            const nextStates = new Map(base);
+            const nextState = OPTIMISTIC_NEXT_STATE[type];
+            if (nextState === "new") nextStates.delete(input.lemma);
+            else nextStates.set(input.lemma, nextState);
+            return nextStates;
+          },
+        );
         return;
       }
 

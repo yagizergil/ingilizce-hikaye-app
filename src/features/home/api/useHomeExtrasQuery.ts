@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
+import { libraryQueryKeys } from "@/features/library/api/queryKeys";
 import { CATEGORY_DEFINITIONS, categoryImageUrl } from "@/features/home/categoryRegistry";
 import { LEVEL_GROUP_LEVELS, LEVEL_GROUPS } from "@/features/library/types";
 
@@ -220,8 +221,21 @@ async function fetchFavoritesReadCounts(userId: string | undefined): Promise<Fav
   };
 }
 
-async function fetchHomeExtras(): Promise<HomeExtras> {
-  const books = await fetchBooks();
+/**
+ * ÇÖZÜLEN SORUN (performans denetimi, 2026-09-16): bu fonksiyon
+ * `fetchBooks()`'u DOĞRUDAN çağırıyordu -- `libraryQueryKeys.books()`
+ * altında zaten önbelleklenmiş olabilecek AYNI 356 satırlık `books`
+ * tablosunu, tamamen ayrı bir query key (`homeQueryKeys.extras()`) altında
+ * ikinci kez ağdan çekiyordu. Kullanıcı Ana Sayfa'dan Kitaplık'a geçtiğinde
+ * (ya da tam tersi) aynı katalog gereksiz yere tekrar indiriliyordu.
+ * `queryClient.ensureQueryData` ile CANLI önbellek paylaşılıyor: kitaplık
+ * ekranı zaten çekmişse burası ikinci bir ağ isteği yapmıyor.
+ */
+async function fetchHomeExtras(queryClient: QueryClient): Promise<HomeExtras> {
+  const books = await queryClient.ensureQueryData({
+    queryKey: libraryQueryKeys.books(),
+    queryFn: () => fetchBooks(),
+  });
 
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
@@ -243,8 +257,9 @@ async function fetchHomeExtras(): Promise<HomeExtras> {
 }
 
 export function useHomeExtrasQuery() {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: homeQueryKeys.extras(),
-    queryFn: fetchHomeExtras,
+    queryFn: () => fetchHomeExtras(queryClient),
   });
 }

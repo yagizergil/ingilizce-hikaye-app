@@ -92,7 +92,6 @@ export interface PaginatedReaderHandle {
 interface PaginatedReaderViewProps {
   chapter: ReaderChapter;
   settings: PaginatedReaderViewSettings;
-  savedLemmas: Set<string>;
   highlightsEnabled: boolean;
   restorePosition: PaginatedReaderRestorePosition | null;
   onWordTap: (payload: ReaderWordTapPayload) => void;
@@ -175,7 +174,6 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
     {
       chapter,
       settings,
-      savedLemmas,
       highlightsEnabled,
       restorePosition,
       onWordTap,
@@ -233,9 +231,8 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
     const currentPageRef = useRef(0);
 
     // Tracks whether the initial `restorePosition` scroll has already been
-    // applied for the current `pages` identity, so re-renders (e.g. a saved
-    // word toggling `savedLemmas`) don't keep forcing the list back to the
-    // restore position on every unrelated update.
+    // applied for the current `pages` identity, so unrelated re-renders
+    // don't keep forcing the list back to the restore position.
     const restoredForPagesRef = useRef<Page[] | null>(null);
 
     const handleListLayoutReady = useCallback(() => {
@@ -426,7 +423,6 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
               page={item}
               paragraphs={chapter.paragraphs}
               textStyle={textStyle}
-              savedLemmas={savedLemmas}
               onWordTap={onWordTap}
               onSentenceLongPress={onSentenceLongPress}
             />
@@ -439,7 +435,6 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
         pagePadding,
         chapter.paragraphs,
         textStyle,
-        savedLemmas,
         onWordTap,
         onSentenceLongPress,
         handleZonePress,

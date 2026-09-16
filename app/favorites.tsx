@@ -1,44 +1,36 @@
-import { useCallback, useEffect } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useMemo } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 import { spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
-import { EmptyState, ErrorState, Hairline, LoadingState, SectionHeader } from "@/components/ui";
+import { EmptyState, ErrorState, LoadingState, SectionHeader } from "@/components/ui";
 import { useFavoritesReadListsQuery } from "@/features/home";
 import { BookListRow } from "@/features/library";
 
 import type { Book } from "@/features/library";
 
-interface BookSectionProps {
-  title: string;
-  books: Book[];
-  emptyTitle: string;
-  emptyDescription: string;
-  onPressBook: (book: Book) => void;
-}
-
-function BookSection({ title, books, emptyTitle, emptyDescription, onPressBook }: BookSectionProps) {
-  return (
-    <View style={styles.section}>
-      <SectionHeader title={title} style={styles.sectionHead} />
-      {books.length === 0 ? (
-        <EmptyState title={emptyTitle} description={emptyDescription} />
-      ) : (
-        books.map((book, index) => (
-          <View key={book.id}>
-            <BookListRow book={book} onPress={onPressBook} />
-            {index < books.length - 1 ? <Hairline /> : null}
-          </View>
-        ))
-      )}
-    </View>
-  );
-}
+/**
+ * Tek `FlashList`'te iki bölüm ("Favoriler" + "Okunanlar") -- her satır
+ * kendi TİPİYLE etiketli, `getItemType` recycling havuzunu doğru tutuyor
+ * (bir başlık hücresi bir kitap hücresiyle karıştırılmıyor).
+ *
+ * ÇÖZÜLEN PERFORMANS SORUNU (denetim, 2026-09-16): önceden `ScrollView` +
+ * `.map()` kullanılıyordu -- bugün için küçük bir liste olsa da, kullanıcı
+ * favorilediği/bitirdiği kitap sayısı arttıkça (uygulama 500+ kitaplık bir
+ * katalog hedefliyor) ekrandaki TÜM satırlar aynı anda mount ediliyordu.
+ * `FlashList` diğer tüm liste ekranlarıyla (library, browse, vocabulary,
+ * book detail) zaten tutarlı bir desen.
+ */
+type FavoritesRow =
+  | { type: "header"; key: string; title: string }
+  | { type: "empty"; key: string; title: string; description: string }
+  | { type: "book"; key: string; book: Book };
 
 /** Stack-pushed screen (not a tab), same pattern as app/book/[id].tsx —
  * reached from home's `FavoritesReadCard`. */
@@ -66,10 +58,64 @@ export default function FavoritesScreen() {
     [router],
   );
 
+  const rows = useMemo<FavoritesRow[]>(() => {
+    if (!data) return [];
+
+    const favoritesRows: FavoritesRow[] =
+      data.favorites.length > 0
+        ? data.favorites.map((book) => ({ type: "book" as const, key: `fav-${book.id}`, book }))
+        : [
+            {
+              type: "empty" as const,
+              key: "fav-empty",
+              title: t("favorites.screen.emptyFavorites.title"),
+              description: t("favorites.screen.emptyFavorites.description"),
+            },
+          ];
+
+    const readRows: FavoritesRow[] =
+      data.read.length > 0
+        ? data.read.map((book) => ({ type: "book" as const, key: `read-${book.id}`, book }))
+        : [
+            {
+              type: "empty" as const,
+              key: "read-empty",
+              title: t("favorites.screen.emptyRead.title"),
+              description: t("favorites.screen.emptyRead.description"),
+            },
+          ];
+
+    return [
+      { type: "header", key: "fav-header", title: t("favorites.screen.favoritesSection") },
+      ...favoritesRows,
+      { type: "header", key: "read-header", title: t("favorites.screen.readSection") },
+      ...readRows,
+    ];
+  }, [data, t]);
+
+  const renderRow = useCallback<ListRenderItem<FavoritesRow>>(
+    ({ item }) => {
+      if (item.type === "header") {
+        return <SectionHeader title={item.title} style={styles.sectionHead} />;
+      }
+      if (item.type === "empty") {
+        return (
+          <View style={styles.emptySection}>
+            <EmptyState title={item.title} description={item.description} />
+          </View>
+        );
+      }
+      return <BookListRow book={item.book} onPress={handleOpenBook} />;
+    },
+    [handleOpenBook],
+  );
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
       <View style={styles.header}>
-        <Text style={[type.screenTitle, { color: theme.text.primary }]}>{t("favorites.screen.title")}</Text>
+        <Text style={[type.screenTitle, { color: theme.text.primary }]}>
+          {t("favorites.screen.title")}
+        </Text>
       </View>
 
       {isLoading ? (
@@ -82,22 +128,14 @@ export default function FavoritesScreen() {
           description={t("favorites.screen.emptyBoth.description")}
         />
       ) : (
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <BookSection
-            title={t("favorites.screen.favoritesSection")}
-            books={data.favorites}
-            emptyTitle={t("favorites.screen.emptyFavorites.title")}
-            emptyDescription={t("favorites.screen.emptyFavorites.description")}
-            onPressBook={handleOpenBook}
-          />
-          <BookSection
-            title={t("favorites.screen.readSection")}
-            books={data.read}
-            emptyTitle={t("favorites.screen.emptyRead.title")}
-            emptyDescription={t("favorites.screen.emptyRead.description")}
-            onPressBook={handleOpenBook}
-          />
-        </ScrollView>
+        <FlashList
+          data={rows}
+          keyExtractor={(row) => row.key}
+          getItemType={(row) => row.type}
+          renderItem={renderRow}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
       )}
     </SafeAreaView>
   );
@@ -112,14 +150,15 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm,
     paddingBottom: spacing.xs,
   },
-  scrollContent: {
+  listContent: {
+    paddingHorizontal: spacing.lg,
     paddingBottom: spacing.section,
   },
-  section: {
-    marginTop: spacing.xl,
-  },
   sectionHead: {
-    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.sm,
+  },
+  emptySection: {
     paddingBottom: spacing.sm,
   },
 });

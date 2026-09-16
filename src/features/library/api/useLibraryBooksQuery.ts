@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { fetchChapterCounts } from "@/features/library/api/fetchChapterCounts";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
@@ -12,8 +12,14 @@ import type { Book } from "@/features/library/types";
  * library screen specifically, reusing `fetchBooks` rather than
  * duplicating the books select.
  */
-export async function fetchLibraryBooks(): Promise<Book[]> {
-  const books = await fetchBooks();
+export async function fetchLibraryBooks(queryClient: QueryClient): Promise<Book[]> {
+  // Aynı `books` tablosunu `libraryQueryKeys.books()` ile PAYLAŞIYOR --
+  // bkz. useHomeExtrasQuery.ts'teki performans denetimi notu. Bu ekran
+  // zaten çekilmiş kataloğu varsa ikinci bir ağ isteği yapmıyor.
+  const books = await queryClient.ensureQueryData({
+    queryKey: libraryQueryKeys.books(),
+    queryFn: () => fetchBooks(),
+  });
   const chapterCounts = await fetchChapterCounts(books.map((book) => book.id));
 
   return books.map((book) => ({
@@ -28,8 +34,9 @@ export async function fetchLibraryBooks(): Promise<Book[]> {
 }
 
 export function useLibraryBooksQuery() {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: libraryQueryKeys.booksWithChapterCounts(),
-    queryFn: fetchLibraryBooks,
+    queryFn: () => fetchLibraryBooks(queryClient),
   });
 }

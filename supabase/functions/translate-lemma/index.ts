@@ -303,85 +303,86 @@ Deno.serve(async (req: Request) => {
 
   const result = await requestLlmGloss(anthropicApiKey, body, nativeLanguage, targetLanguage);
 
-  // Log the attempt either way so the daily counter reflects real usage,
-  // including failed calls (a failing provider shouldn't let a user retry
-  // it unboundedly within the same window).
-  await adminClient.from("ai_usage").insert({
-    user_id: user.id,
-    feature: "live_word_translation",
-    tokens_in: 0,
-    tokens_out: 0,
-    cost_usd: 0,
-  });
-
   // Savunma katmanı (denetim, 2026-09-16): geçerli bir tek kelime/kısa
   // öbek karşılığı hiçbir zaman uzun olmaz. Bir prompt-injection denemesi
   // modeli uzun, alakasız bir metin üretmeye ikna ederse bu satır onu
   // paylaşımlı sözlüğe yazılmadan eler.
-  if (result && result.gloss.length > 120) {
-    return jsonResponse({ status: "unavailable", reason: "gloss_too_long" }, 200);
-  }
+  const rejected = result !== null && result.gloss.length > 120;
 
-  if (!result) {
-    return jsonResponse({ status: "unavailable", reason: "provider_error" }, 200);
-  }
+  // HIZ İYİLEŞTİRMESİ (kullanıcı bulgusu, 2026-09-16 -- "çevirirse çok
+  // uzun sürüyor"): bu iki yazma (kullanım sayacı + paylaşımlı sözlüğe
+  // kaydetme) daha önce yanıt dönmeden ÖNCE, birbiri ardına (sıralı)
+  // bekleniyordu -- kullanıcı, zaten en yavaş adım olan LLM çağrısının
+  // ÜZERİNE iki DB round-trip'i daha bekliyordu. İkisi de yanıtın
+  // İÇERİĞİNİ etkilemiyor (istemci `persisted` alanını hiç okumuyor,
+  // bkz. useLiveWordTranslation.ts) -- yalnızca ARKA PLANDA kalıcı
+  // olmaları gerekiyor. `EdgeRuntime.waitUntil` ile yanıt hemen dönüyor,
+  // yazmalar yanıttan SONRA tamamlanıyor.
+  const persistInBackground = async (): Promise<void> => {
+    await adminClient.from("ai_usage").insert({
+      user_id: user.id,
+      feature: "live_word_translation",
+      tokens_in: 0,
+      tokens_out: 0,
+      cost_usd: 0,
+    });
 
-  // BUGÜNE KADARKİ TEK YOL (en->tr): AYNEN eskisi gibi `lemmas` tablosuna
-  // yazılıyor. Şema, sütun adları, onConflict hedefi -- hiçbiri değişmedi.
-  if (targetLanguage === DEFAULT_TARGET_LANGUAGE && nativeLanguage === DEFAULT_NATIVE_LANGUAGE) {
-    const { error: upsertError } = await adminClient.from("lemmas").upsert(
+    if (!result || rejected) return;
+
+    // BUGÜNE KADARKİ TEK YOL (en->tr): AYNEN eskisi gibi `lemmas` tablosuna
+    // yazılıyor. Şema, sütun adları, onConflict hedefi -- hiçbiri değişmedi.
+    if (targetLanguage === DEFAULT_TARGET_LANGUAGE && nativeLanguage === DEFAULT_NATIVE_LANGUAGE) {
+      await adminClient.from("lemmas").upsert(
+        { lemma, pos: result.pos, tr_gloss: result.gloss, source: "runtime" },
+        // ÇÖZÜLEN GÜVENLİK BULGUSU (denetim, 2026-09-16): `onConflict` tek
+        // başına bir UPDATE'tir -- bu satır var olan bir `lemma,pos`
+        // girdisini KOŞULSUZ ÜZERİNE YAZIYORDU. `contextSentence`/`surface`
+        // alanları kullanıcıdan geliyor ve doğrudan LLM prompt'una
+        // gömülüyor (yukarıdaki `requestLlmGloss`); bir kullanıcı özenle
+        // hazırlanmış bir context ile modeli kandırıp yaygın bir kelimenin
+        // karşılığını bozabilir ve bu, o kelimeyi arayan HERKESE
+        // (paylaşımlı sözlük) kalıcı olarak yansırdı. `ignoreDuplicates:
+        // true` bunu "yoksa yaz"a çeviriyor -- var olan bir girdi ARTIK
+        // ASLA runtime çağrısıyla ezilemiyor.
+        { onConflict: "lemma,pos", ignoreDuplicates: true },
+      );
+      return;
+    }
+
+    // YENİ YOL (v2): herhangi bir (hedef dil, ana dil) çifti -- migration
+    // 033'teki genel önbelleğe yazılıyor, `lemmas` tablosuna DOKUNULMUYOR.
+    await adminClient.from("lemma_translations").upsert(
       {
+        target_language: targetLanguage,
         lemma,
         pos: result.pos,
-        tr_gloss: result.gloss,
+        native_language: nativeLanguage,
+        gloss: result.gloss,
         source: "runtime",
       },
-      // ÇÖZÜLEN GÜVENLİK BULGUSU (denetim, 2026-09-16): `onConflict` tek
-      // başına bir UPDATE'tir -- bu satır var olan bir `lemma,pos` girdisini
-      // KOŞULSUZ ÜZERİNE YAZIYORDU. `contextSentence`/`surface` alanları
-      // kullanıcıdan geliyor ve doğrudan LLM prompt'una gömülüyor
-      // (yukarıdaki `requestLlmGloss`); bir kullanıcı özenle hazırlanmış bir
-      // context ile modeli kandırıp yaygın bir kelimenin karşılığını
-      // bozabilir ve bu, o kelimeyi arayan HERKESE (paylaşımlı sözlük)
-      // kalıcı olarak yansırdı. `ignoreDuplicates: true` bunu "yoksa yaz"a
-      // çeviriyor -- var olan bir girdi ARTIK ASLA runtime çağrısıyla
-      // ezilemiyor, yalnızca gerçekten eksik olan kelimeler doldurulabiliyor.
-      { onConflict: "lemma,pos", ignoreDuplicates: true },
+      // Yukarıdaki `lemmas` upsert'iyle AYNI gerekçe: var olan bir çeviriyi
+      // ezmek yerine yalnızca eksik olanı dolduruyor.
+      { onConflict: "target_language,lemma,pos,native_language", ignoreDuplicates: true },
     );
+  };
 
-    if (upsertError) {
-      return jsonResponse(
-        { status: "ok", gloss: result.gloss, pos: result.pos, persisted: false },
-        200,
-      );
-    }
-    return jsonResponse(
-      { status: "ok", gloss: result.gloss, pos: result.pos, persisted: true },
-      200,
-    );
+  // `EdgeRuntime` yalnızca gerçek Supabase Edge Functions ortamında var
+  // (Deno Deploy) -- yerel test/derleme ortamında tanımsız olabileceği
+  // için güvenli bir fallback (doğrudan await) ile korunuyor.
+  const runtimeWithWaitUntil = globalThis as {
+    EdgeRuntime?: { waitUntil: (p: Promise<unknown>) => void };
+  };
+  if (runtimeWithWaitUntil.EdgeRuntime) {
+    runtimeWithWaitUntil.EdgeRuntime.waitUntil(persistInBackground());
+  } else {
+    await persistInBackground();
   }
 
-  // YENİ YOL (v2): herhangi bir (hedef dil, ana dil) çifti -- migration
-  // 033'teki genel önbelleğe yazılıyor, `lemmas` tablosuna DOKUNULMUYOR.
-  const { error: upsertError } = await adminClient.from("lemma_translations").upsert(
-    {
-      target_language: targetLanguage,
-      lemma,
-      pos: result.pos,
-      native_language: nativeLanguage,
-      gloss: result.gloss,
-      source: "runtime",
-    },
-    // Yukarıdaki `lemmas` upsert'iyle AYNI gerekçe: var olan bir çeviriyi
-    // ezmek yerine yalnızca eksik olanı dolduruyor.
-    { onConflict: "target_language,lemma,pos,native_language", ignoreDuplicates: true },
-  );
-
-  if (upsertError) {
-    return jsonResponse(
-      { status: "ok", gloss: result.gloss, pos: result.pos, persisted: false },
-      200,
-    );
+  if (rejected) {
+    return jsonResponse({ status: "unavailable", reason: "gloss_too_long" }, 200);
+  }
+  if (!result) {
+    return jsonResponse({ status: "unavailable", reason: "provider_error" }, 200);
   }
   return jsonResponse({ status: "ok", gloss: result.gloss, pos: result.pos, persisted: true }, 200);
 });

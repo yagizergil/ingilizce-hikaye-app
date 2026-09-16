@@ -1,8 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
+import { libraryQueryKeys } from "@/features/library/api/queryKeys";
 
 import type { Book } from "@/features/library/types";
 
@@ -25,7 +26,10 @@ const CURRENTLY_READING_LIMIT = 10;
  * from `useHomeDataQuery`'s single "Kaldığın yer" hero card, which only
  * ever shows the ONE most recent book).
  */
-async function fetchCurrentlyReading(): Promise<CurrentlyReadingBook[]> {
+// Aynı çözülen sorun için bkz. useHomeExtrasQuery.ts'teki doc comment --
+// `fetchBooks()` doğrudan çağrılmak yerine `libraryQueryKeys.books()`
+// önbelleğinden paylaşılıyor.
+async function fetchCurrentlyReading(queryClient: QueryClient): Promise<CurrentlyReadingBook[]> {
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
   if (!userId) return [];
@@ -42,7 +46,10 @@ async function fetchCurrentlyReading(): Promise<CurrentlyReadingBook[]> {
   if (error) throw error;
   if (!progressRows || progressRows.length === 0) return [];
 
-  const books = await fetchBooks();
+  const books = await queryClient.ensureQueryData({
+    queryKey: libraryQueryKeys.books(),
+    queryFn: () => fetchBooks(),
+  });
   const booksById = new Map(books.map((book) => [book.id, book]));
 
   return progressRows
@@ -54,9 +61,10 @@ async function fetchCurrentlyReading(): Promise<CurrentlyReadingBook[]> {
 }
 
 export function useCurrentlyReadingQuery() {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: homeQueryKeys.currentlyReading(),
-    queryFn: fetchCurrentlyReading,
+    queryFn: () => fetchCurrentlyReading(queryClient),
   });
 }
 
@@ -83,7 +91,9 @@ export function useRemoveFromCurrentlyReadingMutation() {
     },
     onMutate: async (bookId) => {
       await queryClient.cancelQueries({ queryKey: homeQueryKeys.currentlyReading() });
-      const previous = queryClient.getQueryData<CurrentlyReadingBook[]>(homeQueryKeys.currentlyReading());
+      const previous = queryClient.getQueryData<CurrentlyReadingBook[]>(
+        homeQueryKeys.currentlyReading(),
+      );
       queryClient.setQueryData<CurrentlyReadingBook[]>(
         homeQueryKeys.currentlyReading(),
         (current) => current?.filter((entry) => entry.book.id !== bookId) ?? [],
@@ -91,7 +101,8 @@ export function useRemoveFromCurrentlyReadingMutation() {
       return { previous };
     },
     onError: (_error, _bookId, context) => {
-      if (context?.previous) queryClient.setQueryData(homeQueryKeys.currentlyReading(), context.previous);
+      if (context?.previous)
+        queryClient.setQueryData(homeQueryKeys.currentlyReading(), context.previous);
     },
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: homeQueryKeys.currentlyReading() });
