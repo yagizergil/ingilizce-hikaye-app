@@ -1,7 +1,14 @@
 import type { ExpoConfig } from "expo/config";
 
 const config: ExpoConfig = {
-  name: "İngilizce Hikaye",
+  // ASO denetimi (2026-09-16): "İngilizce Hikaye" 16 karakterle
+  // CFBundleName'in 15 karakter sınırını aşıyordu ve Expo'nun proje adı
+  // türetmesi bunu ana ekranda "İngilizceHikaye" diye birleştiriyordu.
+  // Ayrıca uygulama artık 10 dilde (bkz. ADR-013); ana ekran adının
+  // Türkçe olması multilingual bir ürün için uygun değil. Ana ekranda
+  // görünen isim artık ios.infoPlist.CFBundleDisplayName ile ayrıca
+  // belirleniyor -- bkz. aşağıdaki not.
+  name: "Lingo Stories",
   slug: "ingilizce-hikaye",
   scheme: "ingilizcehikaye",
   // App Store Connect'te 1.0 olarak açıldı; ikisi ayrışırsa yüklenen
@@ -9,12 +16,6 @@ const config: ExpoConfig = {
   version: "1.0.0",
   orientation: "portrait",
   userInterfaceStyle: "automatic",
-  // Uygulama arayüzü Türkçe; İngilizce olan yalnızca okunan hikâye metni.
-  // Bu alan hem RN'in yerelleştirme davranışını hem de store'daki birincil
-  // dili etkiliyor.
-  locales: {
-    tr: "./store/locales/tr.json",
-  },
   description:
     "Seviyene göre İngilizce hikâyeler oku, kelime öğren. " +
     "Anlamadığın kelimeye dokun, Türkçe karşılığı anında açılsın.",
@@ -39,9 +40,16 @@ const config: ExpoConfig = {
       usesNonExemptEncryption: false,
     },
     infoPlist: {
-      // Arayüz Türkçe ama cihaz dili başka olabilir; karışık yerelleştirmeye
-      // izin vermezsek iOS bazı sistem metinlerini beklenmedik dilde gösterir.
+      // Arayüz 10 dile genellendi (ADR-013), cihaz dili herhangi biri
+      // olabilir; karışık yerelleştirmeye izin vermezsek iOS bazı sistem
+      // metinlerini beklenmedik dilde gösterir.
       CFBundleAllowMixedLocalizations: true,
+      // Ana ekranda görünen isim -- ASO denetimi (2026-09-16): tek, dil
+      // bağımsız bir marka etiketi (bkz. `name` alanındaki not). Cihaz
+      // dili ne olursa olsun aynı: 10 dilli bir üründe ana ekran adının
+      // kullanıcıya göre değişmesi anlamlı değil, ikon + isim tek bir
+      // marka kimliği.
+      CFBundleDisplayName: "Lingo Stories",
     },
   },
   android: {
