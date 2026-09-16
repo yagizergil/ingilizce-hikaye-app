@@ -289,6 +289,14 @@ Deno.serve(async (req: Request) => {
     cost_usd: 0,
   });
 
+  // Savunma katmanı (denetim, 2026-09-16): geçerli bir tek kelime/kısa
+  // öbek karşılığı hiçbir zaman uzun olmaz. Bir prompt-injection denemesi
+  // modeli uzun, alakasız bir metin üretmeye ikna ederse bu satır onu
+  // paylaşımlı sözlüğe yazılmadan eler.
+  if (result && result.gloss.length > 120) {
+    return jsonResponse({ status: "unavailable", reason: "gloss_too_long" }, 200);
+  }
+
   if (!result) {
     return jsonResponse({ status: "unavailable", reason: "provider_error" }, 200);
   }
@@ -303,7 +311,17 @@ Deno.serve(async (req: Request) => {
         tr_gloss: result.gloss,
         source: "runtime",
       },
-      { onConflict: "lemma,pos" },
+      // ÇÖZÜLEN GÜVENLİK BULGUSU (denetim, 2026-09-16): `onConflict` tek
+      // başına bir UPDATE'tir -- bu satır var olan bir `lemma,pos` girdisini
+      // KOŞULSUZ ÜZERİNE YAZIYORDU. `contextSentence`/`surface` alanları
+      // kullanıcıdan geliyor ve doğrudan LLM prompt'una gömülüyor
+      // (yukarıdaki `requestLlmGloss`); bir kullanıcı özenle hazırlanmış bir
+      // context ile modeli kandırıp yaygın bir kelimenin karşılığını
+      // bozabilir ve bu, o kelimeyi arayan HERKESE (paylaşımlı sözlük)
+      // kalıcı olarak yansırdı. `ignoreDuplicates: true` bunu "yoksa yaz"a
+      // çeviriyor -- var olan bir girdi ARTIK ASLA runtime çağrısıyla
+      // ezilemiyor, yalnızca gerçekten eksik olan kelimeler doldurulabiliyor.
+      { onConflict: "lemma,pos", ignoreDuplicates: true },
     );
 
     if (upsertError) {
@@ -329,7 +347,9 @@ Deno.serve(async (req: Request) => {
       gloss: result.gloss,
       source: "runtime",
     },
-    { onConflict: "target_language,lemma,pos,native_language" },
+    // Yukarıdaki `lemmas` upsert'iyle AYNI gerekçe: var olan bir çeviriyi
+    // ezmek yerine yalnızca eksik olanı dolduruyor.
+    { onConflict: "target_language,lemma,pos,native_language", ignoreDuplicates: true },
   );
 
   if (upsertError) {

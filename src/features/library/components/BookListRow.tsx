@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
@@ -32,8 +33,17 @@ interface BookListRowProps {
  * (word count / chapter count / duration). No card/box — the hairline
  * divider between rows is drawn by the screen's `FlashList`
  * `ItemSeparatorComponent`, not by this row itself.
+ *
+ * `memo`'lu (performans denetimi, 2026-09-16): kütüphane listesindeki
+ * favorileme gibi tek bir satırı etkileyen aksiyonlar, ekrandaki TÜM
+ * satırların (görünmeyenler dahil, FlashList'in recycle havuzunda)
+ * gereksiz yeniden render edilmesine yol açıyordu.
  */
-export function BookListRow({ book, onPress, onLongPress }: BookListRowProps) {
+export const BookListRow = memo(function BookListRow({
+  book,
+  onPress,
+  onLongPress,
+}: BookListRowProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -74,22 +84,31 @@ export function BookListRow({ book, onPress, onLongPress }: BookListRowProps) {
       <View style={styles.content}>
         <View>
           <LevelBadge level={book.level} />
-          <Text style={[type.bookTitleLg, styles.title, { color: theme.text.primary }]} numberOfLines={2}>
+          <Text
+            style={[type.bookTitleLg, styles.title, { color: theme.text.primary }]}
+            numberOfLines={2}
+          >
             {book.title}
           </Text>
-          <Text style={[monoType.author, styles.author, { color: theme.text.secondary }]} numberOfLines={1}>
+          <Text
+            style={[monoType.author, styles.author, { color: theme.text.secondary }]}
+            numberOfLines={1}
+          >
             {book.author}
           </Text>
         </View>
         <View style={styles.stats}>
-          <StatCell value={book.wordCount.toLocaleString("tr-TR")} label={t("library.stats.words")} />
+          <StatCell
+            value={book.wordCount.toLocaleString("tr-TR")}
+            label={t("library.stats.words")}
+          />
           <StatCell value={String(book.chapters.length)} label={t("library.stats.chapters")} />
           <StatCell value={String(book.estimatedMinutes)} label={t("library.stats.minutes")} />
         </View>
       </View>
     </Pressable>
   );
-}
+});
 
 const styles = StyleSheet.create({
   row: {

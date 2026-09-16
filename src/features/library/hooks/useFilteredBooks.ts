@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useLibraryFiltersStore } from "@/features/library/hooks/useLibraryFiltersStore";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { LEVEL_GROUP_LEVELS } from "@/features/library/types";
 import type { Book } from "@/features/library/types";
 
@@ -19,11 +20,14 @@ function sortBooks(books: Book[], sort: string): Book[] {
 
 export function useFilteredBooks(books: Book[] | undefined): Book[] {
   const filters = useLibraryFiltersStore();
+  // Yazarken her tuşta 356 kitabı yeniden filtreleyip sıralamamak için --
+  // bkz. useDebouncedValue'nun doc comment'i.
+  const debouncedQuery = useDebouncedValue(filters.query, 200);
 
   return useMemo(() => {
     if (!books) return [];
 
-    const query = filters.query.trim().toLowerCase();
+    const query = debouncedQuery.trim().toLowerCase();
     const filtered = books.filter((book) => {
       if (query) {
         const matchesQuery =
@@ -33,7 +37,10 @@ export function useFilteredBooks(books: Book[] | undefined): Book[] {
           book.themes.some((theme) => theme.toLowerCase().includes(query));
         if (!matchesQuery) return false;
       }
-      if (filters.levelGroup !== "all" && !LEVEL_GROUP_LEVELS[filters.levelGroup].includes(book.level)) {
+      if (
+        filters.levelGroup !== "all" &&
+        !LEVEL_GROUP_LEVELS[filters.levelGroup].includes(book.level)
+      ) {
         return false;
       }
       if (filters.genre !== "all" && book.genre !== filters.genre) return false;
@@ -44,5 +51,18 @@ export function useFilteredBooks(books: Book[] | undefined): Book[] {
     });
 
     return sortBooks(filtered, filters.sort);
-  }, [books, filters]);
+    // `filters` DEĞİL tek tek alanlar: `debouncedQuery` kasıtlı olarak
+    // gecikmeli, `filters.query`'nin kendisini deps'e koymak her tuşta
+    // aynı hesaplamayı (gecikmiş sorguyla) yine de tetiklerdi.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    books,
+    debouncedQuery,
+    filters.levelGroup,
+    filters.genre,
+    filters.audioOnly,
+    filters.maxMinutes,
+    filters.minComprehension,
+    filters.sort,
+  ]);
 }
