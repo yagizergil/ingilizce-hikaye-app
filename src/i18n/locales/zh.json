@@ -859,6 +859,7 @@
     "addPair": "添加组合",
     "activeBadge": "当前使用",
     "interfaceLanguageSection": "界面语言",
-    "pairArrow": "{{from}} → {{to}}"
+    "pairArrow": "{{from}} → {{to}}",
+    "historyPairs": "历史配对"
   }
 }

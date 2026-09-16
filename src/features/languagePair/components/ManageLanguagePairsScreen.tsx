@@ -17,6 +17,7 @@ import { useOwnedLanguagePairsQuery } from "@/features/languagePair/api/useActiv
 import { useSetLanguagePairMutation } from "@/features/languagePair/api/useSetLanguagePairMutation";
 
 import type { LanguageInfo } from "@/lib/languages";
+import type { OwnedLanguagePair } from "@/features/languagePair/api/useActiveLanguagePairQuery";
 
 type Phase = "list" | "native" | "target";
 
@@ -51,15 +52,47 @@ export function ManageLanguagePairsScreen({
   const [phase, setPhase] = useState<Phase>("list");
   const [pendingNative, setPendingNative] = useState<string | null>(null);
 
-  const ownedTargets = useMemo(() => new Set((owned ?? []).map((p) => p.targetLanguage)), [owned]);
   const activePair = owned?.find((p) => p.isActive) ?? null;
+
+  /**
+   * ÇÖZÜLEN HATA (kullanıcı bulgusu, 2026-09-16): "seçilebilir diller"
+   * listesi eskiden `owned` dizisinin TAMAMINDAN (kullanıcının GEÇMİŞTE
+   * denediği HER ana dil için) topladığı hedef kümesini çıkarıyordu. Bir
+   * kullanıcı bir noktada Türkçe→İngilizce, başka bir noktada Çince→Rusça
+   * denemişse, ana dilini Fransızca'ya çevirdiğinde İngilizce ve Rusça
+   * "zaten sahip olunan" sayılıp EKLENEBİLİR listesinden düşüyordu --
+   * oysa bu diller o kullanıcının Fransızca ana diliyle hiç eşleşmemişti.
+   * Sonuç: "Fransızca ana dilken İngilizce hedef seçilemiyor" gibi anlamsız
+   * eksiklikler.
+   *
+   * Düzeltme: "zaten sahip olunan hedef" kümesi yalnızca AKTİF ana dille
+   * eşleşen çiftlerden çıkarılıyor. Farklı bir ana dille denenmiş çiftler
+   * "sahiplik" değil, aşağıdaki `historyPairs`'a taşınan bir GEÇMİŞ.
+   */
+  const pairsForCurrentNative = useMemo(
+    () => (owned ?? []).filter((pair) => pair.nativeLanguage === activePair?.nativeLanguage),
+    [owned, activePair],
+  );
+
+  /** Farklı bir ana dille daha önce kurulmuş çiftler -- "Geçmiş seçimler". */
+  const historyPairs = useMemo(
+    () => (owned ?? []).filter((pair) => pair.nativeLanguage !== activePair?.nativeLanguage),
+    [owned, activePair],
+  );
+
+  const ownedTargetsForCurrentNative = useMemo(
+    () => new Set(pairsForCurrentNative.map((pair) => pair.targetLanguage)),
+    [pairsForCurrentNative],
+  );
 
   const addableTargets = useMemo(() => {
     if (!activePair) return [];
     return CONTENT_TARGET_LANGUAGES.filter(
-      (language) => language.code !== activePair.nativeLanguage && !ownedTargets.has(language.code),
+      (language) =>
+        language.code !== activePair.nativeLanguage &&
+        !ownedTargetsForCurrentNative.has(language.code),
     );
-  }, [activePair, ownedTargets]);
+  }, [activePair, ownedTargetsForCurrentNative]);
 
   /**
    * Yeni ana dil için hedef seçenekleri -- `nativeLanguage`, ŞU AN aktif
@@ -123,6 +156,20 @@ export function ManageLanguagePairsScreen({
   const handleSelectTarget = (targetLanguage: string) => {
     if (!activePair) return;
     submitPair(activePair.nativeLanguage, targetLanguage, false);
+  };
+
+  /**
+   * "Geçmiş seçimler" kartına dokunma -- ÇÖZÜLEN HATA: eskiden bu kartlar
+   * da `handleSelectTarget` kullanıyordu, yani kartın KENDİ ana dilini
+   * yok sayıp ŞU ANKİ aktif ana dille birleştiriyordu. Geçmiş bir Çince→
+   * Rusça çiftine dokunmak, mevcut ana dilin (örn. Fransızca) hedefini
+   * Rusça'ya çeviriyordu -- ana dili sessizce Fransızca'da bırakarak.
+   * Burada hem ana dil hem hedef, kartın kendi çiftinden birlikte
+   * uygulanıyor.
+   */
+  const handleSelectHistoryPair = (pair: OwnedLanguagePair) => {
+    const needsRtlRestart = applyNativeLanguageSideEffects(pair.nativeLanguage);
+    submitPair(pair.nativeLanguage, pair.targetLanguage, needsRtlRestart);
   };
 
   const handleSelectNewNative = (nativeLanguage: string) => {
@@ -251,7 +298,7 @@ export function ManageLanguagePairsScreen({
                 {t("languagePair.yourPairs")}
               </Text>
               <View style={styles.list}>
-                {(owned ?? []).map((pair) => (
+                {pairsForCurrentNative.map((pair) => (
                   <PairRow
                     key={`${pair.nativeLanguage}-${pair.targetLanguage}`}
                     native={pair.nativeLanguage}
@@ -279,6 +326,25 @@ export function ManageLanguagePairsScreen({
                       active={false}
                       onPress={() => handleSelectTarget(language.code)}
                       showPremiumBadge
+                    />
+                  ))}
+                </View>
+              </View>
+            ) : null}
+
+            {historyPairs.length > 0 ? (
+              <View style={styles.section}>
+                <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                  {t("languagePair.historyPairs")}
+                </Text>
+                <View style={styles.list}>
+                  {historyPairs.map((pair) => (
+                    <PairRow
+                      key={`history-${pair.nativeLanguage}-${pair.targetLanguage}`}
+                      native={pair.nativeLanguage}
+                      target={pair.targetLanguage}
+                      active={false}
+                      onPress={() => handleSelectHistoryPair(pair)}
                     />
                   ))}
                 </View>

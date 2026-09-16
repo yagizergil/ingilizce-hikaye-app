@@ -859,6 +859,7 @@
     "addPair": "PAAR HINZUFÜGEN",
     "activeBadge": "Aktiv",
     "interfaceLanguageSection": "OBERFLÄCHENSPRACHE",
-    "pairArrow": "{{from}} → {{to}}"
+    "pairArrow": "{{from}} → {{to}}",
+    "historyPairs": "FRÜHERE PAARE"
   }
 }

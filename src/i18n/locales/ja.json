@@ -859,6 +859,7 @@
     "addPair": "ペアを追加",
     "activeBadge": "使用中",
     "interfaceLanguageSection": "インターフェース言語",
-    "pairArrow": "{{from}} → {{to}}"
+    "pairArrow": "{{from}} → {{to}}",
+    "historyPairs": "過去のペア"
   }
 }

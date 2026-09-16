@@ -859,6 +859,7 @@
     "addPair": "AGGIUNGI UNA COPPIA",
     "activeBadge": "Attiva",
     "interfaceLanguageSection": "LINGUA DELL'INTERFACCIA",
-    "pairArrow": "{{from}} → {{to}}"
+    "pairArrow": "{{from}} → {{to}}",
+    "historyPairs": "COPPIE PRECEDENTI"
   }
 }

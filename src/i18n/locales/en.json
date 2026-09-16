@@ -859,6 +859,7 @@
     "addPair": "ADD A PAIR",
     "activeBadge": "Active",
     "interfaceLanguageSection": "INTERFACE LANGUAGE",
-    "pairArrow": "{{from}} → {{to}}"
+    "pairArrow": "{{from}} → {{to}}",
+    "historyPairs": "PAST PAIRS"
   }
 }

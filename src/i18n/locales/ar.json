@@ -915,6 +915,7 @@
     "addPair": "أضف زوجًا",
     "activeBadge": "نشط",
     "interfaceLanguageSection": "لغة الواجهة",
-    "pairArrow": "{{from}} ← {{to}}"
+    "pairArrow": "{{from}} ← {{to}}",
+    "historyPairs": "الأزواج السابقة"
   }
 }

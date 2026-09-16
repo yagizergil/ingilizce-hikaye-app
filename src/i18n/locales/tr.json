@@ -859,6 +859,7 @@
     "addPair": "YENİ ÇİFT EKLE",
     "activeBadge": "Aktif",
     "interfaceLanguageSection": "ARAYÜZ DİLİ",
-    "pairArrow": "{{from}} → {{to}}"
+    "pairArrow": "{{from}} → {{to}}",
+    "historyPairs": "GEÇMİŞ SEÇİMLER"
   }
 }
