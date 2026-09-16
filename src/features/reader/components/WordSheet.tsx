@@ -180,6 +180,30 @@ export function WordSheet({
   const [measurement, setMeasurement] = useState<{ key: string; height: number } | null>(null);
   const cardHeight = measurement?.key === measurementKey ? measurement.height : 0;
 
+  const activePairQuery = useActiveLanguagePairQuery();
+  /**
+   * ÇÖZÜLEN HATA (kullanıcı bulgusu, 2026-09-16): "book_lemmas" +
+   * `lemma_canonical` (aşağıdaki `bookEntry`/`globalEntry`) tek bir
+   * kolon taşıyor -- `tr_gloss` -- çünkü bu ikisi ADR-013 ÖNCESİNDEN
+   * kalma İngilizce→Türkçe sözlüğün ta kendisi. Dil çiftleri v2 (ADR-013)
+   * geldiğinde bu iki kaynak GÜNCELLENMEDİ: `entry` zinciri hep
+   * `bookEntry ?? globalEntry ?? pairEntry ?? liveEntry` sırasıyla
+   * kuruluyordu, yani hedef dili İngilizce olan HER kitapta (katalogdaki
+   * 113 kitabın hepsi) bookEntry/globalEntry neredeyse her zaman bir
+   * sonuç buluyor ve gösteriliyordu -- kullanıcının ana dili Fransızca,
+   * Almanca, her ne olursa olsun, ekranda hep TÜRKÇE karşılık çıkıyordu.
+   * Doğru, dil çiftine duyarlı kaynak (`usePairLemmaLookup`,
+   * `lemma_translations` tablosu) zaten vardı ama sırada üçüncü olduğu
+   * için pratikte hiç devreye giremiyordu.
+   *
+   * Düzeltme: `tr_gloss` yalnızca ana dil GERÇEKTEN Türkçe olduğunda
+   * güvenilir bir karşılıktır. Ana dil başka bir şeyse bu iki kaynak
+   * tamamen devre dışı bırakılıyor (zincir doğrudan `pairEntry`'ye
+   * düşüyor) -- kelimenin İngilizce meta verisi (seviye, IPA, ses) değil,
+   * SADECE `trGloss` alanı dile özel olduğu için bu ayrım yeterli.
+   */
+  const nativeIsTurkish = activePairQuery.data?.nativeLanguage === "tr";
+
   // Kitap sözlüğünde ARANACAK ADAYLAR (bkz. tokenizer.js
   // `lemmaCandidates`): cihazdaki kural tabanlı gövdeleyici tek bir kök
   // üretmek zorunda kaldığında "hotter" -> "hott", "happier" -> "happi"
@@ -200,18 +224,23 @@ export function WordSheet({
     return { entry: direct, lemma: direct ? word.lemma : null };
   }, [word, lemmaDictionary]);
 
-  const bookEntry = bookLookup.entry;
+  // `tr_gloss` yalnızca ana dil Türkçe iken güvenilir -- bkz. yukarıdaki
+  // `nativeIsTurkish` yorumu. Başka bir ana dilde bu kaynak hiç
+  // denenmiyor bile (ağ isteği dahi yapılmıyor, aşağıya bak).
+  const bookEntry = nativeIsTurkish ? bookLookup.entry : undefined;
   // Task 1: per-book dictionary miss -> point lookup against the global
   // lemma_canonical table. Only enabled once we know the book dictionary
   // missed, and only while the sheet actually has a word open, so this
   // never blocks the sheet opening (it fires as a secondary enrichment
-  // fetch after the sheet is already visible).
+  // fetch after the sheet is already visible). Ana dil Türkçe değilse bu
+  // tablo zaten kullanılamaz, sorgu hiç tetiklenmiyor.
   const bookMissed = word !== null && !bookEntry;
+  const globalLookupEnabled = nativeIsTurkish && bookMissed;
   const globalLookup = useGlobalLemmaLookup(
-    bookMissed ? word.lemma : null,
-    bookMissed ? word.surface : null,
+    globalLookupEnabled ? word.lemma : null,
+    globalLookupEnabled ? word.surface : null,
   );
-  const globalEntry = globalLookup.data ?? undefined;
+  const globalEntry = nativeIsTurkish ? (globalLookup.data ?? undefined) : undefined;
 
   // Task 4: 3rd-tier live-translation fallback. Only fires once BOTH the
   // per-book dictionary AND the global lemma_canonical lookup have missed
@@ -220,8 +249,11 @@ export function WordSheet({
   // unresolved word should not re-trigger a fresh LLM call every time.
   // `lemma_translations` önbelleği: bir kez AI ile çevrilen kelime ikinci
   // dokunuşta buradan geliyor (bkz. usePairLemmaLookup). Yalnızca genel
-  // sözlük ıskaladıktan SONRA sorgulanıyor.
-  const globalMissed = bookMissed && globalLookup.isFetched && !globalEntry;
+  // sözlük ıskaladıktan SONRA sorgulanıyor. Ana dil Türkçe değilse genel
+  // sözlük hiç denenmediği için buraya hemen (ilk render'da) düşülüyor.
+  const globalMissed = nativeIsTurkish
+    ? bookMissed && globalLookup.isFetched && !globalEntry
+    : word !== null;
   const pairLookup = usePairLemmaLookup(
     globalMissed && word ? word.lemma : null,
     globalMissed && word ? word.surface : null,
@@ -398,7 +430,6 @@ export function WordSheet({
    * Sorgu zaten 5 dakika taze kalıyor (`useActiveLanguagePairQuery`), yani
    * her kelime kartında yeniden ağa gitmiyor.
    */
-  const activePairQuery = useActiveLanguagePairQuery();
   const ttsLocale = getLanguage(activePairQuery.data?.targetLanguage ?? "en")?.ttsLocale ?? "en-US";
   const ttsLanguagePrefix = ttsLocale.split("-")[0] ?? "en";
 
