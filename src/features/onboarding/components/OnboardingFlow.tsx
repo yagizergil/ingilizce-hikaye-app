@@ -107,6 +107,13 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const [nativeLanguage, setNativeLanguage] = useState<string | null>(defaultNative);
   const [targetLanguage, setTargetLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<CefrLevel | null>(null);
+  // Seviye testinden gelen ölçüm -- test yerine hızlı seçim yapıldıysa
+  // `null` kalıyor, `startFinishing` bunu doğrudan `completeOnboarding`'e
+  // geçiriyor (bkz. aşağıdaki `handleLevelTestFinish`).
+  const [levelEstimate, setLevelEstimate] = useState<{ size: number; level: CefrLevel } | null>(
+    null,
+  );
+  const [levelAdjusted, setLevelAdjusted] = useState(false);
   const [likedBookIds, setLikedBookIds] = useState<string[]>([]);
   const [pickedWords, setPickedWords] = useState<OnboardingWord[]>([]);
   const [dailyGoal, setDailyGoal] = useState<number | null>(null);
@@ -172,10 +179,11 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   /**
    * Dil çifti HEDEF DİL ADIMINDA kaydediliyor, akışın sonunda değil.
    *
-   * NEDEN BURADA: seviye adımından sonra iki çıkış var -- hızlı seçim ve
-   * seviye TESTİ. Test kendi içinde onboarding'i tamamlıyor; çifti sona
-   * bırakmış olsaydık test yolundan giden kullanıcının dil çifti HİÇ
-   * yazılmaz ve boş bir kütüphaneye düşerdi.
+   * NEDEN BURADA: `taste` adımının kitap içeriği hedef dile bağlı
+   * (`useOnboardingContentQuery`), ve seviye testi yolu da (bkz.
+   * `handleLevelTestFinish`) sonunda AYNI `taste` adımına çıkıyor. Çifti
+   * sona bırakmış olsaydık, test bitmeden önce içerik sorgusu hangi dile
+   * göre çekileceğini bilemezdi.
    */
   const goLevel = useCallback(() => {
     if (!nativeLanguage || !targetLanguage) return;
@@ -226,8 +234,8 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
     completeOnboarding.mutate(
       {
         targetLevel: level,
-        estimate: null,
-        adjusted: false,
+        estimate: levelEstimate,
+        adjusted: levelAdjusted,
         dailyGoalMinutes: dailyGoal ?? undefined,
       },
       {
@@ -241,7 +249,42 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
         },
       },
     );
-  }, [level, likedBookIds, dailyGoal, saveFavorites, completeOnboarding, t]);
+  }, [
+    level,
+    levelEstimate,
+    levelAdjusted,
+    likedBookIds,
+    dailyGoal,
+    saveFavorites,
+    completeOnboarding,
+    t,
+  ]);
+
+  /**
+   * Seviye testi bitince (atlansa da tamamlansa da) hızlı-seçim yoluyla
+   * TAM OLARAK AYNI adımlara devam ediyoruz.
+   *
+   * DENETİM BULGUSU (2026-09-17): bu geri çağrı önceden yoktu --
+   * `LevelTestScreen` testi bitirir bitirmez profili kendisi yazıp akışın
+   * TAMAMEN DIŞINDAKİ `onDone`'ı çağırıyordu, yani testi seçen kullanıcılar
+   * `taste`'den `paywall`'a kadar her adımı (özellikle onboarding'e özel
+   * teklifi) hiç görmeden uygulamaya düşüyordu. Artık test de hızlı seçim
+   * gibi sadece `level`/ölçüm state'ini dolduruyor, gerçek profil yazımı
+   * (`completeOnboarding.mutate`) HÂLÂ tek yerde: `startFinishing`.
+   */
+  const handleLevelTestFinish = useCallback(
+    (
+      targetLevel: CefrLevel,
+      estimate: { size: number; level: CefrLevel } | null,
+      adjusted: boolean,
+    ) => {
+      setLevel(targetLevel);
+      setLevelEstimate(estimate);
+      setLevelAdjusted(adjusted);
+      setStep("taste");
+    },
+    [],
+  );
 
   /**
    * Plan ekranı bitince paywall AKIŞIN İÇİNDE açılıyor (referansın son iki
@@ -295,8 +338,10 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   }
 
   if (step === "levelTest") {
-    // Dil çifti bu noktada ZATEN kaydedildi (bkz. `goLevel`).
-    return <LevelTestScreen onDone={onDone} />;
+    // Dil çifti bu noktada ZATEN kaydedildi (bkz. `goLevel`). Test bitince
+    // hızlı-seçim yoluyla aynı adımlara devam ediliyor -- bkz.
+    // `handleLevelTestFinish`'in doc comment'i.
+    return <LevelTestScreen onFinish={handleLevelTestFinish} />;
   }
 
   if (step === "level") {
@@ -411,9 +456,6 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   }
 
   return (
-    <OnboardingSuccessStep
-      premium={subscription.data?.isPremium ?? false}
-      onContinue={onDone}
-    />
+    <OnboardingSuccessStep premium={subscription.data?.isPremium ?? false} onContinue={onDone} />
   );
 }

@@ -9,7 +9,6 @@ import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { Button, ErrorState, LoadingState } from "@/components/ui";
 
-import { useCompleteOnboardingMutation } from "@/features/onboarding/api/useCompleteOnboardingMutation";
 import { useLevelTestWordsQuery } from "@/features/onboarding/api/useLevelTestWordsQuery";
 import { LevelTestIntro } from "@/features/onboarding/components/LevelTestIntro";
 import { LevelTestQuestion } from "@/features/onboarding/components/LevelTestQuestion";
@@ -24,8 +23,27 @@ type Phase = "intro" | "test" | "result";
 const DEFAULT_LEVEL: CefrLevel = "A2";
 
 interface LevelTestScreenProps {
-  /** Onboarding bittiğinde çağrılır (atlansa da tamamlansa da). */
-  onDone: () => void;
+  /**
+   * Test bittiğinde (atlansa da tamamlansa da) çağrılır -- profili KENDİSİ
+   * YAZMIYOR, sonucu `OnboardingFlow`'a bırakıyor.
+   *
+   * DENETİM BULGUSU (2026-09-17): bu ekran daha önce testi bitirir bitirmez
+   * `completeOnboarding` mutasyonunu KENDİSİ çağırıp doğrudan akışın
+   * DIŞINDAKİ `onDone`'ı tetikliyordu -- yani testi seçen her kullanıcı
+   * `taste`/`firstRead`/`quiz`/`celebrate`/`goal`/`path`/`plan`/`paywall`/
+   * `success` adımlarının TAMAMINI atlayıp doğrudan uygulamaya düşüyordu.
+   * Özellikle onboarding'e özel paywall teklifini (`source="onboarding"`)
+   * hiç görmüyorlardı -- ve seviye testini seçen kullanıcılar muhtemelen
+   * ortalamadan daha meraklı/ciddi kullanıcılar, yani dönüşümü en yüksek
+   * segment tam olarak en yüksek niyetli paywall yerleşiminden atlatılıyordu.
+   * Artık bu ekran sadece SONUCU raporluyor, `OnboardingFlow` iki yoldan
+   * (hızlı seçim / test) gelen sonucu AYNI kalan adımlara yönlendiriyor.
+   */
+  onFinish: (
+    targetLevel: CefrLevel,
+    estimate: { size: number; level: CefrLevel } | null,
+    adjusted: boolean,
+  ) => void;
 }
 
 /**
@@ -34,11 +52,10 @@ interface LevelTestScreenProps {
  * Tasarım gerekçesi ve yöntem seçimi için bkz.
  * docs/plans/2026-09-07-eksik-katmanlar-design.md.
  */
-export function LevelTestScreen({ onDone }: LevelTestScreenProps) {
+export function LevelTestScreen({ onFinish }: LevelTestScreenProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { data: items, isLoading, isError, refetch } = useLevelTestWordsQuery();
-  const completeMutation = useCompleteOnboardingMutation();
 
   const [phase, setPhase] = useState<Phase>("intro");
   const [index, setIndex] = useState(0);
@@ -49,10 +66,7 @@ export function LevelTestScreen({ onDone }: LevelTestScreenProps) {
     trackEvent("onboarding_viewed");
   }, []);
 
-  const estimate = useMemo(
-    () => (items ? estimateLevel(items, answers) : null),
-    [items, answers],
-  );
+  const estimate = useMemo(() => (items ? estimateLevel(items, answers) : null), [items, answers]);
 
   const handleStart = useCallback(() => {
     trackEvent("onboarding_test_started");
@@ -61,25 +75,19 @@ export function LevelTestScreen({ onDone }: LevelTestScreenProps) {
 
   const finish = useCallback(
     (targetLevel: CefrLevel, adjusted: boolean) => {
-      completeMutation.mutate(
-        {
-          targetLevel,
-          estimate: estimate ? { size: estimate.estimatedSize, level: estimate.level } : null,
-          adjusted,
-        },
-        { onSuccess: onDone },
+      onFinish(
+        targetLevel,
+        estimate ? { size: estimate.estimatedSize, level: estimate.level } : null,
+        adjusted,
       );
     },
-    [completeMutation, estimate, onDone],
+    [estimate, onFinish],
   );
 
   const handleSkip = useCallback(() => {
     trackEvent("onboarding_test_skipped");
-    completeMutation.mutate(
-      { targetLevel: DEFAULT_LEVEL, estimate: null, adjusted: false },
-      { onSuccess: onDone },
-    );
-  }, [completeMutation, onDone]);
+    onFinish(DEFAULT_LEVEL, null, false);
+  }, [onFinish]);
 
   const handleAnswer = useCallback(
     (answer: WordAnswer) => {
@@ -119,13 +127,7 @@ export function LevelTestScreen({ onDone }: LevelTestScreenProps) {
       <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
         <View style={styles.errorBlock}>
           <ErrorState message={t("onboarding.loadError")} onRetry={() => void refetch()} />
-          <Button
-            label={t("onboarding.skip")}
-            onPress={handleSkip}
-            variant="secondary"
-            fullWidth
-            disabled={completeMutation.isPending}
-          />
+          <Button label={t("onboarding.skip")} onPress={handleSkip} variant="secondary" fullWidth />
         </View>
       </SafeAreaView>
     );
@@ -134,11 +136,7 @@ export function LevelTestScreen({ onDone }: LevelTestScreenProps) {
   return (
     <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
       {phase === "intro" ? (
-        <LevelTestIntro
-          onStart={handleStart}
-          onSkip={handleSkip}
-          busy={completeMutation.isPending}
-        />
+        <LevelTestIntro onStart={handleStart} onSkip={handleSkip} busy={false} />
       ) : phase === "test" ? (
         <LevelTestQuestion
           word={items[index]?.lemma ?? ""}
@@ -152,7 +150,7 @@ export function LevelTestScreen({ onDone }: LevelTestScreenProps) {
           selectedLevel={chosenLevel ?? readingLevelFor(estimate?.level ?? DEFAULT_LEVEL)}
           onSelectLevel={setChosenLevel}
           onConfirm={handleConfirm}
-          busy={completeMutation.isPending}
+          busy={false}
         />
       )}
     </SafeAreaView>
