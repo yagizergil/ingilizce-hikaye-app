@@ -1,7 +1,12 @@
+import { Linking, Platform } from "react-native";
+
 import * as StoreReview from "expo-store-review";
 
 import AsyncStorage from "@/lib/storage";
 import { trackError, trackEvent } from "@/lib/analytics";
+
+/** App Store Connect'teki Apple ID -- yorum sayfasına doğrudan bağlantı için. */
+const APPLE_APP_ID = "6809447042";
 
 /**
  * App Store puan isteme.
@@ -68,5 +73,30 @@ export async function maybeRequestReview(completedBookCount: number): Promise<bo
     // ama sessizce yutulmuyor: hiç yorum gelmiyorsa sebebini bilmek gerek.
     trackError("storeReview.request", error);
     return false;
+  }
+}
+
+/**
+ * Ayarlar'daki "Bizi Değerlendir" satırı için: kullanıcı KENDİ isteğiyle
+ * puan vermeye gidiyor.
+ *
+ * NEDEN `maybeRequestReview`'DAN FARKLI: o fonksiyon Apple'ın yılda 3 kez
+ * sınırına tabi sessiz `SKStoreReviewController`'ı çağırıyor ve iOS
+ * gösterip göstermediğini hiç söylemiyor -- kullanıcı "değerlendir"
+ * satırına bastığında ekranda hiçbir şey açılmayabilir, ki bu bir ayarlar
+ * satırı için kabul edilemez bir deneyim. Burada bunun yerine doğrudan
+ * App Store'un yorum yazma sayfasına (`action=write-review`) gidiyoruz --
+ * her zaman açılır, Apple'ın sessiz kotasını hiç tüketmez.
+ */
+export async function openWriteReviewPage(): Promise<void> {
+  trackEvent("store_review_manual_opened");
+  const url =
+    Platform.OS === "ios"
+      ? `itms-apps://itunes.apple.com/app/id${APPLE_APP_ID}?action=write-review`
+      : `https://apps.apple.com/app/id${APPLE_APP_ID}?action=write-review`;
+  try {
+    await Linking.openURL(url);
+  } catch (error) {
+    trackError("storeReview.manualOpen", error);
   }
 }

@@ -19,6 +19,7 @@ import { useOnboardingStatusQuery } from "@/features/onboarding";
 import { ReminderSettingsRow } from "@/features/reminders";
 import { useActiveLanguagePairQuery } from "@/features/languagePair";
 import { getLanguage } from "@/lib/languages";
+import { openWriteReviewPage } from "@/lib/storeReview";
 
 import { useProfileAuthStatus } from "@/features/profile/api/useProfileAuthStatus";
 import { useProfileStatsQuery } from "@/features/profile/api/useProfileStatsQuery";
@@ -157,8 +158,11 @@ export function ProfileScreen() {
     router.push("/paywall?source=profile");
   }, []);
 
-  const stats = statsQuery.data;
+  const handleRateUs = useCallback(() => {
+    void openWriteReviewPage();
+  }, []);
 
+  const stats = statsQuery.data;
 
   const isLoading =
     statsQuery.isLoading || vocabularyQuery.isLoading || subscriptionQuery.isLoading;
@@ -262,6 +266,13 @@ export function ProfileScreen() {
                   : t(`profile.account.language${languageCode === "tr" ? "Tr" : "En"}`)
               }
               onPress={() => router.push("/language-settings")}
+            />
+            <Hairline />
+            <ProfileAccountRow
+              icon="star-outline"
+              iconColor={levelAccent.B2}
+              label={t("profile.account.rateUs")}
+              onPress={handleRateUs}
             />
             <Hairline />
 

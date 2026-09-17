@@ -420,6 +420,7 @@
       "language": "Language",
       "languageTr": "Turkish",
       "languageEn": "English",
+      "rateUs": "Rate Us",
       "deleteAccount": "Delete my account",
       "devReplayOnboarding": "Reset account and replay onboarding (developer)"
     },
