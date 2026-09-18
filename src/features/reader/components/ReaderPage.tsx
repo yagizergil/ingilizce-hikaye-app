@@ -1,7 +1,12 @@
 import { useMemo } from "react";
 import { StyleSheet, Text } from "react-native";
 
-import { lemmatize, splitSentences, tokenize } from "@/features/reader/text/tokenizer";
+import {
+  isNumericToken,
+  lemmatize,
+  splitSentences,
+  tokenize,
+} from "@/features/reader/text/tokenizer";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { ReaderWord } from "@/features/reader/components/ReaderWord";
 import { wordKey } from "@/features/reader/tts/ttsPlan";
@@ -170,7 +175,11 @@ export function ReaderPage({
           currentSentenceText = sentence ? sentence.text : "";
         }
 
-        if (token.type === "word") {
+        // DENETİM BULGUSU (2026-09-18): salt rakamlardan oluşan bir "word"
+        // token'ı ("1945" gibi bir yıl) gerçek bir sözlük kelimesi değil --
+        // dokunulunca "çeviri bulunamadı" gösteriyordu. Bkz.
+        // `isNumericToken`'ın tokenizer.js'teki doc comment'i.
+        if (token.type === "word" && !isNumericToken(token.text)) {
           const surface = token.text.toLowerCase();
           const lemma = lemmatize(token.text);
           const wordSentenceText = currentSentenceText;

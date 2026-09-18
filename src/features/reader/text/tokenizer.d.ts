@@ -36,3 +36,12 @@ export function lemmaCandidates(surface: string): string[];
  */
 export function inflectionHint(surface: string): string | null;
 export function splitSentences(text: string): Sentence[];
+/**
+ * Bir "word" token'ının salt rakamlardan oluşup oluşmadığını (harf
+ * içermediğini) söyler -- tıklanabilir/seçilebilir bir kelime olarak
+ * SAYILMAMASI gereken token'ları ayıklamak için (bkz. tokenizer.js'teki
+ * denetim bulgusu yorumu). "3D" gibi harf içeren karışık token'lar için
+ * `false` döner, yalnızca "1945"/"42" gibi tamamen sayısal token'lar için
+ * `true`.
+ */
+export function isNumericToken(text: string): boolean;

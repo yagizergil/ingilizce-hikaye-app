@@ -83,7 +83,20 @@ async function fetchOnboardingContent(
     cefrLevel: (row.cefr_level as string | null) ?? null,
   }));
 
-  const source = books[0];
+  /**
+   * DENETİM BULGUSU (2026-09-18, kullanıcı geri bildirimi): "B2 kitapları
+   * göstersin diye bastım, yine B1 gösterdi." `levels` bilerek seçilen
+   * seviye + bir altını sorguluyor (yukarıdaki yorum: "ilk temasta güven
+   * veriyor") ve sonuçlar `popularity_score`'a göre sıralanıyor -- yani
+   * `books[0]` her zaman kullanıcının SEÇTİĞİ seviyeden olmuyordu, alt
+   * seviyede daha popüler bir klasik varsa oradan seçiliyordu. Kitap
+   * ZEVKİ adımında (kapak ızgarası) bu karışım kasıtlı ve zararsız --
+   * ama tek başına gösterilen "ilk okuma PASAJI" kullanıcının az önce
+   * seçtiği seviyeyi TEMSİL ETMELİ. Önce tam seviye eşleşmesi aranıyor,
+   * yalnızca o seviyede hiç kitap yoksa popülerliğe göre ilk sıradaki
+   * (bir alt seviyeden) kitaba düşülüyor.
+   */
+  const source = (level ? books.find((book) => book.cefrLevel === level) : undefined) ?? books[0];
   if (!source) return { books, passage: null };
 
   // Pasaj: ilk bölümün ilk paragrafları.
@@ -113,9 +126,7 @@ async function fetchOnboardingContent(
 
   return {
     books,
-    passage: paragraphs.length
-      ? { bookId: source.id, bookTitle: source.title, paragraphs }
-      : null,
+    passage: paragraphs.length ? { bookId: source.id, bookTitle: source.title, paragraphs } : null,
   };
 }
 

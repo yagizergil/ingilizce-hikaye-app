@@ -8,7 +8,12 @@ import { getReadingTypeScale } from "@/theme/tokens/typography";
 import { monoType, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { LoadingState } from "@/components/ui";
-import { lemmatize, splitSentences, tokenize } from "@/features/reader/text/tokenizer";
+import {
+  isNumericToken,
+  lemmatize,
+  splitSentences,
+  tokenize,
+} from "@/features/reader/text/tokenizer";
 import { WordSheet } from "@/features/reader/components/WordSheet";
 
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
@@ -92,7 +97,14 @@ export function OnboardingFirstReadStep({
         key: `p${paragraphIndex}`,
         text,
         tokens: tokens.map((token) => {
-          if (token.type !== "word") return { ...token, lemma: null, sentence: text };
+          // DENETİM BULGUSU (2026-09-18, kullanıcı geri bildirimi): salt
+          // rakamlardan oluşan token'lar ("1945" gibi) sözlük kelimesi
+          // değil -- pasajdaki GERÇEK kelime havuzunu daraltıp "3 kelime
+          // seç" hedefini bazı kısa pasajlarda imkansız hale getiriyordu.
+          // Bkz. tokenizer.js'teki `isNumericToken` doc comment'i.
+          if (token.type !== "word" || isNumericToken(token.text)) {
+            return { ...token, lemma: null, sentence: text };
+          }
           const sentence = sentences.find((s) => token.start >= s.start && token.start < s.end);
           return {
             ...token,
@@ -104,8 +116,29 @@ export function OnboardingFirstReadStep({
     });
   }, [passage]);
 
-  const remaining = Math.max(0, REQUIRED_WORDS - picked.length);
-  const ready = picked.length >= REQUIRED_WORDS;
+  /**
+   * DENETİM BULGUSU (2026-09-18, kullanıcı geri bildirimi): "İlla üç tane
+   * seçmem gerekiyo, o da olmaz" -- bazı pasajlarda (özellikle kısa/tek
+   * cümlelik B2 örnekleri) 3'ten AZ gerçek (rakam olmayan) kelime
+   * bulunuyordu, yani kullanıcı hedefe ULAŞMASI YAPISAL OLARAK MÜMKÜN
+   * DEĞİLDİ -- onboarding'in bu adımında kalıcı olarak sıkışıyordu.
+   * Gereken sayı artık pasajda GERÇEKTEN bulunan farklı kelime sayısını
+   * aşamıyor; pasajda hiç seçilebilir kelime yoksa adım hiç engel
+   * koymuyor (0 gerekiyor, buton baştan aktif).
+   */
+  const availableWordCount = useMemo(() => {
+    const lemmas = new Set<string>();
+    for (const paragraph of rendered) {
+      for (const token of paragraph.tokens) {
+        if (token.lemma) lemmas.add(token.lemma);
+      }
+    }
+    return lemmas.size;
+  }, [rendered]);
+  const requiredWords = Math.min(REQUIRED_WORDS, availableWordCount);
+
+  const remaining = Math.max(0, requiredWords - picked.length);
+  const ready = picked.length >= requiredWords;
 
   if (loading) {
     return (
@@ -136,7 +169,11 @@ export function OnboardingFirstReadStep({
         subtitle={t("onboarding.firstRead.subtitle")}
         footer={
           <OnboardingFooterButton
-            label={ready ? t("onboarding.firstRead.cta") : t("onboarding.firstRead.ctaPending", { count: remaining })}
+            label={
+              ready
+                ? t("onboarding.firstRead.cta")
+                : t("onboarding.firstRead.ctaPending", { count: remaining })
+            }
             onPress={onContinue}
             disabled={!ready}
           />
@@ -190,9 +227,14 @@ export function OnboardingFirstReadStep({
             {picked.map((word) => (
               <View
                 key={word.lemma}
-                style={[styles.chip, { backgroundColor: theme.bg.surface, borderColor: theme.accent }]}
+                style={[
+                  styles.chip,
+                  { backgroundColor: theme.bg.surface, borderColor: theme.accent },
+                ]}
               >
-                <Text style={[monoType.rowText, { color: theme.text.primary }]}>{word.surface}</Text>
+                <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+                  {word.surface}
+                </Text>
                 <Ionicons
                   name="close"
                   size={16}

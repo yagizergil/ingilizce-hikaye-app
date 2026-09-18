@@ -1,4 +1,4 @@
-const { tokenize, lemmatize, splitSentences } = require("../tokenizer");
+const { tokenize, lemmatize, splitSentences, isNumericToken } = require("../tokenizer");
 
 describe("tokenize", () => {
   it("keeps contractions as single word tokens", () => {
@@ -166,5 +166,37 @@ describe("splitSentences", () => {
 
   it("does not throw on pure punctuation", () => {
     expect(() => splitSentences("... !!! ???")).not.toThrow();
+  });
+});
+
+/**
+ * ÇÖZÜLEN HATA (2026-09-18, kullanıcı geri bildirimi): "1945" gibi salt
+ * rakamlardan oluşan bir token `tokenize()` tarafından `type:"word"`
+ * sayılıyordu (WORD_CHAR_RE harf VE rakamı birlikte kapsıyor -- bu bilinçli
+ * ve değiştirilmedi, bkz. tokenizer.js). Ama reader'da böyle bir token'a
+ * dokunmak "çeviri bulunamadı" gösteriyordu, onboarding'in "3 kelime seç"
+ * adımında ise pasajdaki gerçek kelime havuzunu rakamlar dolduruyordu.
+ * `isNumericToken` çağıranların bu token'ları tıklanabilir/seçilebilir
+ * kelime havuzundan AYIKLAMASINI sağlıyor, tokenizer'ın kendi
+ * sınıflandırmasına dokunmadan.
+ */
+describe("isNumericToken", () => {
+  it("is true for a pure-digit token", () => {
+    expect(isNumericToken("1945")).toBe(true);
+    expect(isNumericToken("42")).toBe(true);
+  });
+
+  it("is false for a real word", () => {
+    expect(isNumericToken("Frankenstein")).toBe(false);
+  });
+
+  it("is false for a mixed alphanumeric token (not a bare number)", () => {
+    expect(isNumericToken("3D")).toBe(false);
+    expect(isNumericToken("iPhone12")).toBe(false);
+  });
+
+  it("is false for empty or non-string input", () => {
+    expect(isNumericToken("")).toBe(false);
+    expect(isNumericToken(undefined)).toBe(false);
   });
 });

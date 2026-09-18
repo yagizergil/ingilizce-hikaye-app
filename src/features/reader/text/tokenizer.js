@@ -85,6 +85,27 @@ function tokenize(text) {
   return tokens;
 }
 
+// DENETİM BULGUSU (2026-09-18, kullanıcı geri bildirimi): `WORD_CHAR_RE`
+// bilerek harf VE rakamı birlikte tek bir "word" token'ı sayıyor (bir
+// tarih ya da "42" gibi salt rakamlı bir dizi de bir `type:"word"` token'ı
+// üretiyor) -- bunu değiştirmek geniş bir etki alanına sahip (kelime
+// sayımı, TTS zamanlaması, satır ölçümü hep bu sınıflandırmaya güveniyor).
+// Ama "salt rakamlardan oluşan bir token TIKLANABİLİR bir kelime
+// DEĞİLDİR" ayrı bir gerçek: reader'da bir yıla ("1945") dokunmak "çeviri
+// bulunamadı" gösteriyordu, onboarding'in "3 kelime seç" adımında ise
+// pasajdaki tek gerçek kelime havuzunu rakamlar dolduruyor, kullanıcı
+// hedefe hiç ulaşamıyordu. Tokenizer'ın kendi sınıflandırmasına
+// dokunmadan, çağıranların "bu token GERÇEKTEN tıklanabilir bir kelime
+// mi" diye sorabileceği ayrı, dar kapsamlı bir yardımcı fonksiyon:
+// yalnızca rakamlardan oluşan (harf İÇERMEYEN) bir "word" token'ı
+// tıklanabilir/seçilebilir değil sayılıyor. "3D", "iPhone12" gibi harf
+// içeren karışık token'lara dokunulmuyor -- onlar gerçek kelime gibi
+// davranmaya devam ediyor.
+var PURE_DIGITS_RE = /^[\p{N}]+$/u;
+function isNumericToken(text) {
+  return typeof text === "string" && text.length > 0 && PURE_DIGITS_RE.test(text);
+}
+
 // Short list of common base nouns that end in "-er"/"-or" and must NEVER be
 // stripped by the comparative/superlative suffix rule below. This is a
 // naive but safe exception list rather than a general "is this a plausible
@@ -93,19 +114,69 @@ function tokenize(text) {
 // or proper noun ending in "-er") can still be incorrectly stripped by the
 // heuristic; conversely, this list is not exhaustive.
 var ER_NOUN_EXCEPTIONS = {
-  father: true, mother: true, brother: true, sister: true, daughter: true,
-  water: true, winter: true, summer: true, number: true, matter: true,
-  letter: true, paper: true, order: true, dinner: true, corner: true,
-  answer: true, member: true, chamber: true, danger: true, manner: true,
-  finger: true, hunger: true, anger: true, wonder: true, power: true,
-  river: true, silver: true, tiger: true, spider: true, monster: true,
-  master: true, sister_in_law: true, mister: true, doctor: true,
-  neighbor: true, neighbour: true, character: true, offer: true,
-  weather: true, leather: true, feather: true, wander: true, thunder: true,
-  after: true, other: true, never: true, ever: true, over: true,
-  under: true, whether: true, either: true, neither: true, together: true,
-  however: true, rather: true, further: true, proper: true, upper: true,
-  lower: true, inner: true, outer: true, former: true, eager: true,
+  father: true,
+  mother: true,
+  brother: true,
+  sister: true,
+  daughter: true,
+  water: true,
+  winter: true,
+  summer: true,
+  number: true,
+  matter: true,
+  letter: true,
+  paper: true,
+  order: true,
+  dinner: true,
+  corner: true,
+  answer: true,
+  member: true,
+  chamber: true,
+  danger: true,
+  manner: true,
+  finger: true,
+  hunger: true,
+  anger: true,
+  wonder: true,
+  power: true,
+  river: true,
+  silver: true,
+  tiger: true,
+  spider: true,
+  monster: true,
+  master: true,
+  sister_in_law: true,
+  mister: true,
+  doctor: true,
+  neighbor: true,
+  neighbour: true,
+  character: true,
+  offer: true,
+  weather: true,
+  leather: true,
+  feather: true,
+  wander: true,
+  thunder: true,
+  after: true,
+  other: true,
+  never: true,
+  ever: true,
+  over: true,
+  under: true,
+  whether: true,
+  either: true,
+  neither: true,
+  together: true,
+  however: true,
+  rather: true,
+  further: true,
+  proper: true,
+  upper: true,
+  lower: true,
+  inner: true,
+  outer: true,
+  former: true,
+  eager: true,
 };
 
 // Words that end in "-ing" but are not a present-participle/gerund of any
@@ -114,8 +185,15 @@ var ER_NOUN_EXCEPTIONS = {
 // to ER_NOUN_EXCEPTIONS above. A naive, non-exhaustive safe list rather
 // than a dictionary; see ADR-008 for why a full dictionary isn't used.
 var ING_WORD_EXCEPTIONS = {
-  during: true, evening: true, morning: true, ceiling: true,
-  spring: true, king: true, thing: true, ring: true, wing: true,
+  during: true,
+  evening: true,
+  morning: true,
+  ceiling: true,
+  spring: true,
+  king: true,
+  thing: true,
+  ring: true,
+  wing: true,
 };
 
 // Words that end in "-ed" but are not the past tense of any verb formed by
@@ -125,10 +203,24 @@ var ING_WORD_EXCEPTIONS = {
 // "indeed"). Same naive-but-safe exception-list approach as
 // ER_NOUN_EXCEPTIONS/ING_WORD_EXCEPTIONS above; see ADR-008.
 var ED_WORD_EXCEPTIONS = {
-  indeed: true, need: true, speed: true, greed: true, breed: true,
-  seed: true, weed: true, feed: true, heed: true, reed: true,
-  deed: true, creed: true, steed: true, exceed: true, proceed: true,
-  succeed: true, agreed: true, decreed: true,
+  indeed: true,
+  need: true,
+  speed: true,
+  greed: true,
+  breed: true,
+  seed: true,
+  weed: true,
+  feed: true,
+  heed: true,
+  reed: true,
+  deed: true,
+  creed: true,
+  steed: true,
+  exceed: true,
+  proceed: true,
+  succeed: true,
+  agreed: true,
+  decreed: true,
 };
 
 // Consonants that are INHERENTLY doubled in an English base word and are
@@ -357,7 +449,10 @@ function splitSentences(text) {
     // immediately-following closing quote/paren characters as part of the
     // same boundary candidate.
     var punctEnd = i + 1;
-    while (punctEnd < len && (text[punctEnd] === "." || text[punctEnd] === "!" || text[punctEnd] === "?")) {
+    while (
+      punctEnd < len &&
+      (text[punctEnd] === "." || text[punctEnd] === "!" || text[punctEnd] === "?")
+    ) {
       punctEnd++;
     }
     while (punctEnd < len && CLOSERS.indexOf(text[punctEnd]) !== -1) {
@@ -480,9 +575,7 @@ function lemmaCandidates(surface) {
   // yüzey biçimi, üretilen kökten daha güvenilir.
   var isIrregular = Object.prototype.hasOwnProperty.call(irregularLemmas, lower);
   var usedComparativeRule =
-    !isIrregular &&
-    primary !== lower &&
-    (lower.slice(-2) === "er" || lower.slice(-3) === "est");
+    !isIrregular && primary !== lower && (lower.slice(-2) === "er" || lower.slice(-3) === "est");
   var lowConfidence = !isIrregular && (usedComparativeRule || primary.length < 3);
 
   if (lowConfidence) {
@@ -575,4 +668,5 @@ module.exports = {
   lemmaCandidates: lemmaCandidates,
   inflectionHint: inflectionHint,
   splitSentences: splitSentences,
+  isNumericToken: isNumericToken,
 };
