@@ -153,19 +153,66 @@ export function findPageForPosition(
  * above the WebView wrapper rather than overlaying it). `onLayout` reports
  * this component's own allotted box after that chrome has already taken
  * its space in the parent flex layout, which is exactly the number
- * pagination needs. */
+ * pagination needs.
+ *
+ * DENETİM BULGUSU (2026-09-19, kullanıcı videosu): bu boyutu OLDUĞU GİBİ
+ * (debounce'suz) `state`'e yazmak, bu View'ın ölçülen boyutunu kısaca
+ * değiştirip hemen eski haline döndüren HERHANGİ bir geçici olayı (ör.
+ * bir sistem bildirim şeridinin görünüp kaybolması, klavye/ekran geçiş
+ * animasyonlarının ara kareleri) gerçek bir yeniden boyutlanma sanıyordu.
+ * Bu da `useChapterPagination`'ı GEREKSİZ YERE yeniden tetikliyor, üretilen
+ * yeni `pages` dizisi çoğu zaman neredeyse aynı ama sayfa SAYISI bir an
+ * için farklı olabiliyor (özellikle bölümün son sayfası, kalan boşluğun
+ * pageHeight sınırına en yakın olduğu yer). Kullanıcı fiilen hiç
+ * kaydırmadan, ekranda AYNI metin dururken, footer "sonraki bölüm"
+ * düğmesi ile yüzde göstergesi arasında çırpınıyordu -- videoda net:
+ * aynı paragraf görünürken footer iki durum arasında gidip geliyor, ve
+ * kullanıcı düğmeye basmayı başaramıyor.
+ *
+ * Düzeltme: yeni bir boyut geldiğinde HEMEN uygulanmıyor -- 200ms boyunca
+ * BAŞKA bir onLayout çağrısı gelmezse (yani boyut gerçekten KARARLI hale
+ * gelmişse) ancak o zaman `state`'e yazılıp sayfalamaya yansıtılıyor. İLK
+ * ölçüm (0,0 -> gerçek boyut) bu bekleme dışında tutuluyor ki bölüm ilk
+ * açıldığında sayfalama 200ms boşuna gecikmesin.
+ */
 function usePageContainerLayout(): {
   width: number;
   height: number;
   onLayout: (event: LayoutChangeEvent) => void;
 } {
   const [size, setSize] = useState({ width: 0, height: 0 });
+  const pendingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const onLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
-    setSize((previous) =>
-      previous.width === width && previous.height === height ? previous : { width, height },
-    );
+
+    if (pendingTimeoutRef.current !== null) {
+      clearTimeout(pendingTimeoutRef.current);
+      pendingTimeoutRef.current = null;
+    }
+
+    setSize((previous) => {
+      if (previous.width === width && previous.height === height) return previous;
+      // First-ever measurement: apply immediately, nothing to debounce
+      // against yet and delaying it would delay first paint.
+      if (previous.width === 0 && previous.height === 0) return { width, height };
+      return previous;
+    });
+
+    pendingTimeoutRef.current = setTimeout(() => {
+      pendingTimeoutRef.current = null;
+      setSize((previous) =>
+        previous.width === width && previous.height === height ? previous : { width, height },
+      );
+    }, 200);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pendingTimeoutRef.current !== null) clearTimeout(pendingTimeoutRef.current);
+    };
+  }, []);
+
   return { width: size.width, height: size.height, onLayout };
 }
 
