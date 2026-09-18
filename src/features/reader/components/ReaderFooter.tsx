@@ -58,9 +58,7 @@ export function ReaderFooter({
           onPress={onFinishChapter}
           accessibilityRole="button"
           accessibilityLabel={
-            hasNextChapter
-              ? t("reader.footer.nextChapter")
-              : t("reader.footer.finishBook")
+            hasNextChapter ? t("reader.footer.nextChapter") : t("reader.footer.finishBook")
           }
           style={({ pressed }) => [
             styles.action,
@@ -87,7 +85,23 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     alignItems: "center",
     justifyContent: "center",
-    minHeight: 44,
+    // DENETİM BULGUSU (2026-09-18, kullanıcı videosu): bu değer önceden 44
+    // idi -- yeterince yüksekti YALNIZCA yüzde metni için. `showAction`
+    // dalı (`.action`'ın kendi minHeight:36'sı + bu container'ın üstte/
+    // altta 8'er piksel dolgusu) doğal olarak 52 render ediyordu. Son
+    // sayfaya gelindiğinde footer 44'ten 52'ye BÜYÜYORDU; footer bu ekranın
+    // flex sütununda bir kardeş olduğu için, bu büyüme okuma alanının
+    // (`readerWrap`, flex:1) ölçülen yüksekliğini KÜÇÜLTÜYORDU. Bu da
+    // `PaginatedReaderView`'ın `contentHeight`'ını değiştirip sayfalamayı
+    // yeniden tetikliyordu -- yeni sayfalama farklı bir toplam sayfa
+    // sayısı üretebiliyordu, yani kullanıcı artık "son sayfada" olmayabiliyordu,
+    // footer küçülüyordu, okuma alanı büyüyordu, sayfalama ESKİ boyutla
+    // yeniden tetikleniyordu, kullanıcı yeniden son sayfaya dönüyordu --
+    // sonsuz bir döngü. Kullanıcının "sayfa nefes alıyor" / "buton gidip
+    // geliyor" diye tarif ettiği glitch tam olarak buydu. Düzeltme: footer
+    // her iki durumda da AYNI (52) yükseklikte -- artık `onLastPage`
+    // değişse bile okuma alanının boyutu asla değişmiyor.
+    minHeight: 52,
   },
   action: {
     flexDirection: "row",

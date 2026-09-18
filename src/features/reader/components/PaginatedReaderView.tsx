@@ -282,6 +282,25 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
     );
 
     /**
+     * DENETİM BULGUSU (2026-09-18, kullanıcı videosu): `scrollToIndex`
+     * hedef sayfa henüz FlatList'in dar sanallaştırma penceresinde
+     * ölçülmemişse (hızlı art arda kaydırma/zone-tap sırasında sık
+     * oluyordu) RN önce `averageItemLength` ile TAHMİNİ bir konuma atlıyor,
+     * sonra gerçek ölçüm gelince DÜZELTİYOR -- kullanıcının "sayfa önce
+     * sıçrıyor, sonra geri geliyor" diye tarif ettiği iki adımlı sıçrama bu.
+     * `getItemLayout` zaten HER index için TAM offset'i (width * index)
+     * biliyor, yani tahmine hiç gerek yok -- `scrollToOffset` ile doğrudan
+     * kesin konuma gidiyoruz.
+     */
+    const handleScrollToIndexFailed = useCallback(
+      (info: { index: number }) => {
+        if (width === 0) return;
+        listRef.current?.scrollToOffset({ offset: info.index * width, animated: false });
+      },
+      [width],
+    );
+
+    /**
      * TOUCH-ZONE / FLATLIST-SWIPE GESTURE COMPOSITION.
      *
      * Bölgeler: kelime dokunuşu önce kazanır (yapısal olarak, aşağıya bak),
@@ -485,10 +504,19 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
           renderItem={renderItem}
           getItemLayout={getItemLayout}
           onMomentumScrollEnd={handleMomentumScrollEnd}
+          onScrollToIndexFailed={handleScrollToIndexFailed}
           onLayout={handleListLayoutReady}
-          windowSize={3}
-          initialNumToRender={2}
-          maxToRenderPerBatch={2}
+          // DENETİM BULGUSU (2026-09-18): eski değerler (3/2/2) çok dardı --
+          // hızlı art arda kaydırmada bir sonraki/bir önceki sayfa henüz
+          // mount edilmemiş oluyordu. `scrollToIndex` (bkz.
+          // `onScrollToIndexFailed`) hedef index'in ölçülmüş bir layout'u
+          // olmadan çağrılırsa RN önce YAKLAŞIK bir konuma sıçrıyor, ölçüm
+          // tamamlanınca DÜZELTİYOR -- kullanıcının tarif ettiği "önce
+          // sıçrıyor, sonra geri geliyor" hissi tam olarak bu iki adımlı
+          // düzeltme. Komşu sayfaları önceden monte etmek bu riski azaltıyor.
+          windowSize={5}
+          initialNumToRender={3}
+          maxToRenderPerBatch={3}
         />
       </View>
     );

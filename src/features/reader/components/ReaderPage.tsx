@@ -241,7 +241,39 @@ export function ReaderPage({
   }, [page, paragraphById, textStyle, onWordTap, onSentenceLongPress, readerColors]);
 
   return (
-    <Text style={styles.pageContainer}>{renderedParagraphs.map((rendered) => rendered.node)}</Text>
+    <Text style={styles.pageContainer}>
+      {renderedParagraphs.map((rendered, index) => {
+        // DENETİM BULGUSU (2026-09-18, kullanıcı videosu): art arda gelen
+        // iki paragraf arasında HİÇ ayraç yoktu -- her paragraf kendi
+        // `<Text>` düğümünde ayrı ayrı doğru render ediliyordu, ama hepsi
+        // TEK bir dış `<Text>`in içine kardeş olarak konunca RN'in satır içi
+        // (inline) akışı onları boşluksuz birleştiriyordu ("...modern
+        // life.LADY CAROLINE: As far as..." gibi bitişik metin -- iki ayrı
+        // paragraf/replik tek cümleymiş gibi görünüyordu). `page.segments`
+        // bir paragrafın YARISINI da taşıyabiliyor (sayfa sınırında bölünen
+        // uzun paragraflar) -- bu yüzden ayraç yalnızca YENİ BAŞLAYAN bir
+        // paragrafın önüne ekleniyor (`segment.charStart === 0`), sayfadaki
+        // İLK segment hariç (sayfanın en üstünde boşuna boşluk olmasın).
+        // Bölünmüş bir paragrafın devam segmentine (`charStart !== 0`)
+        // dokunulmuyor -- kesintisiz akması gerekiyor.
+        //
+        // Sayfalama (`paginate.ts`) yükseklik hesabına bu görsel boşluğu
+        // DAHIL ETMİYOR -- bilinçli bir taviz: paragraf aralarına doğru
+        // boşluk eklemek, satır paketleme algoritmasını (dul/yetim önleme)
+        // yeniden yazmadan yapılabilecek en düşük riskli düzeltme. En kötü
+        // sonucu, bir sayfanın en altında bu boşluğun bir kısmının
+        // kırpılması (görünmez, boş alan) -- şu anki "paragraflar bitişik"
+        // hatasından çok daha az fark edilir.
+        const isNewParagraphStart = page.segments[index]?.charStart === 0;
+        const needsBreakBefore = index > 0 && isNewParagraphStart;
+        return (
+          <Text key={`sep-wrap-${rendered.key}`}>
+            {needsBreakBefore ? <Text key={`sep-${rendered.key}`}>{"\n\n"}</Text> : null}
+            {rendered.node}
+          </Text>
+        );
+      })}
+    </Text>
   );
 }
 
