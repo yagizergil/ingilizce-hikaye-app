@@ -19,7 +19,7 @@ Türkçe  [tr]
 --- PROMOTIONAL TEXT (170)  -  123/170 ---
 529 ücretsiz kitap, A1'den C2'ye. Anlamadığın kelimeye dokun, karşılığı anında açılsın; kaydet, aralıklı tekrarla pekiştir.
 
---- WHAT'S NEW (4000)  -  1822/4000 ---
+--- WHAT'S NEW (4000)  -  2012/4000 ---
 Bu sürüm 1.0.1 sonrası yapılan geniş bir denetimin sonucu. Bulunan her hata düzeltildi.
 
 ÖĞRENME
@@ -44,6 +44,8 @@ OKUMA
 İLK KURULUM
 • İlk okuma adımında hangi kelimeye dokunacağın ve kelimeyi nereden kaydedeceğin artık gösteriliyor.
 • Dil ayarlarında arayüz dili sunucu onaylamadan değiştirilmiyor.
+• Geçici bir bağlantı sorunu bazen ilk kurulumun hiç gösterilmemesine yol açıyordu.
+• Dil çiftleri ekranı, henüz bir çiftin yokken bomboş açılıyordu; artık çiftini oradan da kurabiliyorsun.
 
 ABONELİK
 • Aboneliği olan kullanıcıda satın alma geri yükleme "abonelik bulunamadı" diyordu.
@@ -58,7 +60,7 @@ English  [en]
 --- PROMOTIONAL TEXT (170)  -  132/170 ---
 529 free books, A1 to C2. Tap any word you don't know and see it in your own language; save it and review it with spaced repetition.
 
---- WHAT'S NEW (4000)  -  1740/4000 ---
+--- WHAT'S NEW (4000)  -  1917/4000 ---
 This release is the result of a wide audit after 1.0.1. Every defect it found has been fixed.
 
 LEARNING
@@ -83,6 +85,8 @@ READING
 SETUP
 • The first reading step now shows you which word to tap and where to save it.
 • The interface language is no longer changed before the server confirms it.
+• A temporary connection problem could cause setup to be skipped entirely.
+• The language pairs screen opened empty when you had no pair yet; you can now set one up from there.
 
 SUBSCRIPTION
 • Restoring purchases told active subscribers that no subscription was found.
@@ -97,7 +101,7 @@ Deutsch  [de]
 --- PROMOTIONAL TEXT (170)  -  134/170 ---
 529 kostenlose Bücher, A1 bis C2. Tippe auf ein unbekanntes Wort und sieh die Bedeutung sofort; speichere es und wiederhole es später.
 
---- WHAT'S NEW (4000)  -  1970/4000 ---
+--- WHAT'S NEW (4000)  -  2191/4000 ---
 Diese Version ist das Ergebnis einer umfassenden Prüfung nach 1.0.1. Jeder gefundene Fehler wurde behoben.
 
 LERNEN
@@ -122,6 +126,8 @@ LESEN
 EINRICHTUNG
 • Der erste Leseschritt zeigt dir jetzt, welches Wort du antippen und wo du es speichern kannst.
 • Die Oberflächensprache wird erst nach Bestätigung durch den Server umgestellt.
+• Ein vorübergehendes Verbindungsproblem konnte dazu führen, dass die Einrichtung ganz übersprungen wurde.
+• Der Bildschirm für Sprachpaare war leer, wenn du noch kein Paar hattest; jetzt kannst du dort eines einrichten.
 
 ABONNEMENT
 • Beim Wiederherstellen von Käufen wurde aktiven Abonnenten gemeldet, es gebe kein Abonnement.
@@ -136,7 +142,7 @@ Français  [fr]
 --- PROMOTIONAL TEXT (170)  -  133/170 ---
 529 livres gratuits, de A1 à C2. Touchez un mot inconnu et voyez sa traduction ; enregistrez-le et révisez-le par répétition espacée.
 
---- WHAT'S NEW (4000)  -  1906/4000 ---
+--- WHAT'S NEW (4000)  -  2123/4000 ---
 Cette version est le résultat d'un audit complet après la 1.0.1. Tous les défauts trouvés ont été corrigés.
 
 APPRENTISSAGE
@@ -161,6 +167,8 @@ LECTURE
 CONFIGURATION
 • La première étape de lecture vous montre quel mot toucher et où l'enregistrer.
 • La langue de l'interface n'est plus changée avant confirmation du serveur.
+• Un problème de connexion temporaire pouvait faire sauter entièrement la configuration.
+• L'écran des paires de langues s'ouvrait vide si vous n'en aviez aucune ; vous pouvez désormais en créer une depuis cet écran.
 
 ABONNEMENT
 • La restauration des achats indiquait « aucun abonnement » aux abonnés actifs.
@@ -175,7 +183,7 @@ Italiano  [it]
 --- PROMOTIONAL TEXT (170)  -  127/170 ---
 529 libri gratuiti, da A1 a C2. Tocca una parola che non conosci e vedine subito il significato; salvala e ripassala nel tempo.
 
---- WHAT'S NEW (4000)  -  1862/4000 ---
+--- WHAT'S NEW (4000)  -  2056/4000 ---
 Questa versione è il risultato di una verifica approfondita dopo la 1.0.1. Ogni difetto trovato è stato corretto.
 
 APPRENDIMENTO
@@ -200,6 +208,8 @@ LETTURA
 CONFIGURAZIONE
 • Il primo passo di lettura ora ti mostra quale parola toccare e dove salvarla.
 • La lingua dell'interfaccia non cambia più prima della conferma del server.
+• Un problema di connessione temporaneo poteva far saltare del tutto la configurazione.
+• La schermata delle coppie di lingue si apriva vuota se non ne avevi ancora una; ora puoi crearla da lì.
 
 ABBONAMENTO
 • Il ripristino degli acquisti diceva «nessun abbonamento» agli abbonati attivi.
@@ -214,7 +224,7 @@ Español  [es]
 --- PROMOTIONAL TEXT (170)  -  136/170 ---
 529 libros gratis, de A1 a C2. Toca cualquier palabra que no conozcas y ve su significado; guárdala y repásala con repetición espaciada.
 
---- WHAT'S NEW (4000)  -  1845/4000 ---
+--- WHAT'S NEW (4000)  -  2048/4000 ---
 Esta versión es el resultado de una revisión amplia tras la 1.0.1. Se ha corregido cada defecto encontrado.
 
 APRENDIZAJE
@@ -239,6 +249,8 @@ LECTURA
 CONFIGURACIÓN
 • El primer paso de lectura ahora te muestra qué palabra tocar y dónde guardarla.
 • El idioma de la interfaz ya no cambia antes de que el servidor lo confirme.
+• Un problema de conexión temporal podía hacer que se omitiera por completo la configuración.
+• La pantalla de pares de idiomas se abría vacía si aún no tenías ninguno; ahora puedes crear uno desde ahí.
 
 SUSCRIPCIÓN
 • Restaurar compras decía «no se encontró suscripción» a suscriptores activos.
@@ -253,7 +265,7 @@ SUSCRIPCIÓN
 --- PROMOTIONAL TEXT (170)  -  128/170 ---
 529 бесплатных книг, от A1 до C2. Коснитесь незнакомого слова и сразу увидите перевод; сохраните его и повторяйте по интервалам.
 
---- WHAT'S NEW (4000)  -  1673/4000 ---
+--- WHAT'S NEW (4000)  -  1878/4000 ---
 Эта версия — результат большой проверки после 1.0.1. Все найденные дефекты исправлены.
 
 ОБУЧЕНИЕ
@@ -278,6 +290,8 @@ SUSCRIPCIÓN
 НАСТРОЙКА
 • На первом шаге чтения теперь показано, какое слово коснуться и где его сохранить.
 • Язык интерфейса больше не меняется до подтверждения сервером.
+• Временная проблема соединения могла привести к тому, что первоначальная настройка не показывалась вовсе.
+• Экран языковых пар открывался пустым, если пары ещё не было; теперь её можно создать прямо там.
 
 ПОДПИСКА
 • Восстановление покупок сообщало активным подписчикам, что подписки нет.
@@ -292,7 +306,7 @@ SUSCRIPCIÓN
 --- PROMOTIONAL TEXT (170)  -  48/170 ---
 529 本免费图书，从 A1 到 C2。点按不认识的单词即可查看释义，收藏后用间隔重复巩固记忆。
 
---- WHAT'S NEW (4000)  -  558/4000 ---
+--- WHAT'S NEW (4000)  -  617/4000 ---
 本次更新是 1.0.1 之后一次全面排查的结果，发现的问题均已修复。
 
 学习
@@ -317,6 +331,8 @@ SUSCRIPCIÓN
 初次设置
 • 首次阅读步骤现在会提示点按哪个单词以及在哪里保存。
 • 界面语言不再在服务器确认之前切换。
+• 临时的网络问题可能导致初次设置被完全跳过。
+• 当你还没有语言对时，语言对页面是空白的；现在可以直接在那里创建。
 
 订阅
 • 恢复购买会对有效订阅用户显示"未找到订阅"。
@@ -331,7 +347,7 @@ SUSCRIPCIÓN
 --- PROMOTIONAL TEXT (170)  -  55/170 ---
 A1からC2まで、529冊すべて無料。わからない単語をタップすればすぐに意味が出ます。保存して間隔反復で定着。
 
---- WHAT'S NEW (4000)  -  816/4000 ---
+--- WHAT'S NEW (4000)  -  902/4000 ---
 このバージョンは 1.0.1 後の広範な点検の結果です。見つかった不具合はすべて修正しました。
 
 学習
@@ -356,6 +372,8 @@ A1からC2まで、529冊すべて無料。わからない単語をタップす�
 初期設定
 • 最初の読書ステップで、どの単語をタップし、どこで保存するかを案内します。
 • サーバーの確認前に表示言語が切り替わらなくなりました。
+• 一時的な通信の問題で初期設定がまったく表示されないことがありました。
+• 言語ペアがまだないとき、言語ペア画面が空のまま開いていました。今はその画面から設定できます。
 
 サブスクリプション
 • 購入の復元が、有効な購読者に「購読が見つかりません」と表示していました。
@@ -370,7 +388,7 @@ A1からC2まで、529冊すべて無料。わからない単語をタップす�
 --- PROMOTIONAL TEXT (170)  -  109/170 ---
 529 كتابًا مجانيًا من A1 إلى C2. المس أي كلمة لا تعرفها لترى معناها فورًا، واحفظها وراجعها بالتكرار المتباعد.
 
---- WHAT'S NEW (4000)  -  1451/4000 ---
+--- WHAT'S NEW (4000)  -  1609/4000 ---
 هذا الإصدار نتيجة مراجعة واسعة بعد 1.0.1، وقد جرى إصلاح كل خلل عُثر عليه.
 
 التعلّم
@@ -395,6 +413,8 @@ A1からC2まで、529冊すべて無料。わからない単語をタップす�
 الإعداد
 • تُظهر لك خطوة القراءة الأولى أي كلمة تلمسها وأين تحفظها.
 • لم تعد لغة الواجهة تتغيّر قبل تأكيد الخادم.
+• كانت مشكلة اتصال مؤقتة قد تؤدي إلى تخطّي الإعداد الأولي بالكامل.
+• كانت شاشة أزواج اللغات تُفتح فارغة إن لم يكن لديك زوج بعد؛ يمكنك الآن إنشاء زوج من هناك.
 
 الاشتراك
 • كانت استعادة المشتريات تُخبر المشتركين النشطين بعدم وجود اشتراك.
