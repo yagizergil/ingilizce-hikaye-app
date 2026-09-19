@@ -547,30 +547,55 @@ olurdu.
 
 308 test geçiyor, typecheck ve lint temiz.
 
-**AÇIK KALANLAR (bir sonraki tur)**
+**İKİNCİ GEÇİŞTE KAPATILANLAR (aynı gün)**
 
-- **Migration 041 üretime UYGULANMADI.** `get_user_streak()` bir günü
-  "okunmuş" saymak için `words_read > 0`'a bakıyor ama o sütuna hiç yazı
-  yazılmadı. Canlı veri: `user_reading_stats`'ta 17 satır, `words_read > 0`
-  olan **sıfır**, `minutes > 0` olan **17** (13 kullanıcı). Yani seri
-  herkeste ispatlı biçimde 0 ve seri-kurtarma bildirimi hiç ateşlenemiyor.
-  Dosya hazır, uygulanması bekliyor.
-- **Veri katmanı (ajan yarıda kaldı):** bölüm metni 1000 paragrafı aşan
-  bölümlerde sessizce kırpılıyor (4 yayında bölüm etkileniyor);
-  `lemma_canonical` çağrı başına ~725 ms (CTE materyalize oluyor, indeks
-  kullanılamıyor) ve reader'ın sıcak yolunda; kütüphane listesi
-  render ettiğinin ~3 katı bayt indiriyor (`description` vb. liste
-  satırında kullanılmıyor); `useBooksQuery`'de `.limit()` yok ve 529
-  kitapla 1000 satır sınırına 471 kitap kaldı; dört gereksiz indeks;
-  `enforce_saved_word_limit` BEFORE INSERT olduğu için tam sınırdaki
-  kullanıcı zaten kayıtlı bir kelimeye yeniden dokununca hata alıyor.
+9. **Bölüm metni 1000 paragrafta SESSİZCE kırpılıyordu** -- paragraflar
+   `book_sections` sorgusuna gömülü çekiliyordu ve gömülü kaynaklar da
+   PostgREST'in sınırına tabi. Yayında 1000 paragrafı aşan dört bölüm var
+   (en uzunu 1.473); o bölümleri okuyan kullanıcı metnin SONUNU hiç
+   görmüyordu. Aynı sınıf bu turda ÜÇÜNCÜ kez çıktı (`book_lemmas`,
+   `book_paragraphs`, `books`).
+10. **Kütüphane sorgusunda `.limit()`/sayfalama yoktu** -- 529 yayında
+    kitapla sessiz kesmeye 471 kitap kalmıştı. Ayrıca liste, detay ekranıyla
+    aynı sütunları çekiyordu: canlı ölçümde `description` tek başına metin
+    yükünün 38 kB'ı (toplam 58 kB'ın üçte ikisi) ve liste satırı onu hiç
+    göstermiyor.
+11. **Çevrimdışı tekrar oturumu sessizce kayboluyordu** (`onError` hiç
+    yoktu). Bitiş ekranı artık kaç değerlendirmenin yazılamadığını söylüyor.
+    Ayrıca `srs_reviews` yazımı başarısız olunca fırlatılıyordu, oysa kartın
+    planı zaten yazılmıştı -- başarılı bir değerlendirme hatalı gösteriliyor
+    ve yeniden denemede plan ikinci kez uygulanabiliyordu.
+12. **Tek bir kalıcı ret çevrimdışı kelime kuyruğunu sonsuza dek
+    tıkıyordu.** Artık yalnızca ÇEVRİMDIŞI hatada duruluyor; deterministik
+    ret düşürülüp kuyruk akmaya devam ediyor. Flush sürerken eklenen eylemin
+    silinmesi de düzeltildi.
+13. **Migration 041-043 ÜRETİME UYGULANDI ve canlıda doğrulandı:**
+    - **041 seri:** `get_user_streak()` `words_read > 0`'a bakıyordu ama o
+      sütuna hiç yazı yazılmadı (canlı: 17 satırın sıfırı `words_read > 0`,
+      17'si `minutes > 0`, 13 kullanıcı). Seri herkeste 0'dı ve
+      seri-kurtarma bildirimi hiç ateşlenemiyordu. Koşul `minutes > 0` oldu.
+    - **042 `lemma_canonical`:** görünüm bir CTE'yi iki kez referans
+      verdiği için Postgres onu materyalize ediyor ve `lemma` filtresi içeri
+      itilemiyordu. **453,660 ms -> 0,419 ms** (shared hit 28.756 -> 45).
+      Eşdeğerlik uygulamadan önce kanıtlandı: 26.155 satır, iki yönde de
+      `EXCEPT` = 0.
+    - **043 sınır tetikleyicisi + indeksler:** `enforce_saved_word_limit`
+      BEFORE INSERT olduğu ve `saveWord` `ON CONFLICT DO NOTHING` yazdığı
+      için tam sınırdaki kullanıcı ZATEN kayıtlı bir kelimeye dokununca hata
+      alıyordu. Ayrıca dört gereksiz indeks silindi (~100 MB; yalnızca
+      `book_paragraphs_section_id_idx` 88 MB ve unique kısıt indeksiyle
+      birebir aynıydı). Silme sonrası bölüm okuma sorgusunun unique kısıt
+      indeksini devraldığı EXPLAIN ile doğrulandı.
+
+**HÂLÂ AÇIK**
+
 - **Üç farklı "bugün" tanımı:** `user_reading_stats.date` UTC yazılıyor,
   `get_user_streak` İstanbul'a göre, `useProfileStatsQuery` cihazın yerel
   gününe göre okuyor. Gece okuyanda seri ve haftalık grafik yanlış güne
-  düşüyor.
-- Çevrimdışı tekrar oturumu sessizce kayboluyor (`useReviewCardMutation`'da
-  `onError` yok); tek bir kalıcı hata çevrimdışı kelime kuyruğunu sonsuza
-  dek tıkıyor; aynı lemma iki farklı `pos` ile iki duruma düşebiliyor.
+  düşüyor. (041 seriyi çalışır hâle getirdi ama bu ayrışma duruyor.)
+- Aynı lemma iki farklı `pos` ile iki duruma düşebiliyor
+  (`user_lemma_state` PK'sı `(user_id, lemma, pos)`, `user_saved_words` ise
+  `(user_id, lemma)`; okuyucular lemma'ya göre Map kuruyor ve sıralama yok).
 - Dört sekmede odaklanmada koşulsuz `refetch()` (staleTime'ı baypas ediyor);
   on dil paketi de açılışta ayrıştırılıyor; onboarding kapakları
   `expo-image` yerine RN `Image` kullanıyor.
