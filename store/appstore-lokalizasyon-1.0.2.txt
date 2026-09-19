@@ -1,0 +1,404 @@
+APP STORE CONNECT - 10 DILDE PROMOTIONAL TEXT ve WHAT'S NEW
+Surum 1.0.2 - 19 Eylul 2026
+
+KAPSAM: uygulamanin destekledigi 10 dil (tr, en, de, fr, it, es, ru, zh,
+ja, ar). Ukraynaca YOK - ADR-013 11 dil diyor ama uygulamada 10 var.
+
+NOT 1: App Store yerellestirmeleri uygulama ici dillerden BAGIMSIZDIR.
+       ASC > App Information > Localizations altinda o dil ekli degilse
+       metin girilemez; once dili eklemek gerekir.
+NOT 2: Promotional text her an guncellenebilir, YENI BUILD GEREKTIRMEZ.
+NOT 3: What's New yalnizca yeni bir SURUM gonderilirken girilir.
+NOT 4: Karakter sayilari bu dosya uretilirken OLCULDU (her basligin
+       yanindaki sayi). Promo siniri 170, What's New siniri 4000.
+
+================================================================
+Türkçe  [tr]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  123/170 ---
+529 ücretsiz kitap, A1'den C2'ye. Anlamadığın kelimeye dokun, karşılığı anında açılsın; kaydet, aralıklı tekrarla pekiştir.
+
+--- WHAT'S NEW (4000)  -  1822/4000 ---
+Bu sürüm 1.0.1 sonrası yapılan geniş bir denetimin sonucu. Bulunan her hata düzeltildi.
+
+ÖĞRENME
+• Tekrar oturumunda kartların yaklaşık yarısı hiç gösterilmiyordu. Artık oturumdaki kartların hepsini görüyorsun.
+• Kelime defterinde bir kelimeyi kayıttan çıkarmanın hiçbir yolu yoktu. Yer imine dokunarak kaldırabilirsin.
+• Defterin doluyken zaten kayıtlı bir kelimeye dokunmak hata veriyordu.
+• Okuma serin artık gerçekten sayılıyor; daha önce herkeste sıfır görünüyordu.
+• Gece geç saatte okuduğunda okuman doğru güne yazılıyor. Daha önce bir önceki güne düşüyordu.
+• "Serin tehlikede" hatırlatması o gün okumuş olsan bile gönderiliyordu.
+• Çevrimdışıyken yaptığın tekrarlar ve kelime kayıtları artık kaybolmuyor.
+
+OKUMA
+• Uzun bölümlerin sonu hiç görünmüyordu. Artık metnin tamamı geliyor.
+• Kütüphanede kitapların büyük bölümü listelenmiyordu. 529 kitabın hepsi görünüyor.
+• Çevrimdışı sözlük bazı kitaplarda eksikti; artık kitabın bütün kelimeleri cihazında.
+• Bölümler belirgin biçimde daha hızlı açılıyor.
+• Seslendirme çalarken sayfalarda oluşan takılma giderildi.
+• Tema ve yazı boyutu artık Ayarlar ekranından da değiştirilebiliyor.
+• Tarama ve favoriler ekranlarına geri düğmesi eklendi.
+• Favori eklerken sunucu hatası olduğunda artık bir uyarı görüyorsun; daha önce dokunuşun sessizce hiçbir şey yapmıyordu.
+
+İLK KURULUM
+• İlk okuma adımında hangi kelimeye dokunacağın ve kelimeyi nereden kaydedeceğin artık gösteriliyor.
+• Dil ayarlarında arayüz dili sunucu onaylamadan değiştirilmiyor.
+
+ABONELİK
+• Aboneliği olan kullanıcıda satın alma geri yükleme "abonelik bulunamadı" diyordu.
+• Ücretsiz deneme yalnızca gerçekten hakkın varsa teklif ediliyor.
+• Premium kullanıcı "Dinle"ye bastığında kendi aldığı ürün için abonelik ekranı görebiliyordu.
+• Premium değilsen "Dinle" düğmesinin yanında artık bir işaret var.
+
+================================================================
+English  [en]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  132/170 ---
+529 free books, A1 to C2. Tap any word you don't know and see it in your own language; save it and review it with spaced repetition.
+
+--- WHAT'S NEW (4000)  -  1740/4000 ---
+This release is the result of a wide audit after 1.0.1. Every defect it found has been fixed.
+
+LEARNING
+• About half the cards in a review session were never shown. You now see every card in the session.
+• There was no way to unsave a word in your notebook. Tap the bookmark to remove it.
+• With a full notebook, tapping an already-saved word returned an error.
+• Your reading streak is now actually counted; it showed zero for everyone.
+• Reading late at night is recorded on the right day. It used to land on the previous day.
+• The "your streak is at risk" reminder was sent even on days you had read.
+• Reviews and saved words no longer get lost when you are offline.
+
+READING
+• The end of long chapters was never shown. The full text now loads.
+• Most books were missing from the library. All 529 books are now listed.
+• The offline dictionary was incomplete for some books; every word of the book is now on your device.
+• Chapters open noticeably faster.
+• Fixed the stutter that appeared while narration was playing.
+• Theme and text size can now be changed from Settings as well.
+• Added a back button to the browse and favourites screens.
+• If adding a favourite fails on the server you now see a warning; before, your tap silently did nothing.
+
+SETUP
+• The first reading step now shows you which word to tap and where to save it.
+• The interface language is no longer changed before the server confirms it.
+
+SUBSCRIPTION
+• Restoring purchases told active subscribers that no subscription was found.
+• The free trial is only offered if you are actually eligible for it.
+• Premium users could be shown the subscription screen for content they had already paid for.
+• If you are not premium, the "Listen" button now carries a marker.
+
+================================================================
+Deutsch  [de]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  134/170 ---
+529 kostenlose Bücher, A1 bis C2. Tippe auf ein unbekanntes Wort und sieh die Bedeutung sofort; speichere es und wiederhole es später.
+
+--- WHAT'S NEW (4000)  -  1970/4000 ---
+Diese Version ist das Ergebnis einer umfassenden Prüfung nach 1.0.1. Jeder gefundene Fehler wurde behoben.
+
+LERNEN
+• Etwa die Hälfte der Karten einer Wiederholungssitzung wurde nie gezeigt. Jetzt siehst du jede Karte.
+• Es gab keine Möglichkeit, ein Wort aus dem Vokabelheft zu entfernen. Tippe auf das Lesezeichen.
+• Bei vollem Vokabelheft führte das Antippen eines bereits gespeicherten Wortes zu einem Fehler.
+• Deine Lesesträhne wird jetzt wirklich gezählt; sie stand bei allen auf null.
+• Spätes Lesen in der Nacht wird dem richtigen Tag zugeordnet. Vorher landete es am Vortag.
+• Die Erinnerung "deine Strähne ist in Gefahr" kam auch an Tagen, an denen du gelesen hattest.
+• Wiederholungen und gespeicherte Wörter gehen offline nicht mehr verloren.
+
+LESEN
+• Das Ende langer Kapitel wurde nie angezeigt. Jetzt wird der vollständige Text geladen.
+• Die meisten Bücher fehlten in der Bibliothek. Alle 529 Bücher werden jetzt gelistet.
+• Das Offline-Wörterbuch war bei manchen Büchern unvollständig; jetzt ist jedes Wort des Buches auf deinem Gerät.
+• Kapitel öffnen spürbar schneller.
+• Das Stocken während der Sprachausgabe wurde behoben.
+• Design und Schriftgröße lassen sich jetzt auch in den Einstellungen ändern.
+• Zurück-Schaltfläche in den Bildschirmen "Stöbern" und "Favoriten" ergänzt.
+• Schlägt das Hinzufügen eines Favoriten auf dem Server fehl, siehst du jetzt einen Hinweis; vorher passierte einfach nichts.
+
+EINRICHTUNG
+• Der erste Leseschritt zeigt dir jetzt, welches Wort du antippen und wo du es speichern kannst.
+• Die Oberflächensprache wird erst nach Bestätigung durch den Server umgestellt.
+
+ABONNEMENT
+• Beim Wiederherstellen von Käufen wurde aktiven Abonnenten gemeldet, es gebe kein Abonnement.
+• Die kostenlose Testphase wird nur angeboten, wenn du tatsächlich Anspruch darauf hast.
+• Premium-Nutzern konnte der Abo-Bildschirm für bereits bezahlte Inhalte angezeigt werden.
+• Ohne Premium trägt die Schaltfläche "Hören" jetzt eine Markierung.
+
+================================================================
+Français  [fr]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  133/170 ---
+529 livres gratuits, de A1 à C2. Touchez un mot inconnu et voyez sa traduction ; enregistrez-le et révisez-le par répétition espacée.
+
+--- WHAT'S NEW (4000)  -  1906/4000 ---
+Cette version est le résultat d'un audit complet après la 1.0.1. Tous les défauts trouvés ont été corrigés.
+
+APPRENTISSAGE
+• Environ la moitié des cartes d'une session de révision n'étaient jamais affichées. Vous voyez désormais toutes les cartes.
+• Il était impossible de retirer un mot du carnet. Touchez le signet pour le retirer.
+• Avec un carnet plein, toucher un mot déjà enregistré renvoyait une erreur.
+• Votre série de lecture est enfin comptée ; elle affichait zéro pour tout le monde.
+• Une lecture tard dans la nuit est enregistrée au bon jour. Elle tombait la veille.
+• Le rappel « votre série est en danger » était envoyé même les jours où vous aviez lu.
+• Les révisions et les mots enregistrés ne sont plus perdus hors connexion.
+
+LECTURE
+• La fin des longs chapitres ne s'affichait jamais. Le texte complet est maintenant chargé.
+• La plupart des livres manquaient dans la bibliothèque. Les 529 livres sont désormais listés.
+• Le dictionnaire hors ligne était incomplet pour certains livres ; tous les mots du livre sont maintenant sur votre appareil.
+• Les chapitres s'ouvrent nettement plus vite.
+• Les à-coups pendant la lecture audio ont été corrigés.
+• Le thème et la taille du texte se changent aussi depuis les Réglages.
+• Bouton retour ajouté aux écrans Parcourir et Favoris.
+• Si l'ajout d'un favori échoue côté serveur, vous voyez maintenant un avertissement ; avant, rien ne se passait.
+
+CONFIGURATION
+• La première étape de lecture vous montre quel mot toucher et où l'enregistrer.
+• La langue de l'interface n'est plus changée avant confirmation du serveur.
+
+ABONNEMENT
+• La restauration des achats indiquait « aucun abonnement » aux abonnés actifs.
+• L'essai gratuit n'est proposé que si vous y avez réellement droit.
+• L'écran d'abonnement pouvait s'afficher aux utilisateurs premium pour un contenu déjà payé.
+• Sans premium, le bouton « Écouter » porte désormais un repère.
+
+================================================================
+Italiano  [it]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  127/170 ---
+529 libri gratuiti, da A1 a C2. Tocca una parola che non conosci e vedine subito il significato; salvala e ripassala nel tempo.
+
+--- WHAT'S NEW (4000)  -  1862/4000 ---
+Questa versione è il risultato di una verifica approfondita dopo la 1.0.1. Ogni difetto trovato è stato corretto.
+
+APPRENDIMENTO
+• Circa metà delle carte di una sessione di ripasso non veniva mai mostrata. Ora vedi tutte le carte.
+• Non c'era modo di togliere una parola dal quaderno. Tocca il segnalibro per rimuoverla.
+• Con il quaderno pieno, toccare una parola già salvata restituiva un errore.
+• La tua serie di lettura viene finalmente contata; risultava zero per tutti.
+• Leggere a tarda notte viene registrato nel giorno giusto. Prima finiva nel giorno precedente.
+• Il promemoria «la tua serie è a rischio» arrivava anche nei giorni in cui avevi letto.
+• I ripassi e le parole salvate non vanno più persi quando sei offline.
+
+LETTURA
+• La fine dei capitoli lunghi non veniva mai mostrata. Ora il testo si carica per intero.
+• Gran parte dei libri mancava dalla libreria. Tutti i 529 libri sono ora elencati.
+• Il dizionario offline era incompleto per alcuni libri; ora ogni parola del libro è sul tuo dispositivo.
+• I capitoli si aprono sensibilmente più in fretta.
+• Risolti gli scatti che comparivano durante la narrazione audio.
+• Tema e dimensione del testo si cambiano anche dalle Impostazioni.
+• Aggiunto il pulsante indietro nelle schermate Esplora e Preferiti.
+• Se l'aggiunta ai preferiti fallisce sul server ora vedi un avviso; prima non succedeva nulla.
+
+CONFIGURAZIONE
+• Il primo passo di lettura ora ti mostra quale parola toccare e dove salvarla.
+• La lingua dell'interfaccia non cambia più prima della conferma del server.
+
+ABBONAMENTO
+• Il ripristino degli acquisti diceva «nessun abbonamento» agli abbonati attivi.
+• La prova gratuita viene offerta solo se ne hai davvero diritto.
+• Agli utenti premium poteva comparire la schermata di abbonamento per contenuti già pagati.
+• Senza premium, il pulsante «Ascolta» ora ha un contrassegno.
+
+================================================================
+Español  [es]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  136/170 ---
+529 libros gratis, de A1 a C2. Toca cualquier palabra que no conozcas y ve su significado; guárdala y repásala con repetición espaciada.
+
+--- WHAT'S NEW (4000)  -  1845/4000 ---
+Esta versión es el resultado de una revisión amplia tras la 1.0.1. Se ha corregido cada defecto encontrado.
+
+APRENDIZAJE
+• Cerca de la mitad de las tarjetas de una sesión de repaso nunca se mostraban. Ahora ves todas las tarjetas.
+• No había forma de quitar una palabra del cuaderno. Toca el marcador para quitarla.
+• Con el cuaderno lleno, tocar una palabra ya guardada devolvía un error.
+• Tu racha de lectura por fin se cuenta; aparecía en cero para todos.
+• Leer de madrugada se registra en el día correcto. Antes caía en el día anterior.
+• El recordatorio «tu racha está en riesgo» se enviaba incluso los días en que habías leído.
+• Los repasos y las palabras guardadas ya no se pierden sin conexión.
+
+LECTURA
+• El final de los capítulos largos nunca se mostraba. Ahora se carga el texto completo.
+• Faltaba la mayoría de los libros en la biblioteca. Los 529 libros ya aparecen.
+• El diccionario sin conexión estaba incompleto en algunos libros; ahora todas las palabras del libro están en tu dispositivo.
+• Los capítulos se abren notablemente más rápido.
+• Corregidos los tirones que aparecían durante la narración.
+• El tema y el tamaño del texto también se cambian desde Ajustes.
+• Se añadió el botón de volver a las pantallas Explorar y Favoritos.
+• Si añadir un favorito falla en el servidor ahora ves un aviso; antes no pasaba nada.
+
+CONFIGURACIÓN
+• El primer paso de lectura ahora te muestra qué palabra tocar y dónde guardarla.
+• El idioma de la interfaz ya no cambia antes de que el servidor lo confirme.
+
+SUSCRIPCIÓN
+• Restaurar compras decía «no se encontró suscripción» a suscriptores activos.
+• La prueba gratuita solo se ofrece si de verdad tienes derecho a ella.
+• A los usuarios premium podía mostrárseles la pantalla de suscripción por contenido ya pagado.
+• Si no tienes premium, el botón «Escuchar» ahora lleva una marca.
+
+================================================================
+Русский  [ru]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  128/170 ---
+529 бесплатных книг, от A1 до C2. Коснитесь незнакомого слова и сразу увидите перевод; сохраните его и повторяйте по интервалам.
+
+--- WHAT'S NEW (4000)  -  1673/4000 ---
+Эта версия — результат большой проверки после 1.0.1. Все найденные дефекты исправлены.
+
+ОБУЧЕНИЕ
+• Около половины карточек в сессии повторения никогда не показывались. Теперь вы видите все карточки.
+• Слово нельзя было убрать из словаря. Коснитесь закладки, чтобы убрать.
+• При заполненном словаре касание уже сохранённого слова выдавало ошибку.
+• Серия чтения наконец считается; у всех она показывала ноль.
+• Чтение поздно ночью записывается в правильный день. Раньше оно попадало во вчерашний.
+• Напоминание «серия под угрозой» приходило даже в дни, когда вы читали.
+• Повторения и сохранённые слова больше не теряются без сети.
+
+ЧТЕНИЕ
+• Конец длинных глав никогда не показывался. Теперь загружается весь текст.
+• Большей части книг не было в библиотеке. Теперь перечислены все 529 книг.
+• Офлайн-словарь был неполным для некоторых книг; теперь все слова книги на вашем устройстве.
+• Главы открываются заметно быстрее.
+• Устранены подтормаживания во время озвучивания.
+• Тему и размер текста теперь можно менять и в настройках.
+• На экранах «Обзор» и «Избранное» появилась кнопка назад.
+• Если добавление в избранное не удаётся на сервере, вы теперь видите предупреждение; раньше ничего не происходило.
+
+НАСТРОЙКА
+• На первом шаге чтения теперь показано, какое слово коснуться и где его сохранить.
+• Язык интерфейса больше не меняется до подтверждения сервером.
+
+ПОДПИСКА
+• Восстановление покупок сообщало активным подписчикам, что подписки нет.
+• Бесплатный пробный период предлагается, только если он вам действительно доступен.
+• Пользователям премиума мог показываться экран подписки на уже оплаченный контент.
+• Без премиума на кнопке «Слушать» теперь есть отметка.
+
+================================================================
+简体中文  [zh]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  48/170 ---
+529 本免费图书，从 A1 到 C2。点按不认识的单词即可查看释义，收藏后用间隔重复巩固记忆。
+
+--- WHAT'S NEW (4000)  -  558/4000 ---
+本次更新是 1.0.1 之后一次全面排查的结果，发现的问题均已修复。
+
+学习
+• 复习中约有一半卡片从未出现。现在本次复习的每张卡片都会展示。
+• 生词本里无法取消收藏某个词。点按书签图标即可移除。
+• 生词本已满时，点按已收藏的词会报错。
+• 阅读连续天数终于开始计算，此前所有人都显示为零。
+• 深夜阅读会记到正确的日期，此前会算到前一天。
+• 即使当天已经阅读，也仍会收到"连续记录有风险"的提醒。
+• 离线时的复习记录和收藏的单词不再丢失。
+
+阅读
+• 长章节的结尾从未显示。现在会加载完整正文。
+• 书库中缺少大部分图书。全部 529 本现已全部列出。
+• 部分图书的离线词典不完整，现在整本书的词汇都在你的设备上。
+• 章节打开速度明显加快。
+• 修复了朗读播放时的卡顿。
+• 主题和字号现在也可以在设置中更改。
+• 浏览和收藏页面新增了返回按钮。
+• 收藏在服务器端失败时会给出提示，此前点按毫无反应。
+
+初次设置
+• 首次阅读步骤现在会提示点按哪个单词以及在哪里保存。
+• 界面语言不再在服务器确认之前切换。
+
+订阅
+• 恢复购买会对有效订阅用户显示"未找到订阅"。
+• 只有在确实符合条件时才提供免费试用。
+• 高级用户可能会因已购买的内容看到订阅页面。
+• 非高级用户的"收听"按钮现在带有标识。
+
+================================================================
+日本語  [ja]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  55/170 ---
+A1からC2まで、529冊すべて無料。わからない単語をタップすればすぐに意味が出ます。保存して間隔反復で定着。
+
+--- WHAT'S NEW (4000)  -  816/4000 ---
+このバージョンは 1.0.1 後の広範な点検の結果です。見つかった不具合はすべて修正しました。
+
+学習
+• 復習セッションのカードの約半分が一度も表示されていませんでした。今はすべてのカードが表示されます。
+• 単語帳から単語を外す方法がありませんでした。しおりアイコンをタップすると外せます。
+• 単語帳が上限のとき、保存済みの単語をタップするとエラーになっていました。
+• 連続日数がようやく数えられるようになりました。これまで全員がゼロでした。
+• 深夜の読書が正しい日付に記録されます。以前は前日に入っていました。
+• その日に読んでいても「連続記録が途切れそうです」の通知が届いていました。
+• オフライン時の復習と保存した単語が失われなくなりました。
+
+読書
+• 長い章の終わりが表示されていませんでした。全文が読み込まれます。
+• ライブラリにほとんどの本が出ていませんでした。529 冊すべてが表示されます。
+• 一部の本でオフライン辞書が不完全でした。今は本の全単語が端末にあります。
+• 章の表示が明らかに速くなりました。
+• 読み上げ再生中の引っかかりを解消しました。
+• テーマと文字サイズを設定画面からも変更できます。
+• 一覧画面とお気に入り画面に戻るボタンを追加しました。
+• お気に入りの追加がサーバー側で失敗した場合に通知が出ます。以前は何も起きませんでした。
+
+初期設定
+• 最初の読書ステップで、どの単語をタップし、どこで保存するかを案内します。
+• サーバーの確認前に表示言語が切り替わらなくなりました。
+
+サブスクリプション
+• 購入の復元が、有効な購読者に「購読が見つかりません」と表示していました。
+• 無料トライアルは実際に対象の場合のみ提示されます。
+• プレミアム利用者に、購入済みの内容で購読画面が出ることがありました。
+• プレミアムでない場合、「聴く」ボタンに印が付きます。
+
+================================================================
+العربية  [ar]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  109/170 ---
+529 كتابًا مجانيًا من A1 إلى C2. المس أي كلمة لا تعرفها لترى معناها فورًا، واحفظها وراجعها بالتكرار المتباعد.
+
+--- WHAT'S NEW (4000)  -  1451/4000 ---
+هذا الإصدار نتيجة مراجعة واسعة بعد 1.0.1، وقد جرى إصلاح كل خلل عُثر عليه.
+
+التعلّم
+• نحو نصف البطاقات في جلسة المراجعة لم تكن تظهر أبدًا. الآن ترى كل بطاقات الجلسة.
+• لم تكن هناك طريقة لإزالة كلمة من الدفتر. المس أيقونة الإشارة المرجعية لإزالتها.
+• عند امتلاء الدفتر، كان لمس كلمة محفوظة مسبقًا يعطي خطأ.
+• سلسلة القراءة تُحتسب فعليًا الآن؛ كانت تظهر صفرًا للجميع.
+• القراءة في وقت متأخر من الليل تُسجَّل في اليوم الصحيح، بعد أن كانت تقع في اليوم السابق.
+• كان تذكير «سلسلتك في خطر» يصل حتى في الأيام التي قرأت فيها.
+• لم تعد المراجعات والكلمات المحفوظة تضيع عند انقطاع الاتصال.
+
+القراءة
+• لم تكن نهاية الفصول الطويلة تظهر إطلاقًا. يُحمَّل النص كاملًا الآن.
+• كان معظم الكتب غائبًا عن المكتبة. جميع الكتب الـ 529 مُدرجة الآن.
+• كان القاموس دون اتصال ناقصًا في بعض الكتب؛ الآن كل كلمات الكتاب على جهازك.
+• تُفتح الفصول أسرع بوضوح.
+• عولجت التقطّعات التي كانت تظهر أثناء تشغيل السرد الصوتي.
+• يمكن تغيير السمة وحجم الخط من الإعدادات أيضًا.
+• أُضيف زر رجوع إلى شاشتَي التصفّح والمفضلة.
+• إذا فشلت الإضافة إلى المفضلة على الخادم فسترى تنبيهًا؛ كان اللمس سابقًا لا يفعل شيئًا.
+
+الإعداد
+• تُظهر لك خطوة القراءة الأولى أي كلمة تلمسها وأين تحفظها.
+• لم تعد لغة الواجهة تتغيّر قبل تأكيد الخادم.
+
+الاشتراك
+• كانت استعادة المشتريات تُخبر المشتركين النشطين بعدم وجود اشتراك.
+• لا تُعرض التجربة المجانية إلا إذا كنت مؤهلًا لها فعلًا.
+• كان يمكن أن تظهر شاشة الاشتراك لمستخدمي بريميوم عن محتوى دفعوا ثمنه.
+• إن لم تكن مشتركًا في بريميوم فزر «استمع» يحمل الآن علامة.
+
