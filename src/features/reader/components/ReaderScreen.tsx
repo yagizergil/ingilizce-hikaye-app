@@ -58,6 +58,20 @@ import type { SentenceSheetSentence } from "@/features/reader/components/Sentenc
 
 interface ReaderScreenProps {
   chapterId: string;
+  /**
+   * Çağıranın (kitap detayı, ya da içeride kalan bir sonraki/önceki bölüm
+   * geçişi) ZATEN bildiği kitap kimliği -- varsa.
+   *
+   * DENETİM BULGUSU (2026-09-19, performans): bu prop olmadan `bookId`
+   * yalnızca `chapter.bookId` çözüldükten SONRA biliniyordu, yani kitap
+   * sözlüğü isteği (`useBookLemmaDictionary`) bölüm isteğinin bitmesini
+   * BEKLİYORDU -- her bölüm açılışında iki ağ gidiş-dönüşü art arda.
+   * Verildiğinde sözlük isteği bölüm isteğiyle AYNI ANDA başlıyor; hâlâ
+   * `chapter.bookId` geldiğinde o kazanıyor (gerçek kaynak odur, bu yalnızca
+   * bir hızlandırma ipucu -- örn. bozuk/eski bir derin bağlantıda yanlış
+   * kitap kimliği taşınırsa bile doğru veri kaybı olmaz).
+   */
+  initialBookId?: string;
   onBack: () => void;
   onOpenChapter: (chapterId: string) => void;
   /** Kitabın son bölümü bitti — kutlama ekranına geçiş (reader'ın dışı). */
@@ -80,6 +94,7 @@ const FALLBACK_POS = "other";
 
 export function ReaderScreen({
   chapterId,
+  initialBookId,
   onBack,
   onOpenChapter,
   onFinishBook,
@@ -95,7 +110,9 @@ export function ReaderScreen({
   // Okuma süresini ölç ve sunucuya yaz — profil istatistiklerinin kaynağı.
   useReadingSession(chapter?.bookId ?? null);
 
-  const bookId = chapter?.bookId ?? "";
+  // `chapter.bookId` gerçek kaynak; `initialBookId` yalnızca o gelene kadar
+  // kitap sözlüğü isteğini paralel başlatmak için (bkz. prop'un doc comment'i).
+  const bookId = chapter?.bookId ?? initialBookId ?? "";
   const {
     data: lemmaDictionary,
     isLoading: isLemmaDictionaryLoading,

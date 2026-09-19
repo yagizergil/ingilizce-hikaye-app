@@ -73,7 +73,10 @@ export default function BookDetailScreen() {
   const handleOpenChapter = (chapter: Chapter) => {
     if (!data?.book) return;
     trackEvent("book_chapter_opened", { bookId: data.book.id, chapterId: chapter.id });
-    router.push(`/reader/${chapter.id}`);
+    // `bookId` query param'ı: reader bölüm sorgusunun dönmesini beklemeden
+    // kitap sözlüğünü PARALEL çekebiliyor (bkz. app/reader/[chapterId].tsx
+    // ve ReaderScreen'in `initialBookId` prop'u) -- burada zaten elimizde.
+    router.push(`/reader/${chapter.id}?bookId=${data.book.id}`);
   };
 
   const handlePressCta = () => {
@@ -82,7 +85,7 @@ export default function BookDetailScreen() {
       bookId: data.book.id,
       chapterId: data.continueChapter.id,
     });
-    router.push(`/reader/${data.continueChapter.id}`);
+    router.push(`/reader/${data.continueChapter.id}?bookId=${data.book.id}`);
   };
 
   /**
@@ -129,7 +132,7 @@ export default function BookDetailScreen() {
       bookId: data.book.id,
       chapterId: data.continueChapter.id,
     });
-    router.push(`/reader/${data.continueChapter.id}?autoplay=1`);
+    router.push(`/reader/${data.continueChapter.id}?autoplay=1&bookId=${data.book.id}`);
   };
 
   const handleBack = () => {

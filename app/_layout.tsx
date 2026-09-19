@@ -49,7 +49,7 @@ export default function RootLayout() {
     Literata_400Regular,
     Literata_400Regular_Italic,
   });
-  const { theme } = useTheme();
+  const { theme, themeName } = useTheme();
 
   // Diskte bekleyen olayları geri yükler ve uygulama arka plana alınınca
   // kuyruğu boşaltır. Dönüş değeri aboneliği kaldırıyor.
@@ -74,7 +74,21 @@ export default function RootLayout() {
     <GestureHandlerRootView style={styles.flex}>
       <QueryClientProvider client={queryClient}>
         <BottomSheetModalProvider>
-          <StatusBar style="auto" />
+          {/*
+            DENETİM BULGUSU (2026-09-19, kullanıcı bulgusu): "auto" durum
+            çubuğu simgelerini CİHAZIN sistem temasına göre seçiyor --
+            uygulamanın kendi tema tercihine (`useTheme`, light/sepia/dark/
+            system) göre DEĞİL. İkisi bağımsız: kullanıcı cihazı koyu modda
+            olsa bile okuma temasini "Açık" ya da "Sepya" seçebiliyor
+            (ADR bkz. `useReaderThemeColors`). Bu durumda "auto" cihaz koyu
+            olduğu için AÇIK renkli (beyaz) simgeler çiziyordu, ama ekran
+            zemini uygulamanın kendi tercihiyle açık/sepya (beyaz/krem)
+            kalıyordu -- beyaz simge beyaz zemin üzerinde görünmüyordu.
+            Simge rengi artık cihazın değil, UYGULAMANIN çözümlenmiş
+            temasından geliyor: açık/sepya zeminde koyu simge, koyu
+            zeminde açık simge.
+          */}
+          <StatusBar style={themeName === "dark" ? "light" : "dark"} />
           {fontsLoaded || fontError ? (
             <ErrorBoundary source="root">
               <AuthGate>
