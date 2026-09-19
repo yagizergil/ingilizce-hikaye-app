@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -17,7 +17,6 @@ import {
   useReadingProgressMutation,
 } from "@/features/reader/api/useReadingProgressMutation";
 import { useBookLemmaDictionary } from "@/features/reader/api/useBookLemmaDictionary";
-import { useUserLemmaStatesForBook } from "@/features/reader/api/useUserLemmaStatesForBook";
 import {
   useSavedLemmas,
   useSaveWordMutation,
@@ -103,16 +102,22 @@ export function ReaderScreen({
     isError: isLemmaDictionaryError,
     refetch: refetchLemmaDictionary,
   } = useBookLemmaDictionary(bookId);
-  const lemmasForBook = useMemo(
-    () => (lemmaDictionary ? Array.from(lemmaDictionary.keys()) : []),
-    [lemmaDictionary],
-  );
-  const {
-    data: unknownLemmas,
-    isLoading: isUnknownLemmasLoading,
-    isError: isUnknownLemmasError,
-    refetch: refetchUnknownLemmas,
-  } = useUserLemmaStatesForBook(lemmasForBook);
+  /**
+   * KALDIRILDI (2026-09-19 performans denetimi): burada
+   * `useUserLemmaStatesForBook(lemmasForBook)` vardı ve ilk sayfanın
+   * çizilmesi ONA BLOKLANIYORDU. O hook kitabın lemma listesini 200'lük
+   * parçalara bölüp paralel istek atıyor; klasiklerde kitap 5.000+ lemma
+   * taşıdığı için bölüm açılışı 25-28 EŞZAMANLI isteğin dönmesini
+   * bekliyordu.
+   *
+   * Ve sonucu HİÇBİR YER RENDER ETMİYORDU: `unknownLemmas` yalnızca
+   * aşağıdaki yükleme kapısında ve bir telemetri alanında geçiyordu.
+   * Kaydedilmiş kelime durumu artık Zustand store'undan okunuyor
+   * (`useSavedLemmasStore`, `ReaderWord` kendi seçicisiyle bakıyor), yani
+   * bu sorgunun kurulduğu "bilinmeyen kelimeyi vurgula" özelliği artık
+   * yok. Geriye yalnızca bekleme kaldı: kullanıcı en uzun klasiklerde
+   * saniyelerce spinner görüyordu, hiçbir şey kazanmadan.
+   */
 
   const { data: savedLemmasData } = useSavedLemmas();
   // Prop olarak AŞAĞI GEÇİLMİYOR artık -- global Zustand store'a yazılıyor,
@@ -221,6 +226,28 @@ export function ReaderScreen({
    */
   const wordQuota = useWordLookupQuotaQuery();
   const consumeWordLookup = useConsumeWordLookupMutation();
+  /**
+   * `mutateAsync` TanStack Query v5'te KİMLİĞİ DEĞİŞMEYEN tek parça.
+   *
+   * DENETİM BULGUSU (2026-09-19, performans): `handleWordTap`in bağımlılık
+   * dizisinde `consumeWordLookup` NESNESİ vardı. v5 her render'da yeni bir
+   * nesne döndürüyor (`return { ...result, mutate, mutateAsync }`), yani
+   * `handleWordTap` hiçbir zaman sabitlenmiyordu. Zincir oradan
+   * kopuyordu: `renderItem` -> RN'in `CellRenderer`'ı (bir PureComponent,
+   * prop olarak `renderItem` alıyor) -> mount edilmiş HER sayfanın yeniden
+   * render'ı -> `ReaderPage`in tokenizasyon memo'sunun bozulması, yani
+   * sayfa başına ~600 kelimenin yeniden tokenize + lemmatize edilmesi ve
+   * ~600 React elemanının yeniden kurulması.
+   *
+   * Bu, ses çalarken SANİYEDE İKİ KEZ oluyordu (expo-audio 500 ms'de bir
+   * durum yayıyor ve o da bu ekranı yeniden render ediyor) ve her sayfa
+   * çevirmede bir kez daha. Dinlerken takılmanın ve sayfa geçişindeki
+   * tıkanmanın kaynağı buydu.
+   *
+   * `useReaderThemeColors` aynı sınıf hatayı ("her render'da taze nesne")
+   * bir kez zaten belgelemişti; buradan geri sızmış.
+   */
+  const consumeWordLookupAsync = consumeWordLookup.mutateAsync;
   const wordQuotaRemaining = wordQuota.data?.remaining ?? null;
 
   // Kelimeye dokunulduğunda DURDURMAK değil DURAKLATMAK gerekiyor:
@@ -375,8 +402,7 @@ export function ReaderScreen({
        * durdurması, bir kullanıcının birkaç bedava çeviri almasından çok
        * daha kötü.
        */
-      void consumeWordLookup
-        .mutateAsync()
+      void consumeWordLookupAsync()
         .then((result) => {
           if (result.allowed) {
             openSheet();
@@ -390,7 +416,7 @@ export function ReaderScreen({
           openSheet();
         });
     },
-    [pauseSpeech, consumeWordLookup],
+    [pauseSpeech, consumeWordLookupAsync],
   );
 
   /**
@@ -580,15 +606,12 @@ export function ReaderScreen({
   // very first fetch attempt) but `data` permanently undefined — the
   // isVocabDataLoading check below would then stay true forever with no
   // error ever shown, i.e. the reader silently hangs on the spinner.
-  if (isLemmaDictionaryError || isUnknownLemmasError) {
+  if (isLemmaDictionaryError) {
     return (
       <View style={[styles.centered, { backgroundColor: readerColors.background }]}>
         <ErrorState
           message={t("reader.error.loadFailed")}
-          onRetry={() => {
-            void refetchLemmaDictionary();
-            void refetchUnknownLemmas();
-          }}
+          onRetry={() => void refetchLemmaDictionary()}
         />
       </View>
     );
@@ -599,8 +622,7 @@ export function ReaderScreen({
   // would tokenize/underline words against an empty dictionary and empty
   // unknown-set, then require a full repagination once real data arrives —
   // worse for the user than a slightly longer initial spinner.
-  const isVocabDataLoading =
-    isLemmaDictionaryLoading || isUnknownLemmasLoading || !lemmaDictionary || !unknownLemmas;
+  const isVocabDataLoading = isLemmaDictionaryLoading || !lemmaDictionary;
 
   // Regression guard: if the reader branch below was already reached once
   // for this chapter and we later fall BACK into this loading branch (e.g.
@@ -616,9 +638,7 @@ export function ReaderScreen({
       trackEvent("reader_regressed_to_loading", {
         chapterId,
         isLemmaDictionaryLoading,
-        isUnknownLemmasLoading,
         hasLemmaDictionary: !!lemmaDictionary,
-        hasUnknownLemmas: !!unknownLemmas,
       });
     }
     return (

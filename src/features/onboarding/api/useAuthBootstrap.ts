@@ -29,8 +29,8 @@ export function useAuthBootstrap(): AuthStatus {
         // and creating a fresh anonymous session, instead of leaving the
         // app stuck on a session that looks valid but silently rejects
         // every authenticated query it makes (this exact symptom broke
-        // chapter loading -- useUserLemmaStatesForBook needs a real
-        // session and has no other way to recover from this).
+        // chapter loading -- the reader's per-lemma queries need a real
+        // session and have no other way to recover from this).
         const { error: userCheckError } = await supabase.auth.getUser();
 
         // YALNIZCA sunucu oturumu REDDETTİYSE sıfırlanıyor (401/403).

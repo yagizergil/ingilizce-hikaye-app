@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
@@ -113,6 +114,19 @@ export default function FavoritesScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
       <View style={styles.header}>
+        {/* GERİ DÜĞMESİ (2026-09-19 denetimi): bu ekran `router.push` ile
+            açılıyor ve `app/_layout.tsx` yığının başlığını kapatıyor
+            (`headerShown: false`), yani sekme çubuğu da görünmüyordu.
+            Geriye tek yol iOS'un kenar kaydırma hareketiydi -- onu
+            bilmeyen kullanıcı ekranda kilitli kalıyordu. */}
+        <Pressable
+          onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel={t("common.back")}
+          hitSlop={{ top: spacing.sm, bottom: spacing.sm, left: spacing.sm, right: spacing.sm }}
+        >
+          <Ionicons name="chevron-back" size={26} color={theme.text.primary} />
+        </Pressable>
         <Text style={[type.screenTitle, { color: theme.text.primary }]}>
           {t("favorites.screen.title")}
         </Text>
@@ -146,6 +160,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     paddingBottom: spacing.xs,

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import {
@@ -115,7 +115,7 @@ export interface ReaderPageProps {
  * mirrors how the WebView reading path behaved (no per-word ARIA either --
  * pagerRuntime.js's spans carry no accessibility semantics).
  */
-export function ReaderPage({
+function ReaderPageComponent({
   page,
   paragraphs,
   textStyle,
@@ -311,6 +311,23 @@ function resolveDynamicTextStyle(textStyle: TypeStyle): {
     fontStyle: textStyle.fontStyle ?? "normal",
   };
 }
+
+/**
+ * `memo` -- ikinci savunma hattı (2026-09-19 performans denetimi).
+ *
+ * Bu bileşenin içindeki tokenizasyon memo'su sayfa başına ~600 kelimeyi
+ * tokenize + lemmatize edip ~600 React elemanı kuruyor; bozulması pahalı.
+ * Asıl düzeltme `ReaderScreen`'de `handleWordTap`i sabitlemekti (gerekçesi
+ * orada yazılı), ama o zincirde ileride yeni bir kararsız prop belirirse
+ * FlatList'in `CellRenderer`'ı yine mount edilmiş her sayfayı yeniden
+ * render eder. `memo` o durumda tokenizasyonu değil yalnızca sığ bir prop
+ * karşılaştırmasını ödetiyor.
+ *
+ * Özel bir karşılaştırıcı YOK: bütün proplar (page, paragraphs, textStyle,
+ * paragraphGap ve iki geri çağırma) zaten memo'lu/sabit kaynaklardan
+ * geliyor, yani sığ karşılaştırma doğru cevabı veriyor.
+ */
+export const ReaderPage = memo(ReaderPageComponent);
 
 const styles = StyleSheet.create({
   pageContainer: {
