@@ -642,7 +642,8 @@
       "ctaPending_one": "Choisis encore {{count}} mot à travailler",
       "ctaPending_other": "Choisis encore {{count}} mots à travailler",
       "levelPill": "{{level}} · pour toi",
-      "unavailable": "Aucun texte n'est encore prêt dans cette langue."
+      "unavailable": "Aucun texte n'est encore prêt dans cette langue.",
+      "saveHint": "Touchez le signet pour enregistrer"
     },
     "quiz": {
       "title": "Travaille tes mots",

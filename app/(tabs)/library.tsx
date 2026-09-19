@@ -3,12 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 import { spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
+import { useRefetchOnFocusIfStale } from "@/hooks/useRefetchOnFocusIfStale";
 import { LoadingState, ErrorState, EmptyState, FilterTab, useToast } from "@/components/ui";
 import { useFavoritedBookIdsQuery, useToggleFavoriteMutation } from "@/features/home";
 import {
@@ -39,7 +40,7 @@ export default function LibraryScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { theme } = useTheme();
-  const { data, isLoading, isError, refetch } = useLibraryBooksQuery();
+  const { data, isLoading, isError, refetch, dataUpdatedAt } = useLibraryBooksQuery();
   const books = useFilteredBooks(data);
   const levelGroup = useLibraryFiltersStore((state) => state.levelGroup);
   const setLevelGroup = useLibraryFiltersStore((state) => state.setLevelGroup);
@@ -58,11 +59,7 @@ export default function LibraryScreen() {
   // tab that's still mounted. Refetch every time this tab actually gains
   // focus instead (same fix already applied to the Vocabulary tab for the
   // same underlying issue).
-  useFocusEffect(
-    useCallback(() => {
-      void refetch();
-    }, [refetch]),
-  );
+  useRefetchOnFocusIfStale([{ dataUpdatedAt, refetch }]);
 
   const handleSelectLevelGroup = useCallback(
     (nextLevelGroup: LevelGroup | "all") => {
@@ -97,7 +94,9 @@ export default function LibraryScreen() {
   );
 
   const renderBook: ListRenderItem<Book> = useCallback(
-    ({ item }) => <BookListRow book={item} onPress={handleOpenBook} onLongPress={handleToggleFavorite} />,
+    ({ item }) => (
+      <BookListRow book={item} onPress={handleOpenBook} onLongPress={handleToggleFavorite} />
+    ),
     [handleOpenBook, handleToggleFavorite],
   );
 

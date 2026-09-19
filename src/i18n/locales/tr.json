@@ -642,7 +642,8 @@
       "ctaPending_one": "Alıştırma için {{count}} kelime daha seç",
       "ctaPending_other": "Alıştırma için {{count}} kelime daha seç",
       "levelPill": "{{level}} · sana göre",
-      "unavailable": "Bu dilde okuma parçası henüz hazır değil."
+      "unavailable": "Bu dilde okuma parçası henüz hazır değil.",
+      "saveHint": "Kaydetmek için yer imine dokun"
     },
     "quiz": {
       "title": "Kelimelerini çalış",

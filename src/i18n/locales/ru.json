@@ -650,7 +650,8 @@
       "ctaPending_many": "Выберите ещё {{count}} слов",
       "ctaPending_other": "Выберите ещё {{count}} слов",
       "levelPill": "{{level}} · для вас",
-      "unavailable": "На этом языке текста пока нет."
+      "unavailable": "На этом языке текста пока нет.",
+      "saveHint": "Нажмите закладку, чтобы сохранить"
     },
     "quiz": {
       "title": "Потренируйте слова",

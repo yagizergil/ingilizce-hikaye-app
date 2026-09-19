@@ -642,7 +642,8 @@
       "ctaPending_one": "Scegli ancora {{count}} parola da esercitare",
       "ctaPending_other": "Scegli ancora {{count}} parole da esercitare",
       "levelPill": "{{level}} · per te",
-      "unavailable": "In questa lingua non c'è ancora un brano pronto."
+      "unavailable": "In questa lingua non c'è ancora un brano pronto.",
+      "saveHint": "Tocca il segnalibro per salvare"
     },
     "quiz": {
       "title": "Esercitati sulle parole",

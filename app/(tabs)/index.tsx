@@ -2,12 +2,13 @@ import { useCallback, useEffect } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 import { radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
+import { useRefetchOnFocusIfStale } from "@/hooks/useRefetchOnFocusIfStale";
 import { ErrorState, Skeleton } from "@/components/ui";
 import {
   BookShelf,
@@ -55,8 +56,13 @@ export default function HomeScreen() {
     isLoading: isExtrasLoading,
     isError: isExtrasError,
     refetch: refetchExtras,
+    dataUpdatedAt: extrasUpdatedAt,
   } = useHomeExtrasQuery();
-  const { data: currentlyReading, refetch: refetchCurrentlyReading } = useCurrentlyReadingQuery();
+  const {
+    data: currentlyReading,
+    refetch: refetchCurrentlyReading,
+    dataUpdatedAt: currentlyReadingUpdatedAt,
+  } = useCurrentlyReadingQuery();
   // Kapaklardaki "okundu" etiketi (referans: referance1.jpeg).
   const { data: finishedBookIds } = useFinishedBookIdsQuery();
   // "Seviyene göre" kısayolu kullanıcının beyan ettiği seviyeyi kullanıyor.
@@ -68,16 +74,19 @@ export default function HomeScreen() {
     trackEvent("home_viewed");
   }, []);
 
-  // Same fix as the Library/Vocabulary tabs: Expo Router keeps this screen
-  // mounted across tab switches, so a newly published book (or a level
-  // group that only now has members) would never appear without a fresh
-  // fetch on every focus.
-  useFocusEffect(
-    useCallback(() => {
-      void refetchExtras();
-      void refetchCurrentlyReading();
-    }, [refetchExtras, refetchCurrentlyReading]),
-  );
+  /*
+    Expo Router bu ekranı sekme değişimlerinde mount hâlinde tutuyor, yani
+    yeni yayınlanan bir kitap tazeleme olmadan hiç görünmezdi. Ama eski hâli
+    KOŞULSUZ `refetch()` idi ve `refetch` tasarımı gereği `staleTime`'ı yok
+    sayıyor: her sekme dokunuşu bütün katalogu yeniden indiriyordu (raflar
+    katalogdan türetiliyor). Katalog dakikalar içinde değişen bir veri değil;
+    tazeleme artık yalnızca veri bayatladıysa yapılıyor. Gerekçenin tamamı
+    `useRefetchOnFocusIfStale` içinde.
+  */
+  useRefetchOnFocusIfStale([
+    { dataUpdatedAt: extrasUpdatedAt, refetch: refetchExtras },
+    { dataUpdatedAt: currentlyReadingUpdatedAt, refetch: refetchCurrentlyReading },
+  ]);
 
   const handleOpenBook = useCallback(
     (book: Book) => {

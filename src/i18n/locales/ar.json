@@ -658,7 +658,8 @@
       "ctaPending_many": "اختر {{count}} كلمة أخرى",
       "ctaPending_other": "اختر {{count}} كلمة أخرى",
       "levelPill": "{{level}} · لك",
-      "unavailable": "لا يوجد نص جاهز بهذه اللغة بعد."
+      "unavailable": "لا يوجد نص جاهز بهذه اللغة بعد.",
+      "saveHint": "اضغط على العلامة للحفظ"
     },
     "quiz": {
       "title": "تدرّب على كلماتك",

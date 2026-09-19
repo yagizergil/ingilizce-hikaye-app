@@ -642,7 +642,8 @@
       "ctaPending_one": "再选 {{count}} 个词来练习",
       "ctaPending_other": "再选 {{count}} 个词来练习",
       "levelPill": "{{level}} · 为你挑选",
-      "unavailable": "这种语言还没有可读的段落。"
+      "unavailable": "这种语言还没有可读的段落。",
+      "saveHint": "点击书签保存"
     },
     "quiz": {
       "title": "练习你的词",

@@ -642,7 +642,8 @@
       "ctaPending_one": "Wähle noch {{count}} Wort zum Üben",
       "ctaPending_other": "Wähle noch {{count}} Wörter zum Üben",
       "levelPill": "{{level}} · für dich",
-      "unavailable": "In dieser Sprache gibt es noch keinen Lesetext."
+      "unavailable": "In dieser Sprache gibt es noch keinen Lesetext.",
+      "saveHint": "Zum Speichern aufs Lesezeichen tippen"
     },
     "quiz": {
       "title": "Übe deine Wörter",

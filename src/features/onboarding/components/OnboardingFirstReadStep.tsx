@@ -1,12 +1,13 @@
-import { useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { getReadingTypeScale } from "@/theme/tokens/typography";
-import { monoType, radius, spacing } from "@/theme";
+import { monoType, motion, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { LoadingState } from "@/components/ui";
 import {
   isNumericToken,
@@ -137,6 +138,87 @@ export function OnboardingFirstReadStep({
   }, [rendered]);
   const requiredWords = Math.min(REQUIRED_WORDS, availableWordCount);
 
+  /**
+   * YÖNLENDİRME (2026-09-19, kullanıcı geri bildirimi + video).
+   *
+   * İki ayrı şikâyet vardı: (1) kullanıcılar pasajdaki kelimelerin
+   * DOKUNULABİLİR olduğunu fark etmiyor, (2) dokununca açılan karttaki üç
+   * ikondan hangisinin kaydettiğini bilemiyorlardı. İkisi birleşince adımda
+   * sıkışıyorlardı -- "3 kelime daha seç" yazısı hiç değişmiyordu.
+   *
+   * (1) için İKİ katman var:
+   *   - Kalıcı ipucu: dokunulabilir HER kelimenin altında ince noktalı
+   *     çizgi. Asıl düzeltme bu -- tek bir kelimeyi oynatmak "şu kelimeye
+   *     dokun" der, "kelimeler dokunulabilir" demez.
+   *   - Nabız: TEK bir kelimenin arkasında nefes alan bir vurgu.
+   *
+   * NEDEN VURGU, NEDEN ÖLÇEK DEĞİL: iOS'ta bir `<Text>` içindeki `<Text>`
+   * bir view DEĞİL, üst paragrafın attributed string'inde bir aralık.
+   * `transform` bir view özelliği; satır içi metinde karşılığı YOK (TS
+   * kabul ediyor çünkü `TextStyle extends ViewStyle`, ama sessizce
+   * düşüyor). Satır içinde gerçekten canlandırılabilen şeyler `color` ve
+   * `backgroundColor`; `fontSize`/`fontWeight` ise her karede bütün
+   * paragrafı yeniden dizerdi. Ölçek nabzı kartın KAYDET düğmesinde --
+   * orası gerçek bir view (bkz. `WordSheet`in `savePulse` notu).
+   *
+   * Vurgu `accent` DEĞİL, nötr `highlight`: accent bu ekranda zaten
+   * "seçildi" anlamını taşıyor ve ikisini karıştırmak mevcut karışıklığa
+   * ekleme yapardı.
+   */
+  const needsGuidance = picked.length === 0;
+  const reduceMotion = useReduceMotion();
+  const [wordPulse] = useState(() => new Animated.Value(0));
+
+  /**
+   * Nabzın çalacağı kelime. İlk paragraf BİLEREK atlanıyor: seviye rozeti
+   * (`levelPill`) kartın sağ üstünde duruyor ve ona bir satır uzaklıktaki
+   * renkli bir vurgu, aynı "buraya bak" işini yapan iki rozet gibi okunuyor.
+   */
+  const pulseTokenKey = useMemo(() => {
+    const paragraph = rendered[1] ?? rendered[0];
+    if (!paragraph) return null;
+    const index = paragraph.tokens.findIndex(
+      (token) => token.type === "word" && token.lemma !== null,
+    );
+    return index === -1 ? null : `${paragraph.key}:${index}`;
+  }, [rendered]);
+
+  useEffect(() => {
+    if (!needsGuidance || pulseTokenKey === null) {
+      wordPulse.setValue(0);
+      return;
+    }
+    if (reduceMotion) {
+      // Hareket yok ama sinyal var: vurgu sabit kalıyor.
+      wordPulse.setValue(1);
+      return;
+    }
+    /**
+     * SINIRLI SAYIDA TEKRAR. Sürekli yanıp sönen bir kelime, okunmaya
+     * çalışılan bir metnin ortasında dırdır gibi ve "bozuk render" gibi
+     * duruyor. Altı tur sonra sönüyor; noktalı çizgi kalıcı ipucu olarak
+     * kalıyor.
+     */
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(wordPulse, {
+          toValue: 1,
+          duration: motion.duration.slow,
+          // Renk/arka plan native sürücüyle canlandırılamıyor.
+          useNativeDriver: false,
+        }),
+        Animated.timing(wordPulse, {
+          toValue: 0,
+          duration: motion.duration.slow,
+          useNativeDriver: false,
+        }),
+      ]),
+      { iterations: 6 },
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [needsGuidance, pulseTokenKey, reduceMotion, wordPulse]);
+
   const remaining = Math.max(0, requiredWords - picked.length);
   const ready = picked.length >= requiredWords;
 
@@ -201,19 +283,48 @@ export function OnboardingFirstReadStep({
                     return <Text key={`o${tokenIndex}`}>{token.text}</Text>;
                   }
                   const isPicked = pickedLemmas.has(token.lemma);
+                  const isPulsing =
+                    needsGuidance && pulseTokenKey === `${paragraph.key}:${tokenIndex}`;
+                  const onPressWord = () =>
+                    setActive({
+                      surface: token.text,
+                      lemma: token.lemma as string,
+                      sentenceText: token.sentence,
+                      paragraphId: paragraph.key,
+                    });
+
+                  // Seçilmiş kelimede noktalı çizgi KALKIYOR: ipucu
+                  // "dokunabilirsin" demek, seçilenin işi bitti.
+                  const affordance = isPicked
+                    ? { color: theme.accent, fontWeight: "700" as const }
+                    : {
+                        textDecorationLine: "underline" as const,
+                        textDecorationStyle: "dotted" as const,
+                        textDecorationColor: theme.border.hairline,
+                      };
+
+                  if (isPulsing) {
+                    return (
+                      <Animated.Text
+                        key={`w${tokenIndex}`}
+                        style={[
+                          affordance,
+                          {
+                            backgroundColor: wordPulse.interpolate({
+                              inputRange: [0, 1],
+                              outputRange: ["transparent", theme.secondaryMuted],
+                            }),
+                          },
+                        ]}
+                        onPress={onPressWord}
+                      >
+                        {token.text}
+                      </Animated.Text>
+                    );
+                  }
+
                   return (
-                    <Text
-                      key={`w${tokenIndex}`}
-                      style={isPicked ? { color: theme.accent, fontWeight: "700" } : undefined}
-                      onPress={() =>
-                        setActive({
-                          surface: token.text,
-                          lemma: token.lemma as string,
-                          sentenceText: token.sentence,
-                          paragraphId: paragraph.key,
-                        })
-                      }
-                    >
+                    <Text key={`w${tokenIndex}`} style={affordance} onPress={onPressWord}>
                       {token.text}
                     </Text>
                   );
@@ -266,6 +377,7 @@ export function OnboardingFirstReadStep({
         onUnsave={() => {
           if (active) onUnpick(active.lemma);
         }}
+        saveHint={needsGuidance ? t("onboarding.firstRead.saveHint") : null}
         onMarkKnown={() => undefined}
         onUnmarkKnown={() => undefined}
         onDismiss={() => setActive(null)}

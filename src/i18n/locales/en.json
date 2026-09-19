@@ -642,7 +642,8 @@
       "ctaPending_one": "Pick {{count}} more word to practise",
       "ctaPending_other": "Pick {{count}} more words to practise",
       "levelPill": "{{level}} · for you",
-      "unavailable": "No reading passage is ready in this language yet."
+      "unavailable": "No reading passage is ready in this language yet.",
+      "saveHint": "Tap the bookmark to save"
     },
     "quiz": {
       "title": "Practise your words",

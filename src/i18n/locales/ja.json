@@ -642,7 +642,8 @@
       "ctaPending_one": "あと {{count}} 語選んでください",
       "ctaPending_other": "あと {{count}} 語選んでください",
       "levelPill": "{{level}} · あなた向け",
-      "unavailable": "この言語の読み物はまだ用意されていません。"
+      "unavailable": "この言語の読み物はまだ用意されていません。",
+      "saveHint": "ブックマークを押して保存"
     },
     "quiz": {
       "title": "単語を練習しましょう",

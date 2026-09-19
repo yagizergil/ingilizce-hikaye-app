@@ -642,7 +642,8 @@
       "ctaPending_one": "Elige {{count}} palabra más para practicar",
       "ctaPending_other": "Elige {{count}} palabras más para practicar",
       "levelPill": "{{level}} · para ti",
-      "unavailable": "Todavía no hay un texto listo en este idioma."
+      "unavailable": "Todavía no hay un texto listo en este idioma.",
+      "saveHint": "Toca el marcador para guardar"
     },
     "quiz": {
       "title": "Practica tus palabras",

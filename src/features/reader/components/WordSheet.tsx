@@ -14,8 +14,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import * as Speech from "expo-speech";
 
-import { radius, spacing, monoType, readingType, type } from "@/theme";
+import { motion, radius, spacing, monoType, readingType, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { LevelBadge, Skeleton } from "@/components/ui";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { getVoiceIdentifier } from "@/features/reader/tts/pronunciationVoice";
@@ -70,6 +71,20 @@ interface WordSheetProps {
    * görmedi) -- verilmezse yalnızca açıklama metni gösteriliyor.
    */
   onSentenceQuotaExhausted?: () => void;
+  /**
+   * ONBOARDING'E ÖZEL: kaydet düğmesinde ölçek nabzı + ikon sırasının
+   * altında tek satırlık açıklama. Verilmezse (reader'da her zaman böyle)
+   * kart bit bit aynı davranıyor.
+   *
+   * NEDEN TEK PROP: nabız ve açıklama ayrı iki anahtara bağlansaydı
+   * zamanla yarım bir tedavi (biri açık, diğeri kapalı) oluşabilirdi.
+   *
+   * ÇÖZDÜĞÜ SORUN (2026-09-19, kullanıcı geri bildirimi + video): ilk
+   * okuma adımında kullanıcı kelimeye dokunuyor, kart açılıyor ve üç
+   * ikondan HANGİSİNİN kaydettiğini anlamıyordu. Kartı kapatıyor,
+   * "3 kelime daha seç" yazısı duruyor ve adımda sıkışıyordu.
+   */
+  saveHint?: string | null;
 }
 
 interface SentenceSegment {
@@ -152,6 +167,7 @@ export function WordSheet({
   lemmaDictionary,
   lemmaState,
   onSave,
+  saveHint = null,
   onUnsave,
   onMarkKnown,
   onUnmarkKnown,
@@ -373,6 +389,50 @@ export function WordSheet({
    * (react-hooks/refs); lazy initializer aynı "bir kez üret" davranışında.
    */
   const [glossFade] = useState(() => new Animated.Value(0));
+
+  /**
+   * Kaydet düğmesinin ölçek nabzı (yalnızca `saveHint` verilince).
+   *
+   * BURADA ÖLÇEK ÇALIŞIYOR, kelimede çalışmıyor: bu bir GERÇEK view
+   * (`styles.iconButton`, 40x40), dolayısıyla `transform` ve native
+   * sürücü kullanılabiliyor. Satır içi bir `<Text>` ise iOS'ta bir view
+   * değil, üst paragrafın attributed string'inde bir aralık -- orada
+   * `transform` diye bir kavram yok (bkz. onboarding tarafındaki not).
+   *
+   * `transform` yerleşimi ETKİLEMİYOR, yani `iconRow`un
+   * `space-between` geometrisi ve reader'daki görünüm birebir aynı kalıyor.
+   */
+  const [savePulse] = useState(() => new Animated.Value(0));
+  const reduceMotion = useReduceMotion();
+
+  useEffect(() => {
+    if (!saveHint) {
+      savePulse.setValue(0);
+      return;
+    }
+    // Hareket azaltma açıkken nabız OYNAMIYOR ama sinyal KAYBOLMUYOR:
+    // değer en belirgin ucunda sabitleniyor (gerekçe `useReduceMotion`da).
+    if (reduceMotion) {
+      savePulse.setValue(1);
+      return;
+    }
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(savePulse, {
+          toValue: 1,
+          duration: motion.duration.slow,
+          useNativeDriver: true,
+        }),
+        Animated.timing(savePulse, {
+          toValue: 0,
+          duration: motion.duration.slow,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [saveHint, reduceMotion, savePulse]);
 
   const isResolvingTranslation =
     word !== null && !entry && !(globalSettled && pairSettled && liveSettled);
@@ -606,23 +666,39 @@ export function WordSheet({
               </View>
 
               <View style={styles.iconRow}>
-                <Pressable
-                  onPress={isSaved ? onUnsave : onSave}
-                  accessibilityRole="button"
-                  accessibilityLabel={t(
-                    isSaved ? "reader.wordSheet.savedRemove" : "reader.wordSheet.save",
-                  )}
-                  style={[
-                    styles.iconButton,
-                    { backgroundColor: isSaved ? readerColors.accent : readerColors.highlight },
-                  ]}
+                {/* Sarmalayıcı yalnızca DÖNÜŞÜM taşıyor: erişilebilirlik
+                    rolü/etiketi yok, yoksa düğme VoiceOver'da iki ayrı
+                    öğeye bölünürdü. Nabız sunum, etiket değil. */}
+                <Animated.View
+                  style={{
+                    transform: [
+                      {
+                        scale: savePulse.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [1, 1.12],
+                        }),
+                      },
+                    ],
+                  }}
                 >
-                  <Ionicons
-                    name={isSaved ? "bookmark" : "bookmark-outline"}
-                    size={18}
-                    color={isSaved ? readerColors.background : readerColors.text}
-                  />
-                </Pressable>
+                  <Pressable
+                    onPress={isSaved ? onUnsave : onSave}
+                    accessibilityRole="button"
+                    accessibilityLabel={t(
+                      isSaved ? "reader.wordSheet.savedRemove" : "reader.wordSheet.save",
+                    )}
+                    style={[
+                      styles.iconButton,
+                      { backgroundColor: isSaved ? readerColors.accent : readerColors.highlight },
+                    ]}
+                  >
+                    <Ionicons
+                      name={isSaved ? "bookmark" : "bookmark-outline"}
+                      size={18}
+                      color={isSaved ? readerColors.background : readerColors.text}
+                    />
+                  </Pressable>
+                </Animated.View>
 
                 <Pressable
                   onPress={handlePronounce}
@@ -652,6 +728,16 @@ export function WordSheet({
                   />
                 </Pressable>
               </View>
+
+              {/* Açıklama ikon sırasının ALTINDA ve tam genişlikte. Tek bir
+                  ikonun altına koymak `space-between` içindeki o öğeyi
+                  genişletir ve diğer iki ikonu kaydırırdı -- reader'ın
+                  ölçülmüş sırası yalnızca prop verilmediğinde eşleşirdi. */}
+              {saveHint ? (
+                <Text style={[monoType.metaTight, styles.saveHint, { color: readerColors.accent }]}>
+                  {saveHint}
+                </Text>
+              ) : null}
 
               {isDetailOpen ? (
                 <View style={styles.detailBlock}>
@@ -833,6 +919,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: spacing.sm,
+  },
+  saveHint: {
+    textAlign: "center",
+    paddingTop: spacing.xs,
   },
   iconButton: {
     width: 40,
