@@ -7,7 +7,7 @@ export interface RawBookRow {
   author: string | null;
   subtitle: string | null;
   /** Kitap detayındaki tanıtım metni (migration 039), kitabın kendi dilinde. */
-  description: string | null;
+  description?: string | null;
   cefr_level: string | null;
   word_count: number | null;
   estimated_minutes: number | null;
@@ -36,8 +36,37 @@ export interface RawBookRow {
   cover_url: string | null;
 }
 
+/**
+ * KİTAP DETAYININ sütunları -- tanıtım metni, künye ve lisans dahil.
+ */
 export const BOOK_SELECT_COLUMNS =
   "id, slug, title, author, subtitle, description, cefr_level, word_count, estimated_minutes, has_audio, genres, themes, content_warnings, license, source, source_url, popularity_score, published_at, created_at, cover_url";
+
+/**
+ * LİSTE sütunları -- `description` YOK.
+ *
+ * DENETİM BULGUSU (2026-09-19): kütüphane/ana sayfa listeleri, detay
+ * ekranıyla AYNI sütun kümesini çekiyordu. Canlı ölçüm (yayındaki 113
+ * İngilizce kitap): tam küme 111.913 bayt, listenin gerçekten çizdiği
+ * alanlar 38.922 bayt. Aradaki farkın neredeyse tamamı `description` --
+ * migration 039'la her kitaba eklenen 3-5 cümlelik tanıtım metni. Bir
+ * liste satırı onu HİÇ göstermiyor; yalnızca kitap detayı gösteriyor ve o
+ * zaten `useBookDetailQuery` ile tam kümeyi çekiyor.
+ *
+ * NEDEN YALNIZCA `description` ÇIKARILDI: `license`/`source`/`source_url`/
+ * `subtitle` de yalnızca detayda okunuyor ama toplamda birkaç yüz bayt;
+ * onları da çıkarmak `Book` tipini "listeden gelince boş, detaydan gelince
+ * dolu" hale getirirdi ve bu, bugün tüm gün düzelttiğim sessiz-yanlış-veri
+ * sınıfının ta kendisi. Kazanç/risk oranı yalnızca `description` için
+ * açıkça olumlu.
+ *
+ * GÜVENLİ OLMASININ SEBEBİ: `book.description`ı okuyan TEK yer
+ * `app/book/[id].tsx` ve o ekran detay sorgusunu kullanıyor (grep ile
+ * doğrulandı). Liste kaynaklı bir `Book`ta bu alan boş string olur --
+ * `mapBookRow` zaten `row.description ?? ""` diyor.
+ */
+export const BOOK_LIST_SELECT_COLUMNS =
+  "id, slug, title, author, subtitle, cefr_level, word_count, estimated_minutes, has_audio, genres, themes, content_warnings, license, source, source_url, popularity_score, published_at, created_at, cover_url";
 
 export function mapBookRow(row: RawBookRow): Book {
   const publishedAt = row.published_at ? new Date(row.published_at) : null;

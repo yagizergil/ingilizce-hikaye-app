@@ -21,12 +21,66 @@ interface RawSection {
   book_paragraphs: RawParagraph[];
 }
 
+/**
+ * Bölümün KENDİ alanları. Paragraflar bilerek burada DEĞİL -- gerekçe
+ * `fetchAllParagraphs`ta.
+ */
 const SECTION_SELECT = `id, book_id, order_index, title, word_count,
-  audio_url, audio_timings_url,
-  book_paragraphs ( id, order_index, text )`;
+  audio_url, audio_timings_url`;
 
-function toReaderChapter(raw: RawSection, nextChapterId: string | null): ReaderChapter {
-  const paragraphs: ReaderParagraph[] = [...raw.book_paragraphs]
+/**
+ * PostgREST'in tek istekte döndürdüğü en fazla satır sayısı (bu projede
+ * `max-rows` = 1000). Tam dolu bir sayfa "devamı olabilir" demektir.
+ */
+const POSTGREST_MAX_ROWS = 1000;
+
+/**
+ * Bölümün TÜM paragraflarını, sayfalayarak çeker.
+ *
+ * DENETİM BULGUSU (2026-09-19): paragraflar `book_sections` sorgusunun
+ * içine GÖMÜLÜ olarak çekiliyordu (`book_paragraphs ( ... )`). Gömülü
+ * kaynaklar da PostgREST'in 1000 satır sınırına tabi ve fazlası SESSİZCE
+ * kesiliyor. Yayında 1000 paragrafı aşan dört bölüm var (`book-25128-zh`
+ * üçü, en uzunu 1.473 paragraf; `book-25271-zh` biri) -- o bölümleri okuyan
+ * kullanıcı metnin SONUNU hiç görmüyordu, hata da almıyordu. Arşivdeki
+ * katalogda 62 bölüm daha bu eşiğin üstünde, yani daha uzun kitaplar
+ * yayınlandıkça yeniden ısırırdı.
+ *
+ * Aynı 1000 satır kesintisi bu turda `book_lemmas` üzerinde de bulundu
+ * (bkz. `useBookLemmaDictionary`'deki `fetchAllBookLemmas`) ve daha önce
+ * `book_sections` üzerinde migration 025'te. Üçüncü kez aynı sınıf.
+ *
+ * Kısmi sayfa = son sayfa. Tam dolu sayfada döngü devam ediyor, yani
+ * kesinti bir daha sessizce geri gelemez.
+ */
+async function fetchAllParagraphs(sectionId: string): Promise<RawParagraph[]> {
+  const paragraphs: RawParagraph[] = [];
+
+  for (let from = 0; ; from += POSTGREST_MAX_ROWS) {
+    const { data, error } = await supabase
+      .from("book_paragraphs")
+      .select("id, order_index, text")
+      .eq("section_id", sectionId)
+      .order("order_index")
+      .range(from, from + POSTGREST_MAX_ROWS - 1);
+    if (error) throw error;
+
+    const page = (data ?? []) as RawParagraph[];
+    paragraphs.push(...page);
+    if (page.length < POSTGREST_MAX_ROWS) break;
+  }
+
+  return paragraphs;
+}
+
+function toReaderChapter(
+  raw: Omit<RawSection, "book_paragraphs">,
+  rawParagraphs: RawParagraph[],
+  nextChapterId: string | null,
+): ReaderChapter {
+  // Sıralama sunucuda yapılıyor (`order("order_index")`), ama sayfalar
+  // birleştirildiği için burada da garanti altına alınıyor.
+  const paragraphs: ReaderParagraph[] = [...rawParagraphs]
     .sort((a, b) => a.order_index - b.order_index)
     .map((paragraph) => ({
       id: paragraph.id,
@@ -48,11 +102,14 @@ function toReaderChapter(raw: RawSection, nextChapterId: string | null): ReaderC
 }
 
 export async function fetchChapter(chapterId: string): Promise<ReaderChapter> {
-  const { data, error } = await supabase
-    .from("book_sections")
-    .select(SECTION_SELECT)
-    .eq("id", chapterId)
-    .single<RawSection>();
+  const [{ data, error }, paragraphs] = await Promise.all([
+    supabase
+      .from("book_sections")
+      .select(SECTION_SELECT)
+      .eq("id", chapterId)
+      .single<Omit<RawSection, "book_paragraphs">>(),
+    fetchAllParagraphs(chapterId),
+  ]);
 
   if (error) throw error;
 
@@ -63,7 +120,7 @@ export async function fetchChapter(chapterId: string): Promise<ReaderChapter> {
     .eq("order_index", data.order_index + 1)
     .maybeSingle();
 
-  const chapter = toReaderChapter(data, nextSection?.id ?? null);
+  const chapter = toReaderChapter(data, paragraphs, nextSection?.id ?? null);
   setCachedChapter(chapter);
   return chapter;
 }
