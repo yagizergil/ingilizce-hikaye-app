@@ -64,12 +64,12 @@ export function getPagePadding(marginScale: number): number {
 export function useChapterPagination(
   chapter: ReaderChapter | null,
   settings: ReaderSettings,
-  pageDimensions: PageDimensions
+  pageDimensions: PageDimensions,
 ): UseChapterPaginationResult {
-  const { paragraph: textStyle } = getReadingTypeScale(
+  const { paragraph: textStyle, paragraphGap } = getReadingTypeScale(
     settings.fontScale,
     settings.lineHeightScale,
-    settings.fontFamily
+    settings.fontFamily,
   );
 
   const padding = getPagePadding(settings.marginScale);
@@ -90,6 +90,7 @@ export function useChapterPagination(
       fontSize: textStyle.fontSize,
       lineHeight: textStyle.lineHeight,
       letterSpacing: textStyle.letterSpacing,
+      paragraphGap,
       width: contentWidth,
       height: contentHeight,
     });
@@ -100,6 +101,7 @@ export function useChapterPagination(
     textStyle.fontSize,
     textStyle.lineHeight,
     textStyle.letterSpacing,
+    paragraphGap,
     contentWidth,
     contentHeight,
   ]);
@@ -143,18 +145,26 @@ export function useChapterPagination(
     cachedPages,
   ]);
 
-  const { paragraphs: measuredParagraphs, isMeasuring, measurementNode } =
-    useChapterMeasurement(measurementRequest);
+  const {
+    paragraphs: measuredParagraphs,
+    isMeasuring,
+    measurementNode,
+  } = useChapterMeasurement(measurementRequest);
 
   const freshPages = useMemo<Page[] | null>(() => {
     if (!measuredParagraphs || contentHeight === 0) return null;
 
-    const computed = paginate(measuredParagraphs, contentHeight);
+    // `paragraphGap` must be the SAME number `ReaderPage` renders as the
+    // margin above a paragraph that starts mid-page. Both read it from
+    // `getReadingTypeScale`, which is the only place it is defined -- if
+    // the two ever diverge, pages silently clip text again (see
+    // `paginate`'s own note).
+    const computed = paginate(measuredParagraphs, contentHeight, paragraphGap);
     if (pageCacheKey) {
       setCachedPages(pageCacheKey, computed);
     }
     return computed;
-  }, [measuredParagraphs, contentHeight, pageCacheKey]);
+  }, [measuredParagraphs, contentHeight, paragraphGap, pageCacheKey]);
 
   const pages = cachedPages ?? freshPages;
 

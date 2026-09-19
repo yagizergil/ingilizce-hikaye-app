@@ -1,17 +1,17 @@
 import { useMemo, useState } from "react";
-import { Alert, I18nManager, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import * as Updates from "expo-updates";
 
 import i18n from "@/i18n";
 import { storeUiLanguage } from "@/i18n/uiLanguage";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { LanguageFlag, LoadingState } from "@/components/ui";
-import { CONTENT_TARGET_LANGUAGES, LANGUAGES, isRtlLanguage, getLanguage } from "@/lib/languages";
+import { CONTENT_TARGET_LANGUAGES, LANGUAGES, getLanguage } from "@/lib/languages";
+import { applyLayoutDirection, reloadApp } from "@/lib/rtl";
 
 import { useOwnedLanguagePairsQuery } from "@/features/languagePair/api/useActiveLanguagePairQuery";
 import { useSetLanguagePairMutation } from "@/features/languagePair/api/useSetLanguagePairMutation";
@@ -110,12 +110,8 @@ export function ManageLanguagePairsScreen({
     // Seçim kalıcı: bir sonraki açılışta cihaz diline dönmesin.
     void storeUiLanguage(nativeLanguage);
     void i18n.changeLanguage(nativeLanguage);
-    const needsRtlRestart = isRtlLanguage(nativeLanguage) !== I18nManager.isRTL;
-    if (needsRtlRestart) {
-      I18nManager.allowRTL(true);
-      I18nManager.forceRTL(isRtlLanguage(nativeLanguage));
-    }
-    return needsRtlRestart;
+    // Yön kuralı ve geçmişteki üç hatası: `src/lib/rtl.ts`.
+    return applyLayoutDirection(nativeLanguage);
   };
 
   const submitPair = (nativeLanguage: string, targetLanguage: string, needsRtlRestart: boolean) => {
@@ -133,7 +129,8 @@ export function ManageLanguagePairsScreen({
               {
                 text: t("languagePair.restartCta"),
                 onPress: () => {
-                  void Updates.reloadAsync().catch(() => {
+                  void reloadApp().then((reloaded) => {
+                    if (reloaded) return;
                     setPhase("list");
                     setPendingNative(null);
                   });

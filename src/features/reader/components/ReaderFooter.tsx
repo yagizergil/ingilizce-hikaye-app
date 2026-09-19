@@ -53,55 +53,73 @@ export function ReaderFooter({
         { paddingBottom: insets.bottom, backgroundColor: readerColors.background },
       ]}
     >
-      {showAction ? (
-        <Pressable
-          onPress={onFinishChapter}
-          accessibilityRole="button"
-          accessibilityLabel={
-            hasNextChapter ? t("reader.footer.nextChapter") : t("reader.footer.finishBook")
-          }
-          style={({ pressed }) => [
-            styles.action,
-            { borderColor: readerColors.textMuted },
-            pressed ? { opacity: motion.pressed.opacity } : null,
-          ]}
-        >
-          <Text style={[monoType.label, { color: readerColors.text }]}>
-            {hasNextChapter ? t("reader.footer.nextChapter") : t("reader.footer.finishBook")}
+      <View style={styles.content}>
+        {showAction ? (
+          <Pressable
+            onPress={onFinishChapter}
+            accessibilityRole="button"
+            accessibilityLabel={
+              hasNextChapter ? t("reader.footer.nextChapter") : t("reader.footer.finishBook")
+            }
+            style={({ pressed }) => [
+              styles.action,
+              { borderColor: readerColors.textMuted },
+              pressed ? { opacity: motion.pressed.opacity } : null,
+            ]}
+          >
+            <Text style={[monoType.label, { color: readerColors.text }]}>
+              {hasNextChapter ? t("reader.footer.nextChapter") : t("reader.footer.finishBook")}
+            </Text>
+            <Ionicons name="arrow-forward" size={14} color={readerColors.text} />
+          </Pressable>
+        ) : (
+          <Text style={[monoType.metaTight, { color: readerColors.textMuted }]}>
+            {`%${Math.round(progress * 100)}`}
           </Text>
-          <Ionicons name="arrow-forward" size={14} color={readerColors.text} />
-        </Pressable>
-      ) : (
-        <Text style={[monoType.metaTight, { color: readerColors.textMuted }]}>
-          {`%${Math.round(progress * 100)}`}
-        </Text>
-      )}
+        )}
+      </View>
     </View>
   );
 }
 
+/**
+ * Footer'ın İÇERİK yüksekliği -- SABİT, `minHeight` DEĞİL.
+ *
+ * DENETİM BULGUSU (2026-09-19, kullanıcı videosu, ikinci tur): bu değer
+ * 2026-09-18'de `minHeight: 52` olarak "düzeltilmişti" ve o düzeltmenin
+ * kendi testi de geçiyordu. Ama `minHeight` bir TABAN, sabit bir yükseklik
+ * değil -- ve bu kabın alt dolgusu `insets.bottom`. Ana ekran çubuğu olan
+ * her iPhone'da `insets.bottom` 34 civarı, yani:
+ *
+ *   yüzde dalı  : 8 (üst dolgu) + 13 (metin) + 34 = 55  -> taban (52) ETKİSİZ
+ *   düğme dalı  : 8 (üst dolgu) + 36 (düğme) + 34 = 78  -> taban ETKİSİZ
+ *
+ * Aradaki 23 px hâlâ oradaydı. Testi yazan kurulum `insets.bottom: 0`
+ * kullandığı için tam da farkın kaybolduğu tek koşulu ölçüyordu.
+ *
+ * Kullanıcının videosunda görülen döngü tam olarak buydu: son sayfaya
+ * gelinince footer 23 px büyüyor -> okuma alanı 23 px küçülüyor ->
+ * sayfalama yeniden çalışıyor -> son paragraf yeni bir sayfaya taşıyor ->
+ * kullanıcı artık son sayfada değil -> footer küçülüyor -> okuma alanı
+ * büyüyor -> paragraf geri geliyor -> kullanıcı yine son sayfada... Videoda
+ * aynı cümle ("...The phone said six per cent.") kimi karede bir sayfanın
+ * SONUNDA, kimi karede TEK BAŞINA son sayfada duruyor.
+ *
+ * Artık iki dal da bu sabit yüksekliğin içine render ediliyor; `insets`
+ * ne olursa olsun dış kap her iki durumda AYNI yükseklikte.
+ */
+const FOOTER_CONTENT_HEIGHT = 44;
+
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: spacing.xs,
+    paddingTop: spacing.xs,
     alignItems: "center",
     justifyContent: "center",
-    // DENETİM BULGUSU (2026-09-18, kullanıcı videosu): bu değer önceden 44
-    // idi -- yeterince yüksekti YALNIZCA yüzde metni için. `showAction`
-    // dalı (`.action`'ın kendi minHeight:36'sı + bu container'ın üstte/
-    // altta 8'er piksel dolgusu) doğal olarak 52 render ediyordu. Son
-    // sayfaya gelindiğinde footer 44'ten 52'ye BÜYÜYORDU; footer bu ekranın
-    // flex sütununda bir kardeş olduğu için, bu büyüme okuma alanının
-    // (`readerWrap`, flex:1) ölçülen yüksekliğini KÜÇÜLTÜYORDU. Bu da
-    // `PaginatedReaderView`'ın `contentHeight`'ını değiştirip sayfalamayı
-    // yeniden tetikliyordu -- yeni sayfalama farklı bir toplam sayfa
-    // sayısı üretebiliyordu, yani kullanıcı artık "son sayfada" olmayabiliyordu,
-    // footer küçülüyordu, okuma alanı büyüyordu, sayfalama ESKİ boyutla
-    // yeniden tetikleniyordu, kullanıcı yeniden son sayfaya dönüyordu --
-    // sonsuz bir döngü. Kullanıcının "sayfa nefes alıyor" / "buton gidip
-    // geliyor" diye tarif ettiği glitch tam olarak buydu. Düzeltme: footer
-    // her iki durumda da AYNI (52) yükseklikte -- artık `onLastPage`
-    // değişse bile okuma alanının boyutu asla değişmiyor.
-    minHeight: 52,
+  },
+  content: {
+    height: FOOTER_CONTENT_HEIGHT,
+    alignItems: "center",
+    justifyContent: "center",
   },
   action: {
     flexDirection: "row",

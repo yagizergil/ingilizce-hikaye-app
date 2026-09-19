@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -148,69 +149,82 @@ export function findPageForPosition(
  * comment is explicit that it wants the actual measured size of the page
  * CONTAINER, since "chrome above/below the reading surface, safe-area
  * insets, etc. are the caller's concern" -- the window's full size would
- * be wrong the moment a header/chrome bar is visible above this view (the
- * same reason `ReaderScreen.tsx` conditionally renders `ReaderHeader`
- * above the WebView wrapper rather than overlaying it). `onLayout` reports
- * this component's own allotted box after that chrome has already taken
- * its space in the parent flex layout, which is exactly the number
- * pagination needs.
+ * be wrong the moment a header/chrome bar is visible above this view.
+ * `onLayout` reports this component's own allotted box after that chrome
+ * has already taken its space in the parent flex layout, which is exactly
+ * the number pagination needs.
  *
- * DENETİM BULGUSU (2026-09-19, kullanıcı videosu): bu boyutu OLDUĞU GİBİ
- * (debounce'suz) `state`'e yazmak, bu View'ın ölçülen boyutunu kısaca
- * değiştirip hemen eski haline döndüren HERHANGİ bir geçici olayı (ör.
- * bir sistem bildirim şeridinin görünüp kaybolması, klavye/ekran geçiş
- * animasyonlarının ara kareleri) gerçek bir yeniden boyutlanma sanıyordu.
- * Bu da `useChapterPagination`'ı GEREKSİZ YERE yeniden tetikliyor, üretilen
- * yeni `pages` dizisi çoğu zaman neredeyse aynı ama sayfa SAYISI bir an
- * için farklı olabiliyor (özellikle bölümün son sayfası, kalan boşluğun
- * pageHeight sınırına en yakın olduğu yer). Kullanıcı fiilen hiç
- * kaydırmadan, ekranda AYNI metin dururken, footer "sonraki bölüm"
- * düğmesi ile yüzde göstergesi arasında çırpınıyordu -- videoda net:
- * aynı paragraf görünürken footer iki durum arasında gidip geliyor, ve
- * kullanıcı düğmeye basmayı başaramıyor.
+ * YÜKSEKLİK ASLA BÜYÜMEZ -- SALINIM YAPISAL OLARAK İMKÂNSIZ (2026-09-19).
  *
- * Düzeltme: yeni bir boyut geldiğinde HEMEN uygulanmıyor -- 200ms boyunca
- * BAŞKA bir onLayout çağrısı gelmezse (yani boyut gerçekten KARARLI hale
- * gelmişse) ancak o zaman `state`'e yazılıp sayfalamaya yansıtılıyor. İLK
- * ölçüm (0,0 -> gerçek boyut) bu bekleme dışında tutuluyor ki bölüm ilk
- * açıldığında sayfalama 200ms boşuna gecikmesin.
+ * Bu okuma yüzeyi, ekranın flex sütununda kardeşleri (başlık, ses çubuğu,
+ * footer) olan bir kutu. Kardeşlerden biri boy değiştirirse buranın
+ * yüksekliği de değişir ve bütün bölüm yeniden sayfalanır. Sorun tek bir
+ * kardeşin hatası değil, geri besleme DÖNGÜSÜ: footer'ın görünümü
+ * "kullanıcı son sayfada mı" sorusunun cevabına bağlı, o cevap sayfa
+ * sayısına bağlı, sayfa sayısı da footer'ın boyuna. A -> B -> A.
+ * Kullanıcının videosunda bölümün sonu iki sayfalama arasında saniyede
+ * birkaç kez gidip geliyordu.
+ *
+ * Tek tek tetikleyicileri kapatmak (footer'ı sabitlemek -- ki ayrıca
+ * yapıldı) bu turu kapatır, bir sonrakini kapatmaz. Burada döngünün KENDİSİ
+ * kırılıyor: kabul edilen yükseklik ZAMANLA AZALAN bir dizi. Büyüme yok
+ * sayılıyor, yalnızca küçülme kabul ediliyor. Azalan bir dizi birkaç
+ * ölçümde durulur ve tanımı gereği bir daha ASLA eski değerine dönemez --
+ * yani "A -> B -> A" fiziksel olarak kurulamaz.
+ *
+ * Neden küçülme kabul, büyüme ret (tersi değil): sayfa içeriği hem
+ * ölçülürken hem render edilirken burada saklanan yüksekliği kullanıyor.
+ * Gerçek kap saklanandan BÜYÜKSE en altta bir miktar kullanılmamış boşluk
+ * kalır (görünmez). KÜÇÜKSE metin taşar ve `overflow:"hidden"` altında
+ * kırpılır -- okuyucunun hiç göremeyeceği satırlar. Yani güvenli yön
+ * küçüğü tutmak.
+ *
+ * Genişlik değişimi (ekran döndürme, iPad çoklu görev) gerçek bir yeniden
+ * boyutlanmadır ve yüksekliği sıfırlar; aksi hâlde dikeyde ölçülmüş bir
+ * yükseklik yatayda kilitli kalırdı.
+ *
+ * `EPSILON`: `onLayout` alt piksel değerler bildirebiliyor (ör. 731.9998 vs
+ * 732). Yarım pikselden küçük farklar gürültüdür; yeniden sayfalamaya
+ * değmez.
  */
+const LAYOUT_EPSILON = 0.5;
+
+export interface PageContainerSize {
+  width: number;
+  height: number;
+}
+
+/**
+ * Yukarıdaki kuralın saf hâli -- `onLayout`'tan gelen bir ölçümün saklanan
+ * boyutu nasıl güncelleyeceği. Ayrı ve dışa açık bir fonksiyon olmasının
+ * sebebi test edilebilirliği: "yükseklik asla büyümez" bu okuma ekranının
+ * bir DEĞİŞMEZİ ve bir sonraki katkıcı onu farkında olmadan bozabilir.
+ */
+export function nextPageContainerSize(
+  previous: PageContainerSize,
+  measured: PageContainerSize,
+): PageContainerSize {
+  // Genişlik gerçekten değiştiyse (döndürme) her şey sıfırdan.
+  if (Math.abs(previous.width - measured.width) > LAYOUT_EPSILON) return measured;
+  // İlk ölçüm.
+  if (previous.height === 0) return measured;
+  // Büyüme yok sayılır; yalnızca anlamlı bir küçülme kabul edilir.
+  if (measured.height < previous.height - LAYOUT_EPSILON) {
+    return { width: previous.width, height: measured.height };
+  }
+  return previous;
+}
+
 function usePageContainerLayout(): {
   width: number;
   height: number;
   onLayout: (event: LayoutChangeEvent) => void;
 } {
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  const pendingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [size, setSize] = useState<PageContainerSize>({ width: 0, height: 0 });
 
   const onLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
-
-    if (pendingTimeoutRef.current !== null) {
-      clearTimeout(pendingTimeoutRef.current);
-      pendingTimeoutRef.current = null;
-    }
-
-    setSize((previous) => {
-      if (previous.width === width && previous.height === height) return previous;
-      // First-ever measurement: apply immediately, nothing to debounce
-      // against yet and delaying it would delay first paint.
-      if (previous.width === 0 && previous.height === 0) return { width, height };
-      return previous;
-    });
-
-    pendingTimeoutRef.current = setTimeout(() => {
-      pendingTimeoutRef.current = null;
-      setSize((previous) =>
-        previous.width === width && previous.height === height ? previous : { width, height },
-      );
-    }, 200);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (pendingTimeoutRef.current !== null) clearTimeout(pendingTimeoutRef.current);
-    };
+    setSize((previous) => nextPageContainerSize(previous, { width, height }));
   }, []);
 
   return { width: size.width, height: size.height, onLayout };
@@ -258,47 +272,126 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
       ],
     );
 
-    const { pages, isPaginating, measurementNode } = useChapterPagination(chapter, readerSettings, {
-      width,
-      height,
-    });
+    // `isPaginating` bilerek okunmuyor: "olcum suruyor mu" artik ekranda ne
+    // gosterilecegini belirlemiyor. Belirleyen sey gosterilebilir bir
+    // sayfalamanin (yeni ya da bir onceki) VAR OLUP OLMADIGI.
+    const { pages: paginatedPages, measurementNode } = useChapterPagination(
+      chapter,
+      readerSettings,
+      {
+        width,
+        height,
+      },
+    );
 
-    const { paragraph: textStyle } = useMemo(
+    /**
+     * YENIDEN AKIS SIRASINDA EKRAN BOS KALMAZ (2026-09-19).
+     *
+     * Okuma yuzeyinin boyutu degistiginde `useChapterPagination` yeni bir
+     * onbellek anahtarina gecer; onbellekte karsiligi yoksa BUTUN bolum
+     * yeniden olculur ve o sure boyunca `pages` null olur. Eskiden bu,
+     * okuma yuzeyinin tamamen kaybolmasi demekti -- kullanicinin "bug
+     * oluyor" dedigi bos/atlayan kare. Oysa elimizde hala gayet gecerli
+     * bir onceki sayfalama var: yenisi hazir olana kadar onu gostermeye
+     * devam ediyoruz, sonra cipa yeni sayfalamaya uygulanip sessizce
+     * yerine geciyor.
+     *
+     * Bolum degistiginde tutulan sayfalar bilerek atiliyor: bir onceki
+     * bolumun metnini gostermek bos ekrandan daha kotu olurdu.
+     */
+    const [heldPages, setHeldPages] = useState<{ chapterId: string; pages: Page[] } | null>(null);
+
+    // Render sirasinda turetilen state (React'in "adjust state while
+    // rendering" deseni): bir effect'e tasimak, ekranin bir kare boyunca
+    // yedeksiz -- yani bos -- kalmasi demek olurdu, ki duzeltilmek istenen
+    // sey tam olarak bu.
+    if (paginatedPages && heldPages?.pages !== paginatedPages) {
+      setHeldPages({ chapterId: chapter.id, pages: paginatedPages });
+    }
+
+    const pages = paginatedPages ?? (heldPages?.chapterId === chapter.id ? heldPages.pages : null);
+
+    const { paragraph: textStyle, paragraphGap } = useMemo(
       () => getReadingTypeScale(settings.fontScale, settings.lineHeightScale, settings.fontFamily),
       [settings.fontScale, settings.lineHeightScale, settings.fontFamily],
     );
 
+    // `paginatedPages` (tutulan yedek DEGIL): bu geri cagirma "sayfalama
+    // tamamlandi" anini bildiriyor, "ekranda bir seyler var" anini degil.
     useEffect(() => {
-      if (!pages) return;
-      onPagesReady?.({ totalPages: pages.length });
+      if (!paginatedPages) return;
+      onPagesReady?.({ totalPages: paginatedPages.length });
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pages]);
+    }, [paginatedPages]);
 
     const listRef = useRef<FlatList<Page>>(null);
     const currentPageRef = useRef(0);
 
-    // Tracks whether the initial `restorePosition` scroll has already been
-    // applied for the current `pages` identity, so unrelated re-renders
-    // don't keep forcing the list back to the restore position.
-    const restoredForPagesRef = useRef<Page[] | null>(null);
+    /**
+     * OKUMA KONUMUNUN TEK KAYNAĞI (2026-09-19 yeniden yazımı).
+     *
+     * Eskiden görünen sayfa yalnızca bir SAYIYDI (`currentPageRef`) ve
+     * `pages` dizisi yeniden hesaplandığında o sayı olduğu yerde kalıyordu.
+     * Ama yeni sayfalamada aynı index BAŞKA bir metne denk geliyor: kullanıcı
+     * parmağını bile sürmeden okuduğu paragraf bir başkasıyla değişiyordu.
+     * Kullanıcının videoda gösterdiği "son sayfada birden başka bir cümle
+     * geliyor" davranışı buydu. Bugüne kadarki düzeltmeler tek tek
+     * TETİKLEYİCİLERİ (footer'ın yüksekliği, onLayout gürültüsü) kapatmaya
+     * çalıştı; ama yeniden sayfalamanın meşru sebepleri de var --
+     * yazı tipi/satır aralığı/kenar boşluğu ayarı, ekran döndürme, ses
+     * çubuğunun (premium erişim yanıtı geldiğinde) belirmesi. Tetikleyici
+     * avlamak bitmeyen bir işti.
+     *
+     * Bu yüzden konum artık bir index değil, METNE bağlı bir ÇIPA:
+     * (paragraphId, charOffset). Sayfa numarası ondan TÜRETİLİYOR. Yeniden
+     * sayfalama olduğunda çıpanın düştüğü yeni sayfaya sessizce ve
+     * animasyonsuz gidiliyor -- kullanıcı aynı cümleyi okumaya devam ediyor,
+     * yalnızca sayfa numarası ve toplam sayfa değişiyor. Yeniden sayfalama
+     * artık bir hata değil, görünmez bir yeniden akış.
+     */
+    const anchorRef = useRef<PaginatedReaderRestorePosition | null>(restorePosition);
+    /** Çıpa henüz kullanıcı tarafından hiç taşınmadıysa (ilk açılış),
+     * `restorePosition` geç geldiğinde (sunucudan okuma ilerlemesi) hâlâ
+     * kabul edilebilir. Kullanıcı bir kez sayfa çevirdiyse artık çıpanın
+     * sahibi odur; geç gelen bir sunucu yanıtı onu geri sarmamalı. */
+    const anchorMovedByUserRef = useRef(false);
+    /** Çıpanın hangi (`pages`, `width`) çiftine uygulandığı -- aynı çift
+     * için ikinci kez kaydırma yapılmasın diye. */
+    const appliedAnchorForRef = useRef<{ pages: Page[]; width: number } | null>(null);
+    /**
+     * Bölüm değişimi. Bu layout effect, aşağıdaki çıpa-uygulama effect'inden
+     * ÖNCE tanımlı olduğu için aynı commit'te ondan önce çalışıyor -- yani
+     * yeni bölümün ilk çıpa uygulaması artık eski bölümün paragraphId'siyle
+     * değil, yeni bölümün kayıtlı konumuyla yapılıyor.
+     *
+     * `restorePosition` prop'u BURADA DOĞRUDAN okunuyor (bir ref üzerinden
+     * değil): `useReaderPosition` onu `chapterId`'den türettiği için bölüm
+     * değişimiyle AYNI render'da güncelleniyor, dolayısıyla bu effect
+     * çalışırken zaten yeni bölümün konumu. Bir ref'e yazıp oradan okumak,
+     * ref senkronizasyonu pasif bir effect olduğu için tam tersini yapardı:
+     * bu layout effect eski bölümün konumunu görürdü.
+     */
+    useLayoutEffect(() => {
+      anchorRef.current = restorePosition;
+      anchorMovedByUserRef.current = false;
+      currentPageRef.current = 0;
+      appliedAnchorForRef.current = null;
+      // Bağımlılık YALNIZCA `chapter.id`: bu bir sıfırlama, bir senkronizasyon
+      // değil. `restorePosition` sonradan (sunucu yanıtı) değişirse onu
+      // aşağıdaki effect, kullanıcı henüz sayfa çevirmediyse kabul ediyor.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chapter.id]);
 
-    const handleListLayoutReady = useCallback(() => {
-      if (!pages || pages.length === 0) return;
-      if (restoredForPagesRef.current === pages) return;
-      restoredForPagesRef.current = pages;
-
-      if (restorePosition) {
-        const targetIndex = findPageForPosition(
-          pages,
-          restorePosition.paragraphId,
-          restorePosition.charOffset,
-        );
-        if (targetIndex !== null && targetIndex !== 0) {
-          currentPageRef.current = targetIndex;
-          listRef.current?.scrollToIndex({ index: targetIndex, animated: false });
-        }
-      }
-    }, [pages, restorePosition]);
+    /** Çıpayı görünen sayfanın ilk segmentine taşır. */
+    const setAnchorFromPage = useCallback((pageIndex: number, pagesForAnchor: Page[]) => {
+      const firstSegment = pagesForAnchor[pageIndex]?.segments[0];
+      if (!firstSegment) return;
+      anchorMovedByUserRef.current = true;
+      anchorRef.current = {
+        paragraphId: firstSegment.paragraphId,
+        charOffset: firstSegment.charStart,
+      };
+    }, []);
 
     const reportPositionForPage = useCallback(
       (pageIndex: number, pagesForReport: Page[]) => {
@@ -316,16 +409,87 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
       [onPositionUpdate],
     );
 
+    /**
+     * Çıpayı yeni `pages` dizisine uygular: çıpanın düştüğü sayfayı bulur,
+     * listeyi oraya ANİMASYONSUZ götürür ve dışarıya yeni sayfa/toplam
+     * sayfa bilgisini bildirir.
+     *
+     * NEDEN `useLayoutEffect`: normal bir `useEffect` boyamadan SONRA
+     * çalışır, yani kullanıcı bir kare boyunca yanlış sayfayı görürdü --
+     * düzeltilmek istenen "metin bir anlığına değişti" hissinin ta kendisi.
+     * Layout effect commit'ten sonra ama boyamadan önce çalışıyor.
+     *
+     * NEDEN `scrollToOffset` (`scrollToIndex` değil): `getItemLayout` her
+     * index için tam offset'i (width * index) zaten biliyor; scrollToIndex
+     * ölçülmemiş bir hedefte önce tahmine sıçrayıp sonra düzeltiyor.
+     */
+    const applyAnchor = useCallback(() => {
+      if (!pages || pages.length === 0 || width === 0) return;
+      const applied = appliedAnchorForRef.current;
+      if (applied && applied.pages === pages && applied.width === width) return;
+      appliedAnchorForRef.current = { pages, width };
+
+      const anchor = anchorRef.current;
+      const targetIndex = anchor
+        ? (findPageForPosition(pages, anchor.paragraphId, anchor.charOffset) ?? 0)
+        : 0;
+      const clamped = Math.min(pages.length - 1, Math.max(0, targetIndex));
+
+      currentPageRef.current = clamped;
+      listRef.current?.scrollToOffset({ offset: clamped * width, animated: false });
+      onPageChange({ page: clamped, totalPages: pages.length });
+    }, [pages, width, onPageChange]);
+
+    useLayoutEffect(() => {
+      applyAnchor();
+    }, [applyAnchor]);
+
+    /**
+     * Geç gelen kayıtlı konum. Okuma ilerlemesi sunucudan sayfalamadan SONRA
+     * dönebiliyor; kullanıcı o ana kadar hiç sayfa çevirmediyse çıpa hâlâ
+     * onundur, güncellenip yeniden uygulanır. Kullanıcı bir kez sayfa
+     * çevirdiyse çıpanın sahibi odur -- geç gelen bir yanıt onu geri sarmaz.
+     *
+     * `applyAnchor`'dan SONRA tanımlı olması bilinçli: ona doğrudan
+     * erişebilmesi için (bir ref üzerinden dolaşmadan).
+     */
+    useEffect(() => {
+      if (anchorMovedByUserRef.current) return;
+      if (!restorePosition) return;
+      anchorRef.current = restorePosition;
+      appliedAnchorForRef.current = null;
+      applyAnchor();
+      // `applyAnchor` bilerek bağımlılık değil: bu effect'in tetikleyicisi
+      // yalnızca YENİ bir kayıtlı konumun gelmesi. `applyAnchor` her
+      // sayfalama/genişlik değişiminde kimliğini değiştiriyor ve onu
+      // bağımlılığa koymak bu sıfırlamayı alakasız anlarda tekrarlardı.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [restorePosition]);
+
+    /**
+     * Listenin kendi çerçevesi değiştiğinde (ilk montaj, genişlik değişimi)
+     * çıpa yeniden uygulanıyor. `scrollToOffset`, liste henüz içerik boyutunu
+     * öğrenmemişken çağrılırsa etkisiz kalabiliyor -- bu yüzden layout
+     * effect'teki "uygulandı" işareti burada bilerek sıfırlanıyor. Çıpa
+     * kullanıcının güncel konumu olduğu için tekrar uygulamak kayıpsız:
+     * zaten bulunduğu sayfaya gidiyor.
+     */
+    const handleListLayout = useCallback(() => {
+      appliedAnchorForRef.current = null;
+      applyAnchor();
+    }, [applyAnchor]);
+
     const handleMomentumScrollEnd = useCallback(
       (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         if (!pages || pages.length === 0 || width === 0) return;
         const offsetX = event.nativeEvent.contentOffset.x;
         const pageIndex = Math.min(pages.length - 1, Math.max(0, Math.round(offsetX / width)));
         currentPageRef.current = pageIndex;
+        setAnchorFromPage(pageIndex, pages);
         onPageChange({ page: pageIndex, totalPages: pages.length });
         reportPositionForPage(pageIndex, pages);
       },
-      [pages, width, onPageChange, reportPositionForPage],
+      [pages, width, onPageChange, reportPositionForPage, setAnchorFromPage],
     );
 
     /**
@@ -432,13 +596,14 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
           if (current >= pages.length - 1) return false;
           const target = current + 1;
           currentPageRef.current = target;
+          setAnchorFromPage(target, pages);
           listRef.current?.scrollToIndex({ index: target, animated: true });
           onPageChange({ page: target, totalPages: pages.length });
           reportPositionForPage(target, pages);
           return true;
         },
       }),
-      [pages, chapter.paragraphs, onPageChange, reportPositionForPage],
+      [pages, chapter.paragraphs, onPageChange, reportPositionForPage, setAnchorFromPage],
     );
 
     const handleZonePress = useCallback(
@@ -450,6 +615,7 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
           if (current > 0) {
             const target = current - 1;
             currentPageRef.current = target;
+            setAnchorFromPage(target, pages);
             listRef.current?.scrollToIndex({ index: target, animated: true });
           }
         } else if (locationXRatio > 0.75) {
@@ -458,12 +624,13 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
           } else {
             const target = current + 1;
             currentPageRef.current = target;
+            setAnchorFromPage(target, pages);
             listRef.current?.scrollToIndex({ index: target, animated: true });
           }
         }
         // Orta %50: bilerek boş — yukarıdaki gerekçeye bak.
       },
-      [pages, onChapterEnd],
+      [pages, onChapterEnd, setAnchorFromPage],
     );
 
     // Must match useChapterPagination's own `getPagePadding` exactly -- that
@@ -489,6 +656,7 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
               page={item}
               paragraphs={chapter.paragraphs}
               textStyle={textStyle}
+              paragraphGap={paragraphGap}
               onWordTap={onWordTap}
               onSentenceLongPress={onSentenceLongPress}
             />
@@ -501,6 +669,7 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
         pagePadding,
         chapter.paragraphs,
         textStyle,
+        paragraphGap,
         onWordTap,
         onSentenceLongPress,
         handleZonePress,
@@ -529,7 +698,10 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
       return <View style={styles.container} onLayout={onLayout} />;
     }
 
-    if (isPaginating || !pages) {
+    // Olcum suruyor VE gosterilecek hicbir sayfa yok: yalnizca bolumun ilk
+    // acilisinda (onbellek bos) olan durum. Yeniden akista `pages` bir
+    // onceki sayfalamayi tutuyor, dolayisiyla bu dala hic girilmiyor.
+    if (!pages) {
       return (
         <View style={styles.container} onLayout={onLayout}>
           {measurementNode}
@@ -552,7 +724,11 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
           getItemLayout={getItemLayout}
           onMomentumScrollEnd={handleMomentumScrollEnd}
           onScrollToIndexFailed={handleScrollToIndexFailed}
-          onLayout={handleListLayoutReady}
+          // Liste yeni monte olduysa layout effect'in `scrollToOffset`'i
+          // henüz bir şeye denk gelmemiş olabilir; ilk layout'ta çıpa bir
+          // kez daha uygulanıyor. `applyAnchor` kendi içinde tekrarı
+          // eliyor (aynı pages+width için ikinci kez çalışmıyor).
+          onLayout={handleListLayout}
           // DENETİM BULGUSU (2026-09-18): eski değerler (3/2/2) çok dardı --
           // hızlı art arda kaydırmada bir sonraki/bir önceki sayfa henüz
           // mount edilmemiş oluyordu. `scrollToIndex` (bkz.

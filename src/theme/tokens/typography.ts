@@ -425,6 +425,19 @@ export const readerLineHeightScale = {
  * font-family Literata. This is the base the font-size slider scales. */
 const READING_BASE_FONT_SIZE = 18;
 
+/** reader.html `.reading p` — margin:0 0 20px. The vertical gap between two
+ * consecutive paragraphs on the reading surface. Scaled with the resolved
+ * font size (20px is the mockup value AT the 18px base), so the gap keeps
+ * its proportion when the reader enlarges the type instead of shrinking
+ * into nothing relative to the text.
+ *
+ * NEDEN BURADA (ve neden reader feature'ında bir sabit DEĞİL): bu boşluk
+ * artık yalnızca görsel değil, SAYFALAMANIN BİR GİRDİSİ -- `paginate.ts`
+ * sayfa yüksekliğini hesaplarken bunu satır yükseklikleriyle birlikte
+ * topluyor, `measureChapter` ise paragrafları bunsuz ölçüyor. İki taraf
+ * aynı sayıyı okumak zorunda; o sayının tek bir kaynağı olmalı. */
+const READING_BASE_PARAGRAPH_GAP = 20;
+
 /**
  * Reading-surface type scale, driven by the user's font-size/line-height
  * preferences (settings sliders use readerFontScale/readerLineHeightScale
@@ -438,9 +451,10 @@ export function getReadingTypeScale(
   scale: number = readerFontScale.default,
   lineHeightScale: number = readerLineHeightScale.default,
   fontFamilyChoice: "serif" | "sans" = "serif",
-): { paragraph: TypeStyle } {
+): { paragraph: TypeStyle; paragraphGap: number } {
   const fontSize = Math.round(READING_BASE_FONT_SIZE * scale);
   const lineHeight = Math.round(fontSize * lineHeightScale);
+  const paragraphGap = Math.round((READING_BASE_PARAGRAPH_GAP * fontSize) / READING_BASE_FONT_SIZE);
 
   // "serif" keeps the mockup-sourced Literata reading font. "sans" falls
   // back to RN's platform system font (fontFamily: undefined) rather than
@@ -456,6 +470,7 @@ export function getReadingTypeScale(
       fontWeight: "400",
       letterSpacing: 0,
     },
+    paragraphGap,
   };
 }
 

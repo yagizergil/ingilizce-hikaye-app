@@ -3,19 +3,13 @@ import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-nati
 
 import { useTranslation } from "react-i18next";
 import { getLocales } from "expo-localization";
-import * as Updates from "expo-updates";
-import { I18nManager } from "react-native";
 
 import i18n from "@/i18n";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button, LanguageFlag, LoadingState } from "@/components/ui";
-import {
-  CONTENT_TARGET_LANGUAGES,
-  isRtlLanguage,
-  LANGUAGES,
-  type LanguageInfo,
-} from "@/lib/languages";
+import { CONTENT_TARGET_LANGUAGES, LANGUAGES, type LanguageInfo } from "@/lib/languages";
+import { applyLayoutDirection, reloadApp } from "@/lib/rtl";
 
 import { useSetLanguagePairMutation } from "@/features/languagePair/api/useSetLanguagePairMutation";
 
@@ -85,11 +79,8 @@ export function LanguagePairScreen({ onDone }: LanguagePairScreenProps) {
     // başlatmasını GERÇEKTEN istiyoruz -- yarım bir RTL (bazı ekranlar
     // sağdan sola, bazıları soldan sağa) sessizce bırakmaktan çok daha
     // kötü bir deneyim olurdu.
-    const needsRtlRestart = isRtlLanguage(nativeLanguage) !== I18nManager.isRTL;
-    if (needsRtlRestart) {
-      I18nManager.allowRTL(true);
-      I18nManager.forceRTL(isRtlLanguage(nativeLanguage));
-    }
+    // Yön kuralı ve geçmişteki üç hatası: `src/lib/rtl.ts`.
+    const needsRtlRestart = applyLayoutDirection(nativeLanguage);
 
     setPair.mutate(
       { nativeLanguage, targetLanguage },
@@ -108,11 +99,12 @@ export function LanguagePairScreen({ onDone }: LanguagePairScreenProps) {
               {
                 text: t("languagePair.restartCta"),
                 onPress: () => {
-                  void Updates.reloadAsync().catch(() => {
-                    // Expo Go'da / güncelleme kanalı yoksa reloadAsync
-                    // atabilir -- o zaman geriye yapılabilecek tek şey
-                    // akışa devam etmek, kullanıcı elle kapatıp açar.
-                    onDone();
+                  // `reloadApp` desteklenmeyen ortamda (Expo Go, güncelleme
+                  // kanalı yok) fırlatmak yerine `false` dönüyor -- o zaman
+                  // geriye akışa devam etmek kalıyor, kullanıcı elle kapatıp
+                  // açınca doğru yön uygulanıyor.
+                  void reloadApp().then((reloaded) => {
+                    if (!reloaded) onDone();
                   });
                 },
               },

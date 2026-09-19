@@ -23,12 +23,24 @@ import { AuthGate, OnboardingGate } from "@/features/onboarding";
 import { ReminderScheduler } from "@/features/reminders";
 import { LanguagePairUiSync } from "@/features/languagePair";
 import { ErrorBoundary, ToastHost } from "@/components/ui";
-import { initAnalytics } from "@/lib/analytics";
+import { initAnalytics, trackError } from "@/lib/analytics";
 import { configurePurchases } from "@/lib/revenuecat";
 import { configureAudioSession } from "@/lib/audioSession";
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  /**
+   * DENETİM BULGUSU (2026-09-19): yalnızca `fontsLoaded` okunuyordu, hata
+   * yok sayılıyordu. Bir yüz yüklenemezse (bozuk asset, bellek baskısı,
+   * Android'de nadiren font tablosu) `fontsLoaded` SONSUZA KADAR `false`
+   * kalıyor ve bütün uygulama dönen bir spinner'ın arkasında kilitleniyor
+   * -- kullanıcı için "uygulama açılmıyor". `useAuthBootstrap` içinde aynı
+   * sınıf hata 2026-09-14'te zaten kapatılmıştı; açılış yolunda kalan tek
+   * koşulsuz kapı buydu.
+   *
+   * Font olmadan açmak kozmetik bir gerileme (sistem yüzü kullanılır);
+   * hiç açılmamak ise App Store incelemesinde doğrudan red.
+   */
+  const [fontsLoaded, fontError] = useFonts({
     Nunito_400Regular,
     Nunito_500Medium,
     Nunito_600SemiBold,
@@ -53,12 +65,17 @@ export default function RootLayout() {
     void configureAudioSession();
   }, []);
 
+  // Yüz yüklenemedi ama uygulama yine de açılıyor -- sessizce olmasın.
+  useEffect(() => {
+    if (fontError) trackError("fonts.load", fontError);
+  }, [fontError]);
+
   return (
     <GestureHandlerRootView style={styles.flex}>
       <QueryClientProvider client={queryClient}>
         <BottomSheetModalProvider>
           <StatusBar style="auto" />
-          {fontsLoaded ? (
+          {fontsLoaded || fontError ? (
             <ErrorBoundary source="root">
               <AuthGate>
                 <OnboardingGate>

@@ -46,6 +46,13 @@ export function buildPageCacheKey(params: {
   fontSize: number;
   lineHeight: number;
   letterSpacing: number;
+  /** Vertical space between two consecutive paragraphs. Part of the key
+   * because `paginate` now budgets for it (2026-09-19) -- two layouts that
+   * differ only in this number are genuinely different pagings. Its
+   * presence in the key also retires every entry written by the older,
+   * gap-blind `paginate`, which produced pages whose bottom lines were
+   * clipped at render time. */
+  paragraphGap: number;
   width: number;
   height: number;
 }): string {
@@ -55,6 +62,7 @@ export function buildPageCacheKey(params: {
     params.fontSize,
     params.lineHeight,
     params.letterSpacing,
+    params.paragraphGap,
     params.width,
     params.height,
   ].join("|");

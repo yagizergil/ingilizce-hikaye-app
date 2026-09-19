@@ -113,11 +113,13 @@ void readStoredUiLanguage().then((stored) => {
  * istendiğini söylüyoruz (bkz. o ekranın RTL notu) ve gerçek flip bir
  * SONRAKİ açılışta, işte tam burada, olur.
  *
- * `allowRTL(true)` DAİMA çağrılıyor (dil ne olursa olsun): bu, RN'in RTL
- * YETENEĞİNİ açık bırakır, `forceRTL` çağrısının etkili olabilmesi için
- * gerekli bir ön koşuldur ve LTR dillerde hiçbir görünür etkisi yoktur.
+ * DENETİM BULGUSU (2026-09-19): burada koşulsuz bir `allowRTL(true)`
+ * vardı ve yorumu "LTR dillerde hiçbir görünür etkisi yoktur" diyordu.
+ * Bu YANLIŞ: `allowRTL(true)` açıkken ve `forceRTL` zorlanmamışken yön
+ * CİHAZIN diline düşer. Yani cihaz dili Arapça olan bir telefonda Türkçe
+ * seçen kullanıcı RTL bir düzende kalıyordu. Yön artık yalnızca aşağıdaki
+ * tek yerden, kayıtlı seçime göre belirleniyor.
  */
-I18nManager.allowRTL(true);
 
 /**
  * RTL kararı KAYITLI SEÇİME göre veriliyor, cihaz diline göre değil.
@@ -128,7 +130,12 @@ I18nManager.allowRTL(true);
  */
 void readStoredUiLanguage().then((stored) => {
   const shouldBeRtl = isRtlLanguage(stored ?? initialLanguage);
-  if (I18nManager.isRTL !== shouldBeRtl) {
+  // `getConstants().isRTL`, `I18nManager.isRTL` DEĞİL: ikincisi web'de
+  // tanımsız ve karşılaştırmayı daima "uyuşmuyor" yapıyordu (bkz.
+  // src/lib/rtl.ts). `allowRTL` de yöne göre veriliyor -- LTR'yi gerçekten
+  // zorlamanın yolu `allowRTL(false)`.
+  if (I18nManager.getConstants().isRTL !== shouldBeRtl) {
+    I18nManager.allowRTL(shouldBeRtl);
     I18nManager.forceRTL(shouldBeRtl);
   }
 });

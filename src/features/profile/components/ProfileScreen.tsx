@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { Alert, DevSettings, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,6 +20,7 @@ import { ReminderSettingsRow } from "@/features/reminders";
 import { useActiveLanguagePairQuery } from "@/features/languagePair";
 import { getLanguage } from "@/lib/languages";
 import { openWriteReviewPage } from "@/lib/storeReview";
+import { reloadApp } from "@/lib/rtl";
 
 import { useProfileAuthStatus } from "@/features/profile/api/useProfileAuthStatus";
 import { useProfileStatsQuery } from "@/features/profile/api/useProfileStatsQuery";
@@ -133,11 +134,20 @@ export function ProfileScreen() {
        * kurulumun yaptığı sırayla yeniden kuruyor. Zaten bu düğmenin
        * taklit etmek istediği şey tam olarak taze kurulum.
        */
-      if (Platform.OS === "web") {
-        window.location.reload();
-        return;
+      /**
+       * DENETİM BULGUSU (2026-09-19): burada `DevSettings.reload()` vardı
+       * ve o API YALNIZCA geliştirme derlemelerinde var. Yayın
+       * derlemesinde çağrı sessizce hiçbir şey yapıyor, yani "hesabımı
+       * sil"e basan kullanıcı hesabı silinmiş olduğu hâlde aynı ekranda
+       * eski oturumun verisiyle kalıyordu. `reloadApp` (bkz. src/lib/rtl.ts)
+       * `expo-updates` üzerinden yayında da çalışıyor.
+       */
+      const reloaded = await reloadApp();
+      if (!reloaded) {
+        // Yeniden yükleme yapılamadıysa (Expo Go) en azından köke dön --
+        // sessizce aynı ekranda kalmak en kötü sonuç.
+        router.replace("/");
       }
-      DevSettings.reload();
     } catch (error) {
       Alert.alert(
         t("common.errorTitle"),

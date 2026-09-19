@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import {
   isNumericToken,
@@ -87,6 +87,14 @@ export interface ReaderPageProps {
   page: Page;
   paragraphs: ReaderChapter["paragraphs"];
   textStyle: TypeStyle;
+  /**
+   * Vertical space above a paragraph that STARTS on this page below some
+   * earlier content. Comes from `getReadingTypeScale().paragraphGap` -- the
+   * same number `paginate` reserved when it decided what fits on this page.
+   * It is a prop rather than a local constant precisely so that the two
+   * cannot drift apart: whoever paginates passes what it budgeted.
+   */
+  paragraphGap: number;
   onWordTap: (payload: ReaderWordTapPayload) => void;
   onSentenceLongPress: (payload: { sentenceText: string; paragraphId: string }) => void;
 }
@@ -111,6 +119,7 @@ export function ReaderPage({
   page,
   paragraphs,
   textStyle,
+  paragraphGap,
   onWordTap,
   onSentenceLongPress,
 }: ReaderPageProps): ReactElement {
@@ -250,39 +259,34 @@ export function ReaderPage({
   }, [page, paragraphById, textStyle, onWordTap, onSentenceLongPress, readerColors]);
 
   return (
-    <Text style={styles.pageContainer}>
+    <View style={styles.pageContainer}>
       {renderedParagraphs.map((rendered, index) => {
-        // DENETİM BULGUSU (2026-09-18, kullanıcı videosu): art arda gelen
-        // iki paragraf arasında HİÇ ayraç yoktu -- her paragraf kendi
-        // `<Text>` düğümünde ayrı ayrı doğru render ediliyordu, ama hepsi
-        // TEK bir dış `<Text>`in içine kardeş olarak konunca RN'in satır içi
-        // (inline) akışı onları boşluksuz birleştiriyordu ("...modern
-        // life.LADY CAROLINE: As far as..." gibi bitişik metin -- iki ayrı
-        // paragraf/replik tek cümleymiş gibi görünüyordu). `page.segments`
-        // bir paragrafın YARISINI da taşıyabiliyor (sayfa sınırında bölünen
-        // uzun paragraflar) -- bu yüzden ayraç yalnızca YENİ BAŞLAYAN bir
-        // paragrafın önüne ekleniyor (`segment.charStart === 0`), sayfadaki
-        // İLK segment hariç (sayfanın en üstünde boşuna boşluk olmasın).
-        // Bölünmüş bir paragrafın devam segmentine (`charStart !== 0`)
-        // dokunulmuyor -- kesintisiz akması gerekiyor.
+        // Bir paragrafın ÖNÜNE boşluk, yalnızca o paragraf burada BAŞLIYORSA
+        // (`charStart === 0`) ve sayfanın en üstünde değilse konuyor. Sayfa
+        // sınırında bölünmüş bir paragrafın devam segmenti (`charStart !== 0`)
+        // kesintisiz akmalı; sayfanın ilk segmentinin üstünde de boşluğa gerek
+        // yok. `paginate.ts` sayfaya neyin sığdığına karar verirken TAM OLARAK
+        // aynı koşulu kullanıyor -- ikisi tek bir kuralın iki yüzü.
         //
-        // Sayfalama (`paginate.ts`) yükseklik hesabına bu görsel boşluğu
-        // DAHIL ETMİYOR -- bilinçli bir taviz: paragraf aralarına doğru
-        // boşluk eklemek, satır paketleme algoritmasını (dul/yetim önleme)
-        // yeniden yazmadan yapılabilecek en düşük riskli düzeltme. En kötü
-        // sonucu, bir sayfanın en altında bu boşluğun bir kısmının
-        // kırpılması (görünmez, boş alan) -- şu anki "paragraflar bitişik"
-        // hatasından çok daha az fark edilir.
+        // DENETIM BULGUSU (2026-09-19): bu bosluk eskiden dis `<Text>`in
+        // icine basilan iki satir sonu karakteriydi. Iki sorunu vardi.
+        // (1) Yuksekligi tipografiye bagliydi (bir tam satir, ~31 px) ve
+        // tasarim kaynagiyla (`mockups/reader.html` `.reading p{margin:0 0
+        // 20px}`) ilgisizdi. (2) Sayfalama bu yuksekligi HIC saymiyordu,
+        // yani render edilen sayfa hesaplanandan uzun oluyor ve
+        // `overflow:"hidden"` altinda alttaki satirlar KIRPILIYORDU --
+        // okuyucu o satirlari hic gormeden bir sonraki sayfaya geciyordu.
+        // Artik bosluk olculebilir bir `marginTop` ve sayfalama onu
+        // butceliyor.
         const isNewParagraphStart = page.segments[index]?.charStart === 0;
-        const needsBreakBefore = index > 0 && isNewParagraphStart;
+        const needsGapBefore = index > 0 && isNewParagraphStart;
         return (
-          <Text key={`sep-wrap-${rendered.key}`}>
-            {needsBreakBefore ? <Text key={`sep-${rendered.key}`}>{"\n\n"}</Text> : null}
+          <View key={rendered.key} style={needsGapBefore ? { marginTop: paragraphGap } : undefined}>
             {rendered.node}
-          </Text>
+          </View>
         );
       })}
-    </Text>
+    </View>
   );
 }
 

@@ -1,12 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
-import { Alert, DevSettings, I18nManager, Platform } from "react-native";
+import { Alert } from "react-native";
 
 import { useTranslation } from "react-i18next";
 import { getLocales } from "expo-localization";
 
 import i18n from "@/i18n";
 import { storeUiLanguage } from "@/i18n/uiLanguage";
-import { isRtlLanguage } from "@/lib/languages";
+import { applyLayoutDirection, reloadApp } from "@/lib/rtl";
 import { LANGUAGES } from "@/lib/languages";
 import { trackEvent } from "@/lib/analytics";
 
@@ -150,30 +150,35 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
 
     /**
      * RTL (Arapça) ANINDA UYGULANAMAZ: `I18nManager.forceRTL` yalnızca bir
-     * sonraki native render ağacı kurulumunda etkili oluyor. Bayrağı
-     * burada set edip uygulamayı YENİDEN BAŞLATIYORUZ -- yarım bir RTL
-     * (bazı ekranlar sağdan sola, bazıları soldan sola) sessizce bırakmak
-     * çok daha kötü olurdu.
-     *
-     * Bu blok daha önce yalnızca `LanguagePairScreen`'de vardı ve o ekran
-     * HİÇBİR YERDEN mount edilmiyor -- yani Arapça seçen bir kullanıcı
-     * onboarding'de RTL'i hiç görmüyordu.
+     * sonraki native render ağacı kurulumunda etkili oluyor, bu yüzden
+     * yön gerçekten değiştiyse uygulama yeniden başlatılıyor -- yarım bir
+     * RTL (bazı ekranlar sağdan sola, bazıları soldan sağa) sessizce
+     * bırakmak çok daha kötü olurdu. Kuralın tamamı ve geçmişteki üç
+     * hatası `src/lib/rtl.ts` içinde.
      */
-    const needsRtlRestart = isRtlLanguage(nativeLanguage) !== I18nManager.isRTL;
-    if (needsRtlRestart) {
-      I18nManager.allowRTL(true);
-      I18nManager.forceRTL(isRtlLanguage(nativeLanguage));
-      trackEvent("onboarding_rtl_restart", { language: nativeLanguage });
-      if (Platform.OS === "web") {
-        window.location.reload();
-      } else {
-        DevSettings.reload();
-      }
-      return;
-    }
+    const needsRtlRestart = applyLayoutDirection(nativeLanguage);
 
+    /**
+     * AKIŞ HER HÂLÜKÂRDA İLERLİYOR -- yeniden başlatmanın başarısına
+     * BAĞLANMIYOR.
+     *
+     * DENETİM BULGUSU (2026-09-19): eski kod yeniden başlatmayı çağırıp
+     * `return` ediyordu. Yeniden başlatma çalışmazsa (yayın derlemesinde
+     * `DevSettings.reload()` bir no-op, Expo Go'da `reloadAsync()`
+     * fırlatıyor) akış bir sonraki adıma HİÇ geçmiyordu: "Devam et"
+     * düğmesi kalıcı olarak ölü kalıyor, kullanıcı onboarding'i
+     * bitiremiyordu. Artık önce ilerliyoruz, sonra yeniden başlatmayı
+     * deniyoruz -- başarılıysa bu ekranın zaten bir önemi kalmıyor,
+     * başarısızsa kullanıcı en azından akışa devam edebiliyor ve doğru
+     * yön bir sonraki soğuk açılışta uygulanıyor.
+     */
     trackEvent("onboarding_native_selected", { language: nativeLanguage });
     setStep("target");
+
+    if (needsRtlRestart) {
+      trackEvent("onboarding_rtl_restart", { language: nativeLanguage });
+      void reloadApp();
+    }
   }, [nativeLanguage]);
 
   /**

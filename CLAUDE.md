@@ -490,12 +490,149 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 
 ## Mevcut Durum ve Sonraki Adımlar
 
-> Son güncelleme: 2026-09-15 (referans tasarımına geçiş, kelime kotası,
-> paywall denetimi). Bu bölüm her önemli oturumdan sonra güncellenir.
+> Son güncelleme: 2026-09-19 (reader sayfalama, ilk-kullanıcı denetimi). Bu bölüm her önemli oturumdan sonra güncellenir.
 > `docs/ROADMAP.md` ve `docs/STATE.md` çok daha eski; çelişki olursa burası
 > geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
 > içinde.
 
+### Bu oturumda kapatılanlar (2026-09-19, ilk-kullanıcı denetimi -- 3. tur)
+
+Uygulama tarayıcıda GERÇEKTEN yürütülerek (ilk kullanıcı gibi: karşılama →
+ana dil → hedef dil → seviye testi → kitap zevki → ilk okuma) denetlendi.
+Bulgular ve düzeltmeleri:
+
+1. **ONBOARDING'E GİRİLEMİYORDU (kapatıcı).** Ana dil seçilip "Devam et"e
+   basıldığında uygulama kendini yeniden başlatıyor, akış en başa dönüyor,
+   aynı adımda aynı şey tekrarlanıyordu -- sonsuz döngü. Telemetride
+   `onboarding_rtl_restart {language: tr}`; Türkçe RTL bir dil DEĞİL.
+   Altında ÜÇ ayrı hata vardı, üçü de `OnboardingFlow`,
+   `ManageLanguagePairsScreen` ve `LanguagePairScreen`'e KOPYALANMIŞTI:
+   - `I18nManager.isRTL` her platformda yok (`react-native-web` yalnızca
+     `getConstants()` sağlıyor, alan `undefined`), yani
+     `isRtlLanguage(dil) !== I18nManager.isRTL` DAİMA "yön değişti" diyordu.
+   - `allowRTL(true)` koşulsuz çağrılıp `forceRTL(false)` deniyordu.
+     `forceRTL(false)` "LTR ol" demek değil, "zorlama" demek: `allowRTL`
+     açıkken yön CİHAZIN diline düşer. Cihaz dili Arapça olan bir telefonda
+     Türkçe seçen kullanıcı için yön RTL kalıyor ve döngü orada da kuruluyor.
+   - **`DevSettings.reload()` yayın derlemesinde YOK.** Eski kod onu çağırıp
+     `return` ediyordu: yayındaki bir Arapça kullanıcıda yeniden başlatma
+     sessizce hiçbir şey yapmıyor ve akış bir sonraki adıma HİÇ geçmiyordu --
+     "Devam et" kalıcı olarak ölü. Onboarding'i bitiremeyen uygulama App
+     Store'da doğrudan red sebebi.
+     Kural artık TEK yerde: `src/lib/rtl.ts` (`isLayoutRtl`,
+     `applyLayoutDirection`, `reloadApp`). Akış yeniden başlatmanın başarısına
+     BAĞLANMIYOR -- önce ilerliyor, sonra deniyor; başarısızsa doğru yön bir
+     sonraki soğuk açılışta uygulanıyor. 6 test (`src/lib/__tests__/rtl.test.ts`).
+2. **Font yüklenemezse uygulama sonsuza kadar spinner'da kalıyordu.**
+   `app/_layout.tsx` yalnızca `fontsLoaded`'ı okuyordu, `useFonts`'un hata
+   dönüşünü yok sayıyordu. `useAuthBootstrap`'ta aynı sınıf 2026-09-14'te
+   kapatılmıştı; açılış yolunda kalan son koşulsuz kapı buydu. Artık hata
+   kaydediliyor ve uygulama sistem yüzüyle açılıyor.
+3. **`ProfileScreen`'deki "hesabımı sil" de aynı `DevSettings` hatasını
+   taşıyordu** -- yayında hesap siliniyor ama ekran eski oturumun verisiyle
+   olduğu yerde kalıyordu. `reloadApp()`'e bağlandı, başarısızsa köke dönüyor.
+4. **`npm run web` hiç çalışmıyordu** -- `lottie-react-native`'in web girişi
+   `@lottiefiles/dotlottie-react`'i çözemiyordu (kurulu değildi). Paket
+   eklendi; iOS paketine GİRMİYOR (Metro platforma göre `index.js`'i
+   çözüyor), yalnızca web önizlemesini açıyor. Bu denetim onsuz yapılamazdı.
+
+**Düzeltilmeyen, işaretlenen bulgular:**
+
+- **Türkçe büyük harf**: "ŞIMDI DEĞIL" yazıyor, doğrusu "ŞİMDİ DEĞİL".
+  `typography.ts`'teki 10 token `textTransform: "uppercase"` kullanıyor; RN'in
+  bu dönüşümü yerel-duyarlı DEĞİL (iOS'ta `NSString uppercaseString`), "i"
+  her zaman "I" oluyor. ~29 dosyayı ilgilendiren bir tasarım-sistemi işi,
+  ayrı bir göreve alındı.
+- **Seviye testi sonucu çelişebiliyor**: seviye "en yüksek ARDIŞIK %80
+  geçilen bant" kuralıyla veriliyor, tahmini dağarcık ise tüm bantların
+  toplamı. Birkaç kolay kelimeyi ıskalayan ama zor kelimeleri bilen
+  kullanıcıda ekran "A1" ve "yaklaşık 3529 kelime biliyorsun" diye iki
+  çelişik şey söylüyor. Yöntem kendi içinde tutarlı; sunum değil.
+- **`uk` (Ukraynaca) yok**: ADR-013 ve bu belgenin bazı yerleri 11 dil
+  diyor, uygulamada 10 var (`src/lib/languages.ts` ve `src/i18n/locales/`).
+  Kod tutarlı; ÇELİŞEN belge. ADR-013 düzeltilmeli ya da dil eklenmeli.
+
+### Bu oturumda kapatılanlar (2026-09-19, reader sayfalama turu -- 2. tur)
+
+**Asıl kök sebep bu turda bulundu ve VİDEODAN DOĞRULANDI.** Kullanıcının
+gönderdiği kayıt kare kare incelendi (`ffmpeg` ile çıkarılan karelerde aynı
+cümle -- "...The phone said six per cent." -- kimi karede bir sayfanın
+SONUNDA, kimi karede TEK BAŞINA son sayfada duruyor: sayfalama saniyede
+birkaç kez iki durum arasında gidip geliyor).
+
+1. **Footer'ın yüksekliği son sayfada 23 px büyüyordu ve döngüyü bu
+   besliyordu.** 2026-09-18'de bu "düzeltilmiş" ve testi de yazılmıştı --
+   ama düzeltme `minHeight: 52` idi, yani bir TABAN. Kabın alt dolgusu
+   `insets.bottom` olduğu için ana ekran çubuğu olan her iPhone'da (inset
+   ~34) iki dal da tabanı aşıyor ve fark geri geliyordu:
+   yüzde dalı 8+13+34=55, düğme dalı 8+36+34=78. Testi yazan kurulum
+   `insets.bottom: 0` kullandığından tam da farkın kaybolduğu TEK koşulu
+   ölçüyordu. Footer artık SABİT yükseklikli bir içerik kabına render
+   ediliyor; test gerçekçi insetlerle çalışıyor, `minHeight` tabanını değil
+   render edilen yüksekliği ölçüyor ve eski koda geri konduğunda kırmızıya
+   döndüğü doğrulandı.
+2. **Döngünün KENDİSİ kırıldı (asıl koruma).** Okuma alanının kabul edilen
+   yüksekliği artık ZAMANLA AZALAN bir dizi: büyüme yok sayılıyor, yalnızca
+   anlamlı küçülme kabul ediliyor (`nextPageContainerSize`). Azalan bir dizi
+   eski bir değerine asla dönemez, yani "A -> B -> A" fiziksel olarak
+   kurulamaz -- gelecekte hangi kardeş bileşen boy değiştirirse değiştirsin.
+   Küçüğü tutmak güvenli yön: kap saklanandan büyükse altta görünmez boşluk
+   kalır, küçükse metin kırpılırdı. Genişlik değişimi (döndürme) sıfırlıyor.
+
+Bu ikisi, 1. turdaki üç düzeltmenin (aşağıda) üstüne geliyor -- onlar ayrı
+ve gerçek hatalardı, ama kullanıcının bildirdiği git-geli tek başlarına
+durdurmuyordu.
+
+### Aynı oturum, 1. tur (2026-09-19)
+
+Kullanıcı videosu: okurken metin kendiliğinden değişiyor, "başka bir cümle
+geliyor", son sayfada belirginleşiyor. İki BAĞIMSIZ kök sebep bulundu; her
+ikisi de düzeltildi.
+
+1. **Sayfalama, paragraf aralarını hiç saymıyordu -- ve METİN KIRPILIYORDU.**
+   `ReaderPage` art arda iki paragraf arasına `{"
+
+"}`basıyordu (bir tam
+   satır, ~31 px),`paginate`ise sayfa yüksekliğini hesaplarken yalnızca
+   satır yüksekliklerini topluyordu. Yani render edilen sayfa, sayfalamanın
+   varsaydığından her paragraf sınırı başına bir satır DAHA UZUNDU; sayfa
+   kabı sabit yükseklikte ve`overflow:"hidden"`olduğu için fazlalık
+   kırpılıyor, **okuyucu o satırları hiç görmeden bir sonraki sayfaya
+   geçiyordu**. Koddaki eski yorum bu tavizi "en kötü ihtimalle biraz boş
+   alan kırpılır" diye anlatıyordu; kırpılan boşluk değil metindi.
+   Düzeltme: boşluk artık`getReadingTypeScale().paragraphGap`(tasarım
+   kaynağı`mockups/reader.html` `.reading p{margin:0 0 20px}`, font
+   boyutuyla ölçekleniyor), `paginate`onu bütçeliyor,`ReaderPage`aynı
+   koşulla`marginTop`olarak render ediyor. Sayfa önbelleği anahtarına da
+   girdi, yani eski (hatalı) yerleşimler otomatik geçersiz.
+2. **Yeniden sayfalama okuma konumunu koruyordu -- sanılıyordu.** Görünen
+   sayfa yalnızca bir SAYIYDI;`pages`yeniden hesaplandığında o sayı
+   yerinde kalıyor ama BAŞKA bir metne denk geliyordu. Önceki oturumlar bunu
+   tetikleyicileri tek tek kapatarak çözmeye çalıştı (footer yüksekliği,
+  `onLayout` gürültüsü) -- ama yeniden sayfalamanın meşru sebepleri de var:
+   yazı tipi/satır aralığı/kenar boşluğu ayarı, ekran döndürme ve **premium
+   ses çubuğunun sunucu yanıtı gelince belirmesi** (86 pt, hâlâ açıktı).
+   Düzeltme: konum artık metne bağlı bir ÇIPA (`paragraphId`+`charOffset`),
+   sayfa numarası ondan türetiliyor. Her yeniden sayfalamada çıpanın düştüğü
+   sayfaya `useLayoutEffect`içinde, boyamadan önce, animasyonsuz gidiliyor.
+   Yeniden sayfalama artık bir hata değil, görünmez bir yeniden akış.
+3. **Yeniden akış sırasında okuma yüzeyi bomboş kalıyordu.** Ölçüm sürerken
+  `pages` null oluyor ve FlatList tamamen sökülüyordu. Artık bir önceki
+sayfalama yenisi hazır olana kadar gösterilmeye devam ediyor.
+
+Testler: `ReaderFooter.test.tsx` gerçekçi insetlerle yeniden yazıldı,
+`__tests__/paginatedReaderAnchor.test.ts`'e "yükseklik asla büyümez"
+değişmezi eklendi, `paginate.test.ts`'e paragraf-aralığı bütçesi (sayfa yüksekliğinin
+asla aşılmadığı ve hiç metin kaybolmadığı dahil) ve yeni
+`__tests__/paginatedReaderAnchor.test.ts`'e çıpanın yeniden sayfalamadan sağ
+çıktığı kilitlendi -- sonuncusu eski index tabanlı davranışın gerçekten
+kaydığını da ayrıca doğruluyor. 290 test geçiyor, typecheck ve lint temiz.
+
+**Doğrulanamayan:** web önizlemesi bu oturumda çalıştırılamadı --
+`lottie-react-native`'in web girişi `@lottiefiles/dotlottie-react`'i
+çözemiyor (kurulu değil). Bu değişikliklerle ilgisi yok ve yalnızca web'i
+etkiliyor, ama **düzeltmelerin gerçek cihazda/simülatörde gözle
+doğrulanması yapılmadı.**
 
 ### Bu oturumda kapatılanlar (2026-09-14/15, tasarım + gelir turu)
 
