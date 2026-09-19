@@ -214,7 +214,8 @@
       "start": "ابدأ القراءة",
       "continue": "متابعة القراءة — الفصل {{index}}",
       "listen": "استمع",
-      "listenAccessibilityLabel": "الاستماع إلى هذا الكتاب"
+      "listenAccessibilityLabel": "الاستماع إلى هذا الكتاب",
+      "listenLockedAccessibilityLabel": "استمع — ميزة مميّزة"
     },
     "stats": {
       "words": "كلمة",

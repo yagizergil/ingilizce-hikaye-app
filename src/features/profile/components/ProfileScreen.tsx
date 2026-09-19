@@ -1,7 +1,8 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
@@ -14,7 +15,7 @@ import { supabase } from "@/lib/supabase";
 import { env } from "@/lib/env";
 import { Card, LoadingState, ErrorState, Hairline, SectionHeader } from "@/components/ui";
 import { useVocabularyQuery } from "@/features/vocabulary";
-import { useReaderSettings } from "@/features/reader";
+import { ReaderSettingsSheet, useReaderSettings } from "@/features/reader";
 import { useOnboardingStatusQuery } from "@/features/onboarding";
 import { ReminderSettingsRow } from "@/features/reminders";
 import { useActiveLanguagePairQuery } from "@/features/languagePair";
@@ -56,6 +57,9 @@ import { ProfileFooter } from "@/features/profile/components/ProfileFooter";
 export function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const { theme, themeName } = useTheme();
+  /** Yazı boyutu ve tema satırlarının açtığı sheet -- okuma ekranındakiyle
+   * AYNI bileşen (gerekçe satırların yanındaki notta). */
+  const settingsSheetRef = useRef<BottomSheetModal>(null);
   const queryClient = useQueryClient();
   const { isAnonymous, email, displayName, memberSince } = useProfileAuthStatus();
   const fontScalePercent = useReaderSettings((state) => state.fontScale);
@@ -241,6 +245,19 @@ export function ProfileScreen() {
             <Hairline />
             <ReminderSettingsRow />
             <Hairline />
+            {/*
+              DENETİM BULGUSU (2026-09-19, kullanıcı bildirimi): bu iki
+              satırın `onPress`i HİÇ YOKTU. Yani ayarlarda yazı boyutu ve
+              tema yazıyordu, güncel değeri de gösteriyordu, ama dokunmak
+              hiçbir şey yapmıyordu -- kullanıcı ikisini de buradan
+              değiştiremiyordu. Değerler zaten global store'larda
+              (`useReaderSettings`, `useTheme`), yani ayar VARDI; ona
+              ulaşmanın tek yolu okuma ekranının içindeki sheet'ti.
+
+              Yeni bir ayar ekranı YAZILMADI: aynı sheet açılıyor. İkinci
+              bir kopya yazmak, iki kontrolün zamanla ayrışması demekti --
+              bu projede bugün tam da o sınıftan birkaç hata düzeltildi.
+            */}
             <ProfileAccountRow
               icon="text"
               iconColor={levelAccent.A1}
@@ -248,6 +265,7 @@ export function ProfileScreen() {
               value={t("profile.account.fontSizeValue", {
                 percent: Math.round(fontScalePercent * 100),
               })}
+              onPress={() => settingsSheetRef.current?.present()}
             />
             <Hairline />
             <ProfileAccountRow
@@ -255,6 +273,7 @@ export function ProfileScreen() {
               iconColor={levelAccent.C2}
               label={t("profile.account.theme")}
               value={t(`reader.settings.themeOptions.${themeName}`)}
+              onPress={() => settingsSheetRef.current?.present()}
             />
             <Hairline />
             <ProfileAccountRow
@@ -309,6 +328,8 @@ export function ProfileScreen() {
           <ProfileFooter />
         </ScrollView>
       )}
+
+      <ReaderSettingsSheet ref={settingsSheetRef} />
     </SafeAreaView>
   );
 }

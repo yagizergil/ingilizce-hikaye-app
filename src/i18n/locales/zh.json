@@ -206,7 +206,8 @@
       "start": "开始阅读",
       "continue": "继续阅读 — 第 {{index}} 章",
       "listen": "收听",
-      "listenAccessibilityLabel": "收听这本书"
+      "listenAccessibilityLabel": "收听这本书",
+      "listenLockedAccessibilityLabel": "收听 — 高级功能"
     },
     "stats": {
       "words": "词数",

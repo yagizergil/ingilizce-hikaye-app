@@ -210,7 +210,8 @@
       "start": "Начать читать",
       "continue": "Продолжить чтение — глава {{index}}",
       "listen": "Слушать",
-      "listenAccessibilityLabel": "Слушать эту книгу"
+      "listenAccessibilityLabel": "Слушать эту книгу",
+      "listenLockedAccessibilityLabel": "Слушать — премиум-функция"
     },
     "stats": {
       "words": "Слова",

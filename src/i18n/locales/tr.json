@@ -206,7 +206,8 @@
       "start": "Okumaya başla",
       "continue": "Okumaya devam et — Bölüm {{index}}",
       "listen": "Dinle",
-      "listenAccessibilityLabel": "Bu kitabı dinle"
+      "listenAccessibilityLabel": "Bu kitabı dinle",
+      "listenLockedAccessibilityLabel": "Dinle — premium özellik"
     },
     "stats": {
       "words": "Kelime",

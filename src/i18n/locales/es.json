@@ -206,7 +206,8 @@
       "start": "Empezar a leer",
       "continue": "Seguir leyendo — Capítulo {{index}}",
       "listen": "Escuchar",
-      "listenAccessibilityLabel": "Escuchar este libro"
+      "listenAccessibilityLabel": "Escuchar este libro",
+      "listenLockedAccessibilityLabel": "Escuchar — función premium"
     },
     "stats": {
       "words": "Palabras",

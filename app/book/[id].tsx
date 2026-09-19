@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
@@ -245,7 +245,31 @@ export default function BookDetailScreen() {
         {book.hasAudio ? (
           <Button
             label={t("bookDetail.cta.listen")}
-            accessibilityLabel={t("bookDetail.cta.listenAccessibilityLabel")}
+            accessibilityLabel={t(
+              isAudioAccessKnown && !audioAccess?.canPlay
+                ? "bookDetail.cta.listenLockedAccessibilityLabel"
+                : "bookDetail.cta.listenAccessibilityLabel",
+            )}
+            /*
+              PREMIUM İŞARETİ (2026-09-19, kullanıcı önerisi): erişimi
+              OLMAYAN kullanıcıda düğmenin yanında paywall'ın premium
+              sembolü (taç) görünüyor; premium kullanıcıda hiç çizilmiyor.
+              Öncesinde iki durum aynı görünüyordu ve kullanıcı basmadan
+              önce bunun ücretli bir özellik olduğunu anlayamıyordu.
+
+              ADR-012 ile çelişmiyor: "kilitli kontrolü gizle" kuralı OKUMA
+              EKRANI için (Ürün İlkesi #1). Kitap detayı teklifin YAPILDIĞI
+              yer -- `BookAudioCard` de tam üstünde "premium'a dahil" diyor.
+
+              Erişim henüz BİLİNMİYORKEN de çizilmiyor: cevap gelmeden taç
+              göstermek, premium kullanıcıya bir an için "bu sende yok"
+              demek olurdu.
+            */
+            icon={
+              isAudioAccessKnown && !audioAccess?.canPlay ? (
+                <MaterialCommunityIcons name="crown" size={16} color={theme.accent} />
+              ) : undefined
+            }
             onPress={handlePressListen}
             disabled={!continueChapter || !isAudioAccessKnown}
             variant="secondary"

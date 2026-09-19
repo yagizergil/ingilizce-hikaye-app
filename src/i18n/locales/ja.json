@@ -206,7 +206,8 @@
       "start": "読み始める",
       "continue": "続きを読む — 第 {{index}} 章",
       "listen": "聴く",
-      "listenAccessibilityLabel": "この本を聴く"
+      "listenAccessibilityLabel": "この本を聴く",
+      "listenLockedAccessibilityLabel": "聴く — プレミアム機能"
     },
     "stats": {
       "words": "語数",
