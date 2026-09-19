@@ -490,10 +490,98 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 
 ## Mevcut Durum ve Sonraki Adımlar
 
-> Son güncelleme: 2026-09-19 (reader sayfalama, ilk-kullanıcı denetimi). Bu bölüm her önemli oturumdan sonra güncellenir.
+> Son güncelleme: 2026-09-19 (1.0.2 çok ajanlı denetim + dönüşüm turu). Bu bölüm her önemli oturumdan sonra güncellenir.
 > `docs/ROADMAP.md` ve `docs/STATE.md` çok daha eski; çelişki olursa burası
 > geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
 > içinde.
+
+### 1.0.2 turu (2026-09-19, çok ajanlı denetim + dönüşüm)
+
+Dört paralel ajan (performans, öğrenme döngüsü, gelir, sunucu/veri) denetim
+yaptı; bulgular doğrulanıp düzeltildi. **Gerçek dünya sinyali yok** --
+uygulama bir gün önce yayınlandı, TestFlight çökmesi ve App Store yorumu
+sıfır, yani denetim tamamen koddan ve canlı veritabanından yürüdü.
+
+**Kapatılanlar**
+
+1. **Tekrar oturumunda kartların YARISI atlanıyordu.** Her puanlamadan sonra
+   `srsQueryKeys.all` geçersiz kılınıyor, `useDueCardsQuery` yeniden çekiyor
+   ve puanlanan kart (vadesi ileri kaydığı için) diziden düşüyordu; konum
+   ise sayaç olarak ilerliyordu. 20 kartın ~10'u hiç gösterilmiyordu. Oturum
+   artık sabit bir anlık görüntü üzerinde (`useReviewSession`).
+2. **Kitap sözlüğü 1000 kelimeye SESSİZCE kırpılıyordu.** `book_lemmas`
+   sayfalanmadan çekiliyordu; PostgREST 1000 satırda kesiyor (HTTP 206).
+   Yayındaki 529 kitabın 194'ünde kelime sayısı 1000'in üstünde, yani
+   çevrimdışı sözlük dağarcığın %15-40'ını içeriyordu ve eksik her kelime
+   ~700 ms'lik bir ağ turuna düşüyordu.
+3. **Kelime defterinde kaydı kaldırmanın HİÇBİR yolu yoktu.** Yer imi ikonu
+   `Pressable` değil `View`'dı. Ücretsiz katmanda çıkmazdı: sınıra dayanan
+   kullanıcı yer açamıyordu.
+4. **Gelir yolu:** geri yükleme ödeyen aboneye "abonelik yok" diyordu
+   (üç ayrı sonuç tek `false`'a iniyordu); `not_entitled` kararı sunucuya
+   değil istemcinin anlık görüntüsüne bakıyordu (ADR-009'un tersi); deneme
+   hakkı uygunluk kontrolü olmadan reklam ediliyordu (Guideline 2.3.1);
+   premium kullanıcı "Dinle"ye erken basınca kendi aldığı ürün için
+   paywall'a gidiyordu.
+5. **Bölüm açılışı, sonucu KULLANILMAYAN 25-28 paralel isteğe
+   bloklanıyordu.** `unknownLemmas` yalnızca yükleme kapısında ve bir
+   telemetri alanında geçiyordu. Sorgu, hook dosyası ve 5.000 elemanlı
+   sorgu anahtarı silindi.
+6. **Ses çalarken sayfalar saniyede iki kez baştan tokenize ediliyordu.**
+   expo-audio 500 ms'de bir durum yayıyor; `handleWordTap` TanStack v5'in
+   her render'da yeni döndürdüğü mutation nesnesine bağlı olduğu için hiç
+   sabitlenmiyordu. Zincir `renderItem` -> `CellRenderer` -> tokenizasyon
+   memo'suna kadar kırılıyordu.
+7. `browse` ve `favorites` ekranlarında geri düğmesi yoktu (yığın başlığı
+   kapalı, sekme çubuğu görünmüyor -- geriye tek yol kenar kaydırmaydı).
+8. Dil ayarlarında UI dili ve yazım yönü sunucu çifti kabul etmeden kalıcı
+   yazılıyordu: "premium gerekli" alan kullanıcı ödemediği dile geçiyordu.
+
+**Dönüşüm turu** (ürün sahibi önceliği; tasarım
+`docs/plans/2026-09-19-donusum-tasarim.md`): paywall artık kullanıcının
+kendi son 7 günüyle açılıyor (kaç gün okudu / kaç kelime çevirdi / kaç
+kelime kaydetti) ve günlük kelime hakkı bittiğinde takılınan kelimeyi
+adıyla gösteriyor. Geçmişi olmayan kullanıcıda blok hiç gösterilmiyor --
+sıfır yazan bir "başarı" bloğu satılan şeyin değersiz olduğunu söylemek
+olurdu.
+
+308 test geçiyor, typecheck ve lint temiz.
+
+**AÇIK KALANLAR (bir sonraki tur)**
+
+- **Migration 041 üretime UYGULANMADI.** `get_user_streak()` bir günü
+  "okunmuş" saymak için `words_read > 0`'a bakıyor ama o sütuna hiç yazı
+  yazılmadı. Canlı veri: `user_reading_stats`'ta 17 satır, `words_read > 0`
+  olan **sıfır**, `minutes > 0` olan **17** (13 kullanıcı). Yani seri
+  herkeste ispatlı biçimde 0 ve seri-kurtarma bildirimi hiç ateşlenemiyor.
+  Dosya hazır, uygulanması bekliyor.
+- **Veri katmanı (ajan yarıda kaldı):** bölüm metni 1000 paragrafı aşan
+  bölümlerde sessizce kırpılıyor (4 yayında bölüm etkileniyor);
+  `lemma_canonical` çağrı başına ~725 ms (CTE materyalize oluyor, indeks
+  kullanılamıyor) ve reader'ın sıcak yolunda; kütüphane listesi
+  render ettiğinin ~3 katı bayt indiriyor (`description` vb. liste
+  satırında kullanılmıyor); `useBooksQuery`'de `.limit()` yok ve 529
+  kitapla 1000 satır sınırına 471 kitap kaldı; dört gereksiz indeks;
+  `enforce_saved_word_limit` BEFORE INSERT olduğu için tam sınırdaki
+  kullanıcı zaten kayıtlı bir kelimeye yeniden dokununca hata alıyor.
+- **Üç farklı "bugün" tanımı:** `user_reading_stats.date` UTC yazılıyor,
+  `get_user_streak` İstanbul'a göre, `useProfileStatsQuery` cihazın yerel
+  gününe göre okuyor. Gece okuyanda seri ve haftalık grafik yanlış güne
+  düşüyor.
+- Çevrimdışı tekrar oturumu sessizce kayboluyor (`useReviewCardMutation`'da
+  `onError` yok); tek bir kalıcı hata çevrimdışı kelime kuyruğunu sonsuza
+  dek tıkıyor; aynı lemma iki farklı `pos` ile iki duruma düşebiliyor.
+- Dört sekmede odaklanmada koşulsuz `refetch()` (staleTime'ı baypas ediyor);
+  on dil paketi de açılışta ayrıştırılıyor; onboarding kapakları
+  `expo-image` yerine RN `Image` kullanıyor.
+- **Türkçe büyük harf** ("ŞIMDI DEĞIL" -> "ŞİMDİ DEĞİL"): 10 tasarım
+  token'ı, ~29 dosya. Ayrı göreve alındı.
+- "Seviyene göre" kartı seviye bilinmiyorken tüm katalogu açıyor; favori
+  düğmesi sunucu hatasında sessizce başarısız oluyor.
+- **Belge/gerçek ayrışması:** CLAUDE.md "119 kitap" diyor, canlıda **529
+  yayında kitap** var (9 hedef dilde). `languages` tablosu ve
+  `is_content_target` migration geçmişi DIŞINDA değiştirilmiş -- depodan
+  kurulan bir veritabanı üretimle eşleşmiyor.
 
 ### Bu oturumda kapatılanlar (2026-09-19, ilk-kullanıcı denetimi -- 3. tur)
 
