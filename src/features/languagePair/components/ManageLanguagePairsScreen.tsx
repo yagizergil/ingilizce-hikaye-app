@@ -9,7 +9,7 @@ import i18n from "@/i18n";
 import { storeUiLanguage } from "@/i18n/uiLanguage";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { LanguageFlag, LoadingState } from "@/components/ui";
+import { Button, EmptyState, ErrorState, LanguageFlag, LoadingState } from "@/components/ui";
 import { CONTENT_TARGET_LANGUAGES, LANGUAGES, getLanguage } from "@/lib/languages";
 import { applyLayoutDirection, reloadApp } from "@/lib/rtl";
 
@@ -46,7 +46,7 @@ export function ManageLanguagePairsScreen({
 }: ManageLanguagePairsScreenProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
-  const { data: owned, isLoading } = useOwnedLanguagePairsQuery();
+  const { data: owned, isLoading, isError, refetch } = useOwnedLanguagePairsQuery();
   const setPair = useSetLanguagePairMutation();
 
   const [phase, setPhase] = useState<Phase>("list");
@@ -188,7 +188,15 @@ export function ManageLanguagePairsScreen({
   };
 
   const handleSelectNewNative = (nativeLanguage: string) => {
-    if (!activePair) return;
+    // HİÇ ÇİFT YOKKEN de bu ekrandan kurulabiliyor (aşağıdaki boş durum):
+    // korunacak bir hedef olmadığı için hedef HER ZAMAN soruluyor. Eskiden
+    // burada `if (!activePair) return;` vardı, yani dokunuş sessizce
+    // hiçbir şey yapmıyordu.
+    if (!activePair) {
+      setPendingNative(nativeLanguage);
+      setPhase("target");
+      return;
+    }
 
     // Ana dil, ŞU ANKİ hedefle çakışıyorsa (native == target olamaz) önce
     // yeni bir hedef seçtiriyoruz -- restart/i18n değişikliği yalnızca son
@@ -318,6 +326,42 @@ export function ManageLanguagePairsScreen({
 
         {isLoading ? (
           <LoadingState />
+        ) : isError ? (
+          /**
+           * KULLANICI BULGUSU (2026-09-19): bu ekranın hiç hata durumu
+           * YOKTU. Sorgu başarısız olduğunda `isLoading` false'a düşüyor,
+           * `owned` undefined kalıyor ve ekran yalnızca başlıkla birlikte
+           * BOMBOŞ çiziliyordu -- kullanıcı ne olduğunu anlayamıyor,
+           * deneyecek bir şey de bulamıyordu.
+           */
+          <ErrorState message={t("languagePair.loadError")} onRetry={() => void refetch()} />
+        ) : !activePair ? (
+          /**
+           * AYNI BULGUNUN İKİNCİ YOLU: hiç çift yokken de ekran boştu.
+           * Ekranın kendi notu "zaten en az bir çiftin var" varsayıyor ama
+           * bunu hiçbir şey garanti etmiyor: `useActiveLanguagePairQuery`
+           * satır yokken BİLEREK bir varsayılana düşüyor (tr/en), yani
+           * kullanıcı sıfır satırla uygulamanın içinde gezinebiliyor ve
+           * buraya gelebiliyor. Canlı veride bunu doğruladık: çifti olan
+           * her kullanıcıda tam olarak bir aktif satır var, yani
+           * `activePair === null` YALNIZCA sıfır satır demek.
+           *
+           * İlk çift kural gereği ücretsiz (`set_language_pair`,
+           * migration 033), dolayısıyla buradan kurmak güvenli.
+           */
+          <View style={styles.section}>
+            <EmptyState
+              title={t("languagePair.noPairTitle")}
+              description={t("languagePair.noPairBody")}
+            />
+            <Button
+              label={t("languagePair.choosePairCta")}
+              onPress={() => {
+                setPendingNative(null);
+                setPhase("native");
+              }}
+            />
+          </View>
         ) : (
           <>
             {activePair ? (

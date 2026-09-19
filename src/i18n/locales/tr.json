@@ -886,6 +886,10 @@
     "activeBadge": "Aktif",
     "interfaceLanguageSection": "ARAYÜZ DİLİ",
     "pairArrow": "{{from}} → {{to}}",
-    "historyPairs": "GEÇMİŞ SEÇİMLER"
+    "historyPairs": "GEÇMİŞ SEÇİMLER",
+    "loadError": "Dil çiftlerin yüklenemedi.",
+    "noPairTitle": "Henüz bir dil çiftin yok",
+    "noPairBody": "Hangi dili konuştuğunu ve hangi dilde okumak istediğini seç. İlk çiftin ücretsiz.",
+    "choosePairCta": "Dil çifti seç"
   }
 }

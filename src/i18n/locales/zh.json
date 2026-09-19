@@ -886,6 +886,10 @@
     "activeBadge": "当前使用",
     "interfaceLanguageSection": "界面语言",
     "pairArrow": "{{from}} → {{to}}",
-    "historyPairs": "历史配对"
+    "historyPairs": "历史配对",
+    "loadError": "无法加载你的语言对。",
+    "noPairTitle": "你还没有语言对",
+    "noPairBody": "选择你使用的语言和想要阅读的语言。第一个语言对免费。",
+    "choosePairCta": "选择语言对"
   }
 }

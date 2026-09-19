@@ -942,6 +942,10 @@
     "activeBadge": "نشط",
     "interfaceLanguageSection": "لغة الواجهة",
     "pairArrow": "{{from}} ← {{to}}",
-    "historyPairs": "الأزواج السابقة"
+    "historyPairs": "الأزواج السابقة",
+    "loadError": "تعذّر تحميل أزواج اللغات لديك.",
+    "noPairTitle": "ليس لديك زوج لغات بعد",
+    "noPairBody": "اختر اللغة التي تتحدثها واللغة التي تريد القراءة بها. زوجك الأول مجاني.",
+    "choosePairCta": "اختر زوج لغات"
   }
 }

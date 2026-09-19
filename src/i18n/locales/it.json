@@ -886,6 +886,10 @@
     "activeBadge": "Attiva",
     "interfaceLanguageSection": "LINGUA DELL'INTERFACCIA",
     "pairArrow": "{{from}} → {{to}}",
-    "historyPairs": "COPPIE PRECEDENTI"
+    "historyPairs": "COPPIE PRECEDENTI",
+    "loadError": "Impossibile caricare le tue coppie di lingue.",
+    "noPairTitle": "Non hai ancora una coppia di lingue",
+    "noPairBody": "Scegli la lingua che parli e quella in cui vuoi leggere. La prima coppia è gratuita.",
+    "choosePairCta": "Scegli una coppia di lingue"
   }
 }

@@ -886,6 +886,10 @@
     "activeBadge": "Active",
     "interfaceLanguageSection": "INTERFACE LANGUAGE",
     "pairArrow": "{{from}} → {{to}}",
-    "historyPairs": "PAST PAIRS"
+    "historyPairs": "PAST PAIRS",
+    "loadError": "Couldn't load your language pairs.",
+    "noPairTitle": "You don't have a language pair yet",
+    "noPairBody": "Choose the language you speak and the language you want to read. Your first pair is free.",
+    "choosePairCta": "Choose a language pair"
   }
 }

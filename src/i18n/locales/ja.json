@@ -886,6 +886,10 @@
     "activeBadge": "使用中",
     "interfaceLanguageSection": "インターフェース言語",
     "pairArrow": "{{from}} → {{to}}",
-    "historyPairs": "過去のペア"
+    "historyPairs": "過去のペア",
+    "loadError": "言語ペアを読み込めませんでした。",
+    "noPairTitle": "まだ言語ペアがありません",
+    "noPairBody": "話す言語と読みたい言語を選んでください。最初のペアは無料です。",
+    "choosePairCta": "言語ペアを選ぶ"
   }
 }

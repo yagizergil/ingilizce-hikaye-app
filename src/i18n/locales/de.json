@@ -886,6 +886,10 @@
     "activeBadge": "Aktiv",
     "interfaceLanguageSection": "OBERFLÄCHENSPRACHE",
     "pairArrow": "{{from}} → {{to}}",
-    "historyPairs": "FRÜHERE PAARE"
+    "historyPairs": "FRÜHERE PAARE",
+    "loadError": "Deine Sprachpaare konnten nicht geladen werden.",
+    "noPairTitle": "Du hast noch kein Sprachpaar",
+    "noPairBody": "Wähle die Sprache, die du sprichst, und die Sprache, in der du lesen möchtest. Dein erstes Paar ist kostenlos.",
+    "choosePairCta": "Sprachpaar wählen"
   }
 }
