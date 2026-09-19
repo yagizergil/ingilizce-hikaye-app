@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
-import { trackEvent } from "@/lib/analytics";
+import { trackError, trackEvent } from "@/lib/analytics";
 
 import { srsQueryKeys } from "@/features/srs/api/queryKeys";
 import { scheduleCard, type SrsRating } from "@/features/srs/scheduler";
@@ -54,9 +54,19 @@ async function reviewCard({ card, rating, elapsedMs }: ReviewInput): Promise<voi
     elapsed_ms: Math.min(elapsedMs, 600_000),
   });
 
-  // Geçmiş yazılamazsa kartın planı yine de doğru — kullanıcıyı
-  // durdurmuyoruz, ama sessizce yutmuyoruz da.
-  if (reviewError) throw reviewError;
+  /**
+   * GEÇMİŞ YAZILAMAZSA FIRLATILMIYOR -- kaydediliyor.
+   *
+   * DENETİM BULGUSU (2026-09-19): burada `throw reviewError` vardı ve
+   * hemen üstündeki yorum "kullanıcıyı durdurmuyoruz" diyordu; kod
+   * yorumun tersini yapıyordu. Kartın planı bu noktada ZATEN yazılmış
+   * (yukarıdaki `update` başarılı), yani geçmiş satırının yazılamaması
+   * kullanıcı için hiçbir şeyi bozmuyor: tekrar doğru zamanlandı. Buna
+   * rağmen fırlatmak, aslında BAŞARILI olan bir değerlendirmeyi hatalı
+   * göstermek ve yeniden denendiğinde planı İKİNCİ kez uygulama riski
+   * demekti.
+   */
+  if (reviewError) trackError("srs.reviewHistory", reviewError, { cardId: card.id });
 }
 
 export function useReviewCardMutation() {
@@ -73,6 +83,23 @@ export function useReviewCardMutation() {
       void queryClient.invalidateQueries({ queryKey: srsQueryKeys.all });
       // Kelimelerim ekranındaki "vadesi gelen" sayacı da değişti.
       void queryClient.invalidateQueries({ queryKey: vocabularyQueryKeys.all });
+    },
+    /**
+     * DENETİM BULGUSU (2026-09-19): `onError` HİÇ YOKTU.
+     *
+     * Metroda, önbellekten gelen kart listesiyle tekrar yapan kullanıcının
+     * 20 değerlendirmesinin 20'si de `Network request failed` ile
+     * başarısız oluyordu; ekran normal akıyor, bitişte "20 kelime tekrar
+     * ettin" yazıyor ve HİÇBİRİ yazılmamış oluyordu -- bütün planlama ve
+     * geçmiş kayboluyordu, tek bir mesaj bile görünmeden. CLAUDE.md'nin
+     * "beklenmeyen hatalar sessizce yutulmaz" kuralının açık ihlaliydi.
+     *
+     * Kart başına uyarı göstermek akışı paramparça ederdi; bunun yerine
+     * hata KAYDEDİLİYOR ve `ReviewScreen` başarısızları sayıp bitiş
+     * ekranında dürüst olanı söylüyor.
+     */
+    onError: (error, variables) => {
+      trackError("srs.reviewCard", error, { cardId: variables.card.id });
     },
   });
 }

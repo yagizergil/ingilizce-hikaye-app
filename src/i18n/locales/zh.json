@@ -545,7 +545,9 @@
     "emptyTitle": "暂时没有要复习的词",
     "emptyMessage": "阅读时收藏单词，复习卡片就会在这里攒起来。",
     "startButton": "开始复习",
-    "dueBadge": "{{count}} 个词待复习"
+    "dueBadge": "{{count}} 个词待复习",
+    "saveFailed_one": "有 {{count}} 个单词未能保存。请检查网络连接后重试。",
+    "saveFailed_other": "有 {{count}} 个单词未能保存。请检查网络连接后重试。"
   },
   "onboarding": {
     "introTitle": "先来测测你的等级",

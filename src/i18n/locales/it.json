@@ -545,7 +545,9 @@
     "emptyTitle": "Niente da ripassare",
     "emptyMessage": "Salva le parole mentre leggi: le tue carte di ripasso si raccoglieranno qui.",
     "startButton": "Inizia il ripasso",
-    "dueBadge": "{{count}} parole pronte"
+    "dueBadge": "{{count}} parole pronte",
+    "saveFailed_one": "Non è stato possibile salvare {{count}} parole. Controlla la connessione e riprova.",
+    "saveFailed_other": "Non è stato possibile salvare {{count}} parole. Controlla la connessione e riprova."
   },
   "onboarding": {
     "introTitle": "Troviamo il tuo livello",

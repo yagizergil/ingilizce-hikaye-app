@@ -545,7 +545,9 @@
     "emptyTitle": "復習する単語はありません",
     "emptyMessage": "読書中に単語を保存すると、復習カードがここに貯まっていきます。",
     "startButton": "復習を始める",
-    "dueBadge": "{{count}} 語が復習待ち"
+    "dueBadge": "{{count}} 語が復習待ち",
+    "saveFailed_one": "{{count}} 語を保存できませんでした。通信状況を確認してもう一度お試しください。",
+    "saveFailed_other": "{{count}} 語を保存できませんでした。通信状況を確認してもう一度お試しください。"
   },
   "onboarding": {
     "introTitle": "あなたのレベルを調べましょう",

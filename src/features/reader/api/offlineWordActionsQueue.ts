@@ -44,11 +44,28 @@ export async function enqueueWordAction(action: PendingWordAction): Promise<void
 }
 
 /**
- * Replays the queue in FIFO order, removing each item only once `replay`
- * resolves without throwing. Stops at the first failure (leaving it and
- * everything after it in the queue) instead of dropping the rest of the
- * queue — a still-offline device shouldn't lose actions 2..N just because
- * action 1 also still fails.
+ * Kuyruğu FIFO sırayla yeniden oynatır.
+ *
+ * İKİ FARKLI BAŞARISIZLIK, İKİ FARKLI DAVRANIŞ:
+ *
+ *  - **Çevrimdışı/ulaşılamıyor** -> DURULUYOR. Cihaz hâlâ çevrimdışıysa
+ *    2..N numaralı eylemleri 1 de başarısız diye atmak anlamsız olurdu;
+ *    hepsi kuyrukta kalıyor ve bağlantı gelince sırayla uygulanıyor.
+ *  - **Sunucunun kesin reddi** (kota, kısıt ihlali, RLS) -> O EYLEM
+ *    DÜŞÜRÜLÜYOR, kuyruk akmaya devam ediyor.
+ *
+ * DENETİM BULGUSU (2026-09-19): bu ayrım YOKTU, ilk başarısızlıkta
+ * koşulsuz duruluyordu. Somut senaryo: ücretsiz katmanda 49/50 kelimesi
+ * olan kullanıcı çevrimdışıyken iki kez kaydediyor. Bağlantı gelince ilki
+ * geçiyor, ikincisi `enforce_saved_word_limit` tetikleyicisine takılıyor --
+ * KALICI, deterministik bir ret. Döngü kırılıyor ve o andan itibaren
+ * kuyruktaki HER eylem (yer açacak olan `unsave`'ler dahil) o kalıcı
+ * hatanın arkasında, kurulumun ömrü boyunca bekliyor. Kullanıcının iyimser
+ * arayüzü o kelimeleri sonsuza dek "kaydedilmiş" gösteriyor, sunucu ise
+ * aynı fikirde değil.
+ *
+ * `isLikelyOfflineError` aynı dosyada tanımlı (aşağıda) -- ikinci bir kopya
+ * yazmak yerine o kullanılıyor.
  */
 export async function flushPendingWordActions(
   replay: (action: PendingWordAction) => Promise<void>,
@@ -56,19 +73,37 @@ export async function flushPendingWordActions(
   const queue = await readQueue();
   if (queue.length === 0) return;
 
-  let processed = 0;
+  /** Kuyruktan çıkarılacaklar: uygulananlar VE kalıcı olarak reddedilenler. */
+  let settled = 0;
+
   for (const action of queue) {
     try {
       await replay(action);
-      processed += 1;
+      settled += 1;
     } catch (error) {
+      if (isLikelyOfflineError(error)) {
+        // eslint-disable-next-line no-console
+        console.warn("[offlineWordActionsQueue] offline, flush duraklatıldı", error);
+        break;
+      }
+      // Kalıcı ret: yeniden denemek aynı sonucu verir, kuyruğu tıkar.
       // eslint-disable-next-line no-console
-      console.warn("[offlineWordActionsQueue] replay failed, stopping flush", error);
-      break;
+      console.warn("[offlineWordActionsQueue] kalıcı ret, eylem düşürüldü", action.type, error);
+      settled += 1;
     }
   }
 
-  if (processed > 0) await writeQueue(queue.slice(processed));
+  if (settled === 0) return;
+
+  /**
+   * Kuyruk YENİDEN OKUNUYOR, baştaki anlık görüntü dilimlenmiyor.
+   *
+   * İkinci denetim bulgusu: eski kod `queue.slice(processed)` yazıyordu --
+   * yani döngü SÜRERKEN kuyruğa eklenen bir eylem (kullanıcı flush devam
+   * ederken bir kelimeye daha dokunursa) sessizce siliniyordu.
+   */
+  const current = await readQueue();
+  await writeQueue(current.slice(settled));
 }
 
 /**

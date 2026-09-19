@@ -545,7 +545,9 @@
     "emptyTitle": "Tekrar edilecek kelime yok",
     "emptyMessage": "Okurken kelime kaydettikçe burada tekrar kartların birikir.",
     "startButton": "Tekrara başla",
-    "dueBadge": "{{count}} kelime hazır"
+    "dueBadge": "{{count}} kelime hazır",
+    "saveFailed_one": "{{count}} kelime kaydedilemedi. Bağlantını kontrol edip tekrar dene.",
+    "saveFailed_other": "{{count}} kelime kaydedilemedi. Bağlantını kontrol edip tekrar dene."
   },
   "onboarding": {
     "introTitle": "Seviyeni bulalım",

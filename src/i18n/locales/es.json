@@ -545,7 +545,9 @@
     "emptyTitle": "Nada que repasar",
     "emptyMessage": "Guarda palabras mientras lees y tus tarjetas de repaso se irán acumulando aquí.",
     "startButton": "Empezar el repaso",
-    "dueBadge": "{{count}} palabras listas"
+    "dueBadge": "{{count}} palabras listas",
+    "saveFailed_one": "No se han podido guardar {{count}} palabras. Revisa tu conexión e inténtalo de nuevo.",
+    "saveFailed_other": "No se han podido guardar {{count}} palabras. Revisa tu conexión e inténtalo de nuevo."
   },
   "onboarding": {
     "introTitle": "Vamos a ver tu nivel",

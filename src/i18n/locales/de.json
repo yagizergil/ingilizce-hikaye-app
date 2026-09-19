@@ -545,7 +545,9 @@
     "emptyTitle": "Nichts zu wiederholen",
     "emptyMessage": "Speicher beim Lesen Wörter — deine Wiederholungskarten sammeln sich hier.",
     "startButton": "Wiederholung starten",
-    "dueBadge": "{{count}} Wörter bereit"
+    "dueBadge": "{{count}} Wörter bereit",
+    "saveFailed_one": "{{count}} Wörter konnten nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut.",
+    "saveFailed_other": "{{count}} Wörter konnten nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut."
   },
   "onboarding": {
     "introTitle": "Finden wir dein Niveau",

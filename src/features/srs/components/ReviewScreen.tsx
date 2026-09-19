@@ -52,6 +52,8 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
   // ile sıfırlamak yerine konumla karşılaştırıyoruz: kart değiştiğinde
   // cevap kendiliğinden kapanmış oluyor, senkronizasyon effect'i gerekmiyor.
   const [revealedPosition, setRevealedPosition] = useState<number | null>(null);
+  /** Sunucuya YAZILAMAYAN değerlendirme sayısı. */
+  const [failedCount, setFailedCount] = useState(0);
   // Kartın ekrana geldiği an. Render sırasında Date.now() çağırmak saf
   // olmayan bir işlem (react-hooks/purity), o yüzden ilk damga kartın
   // yerleşiminde (onLayout) atılıyor, sonrakiler kart ilerletilirken.
@@ -78,13 +80,18 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
     (rating: SrsRating) => {
       if (!card) return;
       const shownAt = shownAtRef.current;
-      reviewMutation.mutate({
-        card,
-        rating,
-        // Damga bir şekilde atılmadıysa süreyi 0 gönder — yanlış bir süre
-        // yazmaktansa "ölçülemedi" demek daha doğru.
-        elapsedMs: shownAt > 0 ? Date.now() - shownAt : 0,
-      });
+      reviewMutation.mutate(
+        {
+          card,
+          rating,
+          // Damga bir şekilde atılmadıysa süreyi 0 gönder — yanlış bir süre
+          // yazmaktansa "ölçülemedi" demek daha doğru.
+          elapsedMs: shownAt > 0 ? Date.now() - shownAt : 0,
+        },
+        // Yazılamayan değerlendirmeler sayılıyor; bitiş ekranı bunu
+        // söylüyor (gerekçe `useReviewCardMutation`'daki `onError` notunda).
+        { onError: () => setFailedCount((current) => current + 1) },
+      );
       advance();
       // Sonraki kartın süre ölçümü buradan başlıyor.
       shownAtRef.current = Date.now();
@@ -120,6 +127,13 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
               ? t("srs.doneMessage", { count: reviewedCount })
               : t("srs.emptyMessage")}
           </Text>
+          {/* Hiçbiri yazılamadıysa "tekrar ettin" demek düpedüz yanlış
+              olurdu: kartlar hâlâ vadesi gelmiş durumda. */}
+          {failedCount > 0 ? (
+            <Text style={[monoType.rowText, styles.centeredText, { color: theme.accent }]}>
+              {t("srs.saveFailed", { count: failedCount })}
+            </Text>
+          ) : null}
           <Button label={t("common.back")} onPress={onClose} variant="secondary" size="sm" />
         </View>
       </SafeAreaView>

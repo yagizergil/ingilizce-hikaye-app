@@ -545,7 +545,9 @@
     "emptyTitle": "Rien à réviser",
     "emptyMessage": "Enregistre des mots pendant ta lecture : tes cartes de révision s'accumuleront ici.",
     "startButton": "Commencer la révision",
-    "dueBadge": "{{count}} mots prêts"
+    "dueBadge": "{{count}} mots prêts",
+    "saveFailed_one": "{{count}} mots n'ont pas pu être enregistrés. Vérifiez votre connexion et réessayez.",
+    "saveFailed_other": "{{count}} mots n'ont pas pu être enregistrés. Vérifiez votre connexion et réessayez."
   },
   "onboarding": {
     "introTitle": "Trouvons ton niveau",

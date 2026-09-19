@@ -545,7 +545,9 @@
     "emptyTitle": "Nothing to review",
     "emptyMessage": "Save words while reading and your review cards will collect here.",
     "startButton": "Start review",
-    "dueBadge": "{{count}} words ready"
+    "dueBadge": "{{count}} words ready",
+    "saveFailed_one": "{{count}} words couldn't be saved. Check your connection and try again.",
+    "saveFailed_other": "{{count}} words couldn't be saved. Check your connection and try again."
   },
   "onboarding": {
     "introTitle": "Let's find your level",
