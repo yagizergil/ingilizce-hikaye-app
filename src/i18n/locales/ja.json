@@ -815,7 +815,17 @@
     "upgradeRow": "プレミアム",
     "wordListFull": "単語帳は {{count}}/{{limit}} 使用中",
     "benefitsSectionTitle": "PREMIUM で増えること",
-    "introOffer": "あなたへ：年額プランで {{percent}}% お得"
+    "introOffer": "あなたへ：年額プランで {{percent}}% お得",
+    "activity": {
+      "heading": "この7日間",
+      "daysRead_one": "日読んだ",
+      "daysRead_other": "日読んだ",
+      "wordsLookedUp_one": "語調べた",
+      "wordsLookedUp_other": "語調べた",
+      "wordsSaved_one": "語保存した",
+      "wordsSaved_other": "語保存した",
+      "blockedWord": "「{{word}}」が待っています。"
+    }
   },
   "reminders": {
     "settingsLabel": "リマインダー",

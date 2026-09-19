@@ -815,7 +815,17 @@
     "upgradeRow": "Premium",
     "wordListFull": "Kelime defterin {{count}}/{{limit}} dolu",
     "benefitsSectionTitle": "ABONELİK AVANTAJLARI",
-    "introOffer": "SANA ÖZEL: YILLIKTA %{{percent}} TASARRUF"
+    "introOffer": "SANA ÖZEL: YILLIKTA %{{percent}} TASARRUF",
+    "activity": {
+      "heading": "SON 7 GÜNÜN",
+      "daysRead_one": "gün okudun",
+      "daysRead_other": "gün okudun",
+      "wordsLookedUp_one": "kelime çevirdin",
+      "wordsLookedUp_other": "kelime çevirdin",
+      "wordsSaved_one": "kelime kaydettin",
+      "wordsSaved_other": "kelime kaydettin",
+      "blockedWord": "“{{word}}” seni bekliyor."
+    }
   },
   "reminders": {
     "settingsLabel": "Hatırlatmalar",

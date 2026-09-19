@@ -20,6 +20,7 @@ import {
   useTrialEligibilityQuery,
 } from "@/features/paywall/api/useTrialEligibilityQuery";
 import { waitForServerPremium } from "@/features/paywall/api/waitForServerPremium";
+import { PaywallActivity } from "@/features/paywall/components/PaywallActivity";
 import { PaywallBenefits } from "@/features/paywall/components/PaywallBenefits";
 import { PaywallLegal } from "@/features/paywall/components/PaywallLegal";
 import { PaywallPlanCard } from "@/features/paywall/components/PaywallPlanCard";
@@ -35,6 +36,8 @@ interface PaywallScreenProps {
   onClose: () => void;
   /** Paywall'un nereden açıldığı — dönüşüm analizi için. */
   source: string;
+  /** Kota bittiği için gelindiyse kullanıcının takıldığı kelime. */
+  blockedWord?: string | null;
   /**
    * Başlığın hemen altına giren ekstra blok (onboarding'in deneme takvimi).
    *
@@ -86,6 +89,7 @@ type Busy = null | { kind: "purchase"; id: string } | { kind: "restore" } | { ki
 export function PaywallScreen({
   onClose,
   source,
+  blockedWord = null,
   intro,
   offeringId,
   highlightIntroOffer = false,
@@ -360,6 +364,12 @@ export function PaywallScreen({
         <Text style={[paywallType.subtitle, styles.centered, { color: theme.text.secondary }]}>
           {t("paywall.subtitle")}
         </Text>
+
+        {/* Kullanıcının kendi rakamları. Geçmişi yoksa `activity` null
+            geliyor ve blok hiç çizilmiyor -- gerekçe o bileşenin içinde. */}
+        {facts?.activity ? (
+          <PaywallActivity activity={facts.activity} blockedWord={blockedWord} />
+        ) : null}
 
         {intro}
 

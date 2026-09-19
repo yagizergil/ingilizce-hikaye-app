@@ -815,7 +815,17 @@
     "upgradeRow": "Premium",
     "wordListFull": "Dein Wortheft ist zu {{count}}/{{limit}} voll",
     "benefitsSectionTitle": "WAS PREMIUM BRINGT",
-    "introOffer": "FÜR DICH: {{percent}} % SPAREN IM JAHRESABO"
+    "introOffer": "FÜR DICH: {{percent}} % SPAREN IM JAHRESABO",
+    "activity": {
+      "heading": "DEINE LETZTEN 7 TAGE",
+      "daysRead_one": "Tag gelesen",
+      "daysRead_other": "Tage gelesen",
+      "wordsLookedUp_one": "Wort nachgeschlagen",
+      "wordsLookedUp_other": "Wörter nachgeschlagen",
+      "wordsSaved_one": "Wort gespeichert",
+      "wordsSaved_other": "Wörter gespeichert",
+      "blockedWord": "„{{word}}“ wartet auf dich."
+    }
   },
   "reminders": {
     "settingsLabel": "Erinnerungen",

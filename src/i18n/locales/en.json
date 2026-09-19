@@ -815,7 +815,17 @@
     "upgradeRow": "Premium",
     "wordListFull": "Your notebook is {{count}}/{{limit}} full",
     "benefitsSectionTitle": "WHAT PREMIUM ADDS",
-    "introOffer": "FOR YOU: SAVE {{percent}}% ON ANNUAL"
+    "introOffer": "FOR YOU: SAVE {{percent}}% ON ANNUAL",
+    "activity": {
+      "heading": "YOUR LAST 7 DAYS",
+      "daysRead_one": "day read",
+      "daysRead_other": "days read",
+      "wordsLookedUp_one": "word looked up",
+      "wordsLookedUp_other": "words looked up",
+      "wordsSaved_one": "word saved",
+      "wordsSaved_other": "words saved",
+      "blockedWord": "“{{word}}” is waiting for you."
+    }
   },
   "reminders": {
     "settingsLabel": "Reminders",

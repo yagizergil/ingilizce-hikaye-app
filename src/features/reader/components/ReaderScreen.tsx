@@ -409,7 +409,19 @@ export function ReaderScreen({
             return;
           }
           trackEvent("paywall_opened", { source: "word_quota_exhausted" });
-          router.push("/paywall?source=word_quota");
+          /**
+           * TAKILINAN KELİME PAYWALL'A TAŞINIYOR (2026-09-19 dönüşüm turu).
+           *
+           * Üründeki en yüksek niyetli an bu: kullanıcı tam o saniyede
+           * BELİRLİ bir kelimeyi anlamak istiyor ve anlayamıyor. Kelimeyi
+           * adıyla göstermek, soyut bir "sınırsız çeviri" vaadini onun
+           * gerçekten istediği tek somut şeye bağlıyor.
+           *
+           * Bu, okuma ekranına promosyon SOKMUYOR (Ürün İlkesi #1): paywall
+           * zaten reader'ın DIŞINDA, ayrı bir ekranda açılıyordu; değişen
+           * tek şey oraya taşınan bağlam.
+           */
+          router.push(`/paywall?source=word_quota&word=${encodeURIComponent(payload.surface)}`);
         })
         .catch((error) => {
           trackError("reader.wordQuota", error);

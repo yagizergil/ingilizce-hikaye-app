@@ -815,7 +815,17 @@
     "upgradeRow": "会员",
     "wordListFull": "生词本已用 {{count}}/{{limit}}",
     "benefitsSectionTitle": "PREMIUM 带来什么",
-    "introOffer": "专属优惠：年付省 {{percent}}%"
+    "introOffer": "专属优惠：年付省 {{percent}}%",
+    "activity": {
+      "heading": "你的最近 7 天",
+      "daysRead_one": "天阅读",
+      "daysRead_other": "天阅读",
+      "wordsLookedUp_one": "个单词查询",
+      "wordsLookedUp_other": "个单词查询",
+      "wordsSaved_one": "个单词收藏",
+      "wordsSaved_other": "个单词收藏",
+      "blockedWord": "“{{word}}”正在等你。"
+    }
   },
   "reminders": {
     "settingsLabel": "提醒",

@@ -835,7 +835,17 @@
     "upgradeRow": "Премиум",
     "wordListFull": "Словарик заполнен на {{count}}/{{limit}}",
     "benefitsSectionTitle": "ЧТО ДАЁТ PREMIUM",
-    "introOffer": "ДЛЯ ВАС: ЭКОНОМИЯ {{percent}} % НА ГОДОВОМ"
+    "introOffer": "ДЛЯ ВАС: ЭКОНОМИЯ {{percent}} % НА ГОДОВОМ",
+    "activity": {
+      "heading": "ВАШИ ПОСЛЕДНИЕ 7 ДНЕЙ",
+      "daysRead_one": "день чтения",
+      "daysRead_other": "дней чтения",
+      "wordsLookedUp_one": "слово переведено",
+      "wordsLookedUp_other": "слов переведено",
+      "wordsSaved_one": "слово сохранено",
+      "wordsSaved_other": "слов сохранено",
+      "blockedWord": "«{{word}}» ждёт вас."
+    }
   },
   "reminders": {
     "settingsLabel": "Напоминания",

@@ -815,7 +815,17 @@
     "upgradeRow": "Premium",
     "wordListFull": "Il tuo quaderno è pieno a {{count}}/{{limit}}",
     "benefitsSectionTitle": "COSA AGGIUNGE PREMIUM",
-    "introOffer": "PER TE: RISPARMIA IL {{percent}}% CON L'ANNUALE"
+    "introOffer": "PER TE: RISPARMIA IL {{percent}}% CON L'ANNUALE",
+    "activity": {
+      "heading": "I TUOI ULTIMI 7 GIORNI",
+      "daysRead_one": "giorno di lettura",
+      "daysRead_other": "giorni di lettura",
+      "wordsLookedUp_one": "parola cercata",
+      "wordsLookedUp_other": "parole cercate",
+      "wordsSaved_one": "parola salvata",
+      "wordsSaved_other": "parole salvate",
+      "blockedWord": "«{{word}}» ti sta aspettando."
+    }
   },
   "reminders": {
     "settingsLabel": "Promemoria",

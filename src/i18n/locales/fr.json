@@ -815,7 +815,17 @@
     "upgradeRow": "Premium",
     "wordListFull": "Ton carnet est rempli à {{count}}/{{limit}}",
     "benefitsSectionTitle": "CE QU'APPORTE PREMIUM",
-    "introOffer": "POUR TOI : {{percent}} % D'ÉCONOMIE À L'ANNÉE"
+    "introOffer": "POUR TOI : {{percent}} % D'ÉCONOMIE À L'ANNÉE",
+    "activity": {
+      "heading": "VOS 7 DERNIERS JOURS",
+      "daysRead_one": "jour de lecture",
+      "daysRead_other": "jours de lecture",
+      "wordsLookedUp_one": "mot recherché",
+      "wordsLookedUp_other": "mots recherchés",
+      "wordsSaved_one": "mot enregistré",
+      "wordsSaved_other": "mots enregistrés",
+      "blockedWord": "« {{word}} » vous attend."
+    }
   },
   "reminders": {
     "settingsLabel": "Rappels",

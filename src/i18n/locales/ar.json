@@ -855,7 +855,17 @@
     "upgradeRow": "بريميوم",
     "wordListFull": "دفتر كلماتك ممتلئ بنسبة {{count}}/{{limit}}",
     "benefitsSectionTitle": "ما الذي يضيفه PREMIUM",
-    "introOffer": "لك خصيصًا: وفّر {{percent}}٪ في الاشتراك السنوي"
+    "introOffer": "لك خصيصًا: وفّر {{percent}}٪ في الاشتراك السنوي",
+    "activity": {
+      "heading": "آخر 7 أيام",
+      "daysRead_one": "يوم قراءة",
+      "daysRead_other": "أيام قراءة",
+      "wordsLookedUp_one": "كلمة تُرجمت",
+      "wordsLookedUp_other": "كلمة تُرجمت",
+      "wordsSaved_one": "كلمة محفوظة",
+      "wordsSaved_other": "كلمة محفوظة",
+      "blockedWord": "«{{word}}» بانتظارك."
+    }
   },
   "reminders": {
     "settingsLabel": "التذكيرات",

@@ -815,7 +815,17 @@
     "upgradeRow": "Premium",
     "wordListFull": "Tu cuaderno está {{count}}/{{limit}} lleno",
     "benefitsSectionTitle": "LO QUE AÑADE PREMIUM",
-    "introOffer": "PARA TI: AHORRA UN {{percent}} % EN EL ANUAL"
+    "introOffer": "PARA TI: AHORRA UN {{percent}} % EN EL ANUAL",
+    "activity": {
+      "heading": "TUS ÚLTIMOS 7 DÍAS",
+      "daysRead_one": "día de lectura",
+      "daysRead_other": "días de lectura",
+      "wordsLookedUp_one": "palabra consultada",
+      "wordsLookedUp_other": "palabras consultadas",
+      "wordsSaved_one": "palabra guardada",
+      "wordsSaved_other": "palabras guardadas",
+      "blockedWord": "«{{word}}» te está esperando."
+    }
   },
   "reminders": {
     "settingsLabel": "Recordatorios",
