@@ -25,7 +25,8 @@
     "crashTitle": "Qualcosa è andato storto",
     "crashMessage": "Questa schermata non si è caricata. Di solito basta riprovare.",
     "ok": "OK",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "cancel": "Annulla"
   },
   "ui": {
     "levelBadge": {
@@ -455,7 +456,8 @@
       "other": "Altro"
     },
     "word": {
-      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+      "accessibilityLabel": "{{lemma}}, {{gloss}}",
+      "removeAccessibilityLabel": "Rimuovi {{lemma}} dalle tue parole"
     },
     "empty": {
       "noWords": {
@@ -466,6 +468,13 @@
         "title": "Nessuna parola corrisponde a questo filtro",
         "description": "Prova un altro filtro."
       }
+    },
+    "remove": {
+      "confirmTitle": "Rimuovere «{{lemma}}» dalle tue parole?",
+      "confirmBody": "La parola e la sua carta di ripasso verranno eliminate. L'operazione non è reversibile.",
+      "confirmCta": "Rimuovi",
+      "done": "«{{lemma}}» è stata rimossa.",
+      "error": "Non è stato possibile rimuovere la parola. Riprova."
     }
   },
   "browse": {
@@ -799,6 +808,7 @@
     "restoreFoundBody": "Le funzioni Premium sono di nuovo attive.",
     "restoreEmptyTitle": "Nessun abbonamento trovato",
     "restoreEmptyBody": "Su questo account Apple non c'è un abbonamento attivo.",
+    "restoreErrorBody": "Non è stato possibile verificare i tuoi acquisti. Controlla la connessione e riprova.",
     "noPackages": "Non è stato possibile caricare le opzioni di abbonamento.",
     "retryPackages": "Riprova",
     "unavailableInExpoGo": "GLI ACQUISTI FUNZIONANO SOLO IN UNA BUILD COMPILATA",

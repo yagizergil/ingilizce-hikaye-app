@@ -25,7 +25,8 @@
     "crashTitle": "Uygulama beklenmedik bir sorunla karşılaştı",
     "crashMessage": "Bu ekran yüklenemedi. Tekrar denemek sorunu genellikle çözer.",
     "ok": "Tamam",
-    "close": "Kapat"
+    "close": "Kapat",
+    "cancel": "Vazgeç"
   },
   "ui": {
     "levelBadge": {
@@ -455,7 +456,8 @@
       "other": "Diğer"
     },
     "word": {
-      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+      "accessibilityLabel": "{{lemma}}, {{gloss}}",
+      "removeAccessibilityLabel": "{{lemma}} kelimesini defterden çıkar"
     },
     "empty": {
       "noWords": {
@@ -466,6 +468,13 @@
         "title": "Bu filtrede kelime yok",
         "description": "Farklı bir filtre dene."
       }
+    },
+    "remove": {
+      "confirmTitle": "“{{lemma}}” defterden çıkarılsın mı?",
+      "confirmBody": "Kelime ve onun tekrar kartı silinir. Bu işlem geri alınamaz.",
+      "confirmCta": "Çıkar",
+      "done": "“{{lemma}}” defterden çıkarıldı.",
+      "error": "Kelime çıkarılamadı. Lütfen tekrar dene."
     }
   },
   "browse": {
@@ -799,6 +808,7 @@
     "restoreFoundBody": "Premium özellikler yeniden açıldı.",
     "restoreEmptyTitle": "Abonelik bulunamadı",
     "restoreEmptyBody": "Bu Apple hesabında aktif bir abonelik yok.",
+    "restoreErrorBody": "Satın alımların şu anda kontrol edilemedi. Bağlantını denetleyip tekrar dene.",
     "noPackages": "Abonelik seçenekleri yüklenemedi.",
     "retryPackages": "Tekrar dene",
     "unavailableInExpoGo": "SATIN ALMA YALNIZCA DERLENMİŞ UYGULAMADA ÇALIŞIR",

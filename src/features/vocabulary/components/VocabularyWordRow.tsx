@@ -13,6 +13,12 @@ import type { VocabularyWord } from "@/features/vocabulary/types";
 interface VocabularyWordRowProps {
   word: VocabularyWord;
   onPress: (word: VocabularyWord) => void;
+  /** Kelimeyi defterden çıkarır. Verilmezse yer imi ikonu HİÇ
+   * gösterilmiyor -- tıklanamayan bir düğme çizmek, bu satırın daha önce
+   * yaptığı hatanın ta kendisiydi. */
+  onRemove?: (word: VocabularyWord) => void;
+  /** Bu satırın kaldırma isteği sürüyor mu. */
+  removing?: boolean;
 }
 
 /**
@@ -22,7 +28,20 @@ interface VocabularyWordRowProps {
  * altında), sağda kaydet/kaldır ikon düğmesi. CEFR/POS/kaynak-kitap
  * etiketleri ve SRS "tekrar tarihi" rozeti varsayılan görünümden kalktı
  * (referansta hiçbiri yok) -- veri KAYBOLMADI, yalnızca bu liste satırından
- * kalktı; kelime detayına dokunulduğunda (`onPress`) hâlâ erişilebilir.
+ * kalktı.
+ *
+ * DENETİM BULGUSU (2026-09-19): sağdaki yer imi ikonu bir `Pressable`
+ * DEĞİL, düz bir `View`'dı ve satıra dokunmak da hiçbir şey yapmıyordu --
+ * yani uygulamanın HİÇBİR YERİNDE bir kelimeyi defterden çıkarmanın yolu
+ * yoktu. Bu yalnızca bir eksiklik değil, ücretsiz katmanda bir çıkmazdı:
+ * kelime sınırına dayanan kullanıcı paywall şeridini görüyor ama yer
+ * açamıyordu -- ya öde ya vazgeç. İkon artık gerçekten çalışıyor.
+ *
+ * ÖNCE ONAY SORULUYOR (bkz. ekrandaki `handleRemoveWord`): kaldırma geri
+ * alınamıyor -- kelimeyle birlikte onun SRS tekrar kartı ve ilerlemesi de
+ * siliniyor. Uygulamanın bildirim bileşeninde eylem düğmesi yok, yani
+ * "geri al" sunulamıyordu; geri alınamayan bir kaybı sessizce yapmaktansa
+ * tek bir onay penceresi göstermek doğru taraf.
  *
  * SESLENDİRME: bu satırda önceden hiç yoktu -- referansın sol ikonu
  * tam olarak bu, `WordSheet`'teki `handlePronounce` ile aynı basit
@@ -31,7 +50,12 @@ interface VocabularyWordRowProps {
  * varsayılanını kullanıyor -- düşük riskli, geri alınabilir bir basitlik
  * tercihi).
  */
-export function VocabularyWordRow({ word, onPress }: VocabularyWordRowProps) {
+export function VocabularyWordRow({
+  word,
+  onPress,
+  onRemove,
+  removing = false,
+}: VocabularyWordRowProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -76,9 +100,22 @@ export function VocabularyWordRow({ word, onPress }: VocabularyWordRowProps) {
         ) : null}
       </View>
 
-      <View style={[styles.saveButton, { backgroundColor: theme.bg.surface }]}>
-        <Ionicons name="bookmark-outline" size={18} color={theme.text.secondary} />
-      </View>
+      {onRemove ? (
+        <Pressable
+          onPress={() => onRemove(word)}
+          disabled={removing}
+          accessibilityRole="button"
+          accessibilityLabel={t("vocabulary.word.removeAccessibilityLabel", { lemma: word.lemma })}
+          hitSlop={spacing.sm}
+          style={({ pressed }) => [
+            styles.saveButton,
+            { backgroundColor: theme.bg.surface },
+            pressed || removing ? { opacity: motion.pressed.opacity } : null,
+          ]}
+        >
+          <Ionicons name="bookmark" size={18} color={theme.accent} />
+        </Pressable>
+      ) : null}
     </Pressable>
   );
 }

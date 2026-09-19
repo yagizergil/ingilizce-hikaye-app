@@ -146,14 +146,57 @@ function chunk<T>(items: T[], size: number): T[][] {
   return chunks;
 }
 
-async function fetchBookLemmaDictionary(bookId: string): Promise<BookLemmaDictionary> {
-  const { data: bookLemmaRows, error: bookLemmaError } = await supabase
-    .from("book_lemmas")
-    .select("lemma")
-    .eq("book_id", bookId);
-  if (bookLemmaError) throw bookLemmaError;
+/**
+ * PostgREST'in tek istekte döndürdüğü EN FAZLA satır sayısı (bu projede
+ * `max-rows` = 1000). Sayfalama bittiğinde kısmi bir sayfa gelir; tam dolu
+ * bir sayfa "devamı olabilir" demektir.
+ */
+const POSTGREST_MAX_ROWS = 1000;
 
-  const lemmas = (bookLemmaRows ?? []).map((row) => row.lemma as string);
+/**
+ * Bir kitabın TÜM lemmalarını, sayfalayarak çeker.
+ *
+ * DENETİM BULGUSU (2026-09-19): burada sayfalama YOKTU -- düz bir
+ * `.select("lemma").eq("book_id", bookId)` vardı. PostgREST bu projede en
+ * fazla 1000 satır döndürüyor ve fazlasını SESSİZCE kesiyor (HTTP 206,
+ * `Content-Range: 0-999/6569`). Yayındaki 529 kitabın 194'ünde kitabın
+ * kelime sayısı 1000'in üstünde (ortalama 2.554, en fazla 29.644), yani o
+ * kitaplarda SQLite'a yazılan çevrimdışı sözlük kitabın kelime dağarcığının
+ * yalnızca %15-40'ını içeriyordu -- hata yok, uyarı yok.
+ *
+ * Görünen sonuç: katalogun üçte birinde uygulamanın çekirdek vaadi
+ * ("kelimeye dokun, karşılığı anında gelsin, çevrimdışı da çalışsın")
+ * sessizce her dokunuşta ağ turu atan yavaş bir aramaya dönüşüyordu.
+ *
+ * Aynı 1000 satır kesintisi `book_sections` üzerinde bir kez daha yaşandı
+ * ve migration 025 onu bölüm sayıları için çözdü; o migration'ın yorumu bu
+ * sınıfı zaten anlatıyor. Burada istemci tarafında sayfalayarak çözülüyor.
+ */
+async function fetchAllBookLemmas(bookId: string): Promise<string[]> {
+  const lemmas: string[] = [];
+
+  for (let from = 0; ; from += POSTGREST_MAX_ROWS) {
+    const { data, error } = await supabase
+      .from("book_lemmas")
+      .select("lemma")
+      .eq("book_id", bookId)
+      .order("lemma")
+      .range(from, from + POSTGREST_MAX_ROWS - 1);
+    if (error) throw error;
+
+    const page = data ?? [];
+    for (const row of page) lemmas.push(row.lemma as string);
+
+    // Kısmi sayfa = son sayfa. Tam dolu sayfada döngü devam ediyor; bu
+    // yüzden kesinti bir daha sessizce geri gelemez.
+    if (page.length < POSTGREST_MAX_ROWS) break;
+  }
+
+  return lemmas;
+}
+
+async function fetchBookLemmaDictionary(bookId: string): Promise<BookLemmaDictionary> {
+  const lemmas = await fetchAllBookLemmas(bookId);
   if (lemmas.length === 0) {
     // Supabase's `.in()` behavior on an empty array is inconsistent across
     // versions (some return all rows, some return none) — guard it
@@ -166,7 +209,9 @@ async function fetchBookLemmaDictionary(bookId: string): Promise<BookLemmaDictio
     lemmaChunks.map(async (lemmaChunk) => {
       const { data, error } = await supabase
         .from("lemma_canonical")
-        .select("lemma, pos, cefr_level, tr_gloss, ipa, audio_url, is_phrasal, false_friend_note_tr, senses")
+        .select(
+          "lemma, pos, cefr_level, tr_gloss, ipa, audio_url, is_phrasal, false_friend_note_tr, senses",
+        )
         .in("lemma", lemmaChunk);
       if (error) throw error;
       return (data ?? []) as RawCanonicalRow[];

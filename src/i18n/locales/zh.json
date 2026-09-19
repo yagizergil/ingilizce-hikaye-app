@@ -25,7 +25,8 @@
     "crashTitle": "出了点问题",
     "crashMessage": "这个页面没能加载出来，重试一下通常就好了。",
     "ok": "好",
-    "close": "关闭"
+    "close": "关闭",
+    "cancel": "取消"
   },
   "ui": {
     "levelBadge": {
@@ -455,7 +456,8 @@
       "other": "其他"
     },
     "word": {
-      "accessibilityLabel": "{{lemma}}，{{gloss}}"
+      "accessibilityLabel": "{{lemma}}，{{gloss}}",
+      "removeAccessibilityLabel": "将 {{lemma}} 从生词本中移除"
     },
     "empty": {
       "noWords": {
@@ -466,6 +468,13 @@
         "title": "这个筛选下没有单词",
         "description": "换个筛选条件试试。"
       }
+    },
+    "remove": {
+      "confirmTitle": "要把“{{lemma}}”从生词本中移除吗？",
+      "confirmBody": "该单词及其复习卡片将被删除，且无法恢复。",
+      "confirmCta": "移除",
+      "done": "已移除“{{lemma}}”。",
+      "error": "移除失败，请重试。"
     }
   },
   "browse": {
@@ -799,6 +808,7 @@
     "restoreFoundBody": "会员功能重新开通了。",
     "restoreEmptyTitle": "没有找到订阅",
     "restoreEmptyBody": "这个 Apple 账号下没有生效中的订阅。",
+    "restoreErrorBody": "暂时无法检查你的购买记录。请检查网络连接后重试。",
     "noPackages": "订阅选项加载失败。",
     "retryPackages": "再试一次",
     "unavailableInExpoGo": "购买功能仅在编译版本中可用",

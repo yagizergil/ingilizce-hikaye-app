@@ -28,13 +28,34 @@ jest.mock("@/lib/supabase", () => ({
 interface QueryBuilderMock {
   select: jest.Mock;
   eq: jest.Mock;
+  order: jest.Mock;
+  range: jest.Mock;
   in: jest.Mock;
 }
 
-function makeBookLemmasBuilder(result: { data: unknown; error: unknown }): QueryBuilderMock {
+/**
+ * `book_lemmas` artık SAYFALANARAK okunuyor (PostgREST bu projede en fazla
+ * 1000 satır döndürüp fazlasını sessizce kesiyordu -- bkz. kaynaktaki
+ * `fetchAllBookLemmas` notu). Mock bu yüzden `.order().range()` zincirini
+ * ve sayfa sayfa yanıt vermeyi desteklemek zorunda.
+ *
+ * `pages`: her `.range()` çağrısı için sırayla dönecek satır dizileri.
+ */
+function makeBookLemmasBuilder(
+  pages: { data: unknown; error: unknown }[],
+  onRange?: (from: number, to: number) => void,
+): QueryBuilderMock {
   const builder: Partial<QueryBuilderMock> = {};
+  let call = 0;
   builder.select = jest.fn(() => builder as QueryBuilderMock);
-  builder.eq = jest.fn(() => Promise.resolve(result));
+  builder.eq = jest.fn(() => builder as QueryBuilderMock);
+  builder.order = jest.fn(() => builder as QueryBuilderMock);
+  builder.range = jest.fn((from: number, to: number) => {
+    onRange?.(from, to);
+    const page = pages[call] ?? { data: [], error: null };
+    call += 1;
+    return Promise.resolve(page);
+  });
   return builder as QueryBuilderMock;
 }
 
@@ -78,7 +99,9 @@ describe("useBookLemmaDictionary", () => {
 
   it("merges book_lemmas with lemma_canonical rows into a Map keyed by lemma", async () => {
     mockFrom.mockImplementationOnce(() =>
-      makeBookLemmasBuilder({ data: [{ lemma: "distinguished" }, { lemma: "genevese" }], error: null }),
+      makeBookLemmasBuilder([
+        { data: [{ lemma: "distinguished" }, { lemma: "genevese" }], error: null },
+      ]),
     );
     mockFrom.mockImplementationOnce(() =>
       makeCanonicalBuilder({
@@ -126,7 +149,7 @@ describe("useBookLemmaDictionary", () => {
   });
 
   it("returns an empty Map without querying lemma_canonical when book_lemmas is empty", async () => {
-    mockFrom.mockImplementationOnce(() => makeBookLemmasBuilder({ data: [], error: null }));
+    mockFrom.mockImplementationOnce(() => makeBookLemmasBuilder([{ data: [], error: null }]));
 
     const { result } = renderHookWithClient(() => useBookLemmaDictionary("book-empty"));
     await waitFor(() => result.current.isSuccess);
@@ -136,5 +159,53 @@ describe("useBookLemmaDictionary", () => {
     // Only the book_lemmas query should have run.
     expect(mockFrom).toHaveBeenCalledTimes(1);
     expect(mockFrom).toHaveBeenCalledWith("book_lemmas");
+  });
+  /**
+   * ÇÖZÜLEN HATA (2026-09-19): `book_lemmas` sayfalanmadan çekiliyordu.
+   * PostgREST bu projede en fazla 1000 satır döndürüp fazlasını SESSİZCE
+   * kesiyor (HTTP 206). Yayındaki 529 kitabın 194'ünde kelime sayısı
+   * 1000'in üstünde, yani o kitaplarda çevrimdışı sözlük dağarcığın
+   * yalnızca bir kısmını içeriyordu; eksik her kelime dokunulduğunda ağ
+   * turuna düşüyordu. Bu test tam dolu bir sayfanın ARDINDAN devam
+   * gelmesini zorunlu kılıyor.
+   */
+  it("1000 satırlık sayfa sınırının ötesindeki kelimeleri de çeker", async () => {
+    const firstPage = Array.from({ length: 1000 }, (_, i) => ({ lemma: `w${i}` }));
+    const secondPage = [{ lemma: "sonuncu" }];
+    const pages = [
+      { data: firstPage, error: null },
+      { data: secondPage, error: null },
+    ];
+    const ranges: [number, number][] = [];
+    const askedFor: string[] = [];
+
+    // Sayfalama HER SAYFA İÇİN `from("book_lemmas")` çağırıyor, yani çağrı
+    // sırasına göre kurulmuş bir mock yetmez -- tabloya göre yönlendiriyoruz.
+    let pageIndex = 0;
+    mockFrom.mockImplementation((table: string) => {
+      if (table === "book_lemmas") {
+        const page = pages[pageIndex] ?? { data: [], error: null };
+        pageIndex += 1;
+        return makeBookLemmasBuilder([page], (from, to) => ranges.push([from, to]));
+      }
+      const builder = makeCanonicalBuilder({ data: [], error: null });
+      builder.in = jest.fn((_column: string, values: string[]) => {
+        askedFor.push(...values);
+        return Promise.resolve({ data: [], error: null });
+      });
+      return builder;
+    });
+
+    const { result } = renderHookWithClient(() => useBookLemmaDictionary("book-buyuk"));
+    await waitFor(() => result.current.isSuccess);
+
+    // İlk sayfa TAM DOLU geldiği için döngü ikinci sayfayı da istedi.
+    expect(ranges).toEqual([
+      [0, 999],
+      [1000, 1999],
+    ]);
+    // Ve 1000. sınırın ötesindeki kelime gerçekten sorulanlar arasında.
+    expect(askedFor).toContain("sonuncu");
+    expect(askedFor).toHaveLength(1001);
   });
 });

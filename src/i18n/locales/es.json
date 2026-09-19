@@ -25,7 +25,8 @@
     "crashTitle": "Algo salió mal",
     "crashMessage": "No se pudo cargar esta pantalla. Volver a intentarlo suele solucionarlo.",
     "ok": "Aceptar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "cancel": "Cancelar"
   },
   "ui": {
     "levelBadge": {
@@ -455,7 +456,8 @@
       "other": "Otros"
     },
     "word": {
-      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+      "accessibilityLabel": "{{lemma}}, {{gloss}}",
+      "removeAccessibilityLabel": "Quitar {{lemma}} de tus palabras"
     },
     "empty": {
       "noWords": {
@@ -466,6 +468,13 @@
         "title": "Ninguna palabra coincide con este filtro",
         "description": "Prueba con otro filtro."
       }
+    },
+    "remove": {
+      "confirmTitle": "¿Quitar «{{lemma}}» de tus palabras?",
+      "confirmBody": "Se eliminarán la palabra y su tarjeta de repaso. Esta acción no se puede deshacer.",
+      "confirmCta": "Quitar",
+      "done": "«{{lemma}}» se ha quitado.",
+      "error": "No se ha podido quitar la palabra. Inténtalo de nuevo."
     }
   },
   "browse": {
@@ -799,6 +808,7 @@
     "restoreFoundBody": "Las funciones premium están activas otra vez.",
     "restoreEmptyTitle": "No se encontró ninguna suscripción",
     "restoreEmptyBody": "No hay ninguna suscripción activa en esta cuenta de Apple.",
+    "restoreErrorBody": "No hemos podido comprobar tus compras ahora mismo. Revisa tu conexión e inténtalo de nuevo.",
     "noPackages": "No se pudieron cargar las opciones de suscripción.",
     "retryPackages": "Reintentar",
     "unavailableInExpoGo": "LAS COMPRAS SOLO FUNCIONAN EN UNA VERSIÓN COMPILADA",

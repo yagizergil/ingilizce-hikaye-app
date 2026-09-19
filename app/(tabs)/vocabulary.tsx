@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,7 +9,15 @@ import { router, useFocusEffect } from "expo-router";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
-import { Button, LoadingState, ErrorState, EmptyState, SegmentedControl } from "@/components/ui";
+import {
+  Button,
+  LoadingState,
+  ErrorState,
+  EmptyState,
+  SegmentedControl,
+  useToast,
+} from "@/components/ui";
+import { useRemoveSavedWordMutation } from "@/features/reader";
 import { useSubscriptionQuery } from "@/features/paywall";
 import {
   VocabularyWordRow,
@@ -31,6 +39,10 @@ export default function VocabularyScreen() {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { data, isLoading, isError, refetch } = useVocabularyQuery();
+  const { show: showToast } = useToast();
+  const removeWord = useRemoveSavedWordMutation();
+  /** Hangi satırın kaldırma isteği sürüyor -- o satır bu sırada pasif. */
+  const [removingLemma, setRemovingLemma] = useState<string | null>(null);
   const filter = useVocabularyFiltersStore((state) => state.filter);
   const setFilter = useVocabularyFiltersStore((state) => state.setFilter);
   const words = useFilteredWords(data?.words, filter);
@@ -62,6 +74,51 @@ export default function VocabularyScreen() {
   const handlePressWord = useCallback((word: VocabularyWord) => {
     trackEvent("vocabulary_word_pressed", { lemma: word.lemma });
   }, []);
+
+  /**
+   * Kelimeyi defterden çıkarma.
+   *
+   * DENETİM BULGUSU (2026-09-19): uygulamanın HİÇBİR YERİNDE bir kelimeyi
+   * defterden çıkarmanın yolu yoktu -- satırdaki yer imi ikonu tıklanabilir
+   * değildi. Ücretsiz katmanda bu bir çıkmazdı: kelime sınırına dayanan
+   * kullanıcı paywall şeridini görüyor ama yer açamıyordu.
+   *
+   * Onay soruluyor çünkü işlem geri alınamaz: `unsave` kelimeyle birlikte
+   * SRS kartını ve tekrar geçmişini de siliyor.
+   */
+  const handleRemoveWord = useCallback(
+    (word: VocabularyWord) => {
+      Alert.alert(
+        t("vocabulary.remove.confirmTitle", { lemma: word.lemma }),
+        t("vocabulary.remove.confirmBody"),
+        [
+          { text: t("common.cancel"), style: "cancel" },
+          {
+            text: t("vocabulary.remove.confirmCta"),
+            style: "destructive",
+            onPress: () => {
+              setRemovingLemma(word.lemma);
+              removeWord.mutate(
+                { lemma: word.lemma, pos: word.pos },
+                {
+                  onSuccess: () => {
+                    trackEvent("vocabulary_word_removed", { lemma: word.lemma });
+                    showToast(t("vocabulary.remove.done", { lemma: word.lemma }));
+                    void refetch();
+                  },
+                  onError: () => {
+                    showToast(t("vocabulary.remove.error"));
+                  },
+                  onSettled: () => setRemovingLemma(null),
+                },
+              );
+            },
+          },
+        ],
+      );
+    },
+    [t, showToast, removeWord, refetch],
+  );
 
   // FAZ 4 (2026-09-14, referans uygulama eşleştirmesi): segmentli seçici
   // her sekmenin yanında sayı gösteriyor ("Favoriler (0)" gibi) -- üç
@@ -119,8 +176,15 @@ export default function VocabularyScreen() {
   }, [dueCount]);
 
   const renderWord: ListRenderItem<VocabularyWord> = useCallback(
-    ({ item }) => <VocabularyWordRow word={item} onPress={handlePressWord} />,
-    [handlePressWord],
+    ({ item }) => (
+      <VocabularyWordRow
+        word={item}
+        onPress={handlePressWord}
+        onRemove={handleRemoveWord}
+        removing={removingLemma === item.lemma}
+      />
+    ),
+    [handlePressWord, handleRemoveWord, removingLemma],
   );
 
   const hasAnySavedWord = (data?.words.length ?? 0) > 0;

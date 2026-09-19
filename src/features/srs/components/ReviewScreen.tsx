@@ -12,6 +12,7 @@ import { Button, ErrorState, LoadingState } from "@/components/ui";
 import { useDueCardsQuery } from "@/features/srs/api/useDueCardsQuery";
 import { useReviewCardMutation } from "@/features/srs/api/useReviewCardMutation";
 import { ReviewProgress } from "@/features/srs/components/ReviewProgress";
+import { useReviewSession } from "@/features/srs/hooks/useReviewSession";
 import { ReviewRatingBar } from "@/features/srs/components/ReviewRatingBar";
 
 import type { SrsRating } from "@/features/srs/scheduler";
@@ -36,21 +37,28 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
   const { data, isLoading, isError, refetch } = useDueCardsQuery();
   const reviewMutation = useReviewCardMutation();
 
-  const [index, setIndex] = useState(0);
+  /**
+   * Oturum SABİT bir kart listesi üzerinde yürüyor -- gerekçe
+   * `useReviewSession` içinde. Kısaca: `useReviewCardMutation` her
+   * değerlendirmeden sonra sorguyu geçersiz kılıyor, liste yeniden
+   * çekiliyor ve değerlendirilen kart (vadesi ileri kaydığı için) diziden
+   * düşüyordu; index ilerlerken dizi kısaldığı için her değerlendirme bir
+   * kartı ATLIYORDU.
+   */
+  const session = useReviewSession(data);
+  const { card, position, total, reviewedCount, advance } = session;
+
   // Hangi kartın cevabı açıldı. Ayrı bir "revealed" boolean'ı tutup effect
-  // ile sıfırlamak yerine indeksle karşılaştırıyoruz: kart değiştiğinde
+  // ile sıfırlamak yerine konumla karşılaştırıyoruz: kart değiştiğinde
   // cevap kendiliğinden kapanmış oluyor, senkronizasyon effect'i gerekmiyor.
-  const [revealedIndex, setRevealedIndex] = useState<number | null>(null);
+  const [revealedPosition, setRevealedPosition] = useState<number | null>(null);
   // Kartın ekrana geldiği an. Render sırasında Date.now() çağırmak saf
   // olmayan bir işlem (react-hooks/purity), o yüzden ilk damga kartın
   // yerleşiminde (onLayout) atılıyor, sonrakiler kart ilerletilirken.
   const shownAtRef = useRef<number>(0);
 
-  const revealed = revealedIndex === index;
-
-  const cards = data?.cards ?? [];
-  const card = cards[index];
-  const finished = !isLoading && !isError && (cards.length === 0 || index >= cards.length);
+  const revealed = revealedPosition === position;
+  const finished = !isLoading && !isError && session.ready && session.finished;
 
   useEffect(() => {
     trackEvent("srs_session_started", { due_count: data?.dueCount ?? 0 });
@@ -63,8 +71,8 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
   }, []);
 
   const handleReveal = useCallback(() => {
-    setRevealedIndex(index);
-  }, [index]);
+    setRevealedPosition(position);
+  }, [position]);
 
   const handleRate = useCallback(
     (rating: SrsRating) => {
@@ -77,11 +85,11 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
         // yazmaktansa "ölçülemedi" demek daha doğru.
         elapsedMs: shownAt > 0 ? Date.now() - shownAt : 0,
       });
-      setIndex((current) => current + 1);
+      advance();
       // Sonraki kartın süre ölçümü buradan başlıyor.
       shownAtRef.current = Date.now();
     },
-    [card, reviewMutation],
+    [card, reviewMutation, advance],
   );
 
   if (isLoading) {
@@ -101,7 +109,6 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
   }
 
   if (finished) {
-    const reviewedCount = Math.min(index, cards.length);
     return (
       <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
         <View style={styles.centered}>
@@ -123,7 +130,7 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
 
   return (
     <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
-      <ReviewProgress current={index + 1} total={cards.length} onClose={onClose} />
+      <ReviewProgress current={position} total={total} onClose={onClose} />
 
       <Pressable
         style={styles.cardArea}

@@ -1,0 +1,264 @@
+APP STORE CONNECT - 10 DILDE PROMOTIONAL TEXT ve WHAT'S NEW
+Surum 1.0.1 (build 16) - 19 Eylul 2026
+
+KAPSAM: uygulamanin destekledigi 10 dil (tr, en, de, fr, it, es, ru, zh,
+ja, ar). Ukraynaca YOK - ADR-013 11 dil diyor ama uygulamada 10 var.
+
+NOT 1: App Store yerellestirmeleri uygulama ici dillerden BAGIMSIZDIR.
+       ASC > App Information > Localizations altinda o dil ekli degilse
+       metin girilemez; once dili eklemek gerekir.
+NOT 2: Promotional text her an guncellenebilir, YENI BUILD GEREKTIRMEZ.
+NOT 3: What's New yalnizca yeni bir SURUM gonderilirken girilir. Bu metin
+       1.0.1'in tamamini (build 8-16 arasi tum duzeltmeleri) anlatiyor,
+       yalnizca son build'i degil - kullanici tek bir surum notu gorur.
+
+================================================================
+Turkce / Türkçe  [tr]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  151/170 ---
+Yeni: A1'den B1'e 63 özgün hikâye ve stüdyo seslendirmesi. Dinlerken okunan kelime vurgulanıyor — İngilizceye yeni başlayanlar ilk günden başlayabilir.
+
+--- WHAT'S NEW (4000)  -  997/4000 ---
+Bu sürüm tamamen okuma deneyimini düzeltmeye ayrıldı.
+
+OKUMA EKRANI
+• Bölümün son sayfasında metnin kendiliğinden değişmesi ve sayfanın ileri geri gidip gelmesi sona erdi. "Sonraki bölüm" düğmesine artık rahatça basabiliyorsun.
+• Sayfa altlarında kırpılan satırlar düzeldi. Daha önce bazı satırlar hiç görünmeden bir sonraki sayfaya geçiliyordu; artık hiçbir cümleyi atlamıyorsun.
+• Paragraf araları tasarımdaki ölçüye getirildi.
+• Yazı tipini, puntoyu ya da kenar boşluğunu değiştirdiğinde okuduğun cümlede kalıyorsun; metin baştan başlamıyor.
+• Ayarlar uygulanırken okuma yüzeyi bir an için boşalmıyor.
+
+AÇILIŞ VE İLK KURULUM
+• Ana dil seçiminde takılıp kalma sorunu giderildi.
+• Seviye testini seçen kullanıcıların hiç görmediği deneme teklifi artık görünüyor.
+• İlk okuma adımında rakamlar kelime sayılmıyor; seçilecek kelime bulunamaması durumu ortadan kalktı.
+• Uygulama artık her koşulda açılıyor.
+
+Okuma ekranındaki bir hatayı bize bildirdiysen: teşekkürler, videolar gerçekten işe yaradı.
+
+================================================================
+English  [en]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  145/170 ---
+New: 63 original stories from A1 to B1, with studio narration. The word being read is highlighted as you listen — beginners can start on day one.
+
+--- WHAT'S NEW (4000)  -  969/4000 ---
+This release is entirely about fixing the reading experience.
+
+READER
+• The text no longer changes on its own and the page no longer jumps back and forth on the last page of a chapter. The "Next chapter" button is reliably tappable again.
+• Lines clipped at the bottom of pages are fixed. Some lines were never shown before moving on; you are no longer skipping any sentences.
+• Paragraph spacing now matches the design.
+• Changing the typeface, text size or margins keeps you on the sentence you were reading instead of starting over.
+• The reading surface no longer blanks out while settings are applied.
+
+LAUNCH AND SETUP
+• Fixed getting stuck on the native language step.
+• The trial offer that users taking the level test never saw is now shown.
+• Numbers are no longer counted as words in the first reading step, so there is always something to tap.
+• The app now opens under all conditions.
+
+If you reported a reading bug: thank you, the videos genuinely helped.
+
+================================================================
+Deutsch (German)  [de]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  149/170 ---
+Neu: 63 eigene Geschichten von A1 bis B1, mit Studio-Vertonung. Beim Hören wird das gelesene Wort hervorgehoben — Anfänger starten ab dem ersten Tag.
+
+--- WHAT'S NEW (4000)  -  1035/4000 ---
+Diese Version dreht sich ausschließlich um das Lesen.
+
+LESEANSICHT
+• Auf der letzten Seite eines Kapitels ändert sich der Text nicht mehr von selbst und die Seite springt nicht mehr hin und her. Die Schaltfläche für das nächste Kapitel lässt sich wieder zuverlässig antippen.
+• Am Seitenende abgeschnittene Zeilen sind behoben. Bisher wurden einzelne Zeilen nie angezeigt, bevor es weiterging; du überspringst jetzt keinen Satz mehr.
+• Der Absatzabstand entspricht jetzt dem Entwurf.
+• Wenn du Schriftart, Schriftgröße oder Ränder änderst, bleibst du bei dem Satz, den du gerade liest.
+• Die Lesefläche bleibt beim Übernehmen von Einstellungen nicht mehr kurz leer.
+
+START UND EINRICHTUNG
+• Hängenbleiben bei der Auswahl der Muttersprache behoben.
+• Das Testangebot, das Nutzer mit Einstufungstest nie zu sehen bekamen, erscheint jetzt.
+• Zahlen zählen im ersten Leseschritt nicht mehr als Wörter.
+• Die App startet jetzt unter allen Bedingungen.
+
+Falls du uns einen Lesefehler gemeldet hast: danke, die Videos haben wirklich geholfen.
+
+================================================================
+Francais / Français (French)  [fr]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  156/170 ---
+Nouveau : 63 histoires originales de A1 à B1, avec narration studio. Le mot lu est surligné pendant l'écoute — les débutants commencent dès le premier jour.
+
+--- WHAT'S NEW (4000)  -  1076/4000 ---
+Cette version est entièrement consacrée à la lecture.
+
+LECTURE
+• Sur la dernière page d'un chapitre, le texte ne change plus tout seul et la page ne fait plus d'aller-retour. Le bouton du chapitre suivant redevient utilisable.
+• Les lignes coupées en bas de page sont corrigées. Certaines lignes n'apparaissaient jamais avant le passage à la suite ; vous ne sautez plus aucune phrase.
+• L'espacement entre les paragraphes correspond désormais à la maquette.
+• Changer la police, la taille du texte ou les marges vous laisse sur la phrase en cours au lieu de tout reprendre.
+• La surface de lecture ne se vide plus un instant pendant l'application des réglages.
+
+DÉMARRAGE ET CONFIGURATION
+• Correction du blocage à l'étape du choix de la langue maternelle.
+• L'offre d'essai que les utilisateurs passant le test de niveau ne voyaient jamais s'affiche désormais.
+• Les nombres ne comptent plus comme des mots à la première étape de lecture.
+• L'application s'ouvre désormais dans tous les cas.
+
+Si vous nous avez signalé un bug de lecture : merci, les vidéos ont vraiment aidé.
+
+================================================================
+Italiano (Italian)  [it]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  157/170 ---
+Novità: 63 racconti originali dall'A1 al B1, con narrazione in studio. La parola letta si illumina mentre ascolti — i principianti iniziano dal primo giorno.
+
+--- WHAT'S NEW (4000)  -  971/4000 ---
+Questa versione è dedicata interamente alla lettura.
+
+LETTURA
+• Nell'ultima pagina di un capitolo il testo non cambia più da solo e la pagina non va più avanti e indietro. Il pulsante del capitolo successivo torna a essere toccabile.
+• Risolte le righe tagliate in fondo alle pagine. Prima alcune righe non venivano mai mostrate prima di passare oltre: adesso non salti più nessuna frase.
+• Lo spazio tra i paragrafi ora corrisponde al progetto.
+• Cambiando carattere, corpo o margini resti sulla frase che stavi leggendo.
+• La superficie di lettura non resta più vuota per un istante mentre si applicano le impostazioni.
+
+AVVIO E CONFIGURAZIONE
+• Risolto il blocco nella scelta della lingua madre.
+• L'offerta di prova che chi faceva il test di livello non vedeva mai ora compare.
+• I numeri non contano più come parole nel primo passo di lettura.
+• L'app ora si apre in ogni condizione.
+
+Se ci hai segnalato un problema di lettura: grazie, i video sono serviti davvero.
+
+================================================================
+Espanol / Español (Spanish)  [es]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  143/170 ---
+Nuevo: 63 relatos originales de A1 a B1, con narración de estudio. La palabra leída se resalta mientras escuchas — empieza desde el primer día.
+
+--- WHAT'S NEW (4000)  -  969/4000 ---
+Esta versión está dedicada por completo a la lectura.
+
+LECTURA
+• En la última página de un capítulo el texto ya no cambia solo ni la página va y viene. El botón del siguiente capítulo vuelve a poder pulsarse.
+• Corregidas las líneas recortadas al final de las páginas. Antes algunas líneas nunca llegaban a verse antes de pasar de página; ya no te saltas ninguna frase.
+• El espacio entre párrafos ahora coincide con el diseño.
+• Al cambiar la tipografía, el tamaño o los márgenes te quedas en la frase que estabas leyendo.
+• La superficie de lectura ya no se queda en blanco un instante al aplicar los ajustes.
+
+INICIO Y CONFIGURACIÓN
+• Corregido el bloqueo al elegir el idioma nativo.
+• La oferta de prueba que nunca veían quienes hacían el test de nivel ya aparece.
+• Los números dejan de contar como palabras en el primer paso de lectura.
+• La app ahora abre en cualquier condición.
+
+Si nos informaste de un fallo de lectura: gracias, los vídeos ayudaron de verdad.
+
+================================================================
+Russkiy / Русский (Russian)  [ru]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  138/170 ---
+Новое: 63 оригинальных рассказа от A1 до B1 со студийной озвучкой. Читаемое слово подсвечивается на слух — новички начинают с первого дня.
+
+--- WHAT'S NEW (4000)  -  928/4000 ---
+Это обновление целиком посвящено чтению.
+
+ЧТЕНИЕ
+• На последней странице главы текст больше не меняется сам по себе, а страница не прыгает вперёд-назад. Кнопка перехода к следующей главе снова нажимается.
+• Исправлены строки, обрезанные внизу страниц. Раньше некоторые строки не показывались вовсе перед переходом дальше — теперь вы не пропускаете ни одного предложения.
+• Отступы между абзацами приведены к макету.
+• При смене шрифта, размера текста или полей вы остаётесь на том же предложении.
+• Область чтения больше не пустеет на мгновение при применении настроек.
+
+ЗАПУСК И НАСТРОЙКА
+• Исправлено зависание на шаге выбора родного языка.
+• Пробное предложение, которого никогда не видели прошедшие тест уровня, теперь показывается.
+• Числа больше не считаются словами на первом шаге чтения.
+• Приложение теперь открывается при любых условиях.
+
+Если вы сообщили нам об ошибке в чтении — спасибо, видео действительно помогли.
+
+================================================================
+Chinese Simplified / 中文 (简体)  [zh]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  55/170 ---
+全新：63 篇从 A1 到 B1 的原创故事，配录音室朗读。边听边高亮当前朗读的单词——零基础第一天就能开始。
+
+--- WHAT'S NEW (4000)  -  311/4000 ---
+本次更新完全围绕阅读体验。
+
+阅读
+• 章节最后一页的文字不再自行变化，页面也不再来回跳动。前往下一章的按钮恢复正常，可以稳定点按。
+• 修复了页面底部被截断的行。此前有些行还没显示就翻到了下一页，现在不会再漏掉任何句子。
+• 段落间距已与设计稿一致。
+• 更改字体、字号或页边距后，你会停留在正在读的那句话，而不是从头开始。
+• 应用设置时，阅读区域不会再短暂空白。
+
+启动与初次设置
+• 修复了母语选择步骤卡住的问题。
+• 做过水平测试的用户此前从未看到的试用优惠，现在会显示。
+• 首次阅读步骤中不再把数字当作单词。
+• 应用现在在各种情况下都能正常打开。
+
+如果你曾向我们反馈阅读问题：谢谢，那些录屏真的帮上了忙。
+
+================================================================
+Japanese / 日本語  [ja]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  75/170 ---
+新着：A1からB1までのオリジナル63作品、スタジオ収録の朗読つき。聴きながら、読まれている単語がハイライトされます。初心者でも初日から始められます。
+
+--- WHAT'S NEW (4000)  -  443/4000 ---
+今回のアップデートは、読む体験の修正に専念しました。
+
+リーダー
+• 章の最後のページで本文が勝手に切り替わったり、ページが行ったり来たりする問題を解消しました。次の章へ進むボタンが確実に押せます。
+• ページ下部で切れていた行を修正しました。これまでは一部の行が表示されないまま次のページへ進んでいましたが、もう文を読み飛ばしません。
+• 段落の間隔をデザインどおりに整えました。
+• 書体・文字サイズ・余白を変えても、読んでいた文にとどまります。
+• 設定の反映中に本文が一瞬消えることがなくなりました。
+
+起動と初期設定
+• 母語の選択で先に進めなくなる問題を修正しました。
+• レベルテストを選んだ方に表示されていなかった無料トライアルの案内が出るようになりました。
+• 最初の読書ステップで数字が単語として数えられなくなりました。
+• あらゆる状況でアプリが起動するようになりました。
+
+読書中の不具合を知らせてくださった方へ：ありがとうございます。動画が本当に役立ちました。
+
+================================================================
+Arabic / العربية  [ar]
+================================================================
+
+--- PROMOTIONAL TEXT (170)  -  118/170 ---
+جديد: 63 قصة أصلية من A1 إلى B1 مع تعليق صوتي احترافي. تُبرَز الكلمة أثناء الاستماع — المبتدئون يبدأون من اليوم الأول.
+
+--- WHAT'S NEW (4000)  -  807/4000 ---
+هذا التحديث مخصّص بالكامل لتجربة القراءة.
+
+القراءة
+• لم يعد النص يتغيّر من تلقاء نفسه في الصفحة الأخيرة من الفصل، ولم تعد الصفحة تتنقّل ذهابًا وإيابًا. زر الانتقال إلى الفصل التالي يعمل بثبات مرة أخرى.
+• أُصلحت الأسطر المقتطعة في أسفل الصفحات. كانت بعض الأسطر لا تظهر إطلاقًا قبل الانتقال إلى ما بعدها؛ لم تعد تفوتك أي جملة.
+• صارت المسافات بين الفقرات مطابقة للتصميم.
+• عند تغيير الخط أو حجمه أو الهوامش تبقى عند الجملة التي كنت تقرأها.
+• لم تعد مساحة القراءة تفرغ للحظة أثناء تطبيق الإعدادات.
+
+البدء والإعداد
+• أُصلحت مشكلة التوقّف عند خطوة اختيار اللغة الأم.
+• عرض التجربة المجانية الذي لم يكن يظهر لمن يختار اختبار المستوى صار يظهر الآن.
+• لم تعد الأرقام تُحتسب كلمات في خطوة القراءة الأولى.
+• صار التطبيق يفتح في جميع الأحوال.
+
+إن كنت قد أبلغتنا عن خلل في القراءة: شكرًا لك، فمقاطع الفيديو ساعدت فعلًا.
+

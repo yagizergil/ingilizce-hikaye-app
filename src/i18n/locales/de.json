@@ -25,7 +25,8 @@
     "crashTitle": "Etwas ist schiefgelaufen",
     "crashMessage": "Diese Seite konnte nicht geladen werden. Meist hilft ein zweiter Versuch.",
     "ok": "OK",
-    "close": "Schließen"
+    "close": "Schließen",
+    "cancel": "Abbrechen"
   },
   "ui": {
     "levelBadge": {
@@ -455,7 +456,8 @@
       "other": "Sonstiges"
     },
     "word": {
-      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+      "accessibilityLabel": "{{lemma}}, {{gloss}}",
+      "removeAccessibilityLabel": "{{lemma}} aus deinen Wörtern entfernen"
     },
     "empty": {
       "noWords": {
@@ -466,6 +468,13 @@
         "title": "Keine Wörter für diesen Filter",
         "description": "Probier einen anderen Filter."
       }
+    },
+    "remove": {
+      "confirmTitle": "„{{lemma}}“ aus deinen Wörtern entfernen?",
+      "confirmBody": "Das Wort und seine Wiederholungskarte werden gelöscht. Das lässt sich nicht rückgängig machen.",
+      "confirmCta": "Entfernen",
+      "done": "„{{lemma}}“ wurde entfernt.",
+      "error": "Das Wort konnte nicht entfernt werden. Bitte versuche es erneut."
     }
   },
   "browse": {
@@ -799,6 +808,7 @@
     "restoreFoundBody": "Die Premium-Funktionen sind wieder freigeschaltet.",
     "restoreEmptyTitle": "Kein Abo gefunden",
     "restoreEmptyBody": "Auf diesem Apple-Konto gibt es kein aktives Abo.",
+    "restoreErrorBody": "Deine Käufe konnten gerade nicht geprüft werden. Prüfe deine Verbindung und versuche es erneut.",
     "noPackages": "Die Abo-Optionen konnten nicht geladen werden.",
     "retryPackages": "Erneut versuchen",
     "unavailableInExpoGo": "KÄUFE FUNKTIONIEREN NUR IN EINEM KOMPILIERTEN BUILD",

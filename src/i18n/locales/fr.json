@@ -25,7 +25,8 @@
     "crashTitle": "Un problème est survenu",
     "crashMessage": "Cette page n'a pas pu se charger. Réessayer suffit généralement.",
     "ok": "OK",
-    "close": "Fermer"
+    "close": "Fermer",
+    "cancel": "Annuler"
   },
   "ui": {
     "levelBadge": {
@@ -455,7 +456,8 @@
       "other": "Autre"
     },
     "word": {
-      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+      "accessibilityLabel": "{{lemma}}, {{gloss}}",
+      "removeAccessibilityLabel": "Retirer {{lemma}} de vos mots"
     },
     "empty": {
       "noWords": {
@@ -466,6 +468,13 @@
         "title": "Aucun mot ne correspond à ce filtre",
         "description": "Essaie un autre filtre."
       }
+    },
+    "remove": {
+      "confirmTitle": "Retirer « {{lemma}} » de vos mots ?",
+      "confirmBody": "Le mot et sa carte de révision seront supprimés. Cette action est irréversible.",
+      "confirmCta": "Retirer",
+      "done": "« {{lemma}} » a été retiré.",
+      "error": "Impossible de retirer le mot. Veuillez réessayer."
     }
   },
   "browse": {
@@ -799,6 +808,7 @@
     "restoreFoundBody": "Les fonctionnalités Premium sont de nouveau débloquées.",
     "restoreEmptyTitle": "Aucun abonnement trouvé",
     "restoreEmptyBody": "Il n'y a pas d'abonnement actif sur ce compte Apple.",
+    "restoreErrorBody": "Impossible de vérifier vos achats pour le moment. Vérifiez votre connexion et réessayez.",
     "noPackages": "Les offres d'abonnement n'ont pas pu être chargées.",
     "retryPackages": "Réessayer",
     "unavailableInExpoGo": "LES ACHATS NE FONCTIONNENT QUE DANS UNE VERSION COMPILÉE",

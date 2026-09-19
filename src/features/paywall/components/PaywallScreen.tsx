@@ -15,6 +15,10 @@ import { Button, LoadingState } from "@/components/ui";
 
 import { useOfferingsQuery } from "@/features/paywall/api/useOfferingsQuery";
 import { usePaywallFactsQuery } from "@/features/paywall/api/usePaywallFactsQuery";
+import {
+  trialEligibilityOrNone,
+  useTrialEligibilityQuery,
+} from "@/features/paywall/api/useTrialEligibilityQuery";
 import { waitForServerPremium } from "@/features/paywall/api/waitForServerPremium";
 import { PaywallBenefits } from "@/features/paywall/components/PaywallBenefits";
 import { PaywallLegal } from "@/features/paywall/components/PaywallLegal";
@@ -91,11 +95,23 @@ export function PaywallScreen({
   const queryClient = useQueryClient();
   const { data: packages, isLoading, isFetching, refetch } = useOfferingsQuery(offeringId);
   const { data: facts } = usePaywallFactsQuery();
+  const { data: trialEligible } = useTrialEligibilityQuery(packages);
 
   const [busy, setBusy] = useState<Busy>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const options = useMemo(() => buildPlanOptions(packages ?? []), [packages]);
+  /**
+   * DENEME İDDİASI UYGUNLUĞA BAĞLI (Guideline 2.3.1).
+   *
+   * `trialEligibilityOrNone` yanıt gelmeden ya da çağrı başarısız olduğunda
+   * boş küme veriyor: deneme cümlesi (CTA'da "7 gün ücretsiz dene", yasal
+   * blokta "İlk 7 gün ücretsiz") o sırada HİÇ yazılmıyor. Denemesini
+   * kullanmış birine yazılması, ödeme anında ücret çekilmesi demekti.
+   */
+  const options = useMemo(
+    () => buildPlanOptions(packages ?? [], trialEligibilityOrNone(trialEligible)),
+    [packages, trialEligible],
+  );
 
   // Önerilen plan (yıllık) ön seçili gelir. `selectedId` yalnızca kullanıcı
   // başka bir plana dokunduğunda doluyor, yani paketler geç yüklendiğinde
@@ -184,8 +200,32 @@ export function PaywallScreen({
       return;
     }
 
+    /**
+     * "YETKİ GÖRÜNMÜYOR" KARARINI SUNUCU VERİR, İSTEMCİ DEĞİL.
+     *
+     * DENETİM BULGUSU (2026-09-19): burada karar RevenueCat SDK'sının
+     * İSTEMCİDEKİ anlık görüntüsüne bakılarak veriliyordu. Oysa uygulamanın
+     * gerçek kapısı sunucudaki `user_entitlements` satırı (ADR-009). Webhook
+     * sunucuya düzgün ulaşmış ama yerel görüntü bayatsa, ödemesi BAŞARILI
+     * olan kullanıcı korkutucu bir uyarı görüyor ve uyarı onu geri yüklemeye
+     * yönlendiriyordu -- ki o da (yukarıdaki hata yüzünden) "aboneliğin yok"
+     * diyordu. 7 Eylül'de gerçek para kaybettiren olayla aynı şekil: onarım
+     * kodu depoda var ama hiçbir yol ona ulaşmıyordu.
+     */
     if (outcome.status === "not_entitled") {
+      setBusy({ kind: "activating" });
+      const confirmed = await waitForServerPremium();
       setBusy(null);
+      refreshStatus();
+
+      if (confirmed) {
+        outcomeRef.current = "purchased";
+        Alert.alert(t("paywall.restoreFoundTitle"), t("paywall.restoreFoundBody"), [
+          { text: t("common.ok"), onPress: onClose },
+        ]);
+        return;
+      }
+
       Alert.alert(t("paywall.notEntitledTitle"), t("paywall.notEntitledBody"));
       return;
     }
@@ -221,23 +261,45 @@ export function PaywallScreen({
     ]);
   }, [onClose, refreshStatus, selected, source, t]);
 
+  /**
+   * GERİ YÜKLEME ÜÇ FARKLI SONUÇ VERİR, ÜÇÜ DE AYRI ANLATILIR.
+   *
+   * DENETİM BULGUSU (2026-09-19): `restorePurchases()` eskiden üç durumu da
+   * tek bir `false`'a indiriyordu -- gerçekten abonelik olmaması, ağ/StoreKit
+   * hatası ve SDK'nın hiç kurulamamış olması. Çağıran bunların hepsine
+   * "Bu Apple hesabında aktif bir abonelik yok" diyordu. Yani uygulamayı
+   * zayıf bağlantıda yeniden kuran ÖDEYEN bir aboneye, olgusal olarak
+   * YANLIŞ bir cümle gösteriliyordu; kullanıcı denemeyi bırakıyordu.
+   *
+   * Ayrıca "abonelik bulunamadı" kararı artık istemcinin anlık görüntüsüyle
+   * verilmiyor: gerçek kapı sunucudaki satır (ADR-009). `waitForServerPremium`
+   * bir kez `sync-entitlement` onarımını da çalıştırıyor, yani kaçan bir
+   * webhook burada telafi ediliyor -- bu yol daha önce bu daldan HİÇ
+   * çağrılmıyordu.
+   */
   const handleRestore = useCallback(async () => {
     setBusy({ kind: "restore" });
-    const restored = await restorePurchases();
+    const outcome = await restorePurchases();
 
-    if (!restored) {
+    // Mağazaya sorulamadı. Bu bir bilgi eksikliği, "aboneliğin yok" bilgisi
+    // değil -- öyle sunmak ödeyen kullanıcıya yalan söylemek olurdu.
+    if (outcome.status === "error") {
       setBusy(null);
-      refreshStatus();
-      Alert.alert(t("paywall.restoreEmptyTitle"), t("paywall.restoreEmptyBody"));
+      Alert.alert(t("common.errorTitle"), t("paywall.restoreErrorBody"));
       return;
     }
 
-    // Geri yükleme de sunucuda bir RevenueCat olayı doğurur; satın almayla
-    // aynı bekleme geçerli.
     setBusy({ kind: "activating" });
     const confirmed = await waitForServerPremium();
     setBusy(null);
     refreshStatus();
+
+    // Mağaza bir şey bulamadı VE sunucu da doğrulamadı: ancak şimdi
+    // "abonelik yok" denebilir.
+    if (outcome.status === "none" && !confirmed) {
+      Alert.alert(t("paywall.restoreEmptyTitle"), t("paywall.restoreEmptyBody"));
+      return;
+    }
 
     Alert.alert(
       confirmed ? t("paywall.restoreFoundTitle") : t("paywall.activatingTitle"),

@@ -45,10 +45,11 @@ export default function BookDetailScreen() {
   const { theme } = useTheme();
   const { data, isLoading, isError, refetch } = useBookDetailQuery(id);
   const { data: series } = useBookSeriesQuery(data?.book?.id);
-  const { data: audioAccess } = useBookAudioAccessQuery(
-    data?.book?.id,
-    Boolean(data?.book?.hasAudio),
-  );
+  const {
+    data: audioAccess,
+    isSuccess: isAudioAccessKnown,
+    refetch: refetchAudioAccess,
+  } = useBookAudioAccessQuery(data?.book?.id, Boolean(data?.book?.hasAudio));
   const { data: favoritedBookIds } = useFavoritedBookIdsQuery();
   const toggleFavoriteMutation = useToggleFavoriteMutation();
   const { show: showToast } = useToast();
@@ -97,6 +98,27 @@ export default function BookDetailScreen() {
     // düğmesi zaten görünmüyor ve kullanıcı neden dinleyemediğini
     // anlamadan okuma ekranında kalırdı. Teklif okuma akışının dışında
     // yapılıyor (Ürün İlkesi #1) — yani tam burada.
+    /**
+     * ERİŞİM CEVABI GELMEDEN PAYWALL'A GÖNDERİLMİYOR.
+     *
+     * DENETİM BULGUSU (2026-09-19): koşul `!audioAccess?.canPlay` idi ve
+     * `audioAccess`, `can_play_book_audio` RPC'si yoldayken `undefined`,
+     * çağrı başarısız olursa (çevrimdışı, 5xx) KALICI OLARAK `undefined`.
+     * Düğme ise `book.hasAudio` doğru olur olmaz etkinleşiyordu, yani
+     * pencere tam bir sunucu gidiş-dönüşü kadardı: AKTİF PREMIUM bir abone
+     * "Dinle"ye erkenden basınca, zaten satın aldığı ürün için paywall'a
+     * gönderiliyordu.
+     *
+     * Erişim BİLİNMİYORSA artık sorgu yeniden deneniyor; paywall yalnızca
+     * sunucu "hayır" dediğinde açılıyor. Düğme de zaten yalnızca cevap
+     * geldiğinde etkin (aşağıya bak) -- bu, o kapıyı kaçıran bir dokunuş
+     * için son savunma.
+     */
+    if (!isAudioAccessKnown) {
+      void refetchAudioAccess();
+      return;
+    }
+
     if (!audioAccess?.canPlay) {
       trackEvent("book_listen_locked", { bookId: data.book.id });
       router.push("/paywall?source=audio");
@@ -215,13 +237,17 @@ export default function BookDetailScreen() {
         {/* Stüdyo kaydı olmayan kitapta (klasiklerin tamamı) düğme hiç
             görünmüyor: dinlenecek bir şey yok. Kilitliyken görünüyor ama
             paywall'a gidiyor -- teklif okuma akışının DIŞINDA (Ürün İlkesi
-            #1), yani tam burada. */}
+            #1), yani tam burada.
+
+            `isAudioAccessKnown` (2026-09-19): erişim cevabı gelmeden düğme
+            ETKİN DEĞİL. Öncesinde etkindi ve erken basan premium kullanıcı
+            paywall'a düşüyordu (bkz. `handlePressListen`'deki not). */}
         {book.hasAudio ? (
           <Button
             label={t("bookDetail.cta.listen")}
             accessibilityLabel={t("bookDetail.cta.listenAccessibilityLabel")}
             onPress={handlePressListen}
-            disabled={!continueChapter}
+            disabled={!continueChapter || !isAudioAccessKnown}
             variant="secondary"
             fullWidth
           />

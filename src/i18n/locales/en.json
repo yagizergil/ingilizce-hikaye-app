@@ -25,7 +25,8 @@
     "crashTitle": "Something went wrong",
     "crashMessage": "This screen could not load. Trying again usually fixes it.",
     "ok": "OK",
-    "close": "Close"
+    "close": "Close",
+    "cancel": "Cancel"
   },
   "ui": {
     "levelBadge": {
@@ -455,7 +456,8 @@
       "other": "Other"
     },
     "word": {
-      "accessibilityLabel": "{{lemma}}, {{gloss}}"
+      "accessibilityLabel": "{{lemma}}, {{gloss}}",
+      "removeAccessibilityLabel": "Remove {{lemma}} from your words"
     },
     "empty": {
       "noWords": {
@@ -466,6 +468,13 @@
         "title": "No words match this filter",
         "description": "Try a different filter."
       }
+    },
+    "remove": {
+      "confirmTitle": "Remove “{{lemma}}” from your words?",
+      "confirmBody": "The word and its review card will be deleted. This cannot be undone.",
+      "confirmCta": "Remove",
+      "done": "“{{lemma}}” removed from your words.",
+      "error": "Couldn't remove the word. Please try again."
     }
   },
   "browse": {
@@ -799,6 +808,7 @@
     "restoreFoundBody": "Premium features are unlocked again.",
     "restoreEmptyTitle": "No subscription found",
     "restoreEmptyBody": "There is no active subscription on this Apple account.",
+    "restoreErrorBody": "We couldn't check your purchases right now. Check your connection and try again.",
     "noPackages": "Subscription options could not be loaded.",
     "retryPackages": "Try again",
     "unavailableInExpoGo": "PURCHASES ONLY WORK IN A COMPILED BUILD",

@@ -106,6 +106,20 @@ export function ManageLanguagePairsScreen({
     return CONTENT_TARGET_LANGUAGES.filter((language) => language.code !== pendingNative);
   }, [pendingNative]);
 
+  /**
+   * Ana dil değişiminin YEREL yan etkileri: kalıcı tercih, i18next'in aktif
+   * dili ve yazım yönü.
+   *
+   * DENETİM BULGUSU (2026-09-19): bunlar SUNUCU ÇAĞRISINDAN ÖNCE
+   * yapılıyordu. `set_language_pair` "premium_required" döndüğünde
+   * (ücretsiz kullanıcının ikinci çift denemesi -- yani bu ekranın en sık
+   * yolu, ADR-013) hiçbiri geri alınmıyordu: kullanıcı paywall'ı kapatıyor
+   * ama uygulama kalıcı olarak yeni dile geçmiş oluyordu, hatta Arapça
+   * seçildiyse bir sonraki açılışta RTL'e dönüyordu -- sunucuda çift hâlâ
+   * eskisiyken. Kullanıcı ödemediği dili alıyor, kullandığı dili
+   * kaybediyordu. Artık yan etkiler yalnızca sunucu çifti KABUL ETTİKTEN
+   * sonra uygulanıyor.
+   */
   const applyNativeLanguageSideEffects = (nativeLanguage: string): boolean => {
     // Seçim kalıcı: bir sonraki açılışta cihaz diline dönmesin.
     void storeUiLanguage(nativeLanguage);
@@ -114,7 +128,7 @@ export function ManageLanguagePairsScreen({
     return applyLayoutDirection(nativeLanguage);
   };
 
-  const submitPair = (nativeLanguage: string, targetLanguage: string, needsRtlRestart: boolean) => {
+  const submitPair = (nativeLanguage: string, targetLanguage: string) => {
     setPair.mutate(
       { nativeLanguage, targetLanguage },
       {
@@ -123,6 +137,11 @@ export function ManageLanguagePairsScreen({
             onNeedsPremium();
             return;
           }
+
+          // Sunucu kabul etti -- yerel yan etkiler ANCAK ŞİMDİ uygulanıyor.
+          // Ana dil değişmediyse (yalnızca hedef seçildi) bu çağrı zaten
+          // etkisiz: aynı değer yazılıyor ve yön değişmiyor.
+          const needsRtlRestart = applyNativeLanguageSideEffects(nativeLanguage);
 
           if (needsRtlRestart) {
             Alert.alert(t("languagePair.restartTitle"), t("languagePair.restartBody"), [
@@ -152,7 +171,7 @@ export function ManageLanguagePairsScreen({
 
   const handleSelectTarget = (targetLanguage: string) => {
     if (!activePair) return;
-    submitPair(activePair.nativeLanguage, targetLanguage, false);
+    submitPair(activePair.nativeLanguage, targetLanguage);
   };
 
   /**
@@ -165,8 +184,7 @@ export function ManageLanguagePairsScreen({
    * uygulanıyor.
    */
   const handleSelectHistoryPair = (pair: OwnedLanguagePair) => {
-    const needsRtlRestart = applyNativeLanguageSideEffects(pair.nativeLanguage);
-    submitPair(pair.nativeLanguage, pair.targetLanguage, needsRtlRestart);
+    submitPair(pair.nativeLanguage, pair.targetLanguage);
   };
 
   const handleSelectNewNative = (nativeLanguage: string) => {
@@ -181,14 +199,12 @@ export function ManageLanguagePairsScreen({
       return;
     }
 
-    const needsRtlRestart = applyNativeLanguageSideEffects(nativeLanguage);
-    submitPair(nativeLanguage, activePair.targetLanguage, needsRtlRestart);
+    submitPair(nativeLanguage, activePair.targetLanguage);
   };
 
   const handleConfirmNewNativeTarget = (targetLanguage: string) => {
     if (!pendingNative) return;
-    const needsRtlRestart = applyNativeLanguageSideEffects(pendingNative);
-    submitPair(pendingNative, targetLanguage, needsRtlRestart);
+    submitPair(pendingNative, targetLanguage);
   };
 
   if (phase === "history") {

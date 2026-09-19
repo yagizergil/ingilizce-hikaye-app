@@ -63,6 +63,12 @@ function classify(pkg: PurchasesPackage): PlanKind {
  * Bir giriş fiyatı yalnızca ücreti SIFIR olduğunda "ücretsiz deneme"dir.
  * İndirimli ilk dönem (örn. ilk ay yarı fiyat) de introPrice olarak gelir
  * ve ona "ücretsiz deneme" demek yanıltıcı olurdu.
+ *
+ * DİKKAT — bu fonksiyon ÜRÜNÜN teklifini okur, KULLANICININ hakkını değil.
+ * `introPrice` StoreKit'te ürüne bağlı bir alan; denemeyi daha önce
+ * kullanmış bir kullanıcıda da aynen geliyor. Ekranda "7 gün ücretsiz"
+ * yazabilmek için ayrıca uygunluk sorulmalı — bkz. `buildPlanOptions`ın
+ * `trialEligibleProductIds` parametresi.
  */
 export function readTrial(pkg: PurchasesPackage): FreeTrial | null {
   const intro = pkg.product.introPrice;
@@ -113,8 +119,22 @@ export function computeSavingsPercent(
  * Sıra bilerek yıllık → aylık → diğer: önerilen plan ilk sırada ve ön
  * seçili gelir. Aylık plan, yıllığın ucuz görünmesini sağlayan çapadır
  * (bkz. docs/aso/03-fiyatlandirma.md §5).
+ *
+ * @param trialEligibleProductIds RevenueCat'in bu KULLANICI için "deneme
+ *   hakkı var" dediği ürün kimlikleri
+ *   (`fetchTrialEligibleProductIds`). Verilmezse ya da ürün kümede yoksa
+ *   `trial` null kalır, yani ekranda hiçbir deneme iddiası yazılmaz.
+ *
+ *   NEDEN VARSAYILAN "YOK": uygunluk sorusu ağdan geliyor ve
+ *   bilinmeyebiliyor. Bilinmezken denemeyi GÖSTERMEK, denemesini çoktan
+ *   kullanmış kullanıcıya "7 gün ücretsiz" deyip anında ücret çekmek
+ *   demekti (Guideline 2.3.1). Bilinmezken gizlemek yalnızca bir cümle
+ *   kaybettiriyor.
  */
-export function buildPlanOptions(packages: PurchasesPackage[]): PlanOption[] {
+export function buildPlanOptions(
+  packages: PurchasesPackage[],
+  trialEligibleProductIds?: ReadonlySet<string>,
+): PlanOption[] {
   const annual = packages.find((pkg) => classify(pkg) === "annual") ?? null;
   const monthly = packages.find((pkg) => classify(pkg) === "monthly") ?? null;
 
@@ -135,7 +155,7 @@ export function buildPlanOptions(packages: PurchasesPackage[]): PlanOption[] {
       isRecommended: recommendedPkg !== null && pkg.identifier === recommendedPkg.identifier,
       savingsPercent: kind === "annual" ? savings : null,
       monthlyEquivalent: kind === "monthly" ? null : (pkg.product.pricePerMonthString ?? null),
-      trial: readTrial(pkg),
+      trial: trialEligibleProductIds?.has(pkg.product.identifier) ? readTrial(pkg) : null,
     };
   });
 }

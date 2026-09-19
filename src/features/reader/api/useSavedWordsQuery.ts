@@ -362,6 +362,55 @@ export function useUnsaveWordMutation() {
   return useWordActionMutation("unsave", "reader.error.unsaveWordFailed");
 }
 
+/**
+ * Kelime defterinden çıkarma -- reader'ın değil, DEFTERİN ihtiyacı.
+ *
+ * NEDEN AYRI BİR HOOK: `useUnsaveWordMutation` reader'ın dokunma bağlamına
+ * göre kurulmuş bir `WordActionInput` istiyor (surface, paragraphId,
+ * contextText, bookId). Defter ekranında bunların hiçbiri yok ve olmasına
+ * gerek de yok: silme yalnızca lemmaya bakıyor. O alanları uydurup
+ * göndermek, okunduğunda "burada bir bağlam var" diye yanıltırdı.
+ *
+ * Kaldırma çevrimdışı kuyruğuna GİRMİYOR (reader'daki kardeşinin aksine):
+ * defterdeki silme kullanıcının açıkça onayladığı tekil bir işlem, sessizce
+ * kuyruğa alınıp sonra uygulanması değil, başarısızsa söylenmesi gerekiyor.
+ */
+export function useRemoveSavedWordMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ lemma, pos }: { lemma: string; pos: string | null }) => {
+      const userId = await getUserIdOrThrow();
+      await removeSavedWordAndCards(userId, lemma);
+
+      // Kelime "yeni" durumuna dönüyor: bir daha okunduğunda yine
+      // kaydedilebilir olmalı. `pos` bilinmiyorsa durum satırına hiç
+      // dokunulmuyor -- yanlış bir `pos` ile ikinci bir satır açmak,
+      // aynı kelimeyi iki farklı durumda bırakırdı.
+      if (pos === null) return;
+
+      const { error } = await supabase.from("user_lemma_state").upsert(
+        {
+          user_id: userId,
+          lemma,
+          pos,
+          state: "new",
+          last_seen_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,lemma,pos" },
+      );
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      // YALNIZCA reader'ın kendi anahtarı. Defterin listesini ve SRS
+      // sayacını tazelemek ÇAĞIRANIN işi -- buradan başka bir feature'ın
+      // sorgu anahtarlarına uzanmak hem CLAUDE.md'nin feature sınırını
+      // deler hem de barrel'lar arasında döngüsel import yaratırdı.
+      void queryClient.invalidateQueries({ queryKey: lemmaStatesQueryKey });
+    },
+  });
+}
+
 export function useMarkLemmaKnownMutation() {
   return useWordActionMutation("know", "reader.error.markKnownFailed");
 }

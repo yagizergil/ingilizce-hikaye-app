@@ -25,7 +25,8 @@
     "crashTitle": "حدث خطأ ما",
     "crashMessage": "تعذّر تحميل هذه الشاشة. إعادة المحاولة تحلّ المشكلة عادةً.",
     "ok": "حسنًا",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "cancel": "إلغاء"
   },
   "ui": {
     "levelBadge": {
@@ -463,7 +464,8 @@
       "other": "أخرى"
     },
     "word": {
-      "accessibilityLabel": "{{lemma}}، {{gloss}}"
+      "accessibilityLabel": "{{lemma}}، {{gloss}}",
+      "removeAccessibilityLabel": "إزالة {{lemma}} من كلماتك"
     },
     "empty": {
       "noWords": {
@@ -474,6 +476,13 @@
         "title": "لا كلمات تطابق هذه التصفية",
         "description": "جرّب تصفية مختلفة."
       }
+    },
+    "remove": {
+      "confirmTitle": "هل تريد إزالة «{{lemma}}» من كلماتك؟",
+      "confirmBody": "ستُحذف الكلمة وبطاقة مراجعتها. لا يمكن التراجع عن هذا الإجراء.",
+      "confirmCta": "إزالة",
+      "done": "تمت إزالة «{{lemma}}».",
+      "error": "تعذّرت إزالة الكلمة. حاول مرة أخرى."
     }
   },
   "browse": {
@@ -839,6 +848,7 @@
     "restoreFoundBody": "عادت ميزات بريميوم للعمل.",
     "restoreEmptyTitle": "لم يُعثر على اشتراك",
     "restoreEmptyBody": "لا يوجد اشتراك فعّال على حساب Apple هذا.",
+    "restoreErrorBody": "تعذّر التحقق من مشترياتك الآن. تحقّق من اتصالك وحاول مرة أخرى.",
     "noPackages": "تعذّر تحميل خيارات الاشتراك.",
     "retryPackages": "حاول مرة أخرى",
     "unavailableInExpoGo": "الشراء يعمل فقط في نسخة مُجمَّعة من التطبيق",

@@ -25,6 +25,15 @@ import type { CustomerInfo, PurchasesOffering, PurchasesPackage } from "react-na
 /** Uygulamanın RevenueCat'te tanımlı yetki (entitlement) adı. */
 export const PREMIUM_ENTITLEMENT = "premium";
 
+/**
+ * `INTRO_ELIGIBILITY_STATUS_ELIGIBLE` sayısal karşılığı.
+ *
+ * Enum `react-native-purchases`ten geliyor ve o paket Expo Go'da YOK;
+ * değerini burada sabitlemek, tip dışında bir çalışma zamanı importu
+ * eklememek için (dosyanın başındaki tembel yükleme gerekçesi).
+ */
+const INTRO_ELIGIBILITY_ELIGIBLE = 2;
+
 /** Expo Go'da native modül yok — orada satın alma akışı çalışmaz. */
 export const isPurchasesAvailable =
   Constants.executionEnvironment !== ExecutionEnvironment.StoreClient;
@@ -292,19 +301,86 @@ export async function purchasePackage(
   }
 }
 
+/**
+ * Geri yükleme denemesinin sonucu.
+ *
+ * NEDEN ÜÇ DURUM, BOOLEAN DEĞİL (denetim bulgusu): eskiden `boolean`
+ * dönüyordu ve ÜÇ farklı şey aynı `false`'a düşüyordu — (1) gerçekten
+ * geri yüklenecek bir şey yok, (2) ağ/StoreKit hatası, (3) SDK hiç
+ * kurulamadı. Çağıran hepsini "abonelik yok" diye okuyup kullanıcıya
+ * "Bu Apple hesabında aktif bir abonelik yok" diyordu. Zayıf bağlantıda
+ * uygulamayı yeniden kuran ÖDEYEN bir aboneye söylenen bu cümle olgusal
+ * olarak yanlıştı ve kullanıcı denemeyi bırakıyordu — doğrudan gelir
+ * kaybı. Hata ile yokluk artık ayrı.
+ */
+export type RestoreOutcome =
+  /** RevenueCat premium yetkisini aktif gördü. */
+  | { status: "restored" }
+  /** Çağrı başarılı ama bu hesapta aktif abonelik yok. */
+  | { status: "none" }
+  /** Ağ/StoreKit hatası ya da SDK kurulamadı — "abonelik yok" DEMEK DEĞİL. */
+  | { status: "error" };
+
 /** Önceki satın alımları geri yükler (App Store için zorunlu). */
-export async function restorePurchases(): Promise<boolean> {
+export async function restorePurchases(): Promise<RestoreOutcome> {
   const purchases = await readyPurchases();
-  if (!purchases) return false;
+  // SDK kurulamadıysa mağazaya hiç sorulmadı; bu bir bilgi eksikliği,
+  // "abonelik yok" bilgisi değil.
+  if (!purchases) return { status: "error" };
 
   try {
     const info = await purchases.restorePurchases();
     const restored = hasPremium(info);
     trackEvent("purchase_restored", { restored });
-    return restored;
+    return restored ? { status: "restored" } : { status: "none" };
   } catch (error) {
     trackError("revenuecat.restore", error);
-    return false;
+    return { status: "error" };
+  }
+}
+
+/**
+ * Bu KULLANICININ ücretsiz denemeye hak kazanıp kazanmadığı.
+ *
+ * NEDEN GEREKLİ (App Store Guideline 2.3.1 riski): `product.introPrice`
+ * ÜRÜNÜN giriş fiyatını anlatıyor, BU kullanıcının ona hak kazanıp
+ * kazanmadığını değil. 7 günlük denemeyi bir kez kullanmış biri paywall'da
+ * yine "7 gün ücretsiz dene" görüyor, sonra anında ücretlendiriliyordu.
+ * CLAUDE.md'nin kuralı: bir fayda önce üründe gerçek olmalı, sonra
+ * paywall'a yazılabilir.
+ *
+ * BİLİNMİYORSA GİZLİYORUZ: RevenueCat "unknown" dönebiliyor (StoreKit
+ * yanıtı yoksa) ve çağrı hata da verebilir. Kazanılmamış bir cümle
+ * kaybedilmiş bir satırdır; yanlış bir cümle rededilme sebebidir.
+ *
+ * @returns Denemeye hak kazanılan ürün kimlikleri. Emin olunamayan hiçbir
+ *          ürün kümede YOK.
+ */
+export async function fetchTrialEligibleProductIds(
+  productIds: string[],
+): Promise<ReadonlySet<string>> {
+  const empty: ReadonlySet<string> = new Set<string>();
+  if (productIds.length === 0) return empty;
+
+  const purchases = await readyPurchases();
+  if (!purchases) return empty;
+
+  try {
+    const result = await purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
+    const eligible = new Set<string>();
+    for (const [productId, eligibility] of Object.entries(result)) {
+      // 2 = INTRO_ELIGIBILITY_STATUS_ELIGIBLE. Enum'un kendisi
+      // `react-native-purchases`ten geliyor; burada sayıyı yazmak, saf
+      // tip importu dışında o native paketi çalışma zamanına sokmamak
+      // için (bkz. dosyanın başındaki Expo Go gerekçesi).
+      if (eligibility?.status === INTRO_ELIGIBILITY_ELIGIBLE) eligible.add(productId);
+    }
+    return eligible;
+  } catch (error) {
+    // Yutulmuyor: kaydediliyor ve çağıran boş küme alıyor — yani deneme
+    // iddiası hiç yazılmıyor.
+    trackError("revenuecat.trialEligibility", error);
+    return empty;
   }
 }
 
