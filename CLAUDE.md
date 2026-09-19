@@ -615,6 +615,26 @@ olurdu.
     listeliyordu. Seviye yoksa kart artık hiç gösterilmiyor; seviye
     öğrenilince kendiliğinden geri geliyor.
 18. Onboarding kapakları `expo-image`e geçti (RN `Image` önbelleklemiyordu).
+19. **Onboarding kapısı "oturum yok"u "onboarding bitti" diye ÖNBELLEĞE
+    YAZIYORDU (kullanıcı bulgusu).** `fetchOnboardingStatus` oturumu
+    `supabase.auth.getUser()` ile okuyordu -- o bir AĞ çağrısı ve
+    başarısız olduğunda fırlatmıyor, sessizce `user: null` dönüyor. Kod
+    `user` yokken `completed: true` dönüyordu, yani "bilmiyorum" cevabı
+    BAŞARILI bir cevaba çevriliyor ve `staleTime` gereği 5 DAKİKA taze
+    sayılıyordu. Hesap sıfırlama akışı tam o ana denk geliyor (sil -> yeni
+    anonim oturum -> önbelleği temizle -> köke dön): kullanıcı onboarding
+    yerine ana ekranda, üstelik hiç dil çifti olmayan yeni bir hesapla
+    kalıyordu -- "geliştirici sıfırlama düğmesi çalışmıyor"un sebebi buydu.
+    Oturum artık YEREL okunuyor (`getSession`), oturum yoksa cevap
+    üretilmiyor fırlatılıyor, `retry: 3`. 5 test.
+20. **Dil çiftleri ekranının ne boş ne hata durumu vardı.** Sıfır çiftte ya
+    da sorgu hatasında gövdenin bütün blokları eleniyor, geriye başlık ve
+    ölü bir bölüm etiketi kalıyordu ("bomboş"). Sıfır çift ULAŞILABİLİR:
+    `useActiveLanguagePairQuery` satır yokken bilerek bir varsayılana
+    düşüyor. Canlıda doğrulandı -- çifti olan her kullanıcıda tam olarak
+    bir aktif satır var, yani `activePair === null` yalnızca "hiç satır
+    yok" demek. Premium kuralına DOKUNULMADI (`set_language_pair`,
+    migration 033). 4 test, eski koda karşı kırmızıya döndüğü doğrulandı.
 
 **HÂLÂ AÇIK**
 
