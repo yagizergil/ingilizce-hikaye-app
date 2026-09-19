@@ -377,7 +377,16 @@ export function OnboardingFirstReadStep({
         onUnsave={() => {
           if (active) onUnpick(active.lemma);
         }}
-        saveHint={needsGuidance ? t("onboarding.firstRead.saveHint") : null}
+        // DENETİM BULGUSU (2026-09-19, kullanıcı isteği): yer imi
+        // simgesinin büyüyüp-küçülme animasyonu (`WordSheet`'in
+        // `savePulse`'ı) yalnızca `needsGuidance` (henüz HİÇ kelime
+        // seçilmemişken) doğruyken çalışıyordu -- yani kullanıcı yalnızca
+        // İLK açtığı kartta öğreniyordu, ikinci ve üçüncü kelimede animasyon
+        // hiç oynamıyordu. Onboarding'in bu adımının TEK amacı "yer imine
+        // dokunarak kaydedilir" davranışını öğretmek, o yüzden ipucu ve
+        // animasyon adımdaki HER kart açılışında gösteriliyor artık --
+        // `needsGuidance`'a bağlı değil.
+        saveHint={t("onboarding.firstRead.saveHint")}
         onMarkKnown={() => undefined}
         onUnmarkKnown={() => undefined}
         onDismiss={() => setActive(null)}
