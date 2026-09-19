@@ -405,8 +405,20 @@ export function WordSheet({
   const [savePulse] = useState(() => new Animated.Value(0));
   const reduceMotion = useReduceMotion();
 
+  /**
+   * DENETİM BULGUSU (2026-09-19, kullanıcı bulgusu): bu efekt `saveHint`e
+   * bağlıydı ama onboarding'de `saveHint` HER kelime için AYNI sabit metin
+   * -- yani efekt yalnızca kart bileşeni İLK kez "saveHint doğru" olduğunda
+   * ateşleniyor, sonraki kelimeler için `saveHint` DEĞİŞMEDİĞİ için efekt
+   * bir daha hiç çalışmıyordu. `word` her zaman aynı `Modal` örneğinde
+   * (`visible` prop'uyla açılıp kapanıyor, bkz. dosyanın alt kısmı)
+   * göründüğü/kaybolduğu için döngünün "zaten sürüyor olması" ekrana bağlı
+   * kırılgan bir varsayımdı. Artık `word` (kelime değişince YENİ bir kart
+   * açılmış demektir) de bağımlılıkta -- her kart açılışında nabız SIFIRDAN
+   * başlıyor, hangi kelime olduğuna bakılmaksızın.
+   */
   useEffect(() => {
-    if (!saveHint) {
+    if (!saveHint || !word) {
       savePulse.setValue(0);
       return;
     }
@@ -416,6 +428,7 @@ export function WordSheet({
       savePulse.setValue(1);
       return;
     }
+    savePulse.setValue(0);
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(savePulse, {
@@ -432,7 +445,7 @@ export function WordSheet({
     );
     loop.start();
     return () => loop.stop();
-  }, [saveHint, reduceMotion, savePulse]);
+  }, [saveHint, word, reduceMotion, savePulse]);
 
   const isResolvingTranslation =
     word !== null && !entry && !(globalSettled && pairSettled && liveSettled);
