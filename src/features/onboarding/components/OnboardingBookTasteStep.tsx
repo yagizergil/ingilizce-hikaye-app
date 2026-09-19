@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+
+import { Image } from "expo-image";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -102,9 +104,16 @@ export function OnboardingBookTasteStep({
               ve altında "Rafında N kitap" sayacı var. */}
           <View style={styles.shelf}>
             {likedBooks.slice(-TARGET_LIKES).map((book) => (
-              <View key={book.id} style={[styles.shelfCover, { backgroundColor: theme.bg.surface }]}>
+              <View
+                key={book.id}
+                style={[styles.shelfCover, { backgroundColor: theme.bg.surface }]}
+              >
                 {book.coverUrl ? (
-                  <Image source={{ uri: book.coverUrl }} style={styles.shelfImage} />
+                  <Image
+                    source={{ uri: book.coverUrl }}
+                    style={styles.shelfImage}
+                    contentFit="cover"
+                  />
                 ) : null}
               </View>
             ))}
@@ -122,7 +131,11 @@ export function OnboardingBookTasteStep({
           {current ? (
             <View style={[styles.cover, { backgroundColor: theme.bg.surface }]}>
               {current.coverUrl ? (
-                <Image source={{ uri: current.coverUrl }} style={styles.coverImage} />
+                <Image
+                  source={{ uri: current.coverUrl }}
+                  style={styles.coverImage}
+                  contentFit="cover"
+                />
               ) : (
                 <View style={styles.coverFallback}>
                   <Text style={[monoType.rowText, { color: theme.text.secondary }]}>

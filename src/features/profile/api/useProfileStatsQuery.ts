@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { localDateKey, localDateKeyDaysAgo } from "@/lib/localDate";
 import { supabase } from "@/lib/supabase";
 
 import { profileQueryKeys } from "@/features/profile/api/queryKeys";
@@ -9,22 +10,6 @@ import type { ProfileDailyMinutes, ProfileStats } from "@/features/profile/types
 interface ReadingStatsRow {
   date: string;
   minutes: number;
-}
-
-/** `Date` -> YYYY-MM-DD (yerel gün, UTC kaymasi olmadan). */
-function toDateKey(date: Date): string {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-/** Bugünden `offset` gün önceki günün anahtarı. */
-function dateKeyDaysAgo(offset: number): string {
-  const date = new Date();
-  date.setHours(12, 0, 0, 0); // yaz saati geçişlerinde gün kaymasını önler
-  date.setDate(date.getDate() - offset);
-  return toDateKey(date);
 }
 
 /** Bu ISO haftasının (Pazartesi başlangıçlı) Pazartesi günü. */
@@ -46,8 +31,8 @@ function currentWeekMonday(): Date {
  * görür ve motivasyonu kırılır.
  */
 function computeCurrentStreak(activeDays: Set<string>): number {
-  const today = dateKeyDaysAgo(0);
-  const yesterday = dateKeyDaysAgo(1);
+  const today = localDateKeyDaysAgo(0);
+  const yesterday = localDateKeyDaysAgo(1);
 
   let offset: number;
   if (activeDays.has(today)) offset = 0;
@@ -55,7 +40,7 @@ function computeCurrentStreak(activeDays: Set<string>): number {
   else return 0;
 
   let streak = 0;
-  while (activeDays.has(dateKeyDaysAgo(offset))) {
+  while (activeDays.has(localDateKeyDaysAgo(offset))) {
     streak += 1;
     offset += 1;
   }
@@ -87,7 +72,7 @@ function buildWeekDays(minutesByDate: Map<string, number>): ProfileDailyMinutes[
   for (let index = 0; index < 7; index++) {
     const day = new Date(monday);
     day.setDate(monday.getDate() + index);
-    const key = toDateKey(day);
+    const key = localDateKey(day);
     days.push({ date: key, minutes: Math.round(minutesByDate.get(key) ?? 0) });
   }
 
@@ -146,7 +131,7 @@ export async function fetchProfileStats(): Promise<ProfileStats> {
     weekDays,
     currentStreak: computeCurrentStreak(activeDays),
     longestStreak: computeLongestStreak(sortedDateKeys),
-    readToday: activeDays.has(dateKeyDaysAgo(0)),
+    readToday: activeDays.has(localDateKeyDaysAgo(0)),
     totalMinutes: Math.round(totalMinutes),
     totalActiveDays: activeDays.size,
     completedBookCount: completedResult.count ?? 0,

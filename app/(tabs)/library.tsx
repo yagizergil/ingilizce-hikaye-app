@@ -87,6 +87,13 @@ export default function LibraryScreen() {
           onSuccess: () => {
             if (!isFavorited) showToast(t("favorites.toast.added"));
           },
+          // DENETİM BULGUSU (2026-09-19): `onError` hiç yoktu. Sunucu
+          // hatasında `onSettled` sorguları geçersiz kılıyor, kalp eski
+          // hâline geri dönüyor ve kullanıcı dokunuşunun neden hiçbir şey
+          // yapmadığını ÖĞRENEMİYOR -- arıza gibi görünüyor.
+          onError: () => {
+            showToast(t("favorites.toast.failed"));
+          },
         },
       );
     },

@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 import { trackError } from "@/lib/analytics";
+import { localDateKey } from "@/lib/localDate";
 
 /**
  * Okuma süresini ölçer ve sunucuya yazar.
@@ -63,6 +64,10 @@ export function useReadingSession(bookId: string | null): void {
           p_book_id: activeBookId,
           p_seconds: seconds,
           p_words_read: 0,
+          // Gün KULLANICININ takviminden geçiriliyor; sunucu UTC'ye göre
+          // tahmin ederse gece okuyanın dakikaları düne düşüyor
+          // (migration 044).
+          p_local_date: localDateKey(),
         });
         if (error) throw error;
 

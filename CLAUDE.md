@@ -587,22 +587,51 @@ olurdu.
       birebir aynıydı). Silme sonrası bölüm okuma sorgusunun unique kısıt
       indeksini devraldığı EXPLAIN ile doğrulandı.
 
+**ÜÇÜNCÜ GEÇİŞ (aynı gün) -- 1.0.2 kapanışı**
+
+14. **Üç farklı "bugün" tanımı birleştirildi (migration 044).** Aynı soruya
+    üç ayrı cevap vardı: okuma süresi UTC gününe YAZILIYOR,
+    `get_user_streak` Europe/Istanbul'a göre SAYIYOR, `useProfileStatsQuery`
+    cihazın yerel gününü ÇİZİYOR. Türkiye UTC+3 olduğu için 00:00-03:00
+    arası okuyanın dakikaları düne düşüyor, "bugün okudun" yanlış söylüyor
+    ve gece okuyan hiç seri göremiyordu. Gün artık istemciden geçiyor
+    (`src/lib/localDate.ts`, 7 test). Eski imzalar DURUYOR ve davranışları
+    değişmedi -- 1.0.1 mağazada ve onları çağırıyor; yanlarına birer
+    parametreli kardeş eklendi (`default null` verilemezdi: PostgREST
+    adlandırılmış parametrelerle çağırdığı için "function is not unique"
+    olurdu). Sunucu, istemci saatinin UTC'den ±1 günden fazla saptığı
+    tarihi reddediyor.
+15. **Seri-kurtarma bildirimi her gün ateşleniyordu.** `useReminderDataQuery`
+    `readToday`ı `words_read > 0` ile hesaplıyordu -- migration 041'de
+    kapatılan ölü sütunun okuyan taraftaki son kullanımı. O sütuna hiç yazı
+    yazılmadığı için `readToday` DAİMA false'tu: kullanıcı o gün okusa bile
+    "serin tehlikede" bildirimi gidiyordu. `minutes`e çevrildi.
+16. **Favori düğmesi sunucu hatasında sessizdi.** Üç çağrı yerinde de
+    `onError` yoktu; `onSettled` sorguları geçersiz kılınca kalp eski hâline
+    dönüyor ve kullanıcı dokunuşunun neden hiçbir şey yapmadığını
+    öğrenemiyordu. Artık 10 dilde bir hata bildirimi gösteriliyor.
+17. **"Seviyene göre" kartı seviye bilinmiyorken kataloğu FİLTRESİZ
+    açıyordu** -- kart adının söylediğini yapmıyor, 529 kitabın tamamını
+    listeliyordu. Seviye yoksa kart artık hiç gösterilmiyor; seviye
+    öğrenilince kendiliğinden geri geliyor.
+18. Onboarding kapakları `expo-image`e geçti (RN `Image` önbelleklemiyordu).
+
 **HÂLÂ AÇIK**
 
-- **Üç farklı "bugün" tanımı:** `user_reading_stats.date` UTC yazılıyor,
-  `get_user_streak` İstanbul'a göre, `useProfileStatsQuery` cihazın yerel
-  gününe göre okuyor. Gece okuyanda seri ve haftalık grafik yanlış güne
-  düşüyor. (041 seriyi çalışır hâle getirdi ama bu ayrışma duruyor.)
 - Aynı lemma iki farklı `pos` ile iki duruma düşebiliyor
   (`user_lemma_state` PK'sı `(user_id, lemma, pos)`, `user_saved_words` ise
   `(user_id, lemma)`; okuyucular lemma'ya göre Map kuruyor ve sıralama yok).
-- Dört sekmede odaklanmada koşulsuz `refetch()` (staleTime'ı baypas ediyor);
-  on dil paketi de açılışta ayrıştırılıyor; onboarding kapakları
-  `expo-image` yerine RN `Image` kullanıyor.
+- **On dil paketi açılışta ayrıştırılıyor** (~350 kB JSON). Tembel yüklemek
+  `resources`tan dokuz dili çıkarmak demek; `changeLanguage` yolunun BİR
+  tanesi bile paketi yüklemeden geçerse arayüz ham anahtar basıyor
+  (`bootstrap.test.ts`in koruduğu regresyonun aynısı). Kazanç ölçüldüğünde
+  onlarca milisaniye; yayın öncesi alınacak risk değil, ayrı bir iş.
 - **Türkçe büyük harf** ("ŞIMDI DEĞIL" -> "ŞİMDİ DEĞİL"): 10 tasarım
   token'ı, ~29 dosya. Ayrı göreve alındı.
-- "Seviyene göre" kartı seviye bilinmiyorken tüm katalogu açıyor; favori
-  düğmesi sunucu hatasında sessizce başarısız oluyor.
+- **Onboarding yönlendirmesi gözle doğrulanmadı.** Kod ve testle doğrulandı;
+  web önizlemesinde onboarding'e ULAŞILAMIYOR (`OnboardingGate` sorgu
+  hatasında uygulamayı gösteriyor) ve tek sıfırlama yolu hesabı SİLEN
+  geliştirici düğmesi.
 - **Belge/gerçek ayrışması:** CLAUDE.md "119 kitap" diyor, canlıda **529
   yayında kitap** var (9 hedef dilde). `languages` tablosu ve
   `is_content_target` migration geçmişi DIŞINDA değiştirilmiş -- depodan

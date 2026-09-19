@@ -494,7 +494,8 @@
   "favorites": {
     "toast": {
       "added": "Zu Favoriten hinzugefügt",
-      "removed": "Aus Favoriten entfernt"
+      "removed": "Aus Favoriten entfernt",
+      "failed": "Favorit konnte nicht aktualisiert werden. Versuch es erneut."
     },
     "action": {
       "add": "Zu Favoriten hinzufügen",

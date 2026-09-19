@@ -494,7 +494,8 @@
   "favorites": {
     "toast": {
       "added": "Favorilere eklendi",
-      "removed": "Favorilerden kaldırıldı"
+      "removed": "Favorilerden kaldırıldı",
+      "failed": "Favori güncellenemedi. Tekrar dene."
     },
     "action": {
       "add": "Favorilere ekle",

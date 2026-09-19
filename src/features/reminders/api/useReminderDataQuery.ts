@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { localDateKey } from "@/lib/localDate";
 import { supabase } from "@/lib/supabase";
 
 export interface ReminderData {
@@ -37,16 +38,13 @@ export interface ReminderData {
  * sorgusu var. Böylece `features/reminders` başka HİÇBİR feature'a
  * bağımlı değil.
  *
- * NEDEN İSTANBUL SAATİ: "bugün okudu mu" takvim günü sorusu ve sunucudaki
- * `get_user_streak()` de seriyi Europe/Istanbul takvimine göre sayıyor
- * (migration 004). İkisinin aynı günü kastetmesi şart, yoksa gece
- * yarısına yakın saatlerde "serin tehlikede" derken seri aslında güvende
- * olur.
+ * NEDEN CİHAZIN GÜNÜ: "bugün okudu mu" bir takvim günü sorusu ve doğru
+ * takvim kullanıcının kendi takvimi. Önceden burası Europe/Istanbul'u
+ * kullanıyordu çünkü sunucudaki `get_user_streak()` öyle sayıyordu; oysa
+ * okuma süresi UTC gününe YAZILIYORDU, yani üç taraf üç ayrı günden
+ * bahsediyordu. Artık üçü de istemcinin yerel gününü kullanıyor
+ * (migration 044).
  */
-function istanbulToday(): string {
-  // en-CA biçimi YYYY-MM-DD veriyor — user_reading_stats.date ile aynı şekil.
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul" }).format(new Date());
-}
 
 async function fetchReminderData(): Promise<ReminderData> {
   const { data: userData } = await supabase.auth.getUser();
@@ -56,6 +54,7 @@ async function fetchReminderData(): Promise<ReminderData> {
   }
 
   const nowIso = new Date().toISOString();
+  const today = localDateKey();
 
   const [due, progress, streak, todayStat] = await Promise.all([
     supabase
@@ -72,13 +71,18 @@ async function fetchReminderData(): Promise<ReminderData> {
       .order("last_read_at", { ascending: false })
       .limit(1)
       .maybeSingle<{ book_id: string }>(),
-    supabase.rpc("get_user_streak"),
+    supabase.rpc("get_user_streak", { p_today: today }),
+    // `minutes`, `words_read` DEĞİL: `words_read` sütununa hiçbir kod yazı
+    // yazmıyor (migration 041'de seri için de aynı sebeple değiştirildi).
+    // Okuyan tarafta kalan son kullanımı buydu: `readToday` HER GÜN false
+    // dönüyor, yani seri-kurtarma bildirimi kullanıcı o gün okusa bile
+    // gönderiliyordu.
     supabase
       .from("user_reading_stats")
-      .select("words_read")
+      .select("minutes")
       .eq("user_id", userId)
-      .eq("date", istanbulToday())
-      .maybeSingle<{ words_read: number }>(),
+      .eq("date", today)
+      .maybeSingle<{ minutes: number }>(),
   ]);
 
   let unfinishedBookTitle: string | null = null;
@@ -97,7 +101,7 @@ async function fetchReminderData(): Promise<ReminderData> {
     dueCount: due.count ?? 0,
     unfinishedBookTitle,
     streakDays: typeof streak.data === "number" ? streak.data : 0,
-    readToday: (todayStat.data?.words_read ?? 0) > 0,
+    readToday: (todayStat.data?.minutes ?? 0) > 0,
   };
 }
 

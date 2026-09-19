@@ -154,6 +154,7 @@ export default function HomeScreen() {
       if (collection.key === "audiobooks") searchParams.set("hasAudio", "true");
       if (collection.key === "quick") searchParams.set("maxMinutes", "10");
       // "Seviyene göre": kullanıcının onboarding'de beyan ettiği seviye.
+      // Seviye yoksa kart zaten rafta gösterilmiyor (CollectionShelf).
       if (collection.key === "myLevel" && userLevel) {
         searchParams.set("level", userLevel);
       }
@@ -232,7 +233,7 @@ export default function HomeScreen() {
               onRemoveBook={handleRemoveCurrentlyReading}
             />
 
-            <CollectionShelf onPressCollection={handlePressCollection} />
+            <CollectionShelf onPressCollection={handlePressCollection} userLevel={userLevel} />
 
             <CategoryShelf
               title={t("home.categories.title")}

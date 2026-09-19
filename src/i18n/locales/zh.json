@@ -494,7 +494,8 @@
   "favorites": {
     "toast": {
       "added": "已加入收藏",
-      "removed": "已取消收藏"
+      "removed": "已取消收藏",
+      "failed": "无法更新收藏，请重试。"
     },
     "action": {
       "add": "加入收藏",

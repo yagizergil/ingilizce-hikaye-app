@@ -9,6 +9,11 @@ import { CollectionCard, type CollectionCardData } from "@/features/home/compone
 
 interface CollectionShelfProps {
   onPressCollection: (collection: CollectionCardData) => void;
+  /**
+   * Kullanıcının beyan ettiği seviye. `null` ise "Seviyene göre" kartı
+   * GÖSTERİLMİYOR -- bkz. aşağıdaki not.
+   */
+  userLevel: string | null;
 }
 
 /**
@@ -25,6 +30,12 @@ interface CollectionShelfProps {
  *   favoriler -> /favorites        kelime tekrarı -> /review
  *
  * Renkler tema-bağımsız kimlik renkleri (bkz. `collectionColors`).
+ *
+ * DENETİM BULGUSU (2026-09-19): "Seviyene göre" kartı seviye BİLİNMİYORKEN
+ * de gösteriliyordu ve basıldığında kataloğu FİLTRESİZ açıyordu -- yani
+ * kart adının söylediği şeyi yapmıyor, 529 kitabın tamamını listeliyordu.
+ * Boş bir vaatten kartın hiç olmaması iyi; seviye öğrenildiğinde kart
+ * kendiliğinden geri geliyor.
  */
 const COLLECTIONS: CollectionCardData[] = [
   { key: "popular", label: "", color: collectionColors.popular },
@@ -35,10 +46,12 @@ const COLLECTIONS: CollectionCardData[] = [
   { key: "review", label: "", color: collectionColors.review },
 ];
 
-export function CollectionShelf({ onPressCollection }: CollectionShelfProps) {
+export function CollectionShelf({ onPressCollection, userLevel }: CollectionShelfProps) {
   const { t } = useTranslation();
 
-  const collections = COLLECTIONS.map((collection) => ({
+  const collections = COLLECTIONS.filter(
+    (collection) => collection.key !== "myLevel" || userLevel !== null,
+  ).map((collection) => ({
     ...collection,
     label: t(`home.collections.${collection.key}`),
   }));
