@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/analytics";
 
 import { languagePairQueryKeys } from "@/features/languagePair/api/useActiveLanguagePairQuery";
+import { homeQueryKeys } from "@/features/home/api/queryKeys";
 
 export type SetLanguagePairResult = "ok" | "premium_required";
 
@@ -42,6 +43,18 @@ export function useSetLanguagePairMutation() {
         // değişince listenin yenilenmesi gerekiyor.
         void queryClient.invalidateQueries({ queryKey: ["library"] });
         void queryClient.invalidateQueries({ queryKey: ["profile"] });
+        // DENETİM BULGUSU (2026-09-20, kullanıcı bulgusu): ana sayfa
+        // ("Yeni Kitaplar", tür/yazar rafları) `["library"]`den TAMAMEN
+        // AYRI bir query key altında (`homeQueryKeys.extras()`) önbelleğe
+        // alınıyor -- kendi içinde `queryClient.ensureQueryData` ile
+        // kitaplık önbelleğini paylaşsa da, bu SADECE ensureQueryData'nın
+        // KENDİSİ çağrıldığında işe yarıyor; `homeQueryKeys.extras()`in
+        // kendisi ayrıca invalidate edilmediği sürece TanStack bu query'i
+        // yeniden ÇALIŞTIRMIYOR. Sonuç: dil çifti değiştirilince kitaplık
+        // sekmesi doğru dille güncelleniyordu ama ana sayfa eski dilin
+        // kitaplarını göstermeye devam ediyordu -- uygulama tamamen kapatılıp
+        // yeniden açılana kadar (yeni bir QueryClient/mount ile).
+        void queryClient.invalidateQueries({ queryKey: homeQueryKeys.all });
       }
     },
   });
