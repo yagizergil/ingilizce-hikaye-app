@@ -26,7 +26,8 @@
     "crashMessage": "تعذّر تحميل هذه الشاشة. إعادة المحاولة تحلّ المشكلة عادةً.",
     "ok": "حسنًا",
     "close": "إغلاق",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "save": "حفظ"
   },
   "ui": {
     "levelBadge": {
@@ -484,6 +485,67 @@
       "confirmCta": "إزالة",
       "done": "تمت إزالة «{{lemma}}».",
       "error": "تعذّرت إزالة الكلمة. حاول مرة أخرى."
+    },
+    "mainTabs": {
+      "words": "كلماتي",
+      "decks": "مجموعاتي"
+    },
+    "decks": {
+      "loading": "جارٍ تحميل المجموعات",
+      "error": "تعذّر تحميل المجموعات",
+      "createError": "تعذّر إنشاء المجموعة. حاول مرة أخرى.",
+      "saveError": "تعذّر الحفظ. حاول مرة أخرى.",
+      "removeError": "تعذّر الحذف. حاول مرة أخرى.",
+      "createTitle": "مجموعة جديدة",
+      "editTitle": "تعديل المجموعة",
+      "createCta": "إنشاء مجموعة",
+      "namePlaceholder": "مثال: إنجليزية الأعمال",
+      "colorLabel": "اللون",
+      "colorNames": {
+        "terracotta": "طيني",
+        "teal": "أزرق مخضر",
+        "indigo": "نيلي",
+        "amber": "كهرماني",
+        "rose": "وردي",
+        "sage": "أخضر مريمية"
+      },
+      "removeCta": "حذف المجموعة",
+      "removeConfirmTitle": "هل تريد حذف «{{name}}»؟",
+      "removeConfirmBody": "ستُحذف كلماتها البالغ عددها {{count}} أيضًا. لا يمكن التراجع عن هذا الإجراء.",
+      "removeConfirmCta": "حذف",
+      "empty": {
+        "title": "لا توجد مجموعات بعد",
+        "description": "أنشئ قائمة كلماتك الخاصة وذاكرها بطريقتك."
+      },
+      "review": {
+        "startCta": "مراجعة {{count}} كلمة",
+        "emptyMessage": "لا توجد كلمات مستحقة للمراجعة في هذه المجموعة الآن."
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}، {{count}} كلمة",
+        "wordCount_one": "{{count}} كلمة",
+        "wordCount_other": "{{count}} كلمة",
+        "dueBadge": "{{count}} جاهزة",
+        "editTitle": "تعديل الكلمة",
+        "addTitle": "إضافة كلمة",
+        "surfaceLabel": "الكلمة / العبارة",
+        "surfacePlaceholder": "مثال: get the hang of it",
+        "meaningLabel": "المعنى",
+        "meaningPlaceholder": "مثال: تعلّم القيام بشيء ما",
+        "exampleLabel": "جملة مثال (اختياري)",
+        "examplePlaceholder": "استخدم هذه الكلمة في جملة",
+        "addCta": "إضافة الكلمة",
+        "saveError": "تعذّر الحفظ. حاول مرة أخرى.",
+        "removeAccessibilityLabel": "إزالة {{surface}}",
+        "removeConfirmTitle": "هل تريد إزالة «{{surface}}»؟",
+        "removeConfirmBody": "لا يمكن التراجع عن هذا الإجراء.",
+        "removeConfirmCta": "إزالة",
+        "removeError": "تعذّرت إزالة الكلمة. حاول مرة أخرى.",
+        "empty": {
+          "title": "هذه المجموعة لا تزال فارغة",
+          "description": "أضف أول كلمة لك باستخدام الزر أدناه."
+        }
+      }
     }
   },
   "browse": {

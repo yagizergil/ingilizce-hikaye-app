@@ -26,7 +26,8 @@
     "crashMessage": "This screen could not load. Trying again usually fixes it.",
     "ok": "OK",
     "close": "Close",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "ui": {
     "levelBadge": {
@@ -476,6 +477,67 @@
       "confirmCta": "Remove",
       "done": "“{{lemma}}” removed from your words.",
       "error": "Couldn't remove the word. Please try again."
+    },
+    "mainTabs": {
+      "words": "My Words",
+      "decks": "My Decks"
+    },
+    "decks": {
+      "loading": "Loading decks",
+      "error": "Couldn't load decks",
+      "createError": "Couldn't create deck. Please try again.",
+      "saveError": "Couldn't save. Please try again.",
+      "removeError": "Couldn't delete. Please try again.",
+      "createTitle": "New deck",
+      "editTitle": "Edit deck",
+      "createCta": "Create deck",
+      "namePlaceholder": "e.g. Business English",
+      "colorLabel": "Color",
+      "colorNames": {
+        "terracotta": "Terracotta",
+        "teal": "Teal",
+        "indigo": "Indigo",
+        "amber": "Amber",
+        "rose": "Rose",
+        "sage": "Sage"
+      },
+      "removeCta": "Delete deck",
+      "removeConfirmTitle": "Delete “{{name}}”?",
+      "removeConfirmBody": "Its {{count}} words will be deleted too. This cannot be undone.",
+      "removeConfirmCta": "Delete",
+      "empty": {
+        "title": "No decks yet",
+        "description": "Create your own word list and study it your way."
+      },
+      "review": {
+        "startCta": "Study {{count}} words",
+        "emptyMessage": "No words due for review in this deck right now."
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}, {{count}} words",
+        "wordCount_one": "{{count}} word",
+        "wordCount_other": "{{count}} words",
+        "dueBadge": "{{count}} ready",
+        "editTitle": "Edit word",
+        "addTitle": "Add word",
+        "surfaceLabel": "Word / phrase",
+        "surfacePlaceholder": "e.g. get the hang of it",
+        "meaningLabel": "Meaning",
+        "meaningPlaceholder": "e.g. to learn how to do something",
+        "exampleLabel": "Example sentence (optional)",
+        "examplePlaceholder": "Use this word in a sentence",
+        "addCta": "Add word",
+        "saveError": "Couldn't save. Please try again.",
+        "removeAccessibilityLabel": "Remove {{surface}}",
+        "removeConfirmTitle": "Remove “{{surface}}”?",
+        "removeConfirmBody": "This cannot be undone.",
+        "removeConfirmCta": "Remove",
+        "removeError": "Couldn't remove the word. Please try again.",
+        "empty": {
+          "title": "This deck is empty",
+          "description": "Add your first word with the button below."
+        }
+      }
     }
   },
   "browse": {

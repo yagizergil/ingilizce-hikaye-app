@@ -26,7 +26,8 @@
     "crashMessage": "No se pudo cargar esta pantalla. Volver a intentarlo suele solucionarlo.",
     "ok": "Aceptar",
     "close": "Cerrar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "save": "Guardar"
   },
   "ui": {
     "levelBadge": {
@@ -476,6 +477,67 @@
       "confirmCta": "Quitar",
       "done": "«{{lemma}}» se ha quitado.",
       "error": "No se ha podido quitar la palabra. Inténtalo de nuevo."
+    },
+    "mainTabs": {
+      "words": "Mis palabras",
+      "decks": "Mis mazos"
+    },
+    "decks": {
+      "loading": "Cargando mazos",
+      "error": "No se han podido cargar los mazos",
+      "createError": "No se ha podido crear el mazo. Inténtalo de nuevo.",
+      "saveError": "No se ha podido guardar. Inténtalo de nuevo.",
+      "removeError": "No se ha podido eliminar. Inténtalo de nuevo.",
+      "createTitle": "Nuevo mazo",
+      "editTitle": "Editar mazo",
+      "createCta": "Crear mazo",
+      "namePlaceholder": "p. ej. Inglés de negocios",
+      "colorLabel": "Color",
+      "colorNames": {
+        "terracotta": "Terracota",
+        "teal": "Verde azulado",
+        "indigo": "Índigo",
+        "amber": "Ámbar",
+        "rose": "Rosa",
+        "sage": "Salvia"
+      },
+      "removeCta": "Eliminar mazo",
+      "removeConfirmTitle": "¿Eliminar «{{name}}»?",
+      "removeConfirmBody": "También se eliminarán sus {{count}} palabras. Esta acción no se puede deshacer.",
+      "removeConfirmCta": "Eliminar",
+      "empty": {
+        "title": "Todavía no tienes mazos",
+        "description": "Crea tu propia lista de palabras y estúdiala a tu manera."
+      },
+      "review": {
+        "startCta": "Repasar {{count}} palabras",
+        "emptyMessage": "Ahora mismo no hay palabras pendientes de repaso en este mazo."
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}, {{count}} palabras",
+        "wordCount_one": "{{count}} palabra",
+        "wordCount_other": "{{count}} palabras",
+        "dueBadge": "{{count}} listas",
+        "editTitle": "Editar palabra",
+        "addTitle": "Añadir palabra",
+        "surfaceLabel": "Palabra / frase",
+        "surfacePlaceholder": "p. ej. get the hang of it",
+        "meaningLabel": "Significado",
+        "meaningPlaceholder": "p. ej. aprender a hacer algo",
+        "exampleLabel": "Frase de ejemplo (opcional)",
+        "examplePlaceholder": "Usa esta palabra en una frase",
+        "addCta": "Añadir palabra",
+        "saveError": "No se ha podido guardar. Inténtalo de nuevo.",
+        "removeAccessibilityLabel": "Quitar {{surface}}",
+        "removeConfirmTitle": "¿Quitar «{{surface}}»?",
+        "removeConfirmBody": "Esta acción no se puede deshacer.",
+        "removeConfirmCta": "Quitar",
+        "removeError": "No se ha podido quitar la palabra. Inténtalo de nuevo.",
+        "empty": {
+          "title": "Este mazo todavía está vacío",
+          "description": "Añade tu primera palabra con el botón de abajo."
+        }
+      }
     }
   },
   "browse": {

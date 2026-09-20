@@ -47,3 +47,32 @@ export interface VocabularyData {
   words: VocabularyWord[];
   summary: VocabularySummary;
 }
+
+/**
+ * Kullanıcının kendi oluşturduğu kelime destesi (`custom_decks`).
+ *
+ * Kitap kelimelerinden (yukarıdaki `VocabularyWord`) BİLİNÇLİ OLARAK ayrı
+ * bir model -- gerekçe migration 045'in başlığında.
+ */
+export interface CustomDeck {
+  id: string;
+  name: string;
+  colorKey: string;
+  cardCount: number;
+  dueCount: number;
+  createdAt: string;
+}
+
+export interface CustomDeckCard {
+  id: string;
+  deckId: string;
+  surface: string;
+  meaning: string;
+  exampleSentence: string | null;
+  dueAt: string;
+  intervalDays: number;
+  ease: number;
+  repetitions: number;
+  lapses: number;
+  createdAt: string;
+}

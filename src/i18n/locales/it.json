@@ -26,7 +26,8 @@
     "crashMessage": "Questa schermata non si è caricata. Di solito basta riprovare.",
     "ok": "OK",
     "close": "Chiudi",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "save": "Salva"
   },
   "ui": {
     "levelBadge": {
@@ -476,6 +477,67 @@
       "confirmCta": "Rimuovi",
       "done": "«{{lemma}}» è stata rimossa.",
       "error": "Non è stato possibile rimuovere la parola. Riprova."
+    },
+    "mainTabs": {
+      "words": "Le mie parole",
+      "decks": "I miei mazzi"
+    },
+    "decks": {
+      "loading": "Caricamento mazzi",
+      "error": "Impossibile caricare i mazzi",
+      "createError": "Impossibile creare il mazzo. Riprova.",
+      "saveError": "Impossibile salvare. Riprova.",
+      "removeError": "Impossibile eliminare. Riprova.",
+      "createTitle": "Nuovo mazzo",
+      "editTitle": "Modifica mazzo",
+      "createCta": "Crea mazzo",
+      "namePlaceholder": "es. Inglese commerciale",
+      "colorLabel": "Colore",
+      "colorNames": {
+        "terracotta": "Terracotta",
+        "teal": "Verde acqua",
+        "indigo": "Indaco",
+        "amber": "Ambra",
+        "rose": "Rosa",
+        "sage": "Salvia"
+      },
+      "removeCta": "Elimina mazzo",
+      "removeConfirmTitle": "Eliminare «{{name}}»?",
+      "removeConfirmBody": "Verranno eliminate anche le {{count}} parole al suo interno. L'operazione non è reversibile.",
+      "removeConfirmCta": "Elimina",
+      "empty": {
+        "title": "Ancora nessun mazzo",
+        "description": "Crea la tua lista di parole e studiala a modo tuo."
+      },
+      "review": {
+        "startCta": "Ripassa {{count}} parole",
+        "emptyMessage": "In questo mazzo non ci sono parole da ripassare al momento."
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}, {{count}} parole",
+        "wordCount_one": "{{count}} parola",
+        "wordCount_other": "{{count}} parole",
+        "dueBadge": "{{count}} pronte",
+        "editTitle": "Modifica parola",
+        "addTitle": "Aggiungi parola",
+        "surfaceLabel": "Parola / espressione",
+        "surfacePlaceholder": "es. get the hang of it",
+        "meaningLabel": "Significato",
+        "meaningPlaceholder": "es. imparare a fare qualcosa",
+        "exampleLabel": "Frase di esempio (facoltativa)",
+        "examplePlaceholder": "Usa questa parola in una frase",
+        "addCta": "Aggiungi parola",
+        "saveError": "Impossibile salvare. Riprova.",
+        "removeAccessibilityLabel": "Rimuovi {{surface}}",
+        "removeConfirmTitle": "Rimuovere «{{surface}}»?",
+        "removeConfirmBody": "L'operazione non è reversibile.",
+        "removeConfirmCta": "Rimuovi",
+        "removeError": "Non è stato possibile rimuovere la parola. Riprova.",
+        "empty": {
+          "title": "Questo mazzo è ancora vuoto",
+          "description": "Aggiungi la tua prima parola con il pulsante qui sotto."
+        }
+      }
     }
   },
   "browse": {

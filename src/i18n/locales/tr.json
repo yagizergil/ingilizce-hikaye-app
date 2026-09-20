@@ -26,7 +26,8 @@
     "crashMessage": "Bu ekran yüklenemedi. Tekrar denemek sorunu genellikle çözer.",
     "ok": "Tamam",
     "close": "Kapat",
-    "cancel": "Vazgeç"
+    "cancel": "Vazgeç",
+    "save": "Kaydet"
   },
   "ui": {
     "levelBadge": {
@@ -476,6 +477,67 @@
       "confirmCta": "Çıkar",
       "done": "“{{lemma}}” defterden çıkarıldı.",
       "error": "Kelime çıkarılamadı. Lütfen tekrar dene."
+    },
+    "mainTabs": {
+      "words": "Kelimelerim",
+      "decks": "Destelerim"
+    },
+    "decks": {
+      "loading": "Desteler yükleniyor",
+      "error": "Desteler yüklenemedi",
+      "createError": "Deste oluşturulamadı. Lütfen tekrar dene.",
+      "saveError": "Kaydedilemedi. Lütfen tekrar dene.",
+      "removeError": "Silinemedi. Lütfen tekrar dene.",
+      "createTitle": "Yeni deste",
+      "editTitle": "Desteyi düzenle",
+      "createCta": "Deste oluştur",
+      "namePlaceholder": "Örn. İş İngilizcesi",
+      "colorLabel": "Renk",
+      "colorNames": {
+        "terracotta": "Kiremit",
+        "teal": "Turkuaz",
+        "indigo": "Çivit",
+        "amber": "Amber",
+        "rose": "Gül",
+        "sage": "Adaçayı"
+      },
+      "removeCta": "Desteyi sil",
+      "removeConfirmTitle": "“{{name}}” silinsin mi?",
+      "removeConfirmBody": "İçindeki {{count}} kelime de silinecek. Bu işlem geri alınamaz.",
+      "removeConfirmCta": "Sil",
+      "empty": {
+        "title": "Henüz destesi yok",
+        "description": "Kendi kelime listeni oluştur ve istediğin gibi çalış."
+      },
+      "review": {
+        "startCta": "{{count}} kelimeyi çalış",
+        "emptyMessage": "Bu destede şu an tekrar edilecek kelime yok."
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}, {{count}} kelime",
+        "wordCount_one": "{{count}} kelime",
+        "wordCount_other": "{{count}} kelime",
+        "dueBadge": "{{count}} hazır",
+        "editTitle": "Kelimeyi düzenle",
+        "addTitle": "Kelime ekle",
+        "surfaceLabel": "Kelime / ifade",
+        "surfacePlaceholder": "Örn. get the hang of it",
+        "meaningLabel": "Karşılık",
+        "meaningPlaceholder": "Örn. bir şeyi öğrenmek, alışmak",
+        "exampleLabel": "Örnek cümle (isteğe bağlı)",
+        "examplePlaceholder": "Bu kelimeyi bir cümlede kullan",
+        "addCta": "Kelime ekle",
+        "saveError": "Kaydedilemedi. Lütfen tekrar dene.",
+        "removeAccessibilityLabel": "{{surface}} kelimesini sil",
+        "removeConfirmTitle": "“{{surface}}” silinsin mi?",
+        "removeConfirmBody": "Bu işlem geri alınamaz.",
+        "removeConfirmCta": "Sil",
+        "removeError": "Kelime silinemedi. Lütfen tekrar dene.",
+        "empty": {
+          "title": "Bu deste henüz boş",
+          "description": "Aşağıdaki düğmeyle ilk kelimeni ekle."
+        }
+      }
     }
   },
   "browse": {

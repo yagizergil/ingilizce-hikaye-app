@@ -26,7 +26,8 @@
     "crashMessage": "Экран не загрузился. Обычно помогает повторная попытка.",
     "ok": "ОК",
     "close": "Закрыть",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "save": "Сохранить"
   },
   "ui": {
     "levelBadge": {
@@ -480,6 +481,67 @@
       "confirmCta": "Убрать",
       "done": "«{{lemma}}» убрано из ваших слов.",
       "error": "Не удалось убрать слово. Попробуйте ещё раз."
+    },
+    "mainTabs": {
+      "words": "Мои слова",
+      "decks": "Мои колоды"
+    },
+    "decks": {
+      "loading": "Загрузка колод",
+      "error": "Не удалось загрузить колоды",
+      "createError": "Не удалось создать колоду. Попробуйте ещё раз.",
+      "saveError": "Не удалось сохранить. Попробуйте ещё раз.",
+      "removeError": "Не удалось удалить. Попробуйте ещё раз.",
+      "createTitle": "Новая колода",
+      "editTitle": "Редактировать колоду",
+      "createCta": "Создать колоду",
+      "namePlaceholder": "например, Деловой английский",
+      "colorLabel": "Цвет",
+      "colorNames": {
+        "terracotta": "Терракотовый",
+        "teal": "Бирюзовый",
+        "indigo": "Индиго",
+        "amber": "Янтарный",
+        "rose": "Розовый",
+        "sage": "Шалфейный"
+      },
+      "removeCta": "Удалить колоду",
+      "removeConfirmTitle": "Удалить «{{name}}»?",
+      "removeConfirmBody": "Входящие в неё {{count}} слов также будут удалены. Отменить это нельзя.",
+      "removeConfirmCta": "Удалить",
+      "empty": {
+        "title": "Колод пока нет",
+        "description": "Создайте свой список слов и учите его так, как вам удобно."
+      },
+      "review": {
+        "startCta": "Повторить {{count}} слов",
+        "emptyMessage": "В этой колоде сейчас нет слов для повторения."
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}, {{count}} слов",
+        "wordCount_one": "{{count}} слово",
+        "wordCount_other": "{{count}} слов",
+        "dueBadge": "{{count}} готово",
+        "editTitle": "Редактировать слово",
+        "addTitle": "Добавить слово",
+        "surfaceLabel": "Слово / фраза",
+        "surfacePlaceholder": "например, get the hang of it",
+        "meaningLabel": "Значение",
+        "meaningPlaceholder": "например, научиться что-то делать",
+        "exampleLabel": "Пример предложения (необязательно)",
+        "examplePlaceholder": "Используйте это слово в предложении",
+        "addCta": "Добавить слово",
+        "saveError": "Не удалось сохранить. Попробуйте ещё раз.",
+        "removeAccessibilityLabel": "Удалить {{surface}}",
+        "removeConfirmTitle": "Удалить «{{surface}}»?",
+        "removeConfirmBody": "Отменить это нельзя.",
+        "removeConfirmCta": "Удалить",
+        "removeError": "Не удалось убрать слово. Попробуйте ещё раз.",
+        "empty": {
+          "title": "Эта колода пока пуста",
+          "description": "Добавьте первое слово кнопкой ниже."
+        }
+      }
     }
   },
   "browse": {

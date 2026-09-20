@@ -26,7 +26,8 @@
     "crashMessage": "这个页面没能加载出来，重试一下通常就好了。",
     "ok": "好",
     "close": "关闭",
-    "cancel": "取消"
+    "cancel": "取消",
+    "save": "保存"
   },
   "ui": {
     "levelBadge": {
@@ -476,6 +477,67 @@
       "confirmCta": "移除",
       "done": "已移除“{{lemma}}”。",
       "error": "移除失败，请重试。"
+    },
+    "mainTabs": {
+      "words": "我的单词",
+      "decks": "我的卡组"
+    },
+    "decks": {
+      "loading": "正在加载卡组",
+      "error": "卡组加载失败",
+      "createError": "卡组创建失败，请重试。",
+      "saveError": "保存失败，请重试。",
+      "removeError": "删除失败，请重试。",
+      "createTitle": "新建卡组",
+      "editTitle": "编辑卡组",
+      "createCta": "创建卡组",
+      "namePlaceholder": "例如：商务英语",
+      "colorLabel": "颜色",
+      "colorNames": {
+        "terracotta": "赤陶色",
+        "teal": "青绿色",
+        "indigo": "靛蓝色",
+        "amber": "琥珀色",
+        "rose": "玫瑰色",
+        "sage": "鼠尾草绿"
+      },
+      "removeCta": "删除卡组",
+      "removeConfirmTitle": "要删除“{{name}}”吗？",
+      "removeConfirmBody": "其中的 {{count}} 个单词也会一并删除，且无法恢复。",
+      "removeConfirmCta": "删除",
+      "empty": {
+        "title": "还没有卡组",
+        "description": "创建你自己的单词列表，按你喜欢的方式学习。"
+      },
+      "review": {
+        "startCta": "复习 {{count}} 个单词",
+        "emptyMessage": "这个卡组目前没有待复习的单词。"
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}，{{count}} 个单词",
+        "wordCount_one": "{{count}} 个单词",
+        "wordCount_other": "{{count}} 个单词",
+        "dueBadge": "{{count}} 个待复习",
+        "editTitle": "编辑单词",
+        "addTitle": "添加单词",
+        "surfaceLabel": "单词/短语",
+        "surfacePlaceholder": "例如：get the hang of it",
+        "meaningLabel": "含义",
+        "meaningPlaceholder": "例如：学会做某事",
+        "exampleLabel": "例句（可选）",
+        "examplePlaceholder": "用这个单词造一个句子",
+        "addCta": "添加单词",
+        "saveError": "保存失败，请重试。",
+        "removeAccessibilityLabel": "移除 {{surface}}",
+        "removeConfirmTitle": "要移除“{{surface}}”吗？",
+        "removeConfirmBody": "此操作无法恢复。",
+        "removeConfirmCta": "移除",
+        "removeError": "移除失败，请重试。",
+        "empty": {
+          "title": "这个卡组还是空的",
+          "description": "点击下方按钮添加第一个单词。"
+        }
+      }
     }
   },
   "browse": {

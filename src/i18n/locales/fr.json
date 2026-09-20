@@ -26,7 +26,8 @@
     "crashMessage": "Cette page n'a pas pu se charger. Réessayer suffit généralement.",
     "ok": "OK",
     "close": "Fermer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "save": "Enregistrer"
   },
   "ui": {
     "levelBadge": {
@@ -476,6 +477,67 @@
       "confirmCta": "Retirer",
       "done": "« {{lemma}} » a été retiré.",
       "error": "Impossible de retirer le mot. Veuillez réessayer."
+    },
+    "mainTabs": {
+      "words": "Mes mots",
+      "decks": "Mes paquets"
+    },
+    "decks": {
+      "loading": "Chargement des paquets",
+      "error": "Impossible de charger les paquets",
+      "createError": "Impossible de créer le paquet. Veuillez réessayer.",
+      "saveError": "Impossible d'enregistrer. Veuillez réessayer.",
+      "removeError": "Impossible de supprimer. Veuillez réessayer.",
+      "createTitle": "Nouveau paquet",
+      "editTitle": "Modifier le paquet",
+      "createCta": "Créer le paquet",
+      "namePlaceholder": "ex. Anglais des affaires",
+      "colorLabel": "Couleur",
+      "colorNames": {
+        "terracotta": "Terracotta",
+        "teal": "Sarcelle",
+        "indigo": "Indigo",
+        "amber": "Ambre",
+        "rose": "Rose",
+        "sage": "Sauge"
+      },
+      "removeCta": "Supprimer le paquet",
+      "removeConfirmTitle": "Supprimer « {{name}} » ?",
+      "removeConfirmBody": "Ses {{count}} mots seront aussi supprimés. Cette action est irréversible.",
+      "removeConfirmCta": "Supprimer",
+      "empty": {
+        "title": "Aucun paquet pour l'instant",
+        "description": "Crée ta propre liste de mots et étudie à ta façon."
+      },
+      "review": {
+        "startCta": "Réviser {{count}} mots",
+        "emptyMessage": "Aucun mot à réviser dans ce paquet pour le moment."
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}, {{count}} mots",
+        "wordCount_one": "{{count}} mot",
+        "wordCount_other": "{{count}} mots",
+        "dueBadge": "{{count}} prêt(s)",
+        "editTitle": "Modifier le mot",
+        "addTitle": "Ajouter un mot",
+        "surfaceLabel": "Mot / expression",
+        "surfacePlaceholder": "ex. get the hang of it",
+        "meaningLabel": "Signification",
+        "meaningPlaceholder": "ex. apprendre à faire quelque chose",
+        "exampleLabel": "Phrase d'exemple (facultatif)",
+        "examplePlaceholder": "Utilise ce mot dans une phrase",
+        "addCta": "Ajouter le mot",
+        "saveError": "Impossible d'enregistrer. Veuillez réessayer.",
+        "removeAccessibilityLabel": "Retirer {{surface}}",
+        "removeConfirmTitle": "Retirer « {{surface}} » ?",
+        "removeConfirmBody": "Cette action est irréversible.",
+        "removeConfirmCta": "Retirer",
+        "removeError": "Impossible de retirer le mot. Veuillez réessayer.",
+        "empty": {
+          "title": "Ce paquet est encore vide",
+          "description": "Ajoute ton premier mot avec le bouton ci-dessous."
+        }
+      }
     }
   },
   "browse": {

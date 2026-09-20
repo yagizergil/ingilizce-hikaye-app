@@ -26,7 +26,8 @@
     "crashMessage": "Diese Seite konnte nicht geladen werden. Meist hilft ein zweiter Versuch.",
     "ok": "OK",
     "close": "Schließen",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "save": "Speichern"
   },
   "ui": {
     "levelBadge": {
@@ -476,6 +477,67 @@
       "confirmCta": "Entfernen",
       "done": "„{{lemma}}“ wurde entfernt.",
       "error": "Das Wort konnte nicht entfernt werden. Bitte versuche es erneut."
+    },
+    "mainTabs": {
+      "words": "Meine Wörter",
+      "decks": "Meine Stapel"
+    },
+    "decks": {
+      "loading": "Stapel werden geladen",
+      "error": "Stapel konnten nicht geladen werden",
+      "createError": "Stapel konnte nicht erstellt werden. Bitte versuche es erneut.",
+      "saveError": "Konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "removeError": "Konnte nicht gelöscht werden. Bitte versuche es erneut.",
+      "createTitle": "Neuer Stapel",
+      "editTitle": "Stapel bearbeiten",
+      "createCta": "Stapel erstellen",
+      "namePlaceholder": "z. B. Business-Englisch",
+      "colorLabel": "Farbe",
+      "colorNames": {
+        "terracotta": "Terrakotta",
+        "teal": "Petrol",
+        "indigo": "Indigo",
+        "amber": "Bernstein",
+        "rose": "Rosé",
+        "sage": "Salbei"
+      },
+      "removeCta": "Stapel löschen",
+      "removeConfirmTitle": "„{{name}}“ löschen?",
+      "removeConfirmBody": "Die {{count}} enthaltenen Wörter werden ebenfalls gelöscht. Das lässt sich nicht rückgängig machen.",
+      "removeConfirmCta": "Löschen",
+      "empty": {
+        "title": "Noch keine Stapel",
+        "description": "Erstelle deine eigene Wortliste und lerne auf deine Weise."
+      },
+      "review": {
+        "startCta": "{{count}} Wörter üben",
+        "emptyMessage": "In diesem Stapel gibt es gerade keine fälligen Wörter."
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}, {{count}} Wörter",
+        "wordCount_one": "{{count}} Wort",
+        "wordCount_other": "{{count}} Wörter",
+        "dueBadge": "{{count}} bereit",
+        "editTitle": "Wort bearbeiten",
+        "addTitle": "Wort hinzufügen",
+        "surfaceLabel": "Wort / Ausdruck",
+        "surfacePlaceholder": "z. B. get the hang of it",
+        "meaningLabel": "Bedeutung",
+        "meaningPlaceholder": "z. B. sich an etwas gewöhnen",
+        "exampleLabel": "Beispielsatz (optional)",
+        "examplePlaceholder": "Verwende dieses Wort in einem Satz",
+        "addCta": "Wort hinzufügen",
+        "saveError": "Konnte nicht gespeichert werden. Bitte versuche es erneut.",
+        "removeAccessibilityLabel": "{{surface}} entfernen",
+        "removeConfirmTitle": "„{{surface}}“ entfernen?",
+        "removeConfirmBody": "Das lässt sich nicht rückgängig machen.",
+        "removeConfirmCta": "Entfernen",
+        "removeError": "Das Wort konnte nicht entfernt werden. Bitte versuche es erneut.",
+        "empty": {
+          "title": "Dieser Stapel ist noch leer",
+          "description": "Füge unten dein erstes Wort hinzu."
+        }
+      }
     }
   },
   "browse": {

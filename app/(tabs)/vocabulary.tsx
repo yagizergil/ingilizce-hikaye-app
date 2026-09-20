@@ -20,6 +20,7 @@ import {
 import { useRemoveSavedWordMutation } from "@/features/reader";
 import { useSubscriptionQuery } from "@/features/paywall";
 import {
+  DecksTab,
   VocabularyWordRow,
   useFilteredWords,
   useVocabularyFiltersStore,
@@ -31,6 +32,14 @@ import type { VocabularyFilter, VocabularyWord } from "@/features/vocabulary";
 
 const FILTER_TABS: VocabularyFilter[] = ["all", "due", "known"];
 
+/**
+ * Üst sekme: kitaplardan gelen kelimeler mi, kullanıcının kendi destesi mi
+ * (1.0.3, "Kelimelerim" yeniden tasarımı). Ekrana özel, başka bir yerden
+ * okunmayan bir UI durumu -- ADR-003'ün Zustand'ı sunucu verisi/paylaşılan
+ * durum için istediği kural burada geçerli değil, düz `useState` yeterli.
+ */
+type MainTab = "words" | "decks";
+
 function RowGap() {
   return <View style={{ height: spacing.xs }} />;
 }
@@ -38,6 +47,7 @@ function RowGap() {
 export default function VocabularyScreen() {
   const { t } = useTranslation();
   const { theme } = useTheme();
+  const [mainTab, setMainTab] = useState<MainTab>("words");
   const { data, isLoading, isError, refetch } = useVocabularyQuery();
   const { show: showToast } = useToast();
   const removeWord = useRemoveSavedWordMutation();
@@ -189,6 +199,11 @@ export default function VocabularyScreen() {
 
   const hasAnySavedWord = (data?.words.length ?? 0) > 0;
 
+  const mainTabOptions: SegmentOption<MainTab>[] = [
+    { value: "words", label: t("vocabulary.mainTabs.words") },
+    { value: "decks", label: t("vocabulary.mainTabs.decks") },
+  ];
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
       <View style={styles.header}>
@@ -198,63 +213,84 @@ export default function VocabularyScreen() {
       </View>
 
       <View style={styles.filters}>
-        <SegmentedControl options={segmentOptions} value={filter} onChange={handleSelectFilter} />
+        <SegmentedControl
+          options={mainTabOptions}
+          value={mainTab}
+          onChange={(value) => {
+            trackEvent("vocabulary_main_tab_changed", { tab: value });
+            setMainTab(value);
+          }}
+        />
       </View>
 
-      {showWordListStrip && subscription.data ? (
-        <Pressable
-          style={[styles.strip, { borderColor: theme.border.hairline }]}
-          onPress={handleOpenPaywall}
-          accessibilityRole="button"
-        >
-          <Text style={[monoType.label, { color: theme.text.secondary }]}>
-            {t("paywall.wordListFull", {
-              count: subscription.data.savedWordCount,
-              limit: subscription.data.savedWordLimit,
-            })}
-          </Text>
-        </Pressable>
-      ) : null}
-
-      {dueCount > 0 ? (
-        <View style={styles.reviewCta}>
-          <Button
-            label={t("srs.startButton")}
-            onPress={handleStartReview}
-            fullWidth
-            accessibilityLabel={t("srs.dueBadge", { count: dueCount })}
-          />
-          <Text style={[monoType.label, styles.reviewNote, { color: theme.text.secondary }]}>
-            {t("srs.dueBadge", { count: dueCount })}
-          </Text>
-        </View>
-      ) : null}
-
-      {isLoading ? (
-        <LoadingState message={t("vocabulary.loading")} />
-      ) : isError ? (
-        <ErrorState message={t("vocabulary.error")} onRetry={() => void refetch()} />
-      ) : words.length === 0 ? (
-        hasAnySavedWord ? (
-          <EmptyState
-            title={t("vocabulary.empty.noMatch.title")}
-            description={t("vocabulary.empty.noMatch.description")}
-          />
-        ) : (
-          <EmptyState
-            title={t("vocabulary.empty.noWords.title")}
-            description={t("vocabulary.empty.noWords.description")}
-          />
-        )
+      {mainTab === "decks" ? (
+        <DecksTab />
       ) : (
-        <FlashList
-          data={words}
-          keyExtractor={(item) => item.id}
-          renderItem={renderWord}
-          contentContainerStyle={styles.listContent}
-          ItemSeparatorComponent={RowGap}
-          showsVerticalScrollIndicator={false}
-        />
+        <>
+          <View style={styles.filters}>
+            <SegmentedControl
+              options={segmentOptions}
+              value={filter}
+              onChange={handleSelectFilter}
+            />
+          </View>
+
+          {showWordListStrip && subscription.data ? (
+            <Pressable
+              style={[styles.strip, { borderColor: theme.border.hairline }]}
+              onPress={handleOpenPaywall}
+              accessibilityRole="button"
+            >
+              <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                {t("paywall.wordListFull", {
+                  count: subscription.data.savedWordCount,
+                  limit: subscription.data.savedWordLimit,
+                })}
+              </Text>
+            </Pressable>
+          ) : null}
+
+          {dueCount > 0 ? (
+            <View style={styles.reviewCta}>
+              <Button
+                label={t("srs.startButton")}
+                onPress={handleStartReview}
+                fullWidth
+                accessibilityLabel={t("srs.dueBadge", { count: dueCount })}
+              />
+              <Text style={[monoType.label, styles.reviewNote, { color: theme.text.secondary }]}>
+                {t("srs.dueBadge", { count: dueCount })}
+              </Text>
+            </View>
+          ) : null}
+
+          {isLoading ? (
+            <LoadingState message={t("vocabulary.loading")} />
+          ) : isError ? (
+            <ErrorState message={t("vocabulary.error")} onRetry={() => void refetch()} />
+          ) : words.length === 0 ? (
+            hasAnySavedWord ? (
+              <EmptyState
+                title={t("vocabulary.empty.noMatch.title")}
+                description={t("vocabulary.empty.noMatch.description")}
+              />
+            ) : (
+              <EmptyState
+                title={t("vocabulary.empty.noWords.title")}
+                description={t("vocabulary.empty.noWords.description")}
+              />
+            )
+          ) : (
+            <FlashList
+              data={words}
+              keyExtractor={(item) => item.id}
+              renderItem={renderWord}
+              contentContainerStyle={styles.listContent}
+              ItemSeparatorComponent={RowGap}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
+        </>
       )}
     </SafeAreaView>
   );

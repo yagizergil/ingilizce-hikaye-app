@@ -490,10 +490,66 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 
 ## Mevcut Durum ve Sonraki Adımlar
 
-> Son güncelleme: 2026-09-19 (1.0.2 çok ajanlı denetim + dönüşüm turu). Bu bölüm her önemli oturumdan sonra güncellenir.
+> Son güncelleme: 2026-09-20 (1.0.3: özel kelime desteleri + dil çifti/ana
+> sayfa önbellek hatası). Bu bölüm her önemli oturumdan sonra güncellenir.
 > `docs/ROADMAP.md` ve `docs/STATE.md` çok daha eski; çelişki olursa burası
 > geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
 > içinde.
+
+### 1.0.3 turu (2026-09-20, özel kelime desteleri + dil çifti bulgusu)
+
+**Kapatılan bug:** premium kullanıcı ikinci dil çiftine geçtiğinde ana
+sayfa ("Yeni Kitaplar" vb.) uygulama tamamen kapatılıp açılana kadar ESKİ
+dilin kitaplarını göstermeye devam ediyordu. Sebep: ana sayfa
+(`homeQueryKeys.extras()`) kütüphaneden (`libraryQueryKeys`) TAMAMEN AYRI
+bir önbellek altında; `useSetLanguagePairMutation` yalnızca `["library"]`
+ve `["profile"]`'ı invalidate ediyordu, `["home"]` unutulmuştu. Düzeltme:
+`src/features/languagePair/api/useSetLanguagePairMutation.ts`.
+
+**Yeni özellik: "Destelerim"** (Faz 1, tasarım:
+`docs/plans/2026-09-20-kelimelerim-redesign-design.md`). Kullanıcı artık
+kendi kelime destelerini oluşturup çalışabiliyor -- TAMAMEN ÜCRETSİZ,
+sınır yok. "Kelimelerim" ekranı iki sekmeye çıktı: mevcut kitap-kelimesi
+listesi + yeni "Destelerim" (deste oluştur/yeniden adlandır/sil, kart
+ekle/düzenle/sil, deste-taramalı SRS tekrarı). Hazır premium paketler
+("Keşfet") ve özel kelimeye AI örnek cümle BİLİNÇLİ OLARAK bu rounda
+alınmadı -- gerçek çok-dilli içerik üretimi/çeviri gerektiriyor, ayrı bir
+tur.
+
+**Mimari:** `custom_decks` + `custom_deck_cards` (migration 045-048),
+kitap kelimelerinin SRS altyapısından (`user_lemma_state`, `srs_cards`)
+BİLİNÇLİ OLARAK ayrı -- o şemanın zaten bilinen bir belirsizliği var
+(CLAUDE.md "hâlâ açık" notu) ve kullanıcının serbest yazdığı bir ifadeyi
+oraya zorlamak onu büyütürdü. Kolon adları `srs_cards` ile birebir aynı,
+`src/features/srs/scheduler.ts`teki SM-2 fonksiyonu değişiklik olmadan
+tekrar kullanılıyor. Tekrar oturumu (`useDeckReviewSession`) da BİLEREK
+`useReviewSession`in (kitap kelimeleri) bir kopyası, ortak bir hook değil
+-- o hook daha önce kritik bir üretim hatasına sebep olmuştu, ikisini
+birbirine bağlamak o riski geri getirirdi. Kart sayıları istemcide ham
+satır saymak yerine bir RPC'de (`custom_deck_counts`, `count(*)::integer`)
+toplanıyor -- bu denetimde üç kez bulunan "1000 satır sessiz kesmesi"
+hatasının aynı sınıfını baştan önlüyor.
+
+**Kod incelemesinde bulunup düzeltilen gerçek hatalar (canlıya çıkmadan
+önce):** RPC'nin `bigint` değil `integer` dönmesi (PostgREST/JSON
+serileştirme belirsizliği); yeni form sheet'lerinin uygulamada HİÇBİR YERDE
+kullanılmayan, test edilmemiş `components/ui/BottomSheet` sarmalayıcısı
+üzerine kurulmuş olması -- her gerçek sheet (`ChapterListSheet`,
+`SentenceSheet` vb.) `BottomSheetModal`ı doğrudan kullanıyor, oraya
+taşındı; bir sheet içinde düz `ScrollView` kullanılması (sheet'in kendi
+`BottomSheetScrollView`ı olması gerekiyordu, yoksa kaydırma/aşağı-çekip-
+kapatma el değiştirmesi bozuluyordu); kelime/deste kaydetme hataya
+düştüğünde sheet'in yine de kapanıp kullanıcının yazdığı metnin
+kaybolması (`onSettled` yerine `onSuccess`); deste listesi henüz
+yüklenmemişken deste detay ekranının hiçbir gösterge olmadan bomboş
+kalması. `custom_deck_reviews.user_id` için eksik FK indeksi de eklendi
+(migration 043'te düzeltilen sınıfın aynısı).
+
+332 test geçiyor (yeni: `useDeckReviewSession`), typecheck ve lint temiz,
+Supabase güvenlik/performans denetçisinde yeni tablolardan kaynaklanan
+gerçek bulgu yok (anon-erişim uyarıları uygulamanın anonim oturum
+kullanmasının doğal sonucu, `auth_rls_initplan` tüm eski tablolarda da
+zaten var -- yalnızca yenilere izole bir "düzeltme" tutarsızlık yaratırdı).
 
 ### 1.0.2 turu (2026-09-19, çok ajanlı denetim + dönüşüm)
 

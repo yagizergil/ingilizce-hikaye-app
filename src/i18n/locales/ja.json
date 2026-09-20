@@ -26,7 +26,8 @@
     "crashMessage": "この画面を読み込めませんでした。もう一度試すとたいてい直ります。",
     "ok": "OK",
     "close": "閉じる",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "save": "保存"
   },
   "ui": {
     "levelBadge": {
@@ -476,6 +477,67 @@
       "confirmCta": "削除",
       "done": "「{{lemma}}」を削除しました。",
       "error": "削除できませんでした。もう一度お試しください。"
+    },
+    "mainTabs": {
+      "words": "マイ単語帳",
+      "decks": "マイデッキ"
+    },
+    "decks": {
+      "loading": "デッキを読み込み中",
+      "error": "デッキを読み込めませんでした",
+      "createError": "デッキを作成できませんでした。もう一度お試しください。",
+      "saveError": "保存できませんでした。もう一度お試しください。",
+      "removeError": "削除できませんでした。もう一度お試しください。",
+      "createTitle": "新しいデッキ",
+      "editTitle": "デッキを編集",
+      "createCta": "デッキを作成",
+      "namePlaceholder": "例：ビジネス英語",
+      "colorLabel": "色",
+      "colorNames": {
+        "terracotta": "テラコッタ",
+        "teal": "ティール",
+        "indigo": "インディゴ",
+        "amber": "アンバー",
+        "rose": "ローズ",
+        "sage": "セージ"
+      },
+      "removeCta": "デッキを削除",
+      "removeConfirmTitle": "「{{name}}」を削除しますか？",
+      "removeConfirmBody": "含まれる{{count}}個の単語も削除されます。元に戻せません。",
+      "removeConfirmCta": "削除",
+      "empty": {
+        "title": "デッキはまだありません",
+        "description": "自分だけの単語リストを作って、好きなように学習しましょう。"
+      },
+      "review": {
+        "startCta": "{{count}}個の単語を復習",
+        "emptyMessage": "このデッキには今、復習すべき単語がありません。"
+      },
+      "card": {
+        "accessibilityLabel": "{{name}}、{{count}}個の単語",
+        "wordCount_one": "{{count}}個の単語",
+        "wordCount_other": "{{count}}個の単語",
+        "dueBadge": "{{count}}個準備完了",
+        "editTitle": "単語を編集",
+        "addTitle": "単語を追加",
+        "surfaceLabel": "単語・表現",
+        "surfacePlaceholder": "例：get the hang of it",
+        "meaningLabel": "意味",
+        "meaningPlaceholder": "例：何かのやり方を覚える",
+        "exampleLabel": "例文（任意）",
+        "examplePlaceholder": "この単語を使った例文",
+        "addCta": "単語を追加",
+        "saveError": "保存できませんでした。もう一度お試しください。",
+        "removeAccessibilityLabel": "{{surface}}を削除",
+        "removeConfirmTitle": "「{{surface}}」を削除しますか？",
+        "removeConfirmBody": "元に戻せません。",
+        "removeConfirmCta": "削除",
+        "removeError": "削除できませんでした。もう一度お試しください。",
+        "empty": {
+          "title": "このデッキはまだ空です",
+          "description": "下のボタンから最初の単語を追加しましょう。"
+        }
+      }
     }
   },
   "browse": {
