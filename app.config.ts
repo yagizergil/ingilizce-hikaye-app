@@ -13,7 +13,7 @@ const config: ExpoConfig = {
   scheme: "ingilizcehikaye",
   // App Store Connect'te 1.0 olarak açıldı; ikisi ayrışırsa yüklenen
   // derleme "Prepare for Submission" sürümüne bağlanmaz.
-  version: "1.0.2",
+  version: "1.0.3",
   orientation: "portrait",
   userInterfaceStyle: "automatic",
   description:
