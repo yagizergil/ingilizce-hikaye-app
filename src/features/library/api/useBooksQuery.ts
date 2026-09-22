@@ -6,7 +6,7 @@ import {
   mapBookRow,
   type RawBookRow,
 } from "@/features/library/api/mapBookRow";
-import { fetchActiveLanguagePair } from "@/features/languagePair";
+import { fetchActiveLanguagePair, useActiveLanguagePairQuery } from "@/features/languagePair";
 import type { Book } from "@/features/library/types";
 
 /**
@@ -55,8 +55,15 @@ export async function fetchBooks(targetLanguage?: string): Promise<Book[]> {
 }
 
 export function useBooksQuery() {
+  const { data: activePair } = useActiveLanguagePairQuery();
+  const targetLanguage = activePair?.targetLanguage ?? null;
+
   return useQuery({
-    queryKey: libraryQueryKeys.books(),
-    queryFn: () => fetchBooks(),
+    queryKey: libraryQueryKeys.books(targetLanguage ?? ""),
+    queryFn: () => fetchBooks(targetLanguage ?? undefined),
+    // Aktif çift henüz gelmeden sorgu başlamıyor -- aksi halde ilk render
+    // `books("")` gibi anlamsız bir anahtarla bir istek atar, sonra
+    // gerçek dil gelince İKİNCİ bir istek daha atardı.
+    enabled: targetLanguage !== null,
   });
 }

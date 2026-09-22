@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
+import { useActiveLanguagePairQuery } from "@/features/languagePair";
 import { CATEGORY_DEFINITIONS, categoryImageUrl } from "@/features/home/categoryRegistry";
 import { LEVEL_GROUP_LEVELS, LEVEL_GROUPS } from "@/features/library/types";
 
@@ -231,10 +232,13 @@ async function fetchFavoritesReadCounts(userId: string | undefined): Promise<Fav
  * `queryClient.ensureQueryData` ile CANLI önbellek paylaşılıyor: kitaplık
  * ekranı zaten çekmişse burası ikinci bir ağ isteği yapmıyor.
  */
-async function fetchHomeExtras(queryClient: QueryClient): Promise<HomeExtras> {
+async function fetchHomeExtras(
+  queryClient: QueryClient,
+  targetLanguage: string,
+): Promise<HomeExtras> {
   const books = await queryClient.ensureQueryData({
-    queryKey: libraryQueryKeys.books(),
-    queryFn: () => fetchBooks(),
+    queryKey: libraryQueryKeys.books(targetLanguage),
+    queryFn: () => fetchBooks(targetLanguage),
   });
 
   const { data: userData } = await supabase.auth.getUser();
@@ -258,8 +262,12 @@ async function fetchHomeExtras(queryClient: QueryClient): Promise<HomeExtras> {
 
 export function useHomeExtrasQuery() {
   const queryClient = useQueryClient();
+  const { data: activePair } = useActiveLanguagePairQuery();
+  const targetLanguage = activePair?.targetLanguage ?? null;
+
   return useQuery({
-    queryKey: homeQueryKeys.extras(),
-    queryFn: () => fetchHomeExtras(queryClient),
+    queryKey: homeQueryKeys.extras(targetLanguage ?? ""),
+    queryFn: () => fetchHomeExtras(queryClient, targetLanguage as string),
+    enabled: targetLanguage !== null,
   });
 }

@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
 
 import { DECK_COLOR_OPTIONS, monoType, radius, spacing, type } from "@/theme";
@@ -82,8 +82,22 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
         backdropComponent={renderBackdrop}
         backgroundStyle={{ backgroundColor: theme.bg.surface }}
         handleIndicatorStyle={{ backgroundColor: theme.border.strong }}
+        // DENETİM BULGUSU (2026-09-22, kullanıcı bulgusu): bu sheet
+        // uygulamadaki İLK metin girişi formuydu ve klavye açılınca
+        // girdinin ÜSTÜNE geliyordu -- kullanıcı yazdığını görmüyordu.
+        // `@gorhom/bottom-sheet` varsayılan olarak klavyeyi hesaba
+        // katmıyor; bu üç prop'la sheet klavye açılınca içeriği YUKARI
+        // kaydırıyor (iOS) ve Android'de pencereyi doğru yeniden
+        // boyutlandırıyor.
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="restore"
+        android_keyboardInputMode="adjustResize"
       >
-        <BottomSheetView style={styles.content}>
+        <BottomSheetScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={[type.sectionHeading, { color: theme.text.primary }]}>
             {initial ? t("vocabulary.decks.editTitle") : t("vocabulary.decks.createTitle")}
           </Text>
@@ -135,7 +149,7 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
             loading={submitting}
             fullWidth
           />
-        </BottomSheetView>
+        </BottomSheetScrollView>
       </BottomSheetModal>
     );
   },

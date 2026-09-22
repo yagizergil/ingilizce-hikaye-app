@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
+import { useActiveLanguagePairQuery } from "@/features/languagePair";
 
 import type { Book } from "@/features/library/types";
 
@@ -30,28 +31,30 @@ export interface FavoritesReadLists {
  * this hook joins those ids (plus `user_book_progress` ids) against the
  * full book list so the screen can render `BookListRow`s directly.
  */
-async function fetchFavoritesReadLists(): Promise<FavoritesReadLists> {
+async function fetchFavoritesReadLists(targetLanguage: string): Promise<FavoritesReadLists> {
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError) throw userError;
   const userId = userData.user?.id;
   if (!userId) return { favorites: [], read: [] };
 
-  const books = await fetchBooks();
+  const books = await fetchBooks(targetLanguage);
   const booksById = new Map(books.map((book) => [book.id, book]));
 
-  const [{ data: favoriteRows, error: favoritesError }, { data: progressRows, error: progressError }] =
-    await Promise.all([
-      supabase
-        .from("user_favorites")
-        .select("book_id, created_at")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("user_book_progress")
-        .select("book_id, last_read_at")
-        .eq("user_id", userId)
-        .order("last_read_at", { ascending: false }),
-    ]);
+  const [
+    { data: favoriteRows, error: favoritesError },
+    { data: progressRows, error: progressError },
+  ] = await Promise.all([
+    supabase
+      .from("user_favorites")
+      .select("book_id, created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("user_book_progress")
+      .select("book_id, last_read_at")
+      .eq("user_id", userId)
+      .order("last_read_at", { ascending: false }),
+  ]);
   if (favoritesError) throw favoritesError;
   if (progressError) throw progressError;
 
@@ -67,8 +70,12 @@ async function fetchFavoritesReadLists(): Promise<FavoritesReadLists> {
 }
 
 export function useFavoritesReadListsQuery() {
+  const { data: activePair } = useActiveLanguagePairQuery();
+  const targetLanguage = activePair?.targetLanguage ?? null;
+
   return useQuery({
-    queryKey: homeQueryKeys.favoritesReadLists(),
-    queryFn: fetchFavoritesReadLists,
+    queryKey: homeQueryKeys.favoritesReadLists(targetLanguage ?? ""),
+    queryFn: () => fetchFavoritesReadLists(targetLanguage as string),
+    enabled: targetLanguage !== null,
   });
 }

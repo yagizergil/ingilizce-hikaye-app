@@ -76,9 +76,13 @@ export function useToggleFavoriteMutation() {
       }
     },
     onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey: homeQueryKeys.extras() });
+      // `extras`/`favoritesReadLists` artık aktif dille anahtarlanıyor
+      // (bkz. queryKeys.ts) -- invalidateQueries ÖNEK eşleşmesi yaptığı
+      // için `homeQueryKeys.all` ile TÜM ana sayfa sorguları (dil fark
+      // etmeksizin) geçersiz kılınıyor; favorileme az sıklıkta olduğu
+      // için bu daha basit ve tüm dilleri kapsıyor.
+      void queryClient.invalidateQueries({ queryKey: homeQueryKeys.all });
       void queryClient.invalidateQueries({ queryKey: homeQueryKeys.favoritedBookIds() });
-      void queryClient.invalidateQueries({ queryKey: homeQueryKeys.favoritesReadLists() });
     },
   });
 }

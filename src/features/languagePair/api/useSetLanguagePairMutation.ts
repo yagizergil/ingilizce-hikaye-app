@@ -4,7 +4,6 @@ import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/analytics";
 
 import { languagePairQueryKeys } from "@/features/languagePair/api/useActiveLanguagePairQuery";
-import { homeQueryKeys } from "@/features/home/api/queryKeys";
 
 export type SetLanguagePairResult = "ok" | "premium_required";
 
@@ -38,23 +37,31 @@ export function useSetLanguagePairMutation() {
       });
 
       if (result === "ok") {
+        /**
+         * DENETİM BULGUSU (2026-09-22, kullanıcı bulgusu -- İKİNCİ TUR):
+         * bir önceki düzeltme (2026-09-20) burada `["library"]` ve
+         * `homeQueryKeys.all`'ı elle invalidate ediyordu, ama bu SEMPTOMU
+         * tedavi ediyordu: kitap listesi önbellekleri (`libraryQueryKeys.
+         * books()`, `homeQueryKeys.extras()` vb.) aktif dil çiftinden
+         * TAMAMEN BAĞIMSIZ, SABİT anahtarlar taşıyordu -- yani "hangi
+         * dilin kitapları önbellekte duruyor" bilgisi anahtarın DIŞINDAYDI.
+         * En az bir tüketici (`useLibraryBooksQuery`) bu elle-invalidate
+         * listesine hiç girmemişti ve kullanıcı hâlâ eski dilin kitaplarını
+         * görmeye devam ediyordu.
+         *
+         * Kök düzeltme `src/features/library/api/queryKeys.ts` ve
+         * `src/features/home/api/queryKeys.ts`te: kitap listesine bağımlı
+         * HER sorgu artık `useActiveLanguagePairQuery()`den okuduğu hedef
+         * dili kendi anahtarının bir PARÇASI yapıyor. Böylece bu mutation
+         * yalnızca `languagePairQueryKeys.all`ı invalidate etmesi yeterli
+         * -- `useActiveLanguagePairQuery` yeni dille yeniden çekilince
+         * ondan türeyen HER kitap sorgusu doğal olarak FARKLI (ve o dil
+         * için önbellekte hiç olmayan) bir anahtara düşüyor, kendiliğinden
+         * taze veri çekiyor. Elle hatırlanması gereken bir invalidate
+         * listesi artık yok.
+         */
         void queryClient.invalidateQueries({ queryKey: languagePairQueryKeys.all });
-        // Kütüphane şu an aktif hedef dile göre filtreleniyor; çift
-        // değişince listenin yenilenmesi gerekiyor.
-        void queryClient.invalidateQueries({ queryKey: ["library"] });
         void queryClient.invalidateQueries({ queryKey: ["profile"] });
-        // DENETİM BULGUSU (2026-09-20, kullanıcı bulgusu): ana sayfa
-        // ("Yeni Kitaplar", tür/yazar rafları) `["library"]`den TAMAMEN
-        // AYRI bir query key altında (`homeQueryKeys.extras()`) önbelleğe
-        // alınıyor -- kendi içinde `queryClient.ensureQueryData` ile
-        // kitaplık önbelleğini paylaşsa da, bu SADECE ensureQueryData'nın
-        // KENDİSİ çağrıldığında işe yarıyor; `homeQueryKeys.extras()`in
-        // kendisi ayrıca invalidate edilmediği sürece TanStack bu query'i
-        // yeniden ÇALIŞTIRMIYOR. Sonuç: dil çifti değiştirilince kitaplık
-        // sekmesi doğru dille güncelleniyordu ama ana sayfa eski dilin
-        // kitaplarını göstermeye devam ediyordu -- uygulama tamamen kapatılıp
-        // yeniden açılana kadar (yeni bir QueryClient/mount ile).
-        void queryClient.invalidateQueries({ queryKey: homeQueryKeys.all });
       }
     },
   });

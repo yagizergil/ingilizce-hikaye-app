@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
+import { useActiveLanguagePairQuery } from "@/features/languagePair";
 
 import type { Book } from "@/features/library/types";
 
@@ -29,7 +30,10 @@ const CURRENTLY_READING_LIMIT = 10;
 // Aynı çözülen sorun için bkz. useHomeExtrasQuery.ts'teki doc comment --
 // `fetchBooks()` doğrudan çağrılmak yerine `libraryQueryKeys.books()`
 // önbelleğinden paylaşılıyor.
-async function fetchCurrentlyReading(queryClient: QueryClient): Promise<CurrentlyReadingBook[]> {
+async function fetchCurrentlyReading(
+  queryClient: QueryClient,
+  targetLanguage: string,
+): Promise<CurrentlyReadingBook[]> {
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
   if (!userId) return [];
@@ -47,8 +51,8 @@ async function fetchCurrentlyReading(queryClient: QueryClient): Promise<Currentl
   if (!progressRows || progressRows.length === 0) return [];
 
   const books = await queryClient.ensureQueryData({
-    queryKey: libraryQueryKeys.books(),
-    queryFn: () => fetchBooks(),
+    queryKey: libraryQueryKeys.books(targetLanguage),
+    queryFn: () => fetchBooks(targetLanguage),
   });
   const booksById = new Map(books.map((book) => [book.id, book]));
 
@@ -62,9 +66,13 @@ async function fetchCurrentlyReading(queryClient: QueryClient): Promise<Currentl
 
 export function useCurrentlyReadingQuery() {
   const queryClient = useQueryClient();
+  const { data: activePair } = useActiveLanguagePairQuery();
+  const targetLanguage = activePair?.targetLanguage ?? null;
+
   return useQuery({
-    queryKey: homeQueryKeys.currentlyReading(),
-    queryFn: () => fetchCurrentlyReading(queryClient),
+    queryKey: homeQueryKeys.currentlyReading(targetLanguage ?? ""),
+    queryFn: () => fetchCurrentlyReading(queryClient, targetLanguage as string),
+    enabled: targetLanguage !== null,
   });
 }
 
@@ -76,6 +84,13 @@ export function useCurrentlyReadingQuery() {
  */
 export function useRemoveFromCurrentlyReadingMutation() {
   const queryClient = useQueryClient();
+  const { data: activePair } = useActiveLanguagePairQuery();
+  // Bu satır her zaman gerçek bir dille dolu olmalı: düğme yalnızca zaten
+  // yüklenmiş bir "şu an okunuyor" listesinde görünüyor, o liste de aktif
+  // çift bilinmeden hiç sorgulanmıyor (bkz. `useCurrentlyReadingQuery`'nin
+  // `enabled` koşulu) -- yine de tip güvenliği için boş dizeye düşüyor.
+  const targetLanguage = activePair?.targetLanguage ?? "";
+  const queryKey = homeQueryKeys.currentlyReading(targetLanguage);
 
   return useMutation({
     mutationFn: async (bookId: string) => {
@@ -90,22 +105,19 @@ export function useRemoveFromCurrentlyReadingMutation() {
       if (error) throw error;
     },
     onMutate: async (bookId) => {
-      await queryClient.cancelQueries({ queryKey: homeQueryKeys.currentlyReading() });
-      const previous = queryClient.getQueryData<CurrentlyReadingBook[]>(
-        homeQueryKeys.currentlyReading(),
-      );
+      await queryClient.cancelQueries({ queryKey });
+      const previous = queryClient.getQueryData<CurrentlyReadingBook[]>(queryKey);
       queryClient.setQueryData<CurrentlyReadingBook[]>(
-        homeQueryKeys.currentlyReading(),
+        queryKey,
         (current) => current?.filter((entry) => entry.book.id !== bookId) ?? [],
       );
       return { previous };
     },
     onError: (_error, _bookId, context) => {
-      if (context?.previous)
-        queryClient.setQueryData(homeQueryKeys.currentlyReading(), context.previous);
+      if (context?.previous) queryClient.setQueryData(queryKey, context.previous);
     },
     onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey: homeQueryKeys.currentlyReading() });
+      void queryClient.invalidateQueries({ queryKey });
     },
   });
 }

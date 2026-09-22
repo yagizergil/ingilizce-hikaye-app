@@ -85,6 +85,12 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
         backdropComponent={renderBackdrop}
         backgroundStyle={{ backgroundColor: theme.bg.surface }}
         handleIndicatorStyle={{ backgroundColor: theme.border.strong }}
+        // DENETİM BULGUSU (2026-09-22, kullanıcı bulgusu): bu sheet'te üç
+        // metin alanı var ve klavye açılınca girilen alanın ÜSTÜNE
+        // geliyordu -- bkz. CreateDeckSheet.tsx'teki aynı düzeltme notu.
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="restore"
+        android_keyboardInputMode="adjustResize"
       >
         <BottomSheetScrollView
           contentContainerStyle={styles.content}

@@ -2,6 +2,7 @@ import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-quer
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { fetchChapterCounts } from "@/features/library/api/fetchChapterCounts";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
+import { useActiveLanguagePairQuery } from "@/features/languagePair";
 import type { Book } from "@/features/library/types";
 
 /**
@@ -12,13 +13,17 @@ import type { Book } from "@/features/library/types";
  * library screen specifically, reusing `fetchBooks` rather than
  * duplicating the books select.
  */
-export async function fetchLibraryBooks(queryClient: QueryClient): Promise<Book[]> {
+export async function fetchLibraryBooks(
+  queryClient: QueryClient,
+  targetLanguage: string,
+): Promise<Book[]> {
   // Aynı `books` tablosunu `libraryQueryKeys.books()` ile PAYLAŞIYOR --
   // bkz. useHomeExtrasQuery.ts'teki performans denetimi notu. Bu ekran
-  // zaten çekilmiş kataloğu varsa ikinci bir ağ isteği yapmıyor.
+  // zaten çekilmiş kataloğu varsa ikinci bir ağ isteği yapmıyor. Anahtara
+  // dil eklenmesinin gerekçesi queryKeys.ts'teki denetim bulgusunda.
   const books = await queryClient.ensureQueryData({
-    queryKey: libraryQueryKeys.books(),
-    queryFn: () => fetchBooks(),
+    queryKey: libraryQueryKeys.books(targetLanguage),
+    queryFn: () => fetchBooks(targetLanguage),
   });
   const chapterCounts = await fetchChapterCounts(books.map((book) => book.id));
 
@@ -35,8 +40,12 @@ export async function fetchLibraryBooks(queryClient: QueryClient): Promise<Book[
 
 export function useLibraryBooksQuery() {
   const queryClient = useQueryClient();
+  const { data: activePair } = useActiveLanguagePairQuery();
+  const targetLanguage = activePair?.targetLanguage ?? null;
+
   return useQuery({
-    queryKey: libraryQueryKeys.booksWithChapterCounts(),
-    queryFn: () => fetchLibraryBooks(queryClient),
+    queryKey: libraryQueryKeys.booksWithChapterCounts(targetLanguage ?? ""),
+    queryFn: () => fetchLibraryBooks(queryClient, targetLanguage as string),
+    enabled: targetLanguage !== null,
   });
 }
