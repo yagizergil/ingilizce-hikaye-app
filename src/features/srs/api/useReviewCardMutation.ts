@@ -24,7 +24,7 @@ interface ReviewInput {
  * sonucun yazılması var. Bu ayrım sayesinde algoritma veritabanı olmadan
  * test edilebiliyor.
  */
-async function reviewCard({ card, rating, elapsedMs }: ReviewInput): Promise<void> {
+export async function reviewCard({ card, rating, elapsedMs }: ReviewInput): Promise<void> {
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError || !userData.user) throw userError ?? new Error("no_session");
 

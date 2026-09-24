@@ -1,12 +1,19 @@
-import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { forwardRef, useCallback, useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetTextInput,
+} from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DECK_COLOR_OPTIONS, monoType, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 
@@ -45,7 +52,7 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
     const { theme } = useTheme();
     const [name, setName] = useState(initial?.name ?? "");
     const [colorKey, setColorKey] = useState(initial?.colorKey ?? DECK_COLOR_OPTIONS[0]!.key);
-    const snapPoints = useMemo(() => ["55%"], []);
+    const insets = useSafeAreaInsets();
 
     // Sheet her açıldığında (düzenlenen deste değiştiğinde) alanları o
     // destenin değerleriyle sıfırlıyor -- aksi halde bir önceki açılıştan
@@ -78,23 +85,27 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
     return (
       <BottomSheetModal
         ref={ref}
-        snapPoints={snapPoints}
+        enableDynamicSizing
         backdropComponent={renderBackdrop}
         backgroundStyle={{ backgroundColor: theme.bg.surface }}
         handleIndicatorStyle={{ backgroundColor: theme.border.strong }}
         // DENETİM BULGUSU (2026-09-22, kullanıcı bulgusu): bu sheet
         // uygulamadaki İLK metin girişi formuydu ve klavye açılınca
         // girdinin ÜSTÜNE geliyordu -- kullanıcı yazdığını görmüyordu.
-        // `@gorhom/bottom-sheet` varsayılan olarak klavyeyi hesaba
-        // katmıyor; bu üç prop'la sheet klavye açılınca içeriği YUKARI
-        // kaydırıyor (iOS) ve Android'de pencereyi doğru yeniden
-        // boyutlandırıyor.
+        // İLK "düzeltme" (bu üç prop) TEK BAŞINA işe yaramadı: gerçek
+        // sebep aşağıdaki `TextInput`ın düz RN bileşeni olmasıydı --
+        // `@gorhom/bottom-sheet`in klavye takibi yalnızca KENDİ
+        // `BottomSheetTextInput`ının focus/blur olaylarını dinliyor, düz
+        // `TextInput`ın odaklandığını hiç görmüyordu. Asıl düzeltme
+        // aşağıda; bu üç prop olmadan da `BottomSheetTextInput` tek
+        // başına yeterli ama ikisi birlikte kütüphanenin belgelediği tam
+        // desen.
         keyboardBehavior="interactive"
         keyboardBlurBehavior="restore"
         android_keyboardInputMode="adjustResize"
       >
         <BottomSheetScrollView
-          contentContainerStyle={styles.content}
+          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.lg }]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -102,7 +113,7 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
             {initial ? t("vocabulary.decks.editTitle") : t("vocabulary.decks.createTitle")}
           </Text>
 
-          <TextInput
+          <BottomSheetTextInput
             value={name}
             onChangeText={setName}
             placeholder={t("vocabulary.decks.namePlaceholder")}
@@ -119,9 +130,9 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
             ]}
           />
 
-          <Text style={[monoType.label, { color: theme.text.secondary }]}>
+          <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
             {t("vocabulary.decks.colorLabel")}
-          </Text>
+          </UpperText>
           <View style={styles.colorRow}>
             {DECK_COLOR_OPTIONS.map((option) => {
               const selected = option.key === colorKey;

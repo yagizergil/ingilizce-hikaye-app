@@ -6,6 +6,7 @@ import { spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
 import { onboardingMetrics } from "@/features/onboarding/components/OnboardingScaffold";
+import { directionalIcon } from "@/lib/rtl";
 
 /**
  * Onboarding'in alt düğmesi.
@@ -68,7 +69,7 @@ export function OnboardingFooterButton({
           </Text>
           {showChevron ? (
             <Ionicons
-              name="chevron-forward"
+              name={directionalIcon("chevron-forward", "chevron-back")}
               size={18}
               color={inactive ? theme.text.secondary : theme.text.onAccent}
             />

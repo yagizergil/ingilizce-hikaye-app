@@ -1,0 +1,304 @@
+<title>Tap word demo</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF8F4;
+    --ink: #241F19;
+    --ink-soft: #8A8378;
+    --hairline: #E7E2D8;
+    --accent: #A6572E;
+    --surface: #FFFFFF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1B1712;
+      --ink: #F3EEE6;
+      --ink-soft: #B7AEA1;
+      --hairline: #3A332B;
+      --accent: #E08A5C;
+      --surface: #26211A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1B1712;
+    --ink: #F3EEE6;
+    --ink-soft: #B7AEA1;
+    --hairline: #3A332B;
+    --accent: #E08A5C;
+    --surface: #26211A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    margin: 0;
+    padding-block: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  .stage {
+    width: 100%;
+    max-width: 380px;
+    padding-inline: 16px;
+  }
+  .phone {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    background: var(--bg);
+    border-radius: 28px;
+    border: 1px solid var(--hairline);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .statusbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 22px 4px;
+    font-family: "Nunito", sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .chapter-label {
+    text-align: center;
+    font-family: "Nunito", sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 10px 0 18px;
+  }
+  .page {
+    flex: 1;
+    padding: 0 26px;
+    font-family: "Literata", Georgia, serif;
+    font-size: 17px;
+    line-height: 1.85;
+    color: var(--ink);
+  }
+  .word {
+    position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 1px 2px;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  .word.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .ripple {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .word.active .ripple {
+    animation: ripple 0.5s ease-out;
+  }
+  @keyframes ripple {
+    from { transform: scale(1); opacity: 0.45; }
+    to { transform: scale(9); opacity: 0; }
+  }
+  .progressline {
+    height: 2px;
+    background: var(--hairline);
+    margin: 0 26px 14px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progressline > div {
+    height: 100%;
+    width: 38%;
+    background: var(--accent);
+  }
+  .sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--hairline);
+    border-radius: 22px 22px 0 0;
+    padding: 20px 24px 26px;
+    transform: translateY(100%);
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 -8px 30px rgba(36, 31, 25, 0.12);
+  }
+  .sheet.open {
+    transform: translateY(0);
+  }
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--hairline);
+    margin: 0 auto 16px;
+  }
+  .sheet-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .sheet-word {
+    font-family: "Literata", Georgia, serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .sheet-pos {
+    font-family: "Nunito", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+  .sheet-gloss {
+    font-family: "Nunito", sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 10px 0 18px;
+    min-height: 26px;
+  }
+  .sheet-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .pill {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 44px;
+    border-radius: 12px;
+    font-family: "Nunito", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .pill.save {
+    background: var(--accent);
+    color: #fff;
+  }
+  .pill.speak {
+    background: var(--bg);
+    border: 1px solid var(--hairline);
+    color: var(--ink);
+  }
+  .flag {
+    font-family: "Nunito", sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-top: 14px;
+    letter-spacing: 0.04em;
+  }
+  .caption {
+    font-family: "Nunito", sans-serif;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 13px;
+    margin-top: 14px;
+  }
+</style>
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Loop demo of tapping an English word while reading, revealing its translation in a different language on every cycle</h2>
+<div class="stage">
+  <div class="phone">
+    <div class="statusbar"><span>9:41</span><span>🔋</span></div>
+    <div class="chapter-label">Chapter 3</div>
+    <div class="progressline"><div></div></div>
+    <div class="page" id="page"></div>
+    <div class="sheet" id="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-top">
+        <span class="sheet-word" id="sheetWord">wanderlust</span>
+        <span class="sheet-pos" id="sheetPos">noun</span>
+      </div>
+      <div class="sheet-gloss" id="sheetGloss"></div>
+      <div class="sheet-actions">
+        <div class="pill speak">🔊 Listen</div>
+        <div class="pill save">+ Save word</div>
+      </div>
+      <div class="flag" id="sheetFlag"></div>
+    </div>
+  </div>
+  <p class="caption">Tap-to-translate, in your language</p>
+</div>
+<script>
+  var STORY = [
+    "She had always felt a quiet ",
+    { w: "wanderlust", pos: "noun" },
+    " that no map could satisfy, a pull toward horizons she had never named."
+  ];
+  var TRANSLATIONS = [
+    { flag: "🇹🇷 Türkçe", gloss: "gezme tutkusu" },
+    { flag: "🇩🇪 Deutsch", gloss: "Fernweh" },
+    { flag: "🇫🇷 Français", gloss: "envie de voyager" },
+    { flag: "🇪🇸 Español", gloss: "ansia de viajar" },
+    { flag: "🇷🇺 Русский", gloss: "тяга к странствиям" },
+    { flag: "🇸🇦 العربية", gloss: "شغف الترحال" },
+    { flag: "🇨🇳 中文", gloss: "旅行的渴望" },
+    { flag: "🇯🇵 日本語", gloss: "放浪癖" },
+    { flag: "🇮🇹 Italiano", gloss: "voglia di viaggiare" }
+  ];
+
+  var page = document.getElementById("page");
+  var sheet = document.getElementById("sheet");
+  var sheetGloss = document.getElementById("sheetGloss");
+  var sheetFlag = document.getElementById("sheetFlag");
+  var wordEl = null;
+
+  function buildPage() {
+    page.innerHTML = "";
+    STORY.forEach(function (part) {
+      if (typeof part === "string") {
+        page.appendChild(document.createTextNode(part));
+      } else {
+        wordEl = document.createElement("span");
+        wordEl.className = "word";
+        wordEl.textContent = part.w;
+        var ripple = document.createElement("span");
+        ripple.className = "ripple";
+        wordEl.appendChild(ripple);
+        page.appendChild(wordEl);
+      }
+    });
+  }
+
+  var index = 0;
+
+  function cycle() {
+    var t = TRANSLATIONS[index % TRANSLATIONS.length];
+    sheetGloss.textContent = t.gloss;
+    sheetFlag.textContent = t.flag;
+
+    wordEl.classList.remove("active");
+    void wordEl.offsetWidth;
+    wordEl.classList.add("active");
+    sheet.classList.add("open");
+
+    setTimeout(function () {
+      sheet.classList.remove("open");
+      wordEl.classList.remove("active");
+    }, 2200);
+
+    index += 1;
+  }
+
+  buildPage();
+  setTimeout(cycle, 900);
+  setInterval(cycle, 3400);
+</script>

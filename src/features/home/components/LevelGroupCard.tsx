@@ -3,11 +3,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { levelAccent, monoType, onLevelAccent, radius, spacing, type } from "@/theme";
+import { levelAccent, monoType, onLevelAccentByLevel, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { LEVEL_GROUP_LEVELS } from "@/features/library/types";
 
 import type { LevelGroup } from "@/features/library/types";
+import { directionalIcon } from "@/lib/rtl";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface LevelGroupCardProps {
   levelGroup: LevelGroup;
@@ -69,7 +71,9 @@ export function LevelGroupCard({ levelGroup, count, onPress, isLast }: LevelGrou
       })}
     >
       <View style={[styles.badge, { backgroundColor: levelAccent[badgeLevel] }]}>
-        <Text style={[monoType.badge, { color: onLevelAccent }]}>{badgeLevel}</Text>
+        <UpperText style={[monoType.badge, { color: onLevelAccentByLevel[badgeLevel] }]}>
+          {badgeLevel}
+        </UpperText>
       </View>
       <View style={styles.info}>
         <Text style={[type.sectionHeading, { color: theme.text.primary }]}>
@@ -81,7 +85,7 @@ export function LevelGroupCard({ levelGroup, count, onPress, isLast }: LevelGrou
       </View>
       <Text style={[monoType.statValueLg, { color: theme.text.primary }]}>{count}</Text>
       <Ionicons
-        name="chevron-forward"
+        name={directionalIcon("chevron-forward", "chevron-back")}
         size={18}
         color={theme.text.secondary}
         style={styles.chevron}

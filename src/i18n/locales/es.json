@@ -75,7 +75,10 @@
       "title": "Leyendo ahora",
       "percent": "{{percent}} %",
       "remove": "Quitar de «Leyendo ahora»",
-      "removeAccessibilityLabel": "Quitar {{title}} de «Leyendo ahora»"
+      "removeAccessibilityLabel": "Quitar {{title}} de «Leyendo ahora»",
+      "removeConfirmTitle": "¿Quitar este libro?",
+      "removeConfirmBody": "Se borrará tu progreso de lectura en «{{title}}». No se puede deshacer.",
+      "removeConfirmCta": "Quitar"
     },
     "categories": {
       "title": "Géneros y temas",
@@ -199,7 +202,6 @@
   },
   "bookDetail": {
     "back": "← Biblioteca",
-    "backAccessibilityLabel": "Volver a la biblioteca",
     "loading": "Cargando el libro",
     "error": "No se pudo cargar el libro",
     "chapters": "Capítulos",
@@ -240,10 +242,10 @@
     "audio": {
       "label": "NARRACIÓN",
       "unlocked": "Esta historia está narrada con voz de estudio y se resalta palabra por palabra.",
-      "upgradeCta": "Escuchar con premium",
       "locked": "La narración de estudio forma parte de premium. Escucha esta historia con una voz natural y cada palabra resaltada a medida que se lee."
     },
-    "about": "Sobre el libro"
+    "about": "Sobre el libro",
+    "wordOverlap": "{{count}} palabras de tu lista aparecen en este libro"
   },
   "reader": {
     "header": {
@@ -287,8 +289,7 @@
       "failed": "No se pudo traducir. Revisa tu conexión e inténtalo de nuevo."
     },
     "sentenceSheet": {
-      "explainGrammar": "Explicar la gramática",
-      "premiumNotice": "La traducción de frases y las explicaciones de gramática llegarán pronto con IA."
+      "translationLabel": "Traducción"
     },
     "settings": {
       "fontSize": "Tamaño de letra",
@@ -373,7 +374,11 @@
     "hero": {
       "guest": "Invitado",
       "anonymous": "Estás leyendo como invitado",
-      "memberSince": "Miembro desde {{date}}"
+      "memberSince": "Miembro desde {{date}}",
+      "editName": "Editar tu nombre",
+      "namePlaceholder": "Tu nombre",
+      "saveName": "Guardar nombre",
+      "nameSaveError": "No se pudo guardar tu nombre. Inténtalo de nuevo."
     },
     "streak": {
       "currentLabel": "RACHA DE DÍAS",
@@ -538,6 +543,61 @@
           "description": "Añade tu primera palabra con el botón de abajo."
         }
       }
+    },
+    "practice": {
+      "kinds": {
+        "meaning": "Elige el significado",
+        "reverse": "Elige la palabra",
+        "cloze": "Completa la frase",
+        "typing": "Escribe la palabra",
+        "listening": "Escucha y elige el significado"
+      },
+      "typingPlaceholder": "{{hint}}…",
+      "check": "Comprobar",
+      "correct": "¡Correcto!",
+      "wrong": "Casi",
+      "answerLine": "{{lemma}} — {{gloss}}",
+      "next": "Continuar",
+      "error": "No se pudo iniciar el repaso.",
+      "emptyTitle": "Faltan algunas palabras",
+      "emptyBody": "Guarda al menos {{count}} palabras para el repaso inteligente.",
+      "doneTitle": "Sesión completada",
+      "score": "{{correct}} / {{total}} correctas",
+      "missedTitle": "Para repasar",
+      "perfect": "¡Todo correcto, genial!",
+      "playAgain": "Escuchar de nuevo"
+    },
+    "hub": {
+      "progressTitle": "Tu progreso",
+      "learning": "Aprendiendo",
+      "known": "Aprendidas",
+      "total": "Total",
+      "reviewTitle": "Repaso",
+      "reviewDue": "{{count}} palabras pendientes",
+      "reviewNone": "Nada pendiente hoy",
+      "practiceTitle": "Repaso inteligente",
+      "premiumBadge": "Premium",
+      "practiceFreeLeft": "1 intento gratis hoy",
+      "practiceFreeUsed": "Nuevo intento mañana · Ilimitado con Premium",
+      "practiceUnlimited": "Ejercicios variados, ilimitados",
+      "openBook": "Volver al libro"
+    },
+    "packs": {
+      "sectionTitle": "Explorar",
+      "cardTitle": "Paquete de palabras {{level}}",
+      "cardBody": "Las palabras más frecuentes de este nivel",
+      "intro": "Palabras que aparecen en más historias {{level}}. Las que ya guardaste no están.",
+      "loading": "Preparando el paquete…",
+      "error": "No se pudo cargar el paquete.",
+      "emptyTitle": "No hay paquete en este nivel",
+      "emptyBody": "Todavía no hay suficientes libros de este nivel en este idioma.",
+      "lockedTitle": "{{count}} palabras más bloqueadas",
+      "lockedBody": "Hazte Premium para desbloquear el paquete completo y añadirlo a tus mazos.",
+      "unlock": "Desbloquear el paquete completo",
+      "addToDecks": "Añadir a mis mazos",
+      "deckName": "Paquete {{level}}",
+      "added": "Paquete añadido a tus mazos",
+      "addError": "No se pudo añadir el paquete. Inténtalo de nuevo."
     }
   },
   "browse": {
@@ -611,7 +671,8 @@
     "startButton": "Empezar el repaso",
     "dueBadge": "{{count}} palabras listas",
     "saveFailed_one": "No se han podido guardar {{count}} palabras. Revisa tu conexión e inténtalo de nuevo.",
-    "saveFailed_other": "No se han podido guardar {{count}} palabras. Revisa tu conexión e inténtalo de nuevo."
+    "saveFailed_other": "No se han podido guardar {{count}} palabras. Revisa tu conexión e inténtalo de nuevo.",
+    "saveFailedToast": "No se pudo guardar tu respuesta. Revisa tu conexión."
   },
   "onboarding": {
     "introTitle": "Vamos a ver tu nivel",
@@ -706,7 +767,10 @@
       "ctaPending_other": "Elige {{count}} palabras más para practicar",
       "levelPill": "{{level}} · para ti",
       "unavailable": "Todavía no hay un texto listo en este idioma.",
-      "saveHint": "Toca el marcador para guardar"
+      "saveHint": "Toca el marcador para guardar",
+      "sentenceSubtitle": "¡Genial! Ahora mantén pulsada una frase.",
+      "ctaSentencePending": "Mantén pulsada una frase para continuar",
+      "sentenceHint": "Mantén pulsada cualquier frase del texto para ver la traducción de la frase completa."
     },
     "quiz": {
       "title": "Practica tus palabras",
@@ -837,6 +901,14 @@
       "stats": {
         "title": "Mira tu progreso",
         "body": "Tiempo de lectura, racha y nivel: todas las estadísticas."
+      },
+      "smartPractice": {
+        "title": "Repaso inteligente",
+        "body": "Completa las frases que leíste, elige el significado, escribe la palabra: ejercicios variados para recordar."
+      },
+      "wordPacks": {
+        "title": "Paquetes Explorar",
+        "body": "Las palabras más frecuentes de los libros de cada nivel, convertidas en tu propio mazo con un toque."
       }
     },
     "plan": {

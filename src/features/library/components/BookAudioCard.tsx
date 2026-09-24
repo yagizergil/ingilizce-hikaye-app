@@ -1,16 +1,16 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
 import { monoType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { useBookAudioAccessQuery } from "@/features/library/api/useBookAudioAccess";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface BookAudioCardProps {
   bookId: string;
   /** Stüdyo seslendirmesi bu kitap için üretilmiş mi (`books.has_audio`). */
   hasAudio: boolean;
-  onPressUpgrade: () => void;
 }
 
 /**
@@ -22,8 +22,12 @@ interface BookAudioCardProps {
  *
  * 2026-09-08: ücretsiz "bir hikâye dinle" hakkı kaldırıldı (migration 032).
  * Blok artık iki durum gösteriyor — açık ya da premium gerekli.
+ *
+ * Burada ayrı bir "Premium ile dinle" bağlantısı YOK (kullanıcı bulgusu,
+ * 2026-09-24): aynı ekrandaki "Dinle" düğmesi kilitliyken zaten paywall'a
+ * gidiyor; ikinci bir yükseltme bağlantısı aynı şeyi iki kez söylüyordu.
  */
-export function BookAudioCard({ bookId, hasAudio, onPressUpgrade }: BookAudioCardProps) {
+export function BookAudioCard({ bookId, hasAudio }: BookAudioCardProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -39,24 +43,12 @@ export function BookAudioCard({ bookId, hasAudio, onPressUpgrade }: BookAudioCar
 
   return (
     <View style={[styles.container, { borderTopColor: theme.border.hairline }]}>
-      <Text style={[monoType.label, { color: theme.text.secondary }]}>
+      <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
         {t("bookDetail.audio.label")}
-      </Text>
+      </UpperText>
       <Text style={[monoType.meta, styles.body, { color: theme.text.primary }]}>
         {access.canPlay ? t("bookDetail.audio.unlocked") : t("bookDetail.audio.locked")}
       </Text>
-
-      {access.canPlay ? null : (
-        <Pressable
-          onPress={onPressUpgrade}
-          accessibilityRole="button"
-          hitSlop={{ top: spacing.sm, bottom: spacing.sm, left: spacing.sm, right: spacing.sm }}
-        >
-          <Text style={[monoType.meta, styles.action, { color: theme.accent }]}>
-            {t("bookDetail.audio.upgradeCta")}
-          </Text>
-        </Pressable>
-      )}
     </View>
   );
 }
@@ -73,8 +65,5 @@ const styles = StyleSheet.create({
   },
   body: {
     marginTop: spacing.xxs,
-  },
-  action: {
-    marginTop: spacing.sm,
   },
 });

@@ -1,0 +1,429 @@
+<title>TikTok kaydırma paketi</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF8F4;
+    --surface: #FFFFFF;
+    --ink: #1E1C19;
+    --ink-soft: #8A8378;
+    --hairline: #E7E2D8;
+    --accent: #A6572E;
+    --accent-soft: #F3E4DA;
+    --danger: #B3453A;
+    --danger-soft: #F7E4E1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1B1712;
+      --surface: #26211A;
+      --ink: #F3EEE6;
+      --ink-soft: #B7AEA1;
+      --hairline: #3A332B;
+      --accent: #E08A5C;
+      --accent-soft: #3A2A1F;
+      --danger: #E08078;
+      --danger-soft: #3A2420;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1B1712;
+    --surface: #26211A;
+    --ink: #F3EEE6;
+    --ink-soft: #B7AEA1;
+    --hairline: #3A332B;
+    --accent: #E08A5C;
+    --accent-soft: #3A2A1F;
+    --danger: #E08078;
+    --danger-soft: #3A2420;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    font-family: "Nunito", sans-serif;
+    padding-block: 2.5rem;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-inline: 20px;
+  }
+  h1, h2, h3 { font-family: "Literata", Georgia, serif; text-wrap: balance; margin: 0; }
+  h1 { font-size: 30px; font-weight: 700; line-height: 1.2; }
+  h2 { font-size: 21px; font-weight: 700; margin-bottom: 4px; }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .lede {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    margin-top: 10px;
+    max-width: 62ch;
+  }
+  .hero {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 28px;
+  }
+  .rank-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 20px 0;
+  }
+  .rank-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    padding: 0 10px 8px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .rank-table td {
+    padding: 10px 10px 10px 0;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: top;
+  }
+  .rank-table tr:last-child td { border-bottom: none; }
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .pill.cut { background: var(--danger-soft); color: var(--danger); }
+  .cut-note {
+    display: flex;
+    gap: 12px;
+    background: var(--danger-soft);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 18px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .cut-note b { color: var(--danger); }
+  section.lang {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    padding: 22px 24px 26px;
+    margin-bottom: 22px;
+  }
+  .lang-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .lang-tag {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .meta-row {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin: 14px 0 18px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    font-size: 12.5px;
+  }
+  .meta-row > div { flex: 1; min-width: 140px; }
+  .meta-label {
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    margin-bottom: 3px;
+  }
+  .meta-value { font-weight: 700; }
+  .slides {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0 20px;
+  }
+  .slide {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .slide:last-child { border-bottom: none; }
+  .slide-num {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .slide-body { flex: 1; min-width: 0; }
+  .slide-role {
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+  .slide-text {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .slide-text .native {
+    font-family: "Literata", Georgia, serif;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .caption-block {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    margin-top: 6px;
+  }
+  .hashtags {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--accent);
+    line-height: 1.7;
+    word-break: break-word;
+  }
+  .note {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+  .subhead {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    margin: 18px 0 6px;
+  }
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin: 16px 0 28px;
+  }
+  .cal-card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .cal-card .lang-tag { display: block; margin-bottom: 6px; }
+  .cal-time { font-size: 15px; font-weight: 800; font-family: "Literata", Georgia, serif; }
+  .cal-day { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  footer.credits {
+    font-size: 12px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--hairline);
+    padding-top: 16px;
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+</style>
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">TikTok swipeable photo-post campaign bundle for Lingo Stories across five target languages</h2>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Lingo Stories &middot; TikTok lansman paketi</div>
+    <h1>Kaydırmalı foto post kampanyası — 5 dil</h1>
+    <p class="lede">Gerçek TikTok pazar verisiyle sıralandı: 10 desteklenen dilin hangileri gerçekten kaydırmalı post için değerli, hangileri kanal olarak ölü. Her dil için tam bir carousel (kaç kare, ne yazacak), hazır altyazı metni, hashtag seti ve o pazarın en iyi paylaşım saati.</p>
+
+    <table class="rank-table">
+      <tr><th>Sıra</th><th>Pazar</th><th>TikTok kullanıcı / doygunluk</th><th>Karar</th></tr>
+      <tr><td>1</td><td>İngilizce (ABD/İngiltere)</td><td>~161M &middot; ABD'de %47 doygunluk</td><td><span class="pill">Bundle'da</span></td></tr>
+      <tr><td>2</td><td>Türkçe</td><td>40,2M &middot; %52,3 doygunluk (en yüksek)</td><td><span class="pill">Bundle'da</span></td></tr>
+      <tr><td>3</td><td>Arapça (SA+BAE+Mısır)</td><td>~86,7M &middot; SA %68 / BAE %66 (dünyada en yüksek)</td><td><span class="pill">Bundle'da</span></td></tr>
+      <tr><td>4</td><td>İspanyolca (Latin Amerika ağırlıklı)</td><td>19M İspanya + Meksika ~75M</td><td><span class="pill">Bundle'da</span></td></tr>
+      <tr><td>5</td><td>Almanca</td><td>21,8M &middot; %26 doygunluk</td><td><span class="pill">Bundle'da</span></td></tr>
+      <tr><td>6</td><td>Japonca</td><td>26,9M ama %16 doygunluk, dev İngilizce öğrenme talebi</td><td><span class="pill">Genişletince ekle</span></td></tr>
+      <tr><td>—</td><td>Rusça</td><td>56M izleyici görünüyor ama yükleme Mart 2022'den beri KAPALI, Rus kullanıcı yurt dışı içeriğini hiç göremiyor</td><td><span class="pill cut">Kanal ölü</span></td></tr>
+      <tr><td>—</td><td>Çince</td><td>Anakara'da TikTok yok (Douyin var) — mevcut kitlemiz orada erişemez</td><td><span class="pill cut">Tayvan/Malezya/Singapur'a çevrilebilir (~31M), ayrı karar</span></td></tr>
+    </table>
+
+    <div class="cut-note">
+      <span>⚠</span>
+      <span><b>İki gerçek bulgu, iki bütçe kararı:</b> Rusça'ya kaynak ayırma — 56 milyonluk rakam kağıt üzerinde cazip ama TikTok'a video yükleme Rusya'da 2022'den beri kapalı, hiçbir organik erişim yok. Çince için de "Çin"i hedeflemek anlamsız (TikTok orada çalışmıyor, Douyin var); istersen ayrı bir round'da Tayvan/Malezya/Singapur diasporasına (Geleneksel/Basitleştirilmiş Çince ayrımıyla) özel bir carousel planlarız — bu bundle'da yok.</span>
+    </div>
+  </div>
+
+  <div class="subhead">Paylaşım takvimi — pazara göre en iyi saat</div>
+  <div class="calendar">
+    <div class="cal-card"><span class="lang-tag">🇹🇷 Türkiye</span><div class="cal-time">20:00–23:00</div><div class="cal-day">TRT &middot; Salı–Perşembe</div></div>
+    <div class="cal-card"><span class="lang-tag">🇺🇸 ABD/İngiltere</span><div class="cal-time">19:00–23:00</div><div class="cal-day">ET &middot; Salı/Perşembe</div></div>
+    <div class="cal-card"><span class="lang-tag">🇸🇦 Suudi/BAE</span><div class="cal-time">21:00–01:00</div><div class="cal-day">AST &middot; Perşembe–Cumartesi (hafta sonu Cuma/Cmt)</div></div>
+    <div class="cal-card"><span class="lang-tag">🇲🇽 Latin Amerika (ES)</span><div class="cal-time">19:00–22:00</div><div class="cal-day">Yerel akşam &middot; Sal/Per</div></div>
+    <div class="cal-card"><span class="lang-tag">🇩🇪 Almanya</span><div class="cal-time">19:00–21:00</div><div class="cal-day">CET &middot; Perşembe 19:00, Cmt 19:00–20:00</div></div>
+  </div>
+
+  <section class="lang">
+    <div class="lang-head">
+      <h2>🇹🇷 Türkçe</h2>
+      <span class="lang-tag">Ev pazarı &middot; en yüksek TikTok doygunluğu</span>
+    </div>
+    <div class="meta-row">
+      <div><div class="meta-label">En iyi saat</div><div class="meta-value">20:00–23:00 TRT, Salı/Perşembe</div></div>
+      <div><div class="meta-label">Hedef kelime</div><div class="meta-value">"melancholy"</div></div>
+      <div><div class="meta-label">Format</div><div class="meta-value">7 kare &middot; kelime bilmecesi</div></div>
+    </div>
+    <div class="slides">
+      <div class="slide"><span class="slide-num">1</span><div class="slide-body"><div class="slide-role">Kanca</div><div class="slide-text"><span class="native">"She felt a strange melancholy watching the rain."</span><br>Bu cümledeki kelimeyi biliyor musun? 👀</div></div></div>
+      <div class="slide"><span class="slide-num">2</span><div class="slide-body"><div class="slide-role">Tahmin</div><div class="slide-text">3 seçenek: A) mutluluk B) hüzünlü bir sakinlik C) öfke — yorumlara yaz 👇</div></div></div>
+      <div class="slide"><span class="slide-num">3</span><div class="slide-body"><div class="slide-role">Gerçek ekran görüntüsü</div><div class="slide-text">Kelimeye dokun → alt sayfa açılıyor: "melancholy — hüzünlü bir dalgınlık, mutsuz ama derin bir sakinlik"</div></div></div>
+      <div class="slide"><span class="slide-num">4</span><div class="slide-body"><div class="slide-role">İkinci kelime</div><div class="slide-text"><span class="native">"He had a sudden wanderlust for places he'd never seen."</span><br>Bunu biliyor musun? (cevap sonraki karede)</div></div></div>
+      <div class="slide"><span class="slide-num">5</span><div class="slide-body"><div class="slide-role">Reveal</div><div class="slide-text">wanderlust = gezme/keşfetme tutkusu. Türkçede tam karşılığı yok — İngilizcede var 🤯</div></div></div>
+      <div class="slide"><span class="slide-num">6</span><div class="slide-body"><div class="slide-role">POV / sosyal kanıt yerine mekanik</div><div class="slide-text">POV: sözlüğe hiç bakmadan İngilizce bir hikâyeyi bitirdin. Her kelimeye tıklayınca anında Türkçesi çıkıyor.</div></div></div>
+      <div class="slide"><span class="slide-num">7</span><div class="slide-body"><div class="slide-role">CTA</div><div class="slide-text">Lingo Stories — 119 kitap, 26.000+ kelimelik sözlük, ücretsiz. Biyodaki linkten indir.</div></div></div>
+    </div>
+    <div class="subhead">Altyazı (kopyala-yapıştır)</div>
+    <div class="caption-block">İngilizce okurken kelimeye takılıp kalmayı bitir. Lingo Stories'te her kelimeye dokunuyorsun, Türkçesi anında açılıyor — sözlüğe geçmene gerek yok. 119 kitap seviyene göre (A1'den C2'ye), 26.000+ kelimelik bir sözlük ve kelimeleri kaydedip tekrar edebileceğin bir defter var. Yukarıdaki "melancholy" ve "wanderlust" gibi Türkçede tam karşılığı olmayan kelimeleri okurken keşfediyorsun. Uygulama ücretsiz, kitapların tamamı ücretsiz okunuyor.</div>
+    <div class="hashtags">#ingilizceöğren #ingilizcekelime #ingilizcedersi #kelimeezberleme #ingilizceöğreniyorum #languagelearning #booktok</div>
+  </section>
+
+  <section class="lang">
+    <div class="lang-head">
+      <h2>🇺🇸 English (US/UK)</h2>
+      <span class="lang-tag">Largest reach &middot; most saturated competitor space</span>
+    </div>
+    <div class="meta-row">
+      <div><div class="meta-label">Best time</div><div class="meta-value">19:00–23:00 ET, Tue/Thu</div></div>
+      <div><div class="meta-label">Target word</div><div class="meta-value">"ephemeral"</div></div>
+      <div><div class="meta-label">Format</div><div class="meta-value">7 slides &middot; #booktok crossover</div></div>
+    </div>
+    <div class="slides">
+      <div class="slide"><span class="slide-num">1</span><div class="slide-body"><div class="slide-role">Hook</div><div class="slide-text">"the ephemeral glow of fireflies in the dark" — do you actually know what this word means, or do you just vibe with it? 😅</div></div></div>
+      <div class="slide"><span class="slide-num">2</span><div class="slide-body"><div class="slide-role">Guess</div><div class="slide-text">Drop your guess in the comments before you swipe 👇</div></div></div>
+      <div class="slide"><span class="slide-num">3</span><div class="slide-body"><div class="slide-role">Real screenshot</div><div class="slide-text">Tap the word → bottom sheet: "ephemeral (adj.) — lasting for a very short time." That's the whole app, one tap.</div></div></div>
+      <div class="slide"><span class="slide-num">4</span><div class="slide-body"><div class="slide-role">Round 2</div><div class="slide-text">"a bittersweet kind of nostalgia" — bittersweet. you know this one, but could you actually define it?</div></div></div>
+      <div class="slide"><span class="slide-num">5</span><div class="slide-body"><div class="slide-role">Reveal</div><div class="slide-text">bittersweet = pleasant and sad at the same time. Save it and it goes straight into your vocabulary deck.</div></div></div>
+      <div class="slide"><span class="slide-num">6</span><div class="slide-body"><div class="slide-role">POV</div><div class="slide-text">POV: you finish an entire English novel without opening a dictionary tab once.</div></div></div>
+      <div class="slide"><span class="slide-num">7</span><div class="slide-body"><div class="slide-role">CTA</div><div class="slide-text">Lingo Stories — 119 books, a 26,000+ word dictionary, free to read. Link in bio.</div></div></div>
+    </div>
+    <div class="subhead">Caption</div>
+    <div class="caption-block">Stop losing your reading flow every time you hit a word you don't know. Lingo Stories lets you tap any word mid-sentence and get the definition instantly, no switching apps, no losing your place in the story. 119 books sorted by level (A1 to C2), a 26,000+ word dictionary, and a vocabulary deck that saves every word you tap so you can review it later. Ephemeral, bittersweet, wanderlust — the words above are exactly the kind you pick up without even trying to. Free to download, every book free to read.</div>
+    <div class="hashtags">#englishvocabulary #learnenglish #learningenglish #vocabularywords #esl #booktok #languagelearning</div>
+  </section>
+
+  <section class="lang">
+    <div class="lang-head">
+      <h2>🇸🇦 العربية (Arabic)</h2>
+      <span class="lang-tag">En yüksek TikTok doygunluğu (SA %68, BAE %66) &middot; rakiplerin HİÇBİRİ Arapça galeri üretmemiş</span>
+    </div>
+    <div class="meta-row">
+      <div><div class="meta-label">En iyi saat</div><div class="meta-value">21:00–01:00 AST, Per–Cmt</div></div>
+      <div><div class="meta-label">Hedef kelime</div><div class="meta-value">"serendipity"</div></div>
+      <div><div class="meta-label">Format</div><div class="meta-value">7 kare &middot; RTL mockup</div></div>
+    </div>
+    <div class="slides">
+      <div class="slide"><span class="slide-num">1</span><div class="slide-body"><div class="slide-role">Kanca</div><div class="slide-text">"It was pure serendipity that they met that day." — هل تعرف معنى هذه الكلمة؟</div></div></div>
+      <div class="slide"><span class="slide-num">2</span><div class="slide-body"><div class="slide-role">Tahmin</div><div class="slide-text">اكتب تخمينك في التعليقات قبل أن تكمل 👇</div></div></div>
+      <div class="slide"><span class="slide-num">3</span><div class="slide-body"><div class="slide-role">Gerçek ekran görüntüsü</div><div class="slide-text">اضغط على الكلمة → تظهر الترجمة فورًا: "serendipity — الصدفة السعيدة"</div></div></div>
+      <div class="slide"><span class="slide-num">4</span><div class="slide-body"><div class="slide-role">İkinci kelime</div><div class="slide-text">"a bittersweet goodbye" — bittersweet، هل تعرفها؟</div></div></div>
+      <div class="slide"><span class="slide-num">5</span><div class="slide-body"><div class="slide-role">Reveal</div><div class="slide-text">bittersweet = شعور حلو وحزين في آن واحد</div></div></div>
+      <div class="slide"><span class="slide-num">6</span><div class="slide-body"><div class="slide-role">POV</div><div class="slide-text">POV: أنهيت رواية إنجليزية كاملة دون فتح قاموس ولا مرة واحدة</div></div></div>
+      <div class="slide"><span class="slide-num">7</span><div class="slide-body"><div class="slide-role">CTA</div><div class="slide-text">Lingo Stories — 119 كتابًا، أكثر من 26,000 كلمة، مجانًا بالكامل. الرابط في البايو.</div></div></div>
+    </div>
+    <div class="subhead">Açıklama metni</div>
+    <div class="caption-block">توقف عن فقدان تركيزك كل مرة تصادف فيها كلمة إنجليزية لا تعرفها. مع Lingo Stories تضغط على أي كلمة أثناء القراءة وتظهر لك الترجمة فورًا، دون الخروج من الكتاب. 119 كتابًا مرتبة حسب المستوى، قاموس يضم أكثر من 26,000 كلمة، ودفتر كلمات يحفظ كل كلمة تضغط عليها لمراجعتها لاحقًا. التطبيق مجاني بالكامل وجميع الكتب متاحة للقراءة مجانًا.</div>
+    <div class="hashtags">#تعلم_الانجليزية #تعلم_الانجليزيه #كلمات_انجليزية #اللغة_الانجليزية #languagelearning #booktok</div>
+    <div class="note">Not: Arapça metinler yerelleştirme ekibi/native konuşmacı gözünden geçirilmeden yayınlanmasın — özellikle Körfez lehçesi vurgusu (SA/BAE) için ince farklar olabilir. Görsel mockup'ta cihaz çerçevesi ve metin hizası sağdan sola akmalı (uygulama zaten RTL destekliyor, ekran görüntüsü doğru çıkar).</div>
+  </section>
+
+  <section class="lang">
+    <div class="lang-head">
+      <h2>🇲🇽 Español (LatAm)</h2>
+      <span class="lang-tag">İspanya değil, Meksika/Latin Amerika ağırlıklı hedefleme</span>
+    </div>
+    <div class="meta-row">
+      <div><div class="meta-label">Mejor hora</div><div class="meta-value">19:00–22:00 yerel, Sal/Per</div></div>
+      <div><div class="meta-label">Palabra objetivo</div><div class="meta-value">"wanderlust"</div></div>
+      <div><div class="meta-label">Formato</div><div class="meta-value">7 slides</div></div>
+    </div>
+    <div class="slides">
+      <div class="slide"><span class="slide-num">1</span><div class="slide-body"><div class="slide-role">Gancho</div><div class="slide-text">"She felt a sudden wanderlust for places she'd never seen." — ¿sabes qué significa esta palabra? 👀</div></div></div>
+      <div class="slide"><span class="slide-num">2</span><div class="slide-body"><div class="slide-role">Adivina</div><div class="slide-text">Escribe tu respuesta en comentarios antes de seguir 👇</div></div></div>
+      <div class="slide"><span class="slide-num">3</span><div class="slide-body"><div class="slide-role">Captura real</div><div class="slide-text">Tocas la palabra → aparece al instante: "wanderlust — deseo intenso de viajar y explorar"</div></div></div>
+      <div class="slide"><span class="slide-num">4</span><div class="slide-body"><div class="slide-role">Segunda palabra</div><div class="slide-text">"a bittersweet farewell" — bittersweet, ¿la conoces?</div></div></div>
+      <div class="slide"><span class="slide-num">5</span><div class="slide-body"><div class="slide-role">Revelación</div><div class="slide-text">bittersweet = agridulce, alegre y triste a la vez</div></div></div>
+      <div class="slide"><span class="slide-num">6</span><div class="slide-body"><div class="slide-role">POV</div><div class="slide-text">POV: terminaste una novela en inglés completa sin abrir el diccionario ni una sola vez</div></div></div>
+      <div class="slide"><span class="slide-num">7</span><div class="slide-body"><div class="slide-role">CTA</div><div class="slide-text">Lingo Stories — 119 libros, diccionario de más de 26.000 palabras, totalmente gratis. Link en la bio.</div></div></div>
+    </div>
+    <div class="subhead">Descripción</div>
+    <div class="caption-block">Deja de perder el hilo de la historia cada vez que te topas con una palabra en inglés que no conoces. Con Lingo Stories tocas cualquier palabra mientras lees y la traducción aparece al instante, sin salir del libro. 119 libros organizados por nivel (A1 a C2), un diccionario de más de 26.000 palabras y un cuaderno de vocabulario que guarda cada palabra que tocas para repasarla después. La app es gratis y todos los libros se leen gratis.</div>
+    <div class="hashtags">#aprenderingles #vocabularioingles #inglesfacil #inglesdesdecero #languagelearning #booktok</div>
+  </section>
+
+  <section class="lang">
+    <div class="lang-head">
+      <h2>🇩🇪 Deutsch</h2>
+      <span class="lang-tag">Belgelenmiş paylaşım saatleri &middot; net Tier 2 pazar</span>
+    </div>
+    <div class="meta-row">
+      <div><div class="meta-label">Beste Zeit</div><div class="meta-value">19:00–21:00 CET, Do 19:00, Sa 19–20</div></div>
+      <div><div class="meta-label">Zielwort</div><div class="meta-value">"bittersweet"</div></div>
+      <div><div class="meta-label">Format</div><div class="meta-value">7 Slides</div></div>
+    </div>
+    <div class="slides">
+      <div class="slide"><span class="slide-num">1</span><div class="slide-body"><div class="slide-role">Hook</div><div class="slide-text">"It was a bittersweet goodbye." — kennst du dieses Wort wirklich, oder erkennst du es nur? 👀</div></div></div>
+      <div class="slide"><span class="slide-num">2</span><div class="slide-body"><div class="slide-role">Rate mit</div><div class="slide-text">Schreib deine Vermutung in die Kommentare, bevor du weiterwischst 👇</div></div></div>
+      <div class="slide"><span class="slide-num">3</span><div class="slide-body"><div class="slide-role">Echter Screenshot</div><div class="slide-text">Wort antippen → sofortige Übersetzung: "bittersweet — bittersüß, gleichzeitig schön und traurig"</div></div></div>
+      <div class="slide"><span class="slide-num">4</span><div class="slide-body"><div class="slide-role">Runde 2</div><div class="slide-text">"a sudden wanderlust" — wanderlust. Das Wort kommt eigentlich AUS dem Deutschen — kennst du die englische Bedeutung genauso gut?</div></div></div>
+      <div class="slide"><span class="slide-num">5</span><div class="slide-body"><div class="slide-role">Auflösung</div><div class="slide-text">wanderlust = starkes Verlangen zu reisen. Englisch hat es sich direkt vom Deutschen geliehen.</div></div></div>
+      <div class="slide"><span class="slide-num">6</span><div class="slide-body"><div class="slide-role">POV</div><div class="slide-text">POV: du liest einen ganzen englischen Roman, ohne ein einziges Mal das Wörterbuch zu öffnen.</div></div></div>
+      <div class="slide"><span class="slide-num">7</span><div class="slide-body"><div class="slide-role">CTA</div><div class="slide-text">Lingo Stories — 119 Bücher, ein Wörterbuch mit über 26.000 Wörtern, komplett kostenlos. Link in der Bio.</div></div></div>
+    </div>
+    <div class="subhead">Beschreibung</div>
+    <div class="caption-block">Schluss damit, beim Lesen jedes Mal den Faden zu verlieren, wenn ein unbekanntes Wort auftaucht. Mit Lingo Stories tippst du beim Lesen einfach auf das Wort und die Übersetzung erscheint sofort, ohne die App zu wechseln. 119 Bücher nach Niveau sortiert (A1 bis C2), ein Wörterbuch mit über 26.000 Einträgen und ein Vokabelheft, das jedes angetippte Wort speichert. Die App ist kostenlos, alle Bücher sind kostenlos lesbar.</div>
+    <div class="hashtags">#englischlernen #englischvokabeln #vokabellernen #englischtipps #languagelearning #booktok</div>
+  </section>
+
+  <div class="subhead">Genişleme adayı — hazır ama başlangıç setine dahil değil</div>
+  <section class="lang">
+    <div class="lang-head">
+      <h2>🇯🇵 日本語</h2>
+      <span class="lang-tag">Dev İngilizce öğrenme talebi, ama TikTok doygunluğu düşük (%16) — hacim değil, niş kalite</span>
+    </div>
+    <div class="note">Aynı 7 kareli format + "melancholy/wanderlust/bittersweet" kelime seti Japoncaya uyarlanabilir. Paylaşım saati (07:00–08:30 ve 21:00–23:00 JST) bu round'da doğrulanmış veri değil, çıkarım — ilk postu attıktan sonra gerçek etkileşim verisiyle ayarlanmalı. Hashtag'ler: #英語学習 #英単語 #英語勉強 #英語が話せるようになりたい.</div>
+  </section>
+
+  <footer class="credits">
+    Kaynak: gerçek TikTok kullanıcı sayıları/doygunluk oranları (DataReportal 2025/26 türevi), carousel format verisi (Buffer 45M+ post analizi, Metricool 2026, 698k post bağımsız analiz), paylaşım saatleri (Publer, TokPortal ülke bazlı 2026), hashtag hacimleri (tiktokhashtags.com, İngilizce için). Rusya yükleme yasağı ve Çin'de TikTok'un Douyin ile değiştirilmiş olması doğrulanmış, güncel bilgi. Arapça/Japonca paylaşım saatleri ve Latin/Arapça hashtag sıralamaları çıkarımdır, ilk gerçek post verisiyle kalibre edilmeli.
+  </footer>
+
+</div>

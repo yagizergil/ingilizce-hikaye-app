@@ -68,6 +68,7 @@ jest.mock("@/components/ui", () => {
     Button: ({ label }: { label: string }) => <Text>{label}</Text>,
     LoadingState: () => <Text>loading</Text>,
     LanguageFlag: () => null,
+    ScreenHeader: ({ title }: { title: string }) => <Text>{title}</Text>,
   };
 });
 
@@ -97,8 +98,11 @@ function texts(tree: ReactTestRenderer): string[] {
   return JSON.stringify(tree.toJSON() ?? {}).match(/"[^"]*"/g) ?? [];
 }
 
+// Büyük harf stilli başlıklar metni kendisi büyütüyor (UpperText); aranan
+// şey harf boyu değil, öğenin var olması.
 function contains(tree: ReactTestRenderer, needle: string): boolean {
-  return texts(tree).some((chunk) => chunk.includes(needle));
+  const target = needle.toLowerCase();
+  return texts(tree).some((chunk) => chunk.toLowerCase().includes(target));
 }
 
 describe("ManageLanguagePairsScreen", () => {

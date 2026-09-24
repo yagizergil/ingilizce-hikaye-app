@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet, Text, View, Pressable } from "react-native";
+import { ActivityIndicator, StyleSheet, View, Pressable } from "react-native";
 
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { monoType, onLevelAccent, radius, spacing } from "@/theme";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface ReaderHeaderProps {
   onOpenChapterList: () => void;
@@ -157,9 +158,9 @@ export function ReaderHeader({
               style={[styles.quotaBadge, { backgroundColor: readerColors.accent }]}
               hitSlop={8}
             >
-              <Text style={[monoType.badge, styles.quotaText, { color: onLevelAccent }]}>
+              <UpperText style={[monoType.badge, styles.quotaText, { color: onLevelAccent }]}>
                 {wordQuotaRemaining}
-              </Text>
+              </UpperText>
             </Pressable>
           ) : null}
 

@@ -1,27 +1,30 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { router, useFocusEffect } from "expo-router";
 
-import { monoType, spacing, type } from "@/theme";
+import { monoType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import {
-  Button,
   LoadingState,
   ErrorState,
   EmptyState,
   SegmentedControl,
   useToast,
+  ScreenHeader,
 } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 import { useRemoveSavedWordMutation } from "@/features/reader";
 import { useSubscriptionQuery } from "@/features/paywall";
 import {
   DecksTab,
+  VocabularyHub,
   VocabularyWordRow,
+  useSmartPracticeQuotaQuery,
   useFilteredWords,
   useVocabularyFiltersStore,
   useVocabularyQuery,
@@ -81,8 +84,11 @@ export default function VocabularyScreen() {
     [setFilter],
   );
 
+  // Satıra dokunmak kelimenin okunduğu kitaba götürüyor ("kitaba dön",
+  // rakip analizi: graded reader'a özgü bir avantaj).
   const handlePressWord = useCallback((word: VocabularyWord) => {
     trackEvent("vocabulary_word_pressed", { lemma: word.lemma });
+    if (word.bookId) router.push(`/book/${word.bookId}`);
   }, []);
 
   /**
@@ -180,6 +186,21 @@ export default function VocabularyScreen() {
     router.push("/paywall?source=vocabulary_strip");
   }, []);
 
+  const practiceQuota = useSmartPracticeQuotaQuery();
+  useFocusEffect(
+    useCallback(() => {
+      void practiceQuota.refetch();
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- yalnızca odakta tazele
+    }, []),
+  );
+
+  const handleStartPractice = useCallback(() => {
+    trackEvent("smart_practice_opened", {
+      premium: practiceQuota.data?.isPremium ?? false,
+    });
+    router.push("/practice");
+  }, [practiceQuota.data?.isPremium]);
+
   const handleStartReview = useCallback(() => {
     trackEvent("srs_review_opened", { due_count: dueCount });
     router.push("/review");
@@ -206,11 +227,7 @@ export default function VocabularyScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <View style={styles.header}>
-        <Text style={[type.screenTitle, styles.title, { color: theme.text.primary }]}>
-          {t("vocabulary.title")}
-        </Text>
-      </View>
+      <ScreenHeader title={t("vocabulary.title")} />
 
       <View style={styles.filters}>
         <SegmentedControl
@@ -241,27 +258,25 @@ export default function VocabularyScreen() {
               onPress={handleOpenPaywall}
               accessibilityRole="button"
             >
-              <Text style={[monoType.label, { color: theme.text.secondary }]}>
+              <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
                 {t("paywall.wordListFull", {
                   count: subscription.data.savedWordCount,
                   limit: subscription.data.savedWordLimit,
                 })}
-              </Text>
+              </UpperText>
             </Pressable>
           ) : null}
 
-          {dueCount > 0 ? (
-            <View style={styles.reviewCta}>
-              <Button
-                label={t("srs.startButton")}
-                onPress={handleStartReview}
-                fullWidth
-                accessibilityLabel={t("srs.dueBadge", { count: dueCount })}
-              />
-              <Text style={[monoType.label, styles.reviewNote, { color: theme.text.secondary }]}>
-                {t("srs.dueBadge", { count: dueCount })}
-              </Text>
-            </View>
+          {hasAnySavedWord ? (
+            <VocabularyHub
+              total={filterCounts.all}
+              learning={filterCounts.all - filterCounts.known}
+              known={filterCounts.known}
+              dueCount={dueCount}
+              quota={practiceQuota.data}
+              onReview={handleStartReview}
+              onPractice={handleStartPractice}
+            />
           ) : null}
 
           {isLoading ? (
@@ -299,14 +314,6 @@ export default function VocabularyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xxxl,
-    paddingBottom: spacing.xs,
-  },
-  title: {
-    textAlign: "center",
   },
   filters: {
     paddingHorizontal: spacing.lg,

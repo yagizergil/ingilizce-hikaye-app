@@ -33,6 +33,9 @@ export interface CategoryTag {
    * present instead of its flat-color fallback. `null`/absent for genre
    * and theme tags, which have no single representative cover. */
   coverUrl?: string | null;
+  /** `coverUrl` bir KİTAP KAPAĞI mı (2:3; karo üzerinde tamamı gösterilir)
+   * yoksa kare kart görseli mi. Yalnızca yazar/seri kartları kapağa düşer. */
+  coverIsBook?: boolean;
 }
 
 export type LevelGroupCounts = Record<LevelGroup, number>;

@@ -18,6 +18,7 @@ import { motion, radius, spacing, monoType, readingType, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { LevelBadge, Skeleton } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { getVoiceIdentifier } from "@/features/reader/tts/pronunciationVoice";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
@@ -637,7 +638,7 @@ export function WordSheet({
                 style={[styles.closeButton, { backgroundColor: readerColors.highlight }]}
                 hitSlop={spacing.sm}
               >
-                <Ionicons name="close" size={16} color={readerColors.text} />
+                <Ionicons name="close" size={18} color={readerColors.text} />
               </Pressable>
 
               <View style={styles.wordBlock}>
@@ -800,9 +801,9 @@ export function WordSheet({
                     accessibilityRole="button"
                     accessibilityLabel={t("reader.sentenceTranslation.toggle")}
                   >
-                    <Text style={[monoType.buttonLabel, { color: readerColors.accent }]}>
+                    <UpperText style={[monoType.buttonLabel, { color: readerColors.accent }]}>
                       {t("reader.sentenceTranslation.toggle")}
-                    </Text>
+                    </UpperText>
                   </Pressable>
                   {sentenceTranslation.isFetching ? (
                     <Text style={[readingType.gloss, { color: readerColors.textMuted }]}>
@@ -835,13 +836,13 @@ export function WordSheet({
                     onPress={lemmaState === "known" ? onUnmarkKnown : onMarkKnown}
                     accessibilityRole="button"
                   >
-                    <Text style={[monoType.buttonLabel, { color: readerColors.textMuted }]}>
+                    <UpperText style={[monoType.buttonLabel, { color: readerColors.textMuted }]}>
                       {t(
                         lemmaState === "known"
                           ? "reader.wordSheet.knownUndo"
                           : "reader.wordSheet.know",
                       )}
-                    </Text>
+                    </UpperText>
                   </Pressable>
                 </View>
               ) : null}
@@ -899,12 +900,14 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.ml,
     gap: spacing.md,
   },
+  // Diğer sheet'lerdeki kapatma düğmesiyle aynı ölçü (32pt, 18pt ikon).
+  // Köşeye yakın kalıyor ki ortalı kelimenin üstüne binmesin.
   closeButton: {
     position: "absolute",
     top: spacing.sm,
     right: spacing.sm,
-    width: 28,
-    height: 28,
+    width: 32,
+    height: 32,
     borderRadius: radius.full,
     alignItems: "center",
     justifyContent: "center",
@@ -937,9 +940,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingTop: spacing.xs,
   },
+  // Apple'ın en küçük dokunma hedefi 44pt; kelime kartının kaydet/bildim
+  // düğmeleri uygulamanın en çok basılan kontrolleri.
   iconButton: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: radius.md,
     alignItems: "center",
     justifyContent: "center",

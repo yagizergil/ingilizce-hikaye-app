@@ -75,7 +75,10 @@
       "title": "正在阅读",
       "percent": "{{percent}}%",
       "remove": "从正在阅读中移除",
-      "removeAccessibilityLabel": "把《{{title}}》从正在阅读中移除"
+      "removeAccessibilityLabel": "把《{{title}}》从正在阅读中移除",
+      "removeConfirmTitle": "移除这本书？",
+      "removeConfirmBody": "《{{title}}》的阅读进度将被删除，且无法恢复。",
+      "removeConfirmCta": "移除"
     },
     "categories": {
       "title": "类型与主题",
@@ -199,7 +202,6 @@
   },
   "bookDetail": {
     "back": "← 书库",
-    "backAccessibilityLabel": "返回书库",
     "loading": "正在加载书籍",
     "error": "书籍加载失败",
     "chapters": "章节",
@@ -240,10 +242,10 @@
     "audio": {
       "label": "朗读",
       "unlocked": "这个故事由录音棚配音朗读，逐词高亮跟读。",
-      "upgradeCta": "开通会员收听",
       "locked": "录音棚朗读属于会员功能。用自然的人声听这个故事，读到哪个词就高亮哪个词。"
     },
-    "about": "关于本书"
+    "about": "关于本书",
+    "wordOverlap": "你的生词本中有 {{count}} 个词出现在这本书里"
   },
   "reader": {
     "header": {
@@ -287,8 +289,7 @@
       "failed": "翻译获取失败。请检查网络后重试。"
     },
     "sentenceSheet": {
-      "explainGrammar": "讲解语法",
-      "premiumNotice": "整句翻译和语法讲解将由 AI 提供，即将上线。"
+      "translationLabel": "翻译"
     },
     "settings": {
       "fontSize": "字号",
@@ -373,7 +374,11 @@
     "hero": {
       "guest": "访客",
       "anonymous": "正在以访客身份阅读",
-      "memberSince": "{{date}} 加入"
+      "memberSince": "{{date}} 加入",
+      "editName": "编辑名字",
+      "namePlaceholder": "你的名字",
+      "saveName": "保存名字",
+      "nameSaveError": "无法保存名字，请重试。"
     },
     "streak": {
       "currentLabel": "连续天数",
@@ -538,6 +543,61 @@
           "description": "点击下方按钮添加第一个单词。"
         }
       }
+    },
+    "practice": {
+      "kinds": {
+        "meaning": "选择词义",
+        "reverse": "选择单词",
+        "cloze": "填空",
+        "typing": "拼写单词",
+        "listening": "听音选择词义"
+      },
+      "typingPlaceholder": "{{hint}}…",
+      "check": "检查",
+      "correct": "正确！",
+      "wrong": "不太对",
+      "answerLine": "{{lemma}} — {{gloss}}",
+      "next": "继续",
+      "error": "无法开始智能练习。",
+      "emptyTitle": "还需要更多单词",
+      "emptyBody": "至少保存 {{count}} 个单词才能使用智能练习。",
+      "doneTitle": "练习完成",
+      "score": "答对 {{correct}} / {{total}}",
+      "missedTitle": "需要复习",
+      "perfect": "全部正确，太棒了！",
+      "playAgain": "再听一遍"
+    },
+    "hub": {
+      "progressTitle": "你的进度",
+      "learning": "学习中",
+      "known": "已掌握",
+      "total": "总计",
+      "reviewTitle": "复习",
+      "reviewDue": "{{count}} 个单词待复习",
+      "reviewNone": "今天没有待复习",
+      "practiceTitle": "智能练习",
+      "premiumBadge": "Premium",
+      "practiceFreeLeft": "今天可免费体验 1 次",
+      "practiceFreeUsed": "明天再来 · Premium 无限次",
+      "practiceUnlimited": "多样练习，无限次",
+      "openBook": "返回书籍"
+    },
+    "packs": {
+      "sectionTitle": "探索",
+      "cardTitle": "{{level}} 词包",
+      "cardBody": "该级别最常见的词",
+      "intro": "在最多 {{level}} 级故事中出现的词。你已保存的词不在其中。",
+      "loading": "正在准备词包…",
+      "error": "无法加载词包。",
+      "emptyTitle": "该级别暂无词包",
+      "emptyBody": "该语言在这个级别的书还不够多。",
+      "lockedTitle": "还有 {{count}} 个词已锁定",
+      "lockedBody": "升级 Premium 即可解锁完整词包并加入你的卡组。",
+      "unlock": "解锁完整词包",
+      "addToDecks": "加入我的卡组",
+      "deckName": "{{level}} 词包",
+      "added": "词包已加入你的卡组",
+      "addError": "无法添加词包，请重试。"
     }
   },
   "browse": {
@@ -611,7 +671,8 @@
     "startButton": "开始复习",
     "dueBadge": "{{count}} 个词待复习",
     "saveFailed_one": "有 {{count}} 个单词未能保存。请检查网络连接后重试。",
-    "saveFailed_other": "有 {{count}} 个单词未能保存。请检查网络连接后重试。"
+    "saveFailed_other": "有 {{count}} 个单词未能保存。请检查网络连接后重试。",
+    "saveFailedToast": "无法保存你的评分，请检查网络连接。"
   },
   "onboarding": {
     "introTitle": "先来测测你的等级",
@@ -706,7 +767,10 @@
       "ctaPending_other": "再选 {{count}} 个词来练习",
       "levelPill": "{{level}} · 为你挑选",
       "unavailable": "这种语言还没有可读的段落。",
-      "saveHint": "点击书签保存"
+      "saveHint": "点击书签保存",
+      "sentenceSubtitle": "太棒了！现在长按一个句子。",
+      "ctaSentencePending": "长按一个句子以继续",
+      "sentenceHint": "长按文中任意句子，即可查看整句翻译。"
     },
     "quiz": {
       "title": "练习你的词",
@@ -837,6 +901,14 @@
       "stats": {
         "title": "看见进步",
         "body": "阅读时长、连续天数和等级，统计一应俱全。"
+      },
+      "smartPractice": {
+        "title": "智能练习",
+        "body": "在你读过的句子中填空、选择词义、拼写单词：多样练习，让单词真正记住。"
+      },
+      "wordPacks": {
+        "title": "探索词包",
+        "body": "每个级别书中最常见的词，一键变成你自己的卡组。"
       }
     },
     "plan": {

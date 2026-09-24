@@ -6,6 +6,7 @@ import * as Speech from "expo-speech";
 
 import { monoType, motion, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { useTargetTtsLocale } from "@/features/languagePair";
 
 import type { CustomDeckCard } from "@/features/vocabulary/types";
 
@@ -27,11 +28,13 @@ interface DeckCardRowProps {
 export function DeckCardRow({ card, onEdit, onDelete }: DeckCardRowProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
+  // Deste kelimeleri öğrenilen dilde; eskiden her zaman "en-US" okunuyordu.
+  const ttsLocale = useTargetTtsLocale();
 
   return (
     <View style={[styles.row, { borderBottomColor: theme.border.hairline }]}>
       <Pressable
-        onPress={() => Speech.speak(card.surface, { language: "en-US" })}
+        onPress={() => Speech.speak(card.surface, { language: ttsLocale })}
         accessibilityRole="button"
         accessibilityLabel={t("reader.wordSheet.pronounce")}
         hitSlop={spacing.sm}

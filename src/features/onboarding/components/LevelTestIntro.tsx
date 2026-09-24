@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface LevelTestIntroProps {
   onStart: () => void;
@@ -33,9 +34,9 @@ export function LevelTestIntro({ onStart, onSkip, busy }: LevelTestIntroProps) {
         <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
           {t("onboarding.introBody")}
         </Text>
-        <Text style={[monoType.label, { color: theme.text.secondary }]}>
+        <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
           {t("onboarding.introDuration")}
-        </Text>
+        </UpperText>
       </View>
 
       <View style={styles.actions}>

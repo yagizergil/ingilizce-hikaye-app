@@ -106,7 +106,10 @@ export function OnboardingBookTasteStep({
             {likedBooks.slice(-TARGET_LIKES).map((book) => (
               <View
                 key={book.id}
-                style={[styles.shelfCover, { backgroundColor: theme.bg.surface }]}
+                style={[
+                  styles.shelfCover,
+                  { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
+                ]}
               >
                 {book.coverUrl ? (
                   <Image
@@ -129,7 +132,12 @@ export function OnboardingBookTasteStep({
           </View>
 
           {current ? (
-            <View style={[styles.cover, { backgroundColor: theme.bg.surface }]}>
+            <View
+              style={[
+                styles.cover,
+                { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
+              ]}
+            >
               {current.coverUrl ? (
                 <Image
                   source={{ uri: current.coverUrl }}
@@ -202,6 +210,9 @@ const styles = StyleSheet.create({
     width: 36,
     height: 52,
     borderRadius: radius.sm,
+    // Kapak yüklenmemişken zemin sayfayla neredeyse aynı renk (1.06-1.15:1);
+    // kenar çizgisi olmadan boş kutu görünmüyordu.
+    borderWidth: StyleSheet.hairlineWidth,
     overflow: "hidden",
   },
   shelfImage: {
@@ -218,6 +229,7 @@ const styles = StyleSheet.create({
     flex: 1,
     aspectRatio: 2 / 3,
     borderRadius: radius.cover,
+    borderWidth: StyleSheet.hairlineWidth,
     overflow: "hidden",
     maxHeight: 420,
   },

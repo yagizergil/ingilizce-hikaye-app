@@ -87,3 +87,13 @@ export async function reloadApp(): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Yön bildiren ikonun (ileri/geri oku) okuma yönüne göre adı.
+ *
+ * Ionicons sağdan sola düzende ikonları ÇEVİRMİYOR: Arapçada "ileri" oku
+ * sola bakmalı. Görsel denetim (2026-09-24) on yerde ters ok buldu.
+ */
+export function directionalIcon<T extends string>(ltrName: T, rtlName: T): T {
+  return isLayoutRtl() ? rtlName : ltrName;
+}

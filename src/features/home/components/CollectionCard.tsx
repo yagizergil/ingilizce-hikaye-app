@@ -2,8 +2,8 @@ import { Pressable, StyleSheet, Text } from "react-native";
 
 import { onLevelAccent, radius, spacing, type } from "@/theme";
 
-const CARD_WIDTH = 168;
-const CARD_HEIGHT = 108;
+export const COLLECTION_CARD_WIDTH = 168;
+export const COLLECTION_CARD_HEIGHT = 108;
 
 export interface CollectionCardData {
   key: string;
@@ -32,15 +32,23 @@ export function CollectionCard({ collection, onPress }: CollectionCardProps) {
       accessibilityRole="button"
       accessibilityLabel={collection.label}
     >
-      <Text style={[type.bookTitleLg, styles.label]}>{collection.label}</Text>
+      {/* Almanca/Rusça etiketler 136pt'lik alanda üç satıra taşıyordu. */}
+      <Text
+        style={[type.bookTitleLg, styles.label]}
+        numberOfLines={2}
+        adjustsFontSizeToFit
+        minimumFontScale={0.75}
+      >
+        {collection.label}
+      </Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
+    width: COLLECTION_CARD_WIDTH,
+    height: COLLECTION_CARD_HEIGHT,
     borderRadius: radius.cover,
     marginRight: spacing.md,
     alignItems: "center",

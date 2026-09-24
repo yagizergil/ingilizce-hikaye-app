@@ -1,12 +1,12 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 
-import { spacing } from "@/theme";
 import { SectionHeader } from "@/components/ui";
 import { CategoryTagCard } from "@/features/home/components/CategoryTagCard";
 
 import type { CategoryTag } from "@/features/home/types";
+import { shelfStyles } from "@/features/home/components/shelfLayout";
 
 interface CategoryShelfProps {
   title: string;
@@ -29,30 +29,16 @@ export function CategoryShelf({ title, tags, onPressTag }: CategoryShelfProps) {
   );
 
   return (
-    <View style={styles.container}>
-      <SectionHeader title={title} style={styles.head} />
+    <View style={shelfStyles.container}>
+      <SectionHeader title={title} style={shelfStyles.head} />
       <FlashList
         horizontal
         data={tags}
         keyExtractor={(item) => item.key}
         renderItem={renderItem}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={shelfStyles.listContent}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: spacing.xxxxl,
-  },
-  head: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
-  },
-  listContent: {
-    paddingHorizontal: spacing.lg,
-    gap: spacing.md,
-  },
-});

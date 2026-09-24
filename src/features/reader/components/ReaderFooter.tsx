@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 
 import { monoType, motion, radius, spacing } from "@/theme";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
+import { directionalIcon } from "@/lib/rtl";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface ReaderFooterProps {
   progress: number;
@@ -67,10 +69,14 @@ export function ReaderFooter({
               pressed ? { opacity: motion.pressed.opacity } : null,
             ]}
           >
-            <Text style={[monoType.label, { color: readerColors.text }]}>
+            <UpperText style={[monoType.label, { color: readerColors.text }]}>
               {hasNextChapter ? t("reader.footer.nextChapter") : t("reader.footer.finishBook")}
-            </Text>
-            <Ionicons name="arrow-forward" size={14} color={readerColors.text} />
+            </UpperText>
+            <Ionicons
+              name={directionalIcon("arrow-forward", "arrow-back")}
+              size={14}
+              color={readerColors.text}
+            />
           </Pressable>
         ) : (
           <Text style={[monoType.metaTight, { color: readerColors.textMuted }]}>

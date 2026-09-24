@@ -1,9 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
 import { monoType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { SrsRating } from "@/features/srs/scheduler";
 
@@ -42,7 +43,7 @@ export function ReviewRatingBar({ onRate }: ReviewRatingBarProps) {
           accessibilityRole="button"
           accessibilityLabel={option.label}
         >
-          <Text style={[monoType.label, { color: option.color }]}>{option.label}</Text>
+          <UpperText style={[monoType.label, { color: option.color }]}>{option.label}</UpperText>
         </Pressable>
       ))}
     </View>

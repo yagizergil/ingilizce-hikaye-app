@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { monoType, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Card } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { ProfileDailyMinutes } from "@/features/profile/types";
 
@@ -44,9 +45,9 @@ export function WeeklyMinutesChart({ weekDays, totalMinutesThisWeek }: WeeklyMin
   return (
     <Card style={styles.card}>
       <View style={styles.header}>
-        <Text style={[monoType.statLabel, { color: theme.text.secondary }]}>
+        <UpperText style={[monoType.statLabel, { color: theme.text.secondary }]}>
           {t("profile.week.title")}
-        </Text>
+        </UpperText>
         <Text style={[monoType.statValue, styles.total, { color: theme.text.primary }]}>
           {t("profile.week.totalMinutes", { count: totalMinutesThisWeek })}
         </Text>

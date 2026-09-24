@@ -13,6 +13,7 @@ export { BookListRow } from "@/features/library/components/BookListRow";
 export { ChapterListItem } from "@/features/library/components/ChapterListItem";
 export { BookHero } from "@/features/library/components/BookHero";
 export { BookStatsRow } from "@/features/library/components/BookStatsRow";
+export { BookWordOverlap } from "@/features/library/components/BookWordOverlap";
 export { BookSeriesInfo } from "@/features/library/components/BookSeriesInfo";
 export { BookAudioCard } from "@/features/library/components/BookAudioCard";
 export { useBookAudioAccessQuery } from "@/features/library/api/useBookAudioAccess";

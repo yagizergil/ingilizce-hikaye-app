@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import * as Haptics from "expo-haptics";
 import { useTranslation } from "react-i18next";
 
 import { spacing } from "@/theme";
@@ -392,6 +393,9 @@ export function ReaderScreen({
       // bakması onu tekrar başlatmamalı. `getState()` ile okunuyor —
       // seçiciyle okumak bu geri çağrıyı her vurgu değişiminde yeniden
       // kurardı.
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch((error: unknown) =>
+        trackError("reader.wordHaptic", error),
+      );
       resumeAfterSheetRef.current = useTtsStore.getState().status === "speaking";
       pauseSpeech();
 
@@ -593,14 +597,33 @@ export function ReaderScreen({
   const handleSaveWord = useCallback(() => {
     const input = buildWordActionInput();
     if (!input) return;
+    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
+      (error: unknown) => trackError("reader.saveHaptic", error),
+    );
     saveWordMutation.mutate(input);
   }, [buildWordActionInput, saveWordMutation]);
 
+  /**
+   * Kaydı kaldırmak kelimeyle birlikte SRS kartını ve tekrar geçmişini de
+   * siliyor. Kelime defteri bunu onaya bağlıyordu; okurken yer imine yanlışlıkla
+   * dokunmak ise tek dokunuşta geçmişi siliyordu. Aynı onay metni kullanılıyor.
+   */
   const handleUnsaveWord = useCallback(() => {
     const input = buildWordActionInput();
     if (!input) return;
-    unsaveWordMutation.mutate(input);
-  }, [buildWordActionInput, unsaveWordMutation]);
+    Alert.alert(
+      t("vocabulary.remove.confirmTitle", { lemma: input.lemma }),
+      t("vocabulary.remove.confirmBody"),
+      [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("vocabulary.remove.confirmCta"),
+          style: "destructive",
+          onPress: () => unsaveWordMutation.mutate(input),
+        },
+      ],
+    );
+  }, [buildWordActionInput, unsaveWordMutation, t]);
 
   const handleMarkKnown = useCallback(() => {
     const input = buildWordActionInput();
@@ -786,6 +809,11 @@ export function ReaderScreen({
         ref={sentenceSheetRef}
         sentence={activeSentence}
         onDismiss={() => setActiveSentence(null)}
+        onQuotaExhausted={() => {
+          sentenceSheetRef.current?.dismiss();
+          trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
+          router.push("/paywall?source=sentence_quota");
+        }}
       />
       <ReaderSettingsSheet ref={settingsSheetRef} />
       <ChapterListSheet

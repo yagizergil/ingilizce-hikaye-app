@@ -98,6 +98,8 @@ export default function RootLayout() {
                     <Stack.Screen name="favorites" />
                     <Stack.Screen name="browse" />
                     <Stack.Screen name="review" />
+                    <Stack.Screen name="practice" />
+                    <Stack.Screen name="pack/[level]" />
                     {/*
                       Paywall MODAL DEĞİL, tam sayfa. Modal olarak
                       açıldığında üstte kalan boşluk ve kavisli kenarlar

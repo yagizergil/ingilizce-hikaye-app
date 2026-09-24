@@ -4,4 +4,7 @@ export const vocabularyQueryKeys = {
   decks: () => [...vocabularyQueryKeys.all, "decks"] as const,
   deckCards: (deckId: string) => [...vocabularyQueryKeys.all, "deck-cards", deckId] as const,
   deckDueCards: (deckId: string) => [...vocabularyQueryKeys.all, "deck-due", deckId] as const,
+  smartPracticeQuota: () => [...vocabularyQueryKeys.all, "smart-practice-quota"] as const,
+  wordPack: (target: string, native: string, level: string) =>
+    [...vocabularyQueryKeys.all, "word-pack", target, native, level] as const,
 };

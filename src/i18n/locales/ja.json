@@ -75,7 +75,10 @@
       "title": "読書中",
       "percent": "{{percent}}%",
       "remove": "読書中から外す",
-      "removeAccessibilityLabel": "「{{title}}」を読書中から外す"
+      "removeAccessibilityLabel": "「{{title}}」を読書中から外す",
+      "removeConfirmTitle": "この本を削除しますか？",
+      "removeConfirmBody": "「{{title}}」の読書の進み具合が削除されます。元に戻せません。",
+      "removeConfirmCta": "削除"
     },
     "categories": {
       "title": "ジャンルとテーマ",
@@ -199,7 +202,6 @@
   },
   "bookDetail": {
     "back": "← ライブラリ",
-    "backAccessibilityLabel": "ライブラリに戻る",
     "loading": "本を読み込んでいます",
     "error": "本を読み込めませんでした",
     "chapters": "章",
@@ -240,10 +242,10 @@
     "audio": {
       "label": "ナレーション",
       "unlocked": "この物語はスタジオ収録の音声で、単語ごとにハイライトされながら読まれます。",
-      "upgradeCta": "プレミアムで聴く",
       "locked": "スタジオ・ナレーションはプレミアムの機能です。自然な声で、読んでいる単語がハイライトされながら物語を聴けます。"
     },
-    "about": "この本について"
+    "about": "この本について",
+    "wordOverlap": "単語帳の {{count}} 語がこの本に登場します"
   },
   "reader": {
     "header": {
@@ -287,8 +289,7 @@
       "failed": "翻訳を取得できませんでした。接続を確認してもう一度お試しください。"
     },
     "sentenceSheet": {
-      "explainGrammar": "文法を解説",
-      "premiumNotice": "文の翻訳と文法解説は、AI による機能として近日公開します。"
+      "translationLabel": "翻訳"
     },
     "settings": {
       "fontSize": "文字サイズ",
@@ -373,7 +374,11 @@
     "hero": {
       "guest": "ゲスト",
       "anonymous": "ゲストとして利用中",
-      "memberSince": "{{date}} から利用中"
+      "memberSince": "{{date}} から利用中",
+      "editName": "名前を編集",
+      "namePlaceholder": "あなたの名前",
+      "saveName": "名前を保存",
+      "nameSaveError": "名前を保存できませんでした。もう一度お試しください。"
     },
     "streak": {
       "currentLabel": "連続日数",
@@ -538,6 +543,61 @@
           "description": "下のボタンから最初の単語を追加しましょう。"
         }
       }
+    },
+    "practice": {
+      "kinds": {
+        "meaning": "意味を選ぶ",
+        "reverse": "単語を選ぶ",
+        "cloze": "穴埋め",
+        "typing": "単語を入力",
+        "listening": "聞いて意味を選ぶ"
+      },
+      "typingPlaceholder": "{{hint}}…",
+      "check": "確認",
+      "correct": "正解！",
+      "wrong": "惜しい",
+      "answerLine": "{{lemma}} — {{gloss}}",
+      "next": "次へ",
+      "error": "スマート練習を開始できませんでした。",
+      "emptyTitle": "もう少し単語が必要です",
+      "emptyBody": "スマート練習には少なくとも{{count}}語を保存してください。",
+      "doneTitle": "練習完了",
+      "score": "{{correct}} / {{total}} 正解",
+      "missedTitle": "見直す単語",
+      "perfect": "全問正解、すばらしい！",
+      "playAgain": "もう一度聞く"
+    },
+    "hub": {
+      "progressTitle": "あなたの進歩",
+      "learning": "学習中",
+      "known": "習得済み",
+      "total": "合計",
+      "reviewTitle": "復習",
+      "reviewDue": "{{count}}語が待っています",
+      "reviewNone": "今日の復習はありません",
+      "practiceTitle": "スマート練習",
+      "premiumBadge": "Premium",
+      "practiceFreeLeft": "今日は1回無料",
+      "practiceFreeUsed": "明日また挑戦 · Premiumなら無制限",
+      "practiceUnlimited": "さまざまな練習を無制限に",
+      "openBook": "本に戻る"
+    },
+    "packs": {
+      "sectionTitle": "探索",
+      "cardTitle": "{{level}} 単語パック",
+      "cardBody": "このレベルで最もよく出る単語",
+      "intro": "{{level}} レベルの物語で最も多く登場する単語です。保存済みの単語は含まれません。",
+      "loading": "パックを準備中…",
+      "error": "パックを読み込めませんでした。",
+      "emptyTitle": "このレベルのパックはありません",
+      "emptyBody": "この言語ではこのレベルの本がまだ十分にありません。",
+      "lockedTitle": "あと {{count}} 語がロック中",
+      "lockedBody": "Premium にするとパック全体を解放してデッキに追加できます。",
+      "unlock": "パック全体を解放",
+      "addToDecks": "マイデッキに追加",
+      "deckName": "{{level}} パック",
+      "added": "パックをデッキに追加しました",
+      "addError": "パックを追加できませんでした。もう一度お試しください。"
     }
   },
   "browse": {
@@ -611,7 +671,8 @@
     "startButton": "復習を始める",
     "dueBadge": "{{count}} 語が復習待ち",
     "saveFailed_one": "{{count}} 語を保存できませんでした。通信状況を確認してもう一度お試しください。",
-    "saveFailed_other": "{{count}} 語を保存できませんでした。通信状況を確認してもう一度お試しください。"
+    "saveFailed_other": "{{count}} 語を保存できませんでした。通信状況を確認してもう一度お試しください。",
+    "saveFailedToast": "評価を保存できませんでした。接続を確認してください。"
   },
   "onboarding": {
     "introTitle": "あなたのレベルを調べましょう",
@@ -706,7 +767,10 @@
       "ctaPending_other": "あと {{count}} 語選んでください",
       "levelPill": "{{level}} · あなた向け",
       "unavailable": "この言語の読み物はまだ用意されていません。",
-      "saveHint": "ブックマークを押して保存"
+      "saveHint": "ブックマークを押して保存",
+      "sentenceSubtitle": "いいですね！次は文を長押ししてみましょう。",
+      "ctaSentencePending": "続けるには文を長押ししてください",
+      "sentenceHint": "本文の好きな文を長押しすると、文全体の翻訳が表示されます。"
     },
     "quiz": {
       "title": "単語を練習しましょう",
@@ -837,6 +901,14 @@
       "stats": {
         "title": "進み具合を見る",
         "body": "読書時間・連続日数・レベルの統計すべて。"
+      },
+      "smartPractice": {
+        "title": "スマート練習",
+        "body": "読んだ文の穴埋め、意味の選択、単語の入力。さまざまな練習で単語が定着します。"
+      },
+      "wordPacks": {
+        "title": "探索パック",
+        "body": "各レベルの本で最もよく出る単語を、ワンタップで自分のデッキに。"
       }
     },
     "plan": {

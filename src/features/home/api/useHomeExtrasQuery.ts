@@ -4,8 +4,9 @@ import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
-import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { gateOnLanguagePair, useActiveLanguagePairQuery } from "@/features/languagePair";
 import { CATEGORY_DEFINITIONS, categoryImageUrl } from "@/features/home/categoryRegistry";
+import { authorImageUrl, seriesImageUrl } from "@/features/home/authorImages";
 import { LEVEL_GROUP_LEVELS, LEVEL_GROUPS } from "@/features/library/types";
 
 import type { Book, LevelGroup } from "@/features/library/types";
@@ -117,13 +118,17 @@ function buildAuthorTags(books: Book[]): CategoryTag[] {
   return [...countByAuthor.entries()]
     .filter(([, count]) => count >= MIN_BOOKS_FOR_AUTHOR_TAG)
     .sort((a, b) => b[1] - a[1])
-    .map(([author, count]) => ({
-      key: `author:${author}`,
-      label: author,
-      count,
-      navTarget: { kind: "library", q: author },
-      coverUrl: coverByAuthor.get(author) ?? null,
-    }));
+    .map(([author, count]) => {
+      const art = authorImageUrl(author);
+      return {
+        key: `author:${author}`,
+        label: author,
+        count,
+        navTarget: { kind: "library", q: author } as const,
+        coverUrl: art ?? coverByAuthor.get(author) ?? null,
+        coverIsBook: art === null,
+      };
+    });
 }
 
 /**
@@ -173,7 +178,8 @@ async function fetchSeriesTags(books: Book[]): Promise<CategoryTag[]> {
       labelKey: collection.title_key,
       count: bookIds.length,
       navTarget: { kind: "book", bookId: firstBookId },
-      coverUrl: coverByBookId.get(firstBookId) ?? null,
+      coverUrl: seriesImageUrl(collection.title_key) ?? coverByBookId.get(firstBookId) ?? null,
+      coverIsBook: seriesImageUrl(collection.title_key) === null,
     });
   }
   return tags;
@@ -262,12 +268,14 @@ async function fetchHomeExtras(
 
 export function useHomeExtrasQuery() {
   const queryClient = useQueryClient();
-  const { data: activePair } = useActiveLanguagePairQuery();
+  const pairQuery = useActiveLanguagePairQuery();
+  const activePair = pairQuery.data;
   const targetLanguage = activePair?.targetLanguage ?? null;
 
-  return useQuery({
+  const query = useQuery({
     queryKey: homeQueryKeys.extras(targetLanguage ?? ""),
     queryFn: () => fetchHomeExtras(queryClient, targetLanguage as string),
     enabled: targetLanguage !== null,
   });
+  return gateOnLanguagePair(query, pairQuery);
 }

@@ -10,6 +10,8 @@ interface SavedWordRow {
   id: string;
   lemma: string;
   created_at: string;
+  surface: string;
+  context_text: string | null;
 }
 
 interface LemmaStateRow {
@@ -45,7 +47,7 @@ export function useBookSavedWordsQuery(bookId: string | null) {
 
       const { data: savedRows, error: savedError } = await supabase
         .from("user_saved_words")
-        .select("id, lemma, created_at")
+        .select("id, lemma, surface, context_text, created_at")
         .eq("book_id", bookId)
         .order("created_at", { ascending: false })
         .returns<SavedWordRow[]>();
@@ -88,6 +90,9 @@ export function useBookSavedWordsQuery(bookId: string | null) {
           dueAt: null,
           state: state?.state ?? null,
           createdAt: row.created_at,
+          surface: row.surface,
+          contextText: row.context_text,
+          bookId,
         };
       });
 

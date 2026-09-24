@@ -8,6 +8,7 @@ import i18n from "@/i18n";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button, LanguageFlag, LoadingState } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 import { CONTENT_TARGET_LANGUAGES, LANGUAGES, type LanguageInfo } from "@/lib/languages";
 import { applyLayoutDirection, reloadApp } from "@/lib/rtl";
 
@@ -180,9 +181,9 @@ export function LanguagePairScreen({ onDone }: LanguagePairScreenProps) {
 
             {comingSoonOptions.length > 0 ? (
               <View style={styles.comingSoonBlock}>
-                <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
                   {t("languagePair.comingSoonLabel")}
-                </Text>
+                </UpperText>
                 <View style={styles.list}>
                   {comingSoonOptions.map((language) => (
                     <View
@@ -196,9 +197,9 @@ export function LanguagePairScreen({ onDone }: LanguagePairScreenProps) {
                       <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
                         {language.nativeName}
                       </Text>
-                      <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                      <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
                         {t("languagePair.comingSoonBadge")}
-                      </Text>
+                      </UpperText>
                     </View>
                   ))}
                 </View>
@@ -209,7 +210,9 @@ export function LanguagePairScreen({ onDone }: LanguagePairScreenProps) {
       </ScrollView>
 
       <Pressable onPress={() => setPhase("native")} accessibilityRole="button" style={styles.back}>
-        <Text style={[monoType.label, { color: theme.text.secondary }]}>{t("common.back")}</Text>
+        <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+          {t("common.back")}
+        </UpperText>
       </Pressable>
     </View>
   );
@@ -247,7 +250,9 @@ function LanguageRow({
           <Text style={[monoType.rowText, { color: theme.text.primary }]}>
             {language.nativeName}
           </Text>
-          <Text style={[monoType.label, { color: theme.text.secondary }]}>{language.nameEn}</Text>
+          <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+            {language.nameEn}
+          </UpperText>
         </View>
       </View>
     </Pressable>

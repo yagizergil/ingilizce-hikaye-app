@@ -15,6 +15,7 @@ import { useTheme } from "@/theme/useTheme";
 import { colors as themeColors } from "@/theme/colors";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { ThemePreference } from "@/theme/useTheme";
 import type { ThemeName } from "@/theme/colors";
@@ -110,19 +111,21 @@ function ReaderSettingsContent() {
           onPress={() => dismiss()}
           accessibilityRole="button"
           accessibilityLabel={t("common.close")}
-          style={[styles.closeButton, { backgroundColor: readerColors.highlight }]}
+          style={styles.closeButton}
           hitSlop={spacing.sm}
         >
-          <Ionicons name="close" size={18} color={readerColors.text} />
+          <Ionicons name="close" size={24} color={readerColors.text} />
         </Pressable>
         <Text style={[type.screenTitle, styles.headerTitle, { color: readerColors.text }]}>
           {t("reader.settings.title")}
         </Text>
+        {/* Başlığın gerçekten ortada kalması için düğmenin genişliğinde boşluk. */}
+        <View style={styles.headerSpacer} />
       </View>
 
-      <Text style={[monoType.eyebrow, styles.sectionLabel, { color: readerColors.textMuted }]}>
+      <UpperText style={[monoType.eyebrow, styles.sectionLabel, { color: readerColors.textMuted }]}>
         {t("reader.settings.theme")}
-      </Text>
+      </UpperText>
       <View style={styles.cardRow}>
         {themeOptions.map((option) => {
           const preview = previewColorsFor(option);
@@ -161,9 +164,9 @@ function ReaderSettingsContent() {
         })}
       </View>
 
-      <Text style={[monoType.eyebrow, styles.sectionLabel, { color: readerColors.textMuted }]}>
+      <UpperText style={[monoType.eyebrow, styles.sectionLabel, { color: readerColors.textMuted }]}>
         {t("reader.settings.fontFamily")}
-      </Text>
+      </UpperText>
       <View style={styles.cardRow}>
         {fontFamilyOptions.map((option) => {
           const selected = fontFamily === option;
@@ -243,23 +246,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.lg,
   },
+  // Kullanıcı bulgusu (2026-09-24): kapatma düğmesi `position:absolute;
+  // top:0` ile sheet'in en üst kenarına yapışıktı, başlık ise altında
+  // duruyordu. Artık üçü aynı satırda, dikey olarak ortalı.
   header: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingTop: spacing.sm,
+    paddingTop: spacing.lg,
     paddingBottom: spacing.md,
   },
   headerTitle: {
+    flex: 1,
     textAlign: "center",
   },
+  headerSpacer: {
+    width: 32,
+  },
   closeButton: {
-    position: "absolute",
-    top: 0,
-    left: 0,
     width: 32,
     height: 32,
-    borderRadius: radius.full,
-    alignItems: "center",
+    // Dil ayarlarındaki X ile aynı: arka plansız, düz ikon.
+    alignItems: "flex-start",
     justifyContent: "center",
   },
   row: {

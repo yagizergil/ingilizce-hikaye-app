@@ -1,9 +1,9 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 
 import { tabBarIconSize } from "@/theme/tokens/layout";
-import { spacing } from "@/theme/tokens/spacing";
+import { radius, spacing } from "@/theme/tokens/spacing";
 import { fontFamily, monoType } from "@/theme/tokens/typography";
 import { useTheme } from "@/theme/useTheme";
 
@@ -21,6 +21,8 @@ type IoniconName = ComponentProps<typeof Ionicons>["name"];
  */
 interface TabBarButtonProps {
   accessibilityState?: AccessibilityState;
+  /** Expo Router 57 seçili sekmeyi BU alanla bildiriyor, `accessibilityState` ile değil. */
+  "aria-selected"?: boolean;
   onPress?: (event: GestureResponderEvent) => void;
   style?: StyleProp<ViewStyle>;
   label: string;
@@ -44,28 +46,40 @@ export function TabBarButton({
   iconOutline,
   iconActive,
   accessibilityState,
+  "aria-selected": ariaSelected,
   onPress,
   style,
 }: TabBarButtonProps) {
   const { theme } = useTheme();
-  const isActive = accessibilityState?.selected ?? false;
-  const tintColor = isActive ? theme.text.primary : theme.text.secondary;
+  // Kullanıcı bulgusu (iki kez): aktif sekme hiç belli olmuyordu. Sebep
+  // yalnızca `accessibilityState.selected`i okumaktı; Expo Router 57 onu
+  // göndermiyor, `aria-selected` gönderiyor. isActive DAİMA false'tu.
+  const isActive = ariaSelected ?? accessibilityState?.selected ?? false;
+  // Kullanıcı bulgusu (2026-09-24): outline/dolu ikon farkı ve metin
+  // kalınlığı tek başına "hangi sekmedeyim" sorusunu cevaplamıyordu. Aktif
+  // sekme artık accent rengi ve ikonun arkasında accent tonlu bir hap alıyor.
+  const tintColor = isActive ? theme.accent : theme.text.secondary;
 
   return (
     <Pressable
       onPress={onPress}
       style={[styles.button, style]}
       accessibilityRole="tab"
-      accessibilityState={accessibilityState}
+      accessibilityState={{ ...accessibilityState, selected: isActive }}
       accessibilityLabel={label}
       hitSlop={spacing.sm}
     >
-      <Ionicons
-        name={isActive ? iconActive : iconOutline}
-        size={tabBarIconSize}
-        color={tintColor}
-      />
+      <View style={[styles.iconPill, isActive ? { backgroundColor: theme.accentMuted } : null]}>
+        <Ionicons
+          name={isActive ? iconActive : iconOutline}
+          size={tabBarIconSize}
+          color={tintColor}
+        />
+      </View>
       <Text
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
         style={[
           styles.label,
           {
@@ -85,7 +99,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: spacing.xs,
+    gap: spacing.xxs,
+  },
+  iconPill: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xxs,
+    borderRadius: radius.full,
   },
   label: {
     fontSize: monoType.buttonLabel.fontSize,

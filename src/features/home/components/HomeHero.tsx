@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { levelAccent, monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button, Card } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { Book } from "@/features/library";
 
@@ -48,9 +49,9 @@ export function HomeHero({
     <Card tone="deep" style={styles.card}>
       <View style={styles.eyebrowRow}>
         {level ? <View style={[styles.dot, { backgroundColor: dotColor }]} /> : null}
-        <Text style={[monoType.eyebrow, { color: theme.onDeep }]}>
+        <UpperText style={[monoType.eyebrow, { color: theme.onDeep }]}>
           {level ? t("home.hero.levelEyebrow", { level }) : t("home.hero.welcomeEyebrow")}
-        </Text>
+        </UpperText>
       </View>
 
       <Text style={[type.heroTitle, styles.title, { color: theme.onDeep }]}>
@@ -71,11 +72,7 @@ export function HomeHero({
             fullWidth
           />
         ) : (
-          <Button
-            label={t("home.hero.browseAction")}
-            onPress={onBrowseLevel}
-            fullWidth
-          />
+          <Button label={t("home.hero.browseAction")} onPress={onBrowseLevel} fullWidth />
         )}
       </View>
     </Card>

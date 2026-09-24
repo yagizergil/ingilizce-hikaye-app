@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Animated, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -16,11 +16,14 @@ import {
   tokenize,
 } from "@/features/reader/text/tokenizer";
 import { WordSheet } from "@/features/reader/components/WordSheet";
+import { SentenceSheet } from "@/features/reader/components/SentenceSheet";
 
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
 import { OnboardingScaffold } from "@/features/onboarding/components/OnboardingScaffold";
 
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import type { WordSheetWord } from "@/features/reader/components/WordSheet";
+import type { SentenceSheetSentence } from "@/features/reader/components/SentenceSheet";
 import type { OnboardingPassage } from "@/features/onboarding/api/useOnboardingContentQuery";
 
 /**
@@ -79,6 +82,23 @@ export function OnboardingFirstReadStep({
   const { theme } = useTheme();
 
   const [active, setActive] = useState<WordSheetWord | null>(null);
+
+  /**
+   * CÜMLE DERSİ (kullanıcı bulgusu, 2026-09-24): cümleye uzun basınca tüm
+   * cümlenin çevirisinin geldiğini ürün sahibi "şans eseri" keşfetti --
+   * hiçbir yerde anlatılmıyordu. Kelimeler seçildikten sonra adım bir kez de
+   * bunu yaptırıyor; bir cümleye basılı tutmadan devam edilemiyor.
+   * Kapı çevirinin BAŞARISINA değil, uzun basmanın kendisine bağlı: ağ
+   * hatası bir öğrenme anını onboarding'i kilitleyen bir engele çevirmemeli.
+   */
+  const [sentenceTried, setSentenceTried] = useState(false);
+  const [activeSentence, setActiveSentence] = useState<SentenceSheetSentence | null>(null);
+  const sentenceSheetRef = useRef<BottomSheetModal>(null);
+  const openSentence = useCallback((text: string) => {
+    setActiveSentence({ text });
+    setSentenceTried(true);
+    sentenceSheetRef.current?.present();
+  }, []);
 
   const pickedLemmas = useMemo(() => new Set(picked.map((word) => word.lemma)), [picked]);
   const readingStyle = useMemo(() => getReadingTypeScale().paragraph, []);
@@ -220,7 +240,8 @@ export function OnboardingFirstReadStep({
   }, [needsGuidance, pulseTokenKey, reduceMotion, wordPulse]);
 
   const remaining = Math.max(0, requiredWords - picked.length);
-  const ready = picked.length >= requiredWords;
+  const wordsDone = picked.length >= requiredWords;
+  const ready = wordsDone && sentenceTried;
 
   if (loading) {
     return (
@@ -248,13 +269,19 @@ export function OnboardingFirstReadStep({
       <OnboardingScaffold
         progress={progress}
         title={t("onboarding.firstRead.title")}
-        subtitle={t("onboarding.firstRead.subtitle")}
+        subtitle={
+          wordsDone && !sentenceTried
+            ? t("onboarding.firstRead.sentenceSubtitle")
+            : t("onboarding.firstRead.subtitle")
+        }
         footer={
           <OnboardingFooterButton
             label={
               ready
                 ? t("onboarding.firstRead.cta")
-                : t("onboarding.firstRead.ctaPending", { count: remaining })
+                : wordsDone
+                  ? t("onboarding.firstRead.ctaSentencePending")
+                  : t("onboarding.firstRead.ctaPending", { count: remaining })
             }
             onPress={onContinue}
             disabled={!ready}
@@ -279,8 +306,17 @@ export function OnboardingFirstReadStep({
             {rendered.map((paragraph) => (
               <Text key={paragraph.key} style={[readingStyle, { color: theme.text.primary }]}>
                 {paragraph.tokens.map((token, tokenIndex) => {
+                  const onLongPressSentence = () => openSentence(token.sentence);
                   if (token.type !== "word" || !token.lemma) {
-                    return <Text key={`o${tokenIndex}`}>{token.text}</Text>;
+                    return (
+                      <Text
+                        key={`o${tokenIndex}`}
+                        suppressHighlighting
+                        onLongPress={onLongPressSentence}
+                      >
+                        {token.text}
+                      </Text>
+                    );
                   }
                   const isPicked = pickedLemmas.has(token.lemma);
                   const isPulsing =
@@ -316,7 +352,9 @@ export function OnboardingFirstReadStep({
                             }),
                           },
                         ]}
+                        suppressHighlighting
                         onPress={onPressWord}
+                        onLongPress={onLongPressSentence}
                       >
                         {token.text}
                       </Animated.Text>
@@ -324,7 +362,13 @@ export function OnboardingFirstReadStep({
                   }
 
                   return (
-                    <Text key={`w${tokenIndex}`} style={affordance} onPress={onPressWord}>
+                    <Text
+                      key={`w${tokenIndex}`}
+                      style={affordance}
+                      suppressHighlighting
+                      onPress={onPressWord}
+                      onLongPress={onLongPressSentence}
+                    >
                       {token.text}
                     </Text>
                   );
@@ -332,6 +376,17 @@ export function OnboardingFirstReadStep({
               </Text>
             ))}
           </View>
+
+          {wordsDone && !sentenceTried ? (
+            <View style={[styles.sentenceHint, { backgroundColor: theme.accentMuted }]}>
+              <Ionicons name="hand-left-outline" size={18} color={theme.accent} />
+              <Text
+                style={[monoType.rowText, styles.sentenceHintText, { color: theme.text.primary }]}
+              >
+                {t("onboarding.firstRead.sentenceHint")}
+              </Text>
+            </View>
+          ) : null}
 
           {/* Seçilen kelimelerin çipleri -- referansta da kartın altında. */}
           <View style={styles.chips}>
@@ -391,6 +446,15 @@ export function OnboardingFirstReadStep({
         onUnmarkKnown={() => undefined}
         onDismiss={() => setActive(null)}
       />
+
+      <SentenceSheet
+        ref={sentenceSheetRef}
+        sentence={activeSentence}
+        onDismiss={() => setActiveSentence(null)}
+        // Onboarding'de paywall'a yönlendirmek akışı koparırdı; kota
+        // doluysa kart yalnızca kapanıyor, ders zaten tamamlandı sayılıyor.
+        onQuotaExhausted={() => sentenceSheetRef.current?.dismiss()}
+      />
     </>
   );
 }
@@ -415,6 +479,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xs,
     paddingVertical: spacing.xxs,
     borderRadius: radius.full,
+  },
+  sentenceHint: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    padding: spacing.md,
+    borderRadius: radius.md,
+  },
+  sentenceHintText: {
+    flex: 1,
   },
   chips: {
     flexDirection: "row",

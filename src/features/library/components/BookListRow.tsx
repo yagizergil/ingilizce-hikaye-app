@@ -101,9 +101,21 @@ export const BookListRow = memo(function BookListRow({
           <StatCell
             value={book.wordCount.toLocaleString("tr-TR")}
             label={t("library.stats.words")}
+            align="center"
+            style={styles.statCell}
           />
-          <StatCell value={String(book.chapters.length)} label={t("library.stats.chapters")} />
-          <StatCell value={String(book.estimatedMinutes)} label={t("library.stats.minutes")} />
+          <StatCell
+            value={String(book.chapters.length)}
+            label={t("library.stats.chapters")}
+            align="center"
+            style={styles.statCell}
+          />
+          <StatCell
+            value={String(book.estimatedMinutes)}
+            label={t("library.stats.minutes")}
+            align="center"
+            style={styles.statCell}
+          />
         </View>
       </View>
     </Pressable>
@@ -142,5 +154,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.sm,
     marginTop: spacing.sm,
+  },
+  statCell: {
+    flex: 1,
   },
 });

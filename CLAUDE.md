@@ -14,7 +14,9 @@ metinler. Gelir premium abonelikten geliyor.
 **Premium bugün ne sunuyor** (paywall'da yalnızca bunlar yazılabilir):
 **stüdyo seslendirmesi**, sınırsız kelime çevirisi (ücretsizde günde 15 --
 migration 038), sınırsız kelime defteri, yüksek AI cümle çevirisi kotası,
-ikinci dil çifti.
+ikinci dil çifti, **Akıllı Tekrar** (1.0.6; ücretsizde 24 saatte 1 deneme,
+kapısı `consume_smart_practice()` -- migration 049; tasarım
+`docs/plans/2026-09-24-kelimelerim-premium-design.md`).
 
 **AŞAĞIDAKİLER PREMIUM DEĞİL** ve paywall'a yazılamaz (2026-09-14 denetim
 bulgusu): aralıklı tekrar (SRS'te hiçbir yetki kontrolü yok, ücretsiz
@@ -495,6 +497,73 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 > `docs/ROADMAP.md` ve `docs/STATE.md` çok daha eski; çelişki olursa burası
 > geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
 > içinde.
+
+### 1.0.5 turu (2026-09-24, cihaz geri bildirimi + görsel denetim + kapaklar)
+
+Ürün sahibinin gerçek cihazda bulduğu 16 madde + üç paralel denetim ajanının
+(yerleşim, etkileşim, görsel) doğrulanmış bulguları kapatıldı.
+
+- **Okuma ekranında kelimeler arasında gri kutular:** cümle `<Text>`inin
+  `onLongPress`i iOS'un basma vurgusunu yalnızca boşluk/noktalama
+  parçalarına çiziyordu. `suppressHighlighting` (ReaderPage, ReaderWord,
+  onboarding pasajı).
+- **Cümleye uzun basma** artık gerçekten çeviri gösteriyor (`SentenceSheet`
+  "yakında" diyen bir taslaktı); içerik boyutlu, alt güvenli alan kadar
+  yukarıda. Onboarding'in ilk okuma adımı bunu öğretiyor ve uzun basmadan
+  ilerlemiyor (kapı çevirinin başarısına değil hareketin kendisine bağlı).
+- **Tek başlık bileşeni** `components/ui/ScreenHeader` (sabit 52 pt, ortalı
+  başlık, eşit yan yuvalar); ana sayfa, üç sekme, istatistik, gözat,
+  favoriler, deste ve kitap detayı (yükleniyor/hata durumları dahil) ona geçti.
+- **Türkçe büyük harf** (`ŞIMDI` -> `ŞİMDİ`): `components/ui/UpperText` metni
+  dile göre kendisi büyütüyor; 10 büyük harf token'ını kullanan 54 `<Text>`
+  bir TypeScript-AST kod dönüştürücüsüyle çevrildi. Barrel'dan DEĞİL
+  `@/components/ui/UpperText` yolundan içe aktarılıyor -- barrel testlerde
+  Supabase ortamını çekiyor.
+- Ana sayfa sırası: Koleksiyonlar -> Yeni Kitaplar -> Şu An Okunuyor. Raflar
+  ve iskelet aynı geometriyi (`home/components/shelfLayout.ts`) okuyor.
+  FlashList v2 `contentContainerStyle.gap`i yok sayıyor.
+- Onay/geri bildirim: "şu an okunuyor"dan kaldırma ve okuyucuda kaydı
+  kaldırma onaylı (ikisi de veri siliyor); kelime dokunuşu/kaydetme/tekrar
+  puanında `expo-haptics` (yeni bağımlılık, native -- yeni derleme gerekir);
+  tekrar kaydı ilk başarısızlıkta toast.
+- Sekme çubuğu: aktif sekmede accent hap + gölge. İstatistik kartlarındaki
+  çift 20 pt girinti kaldırıldı. Sheet kapatma düğmeleri başlıkla aynı
+  satırda. Deste form sheet'leri içerik boyutlu.
+- Kontrast: seviye rozetinde açık dolgularda koyu mürekkep
+  (`onLevelAccentByLevel`; B1 1.76:1 idi), iki koleksiyon rengi koyulaştı,
+  light/sepia `text.secondary` 4.5:1'i geçiyor. Arapçada yön okları
+  `directionalIcon` ile çevriliyor.
+- **1.0.5 yeniden gönderim (build 25):** (1) Aktif sekme HİÇ vurgulanmıyordu:
+  `TabBarButton` `accessibilityState.selected`i okuyordu, Expo Router 57
+  `aria-selected` gönderiyor (testli). (2) Açılışta bir an "Bir şeyler ters
+  gitti": dil çiftine bağlı sorgular çift gelene kadar devre dışı ve v5'te
+  devre dışı sorgu `isLoading:false` döndürüyor; ekranlar bunu hata sayıyordu.
+  `languagePair/api/gateOnLanguagePair` beş sorguyu sarıyor (testli).
+  (3) İtilmiş ekran başlıkları 40 pt yerine 24 pt + sığdırarak küçülme
+  ("Favoriler ve Okunanlar" kesiliyordu). (4) Profilde kalemle isim
+  düzenleme (`auth.updateUser` -> `full_name`); isim girmiş anonim kullanıcıya
+  "misafir" yazılmıyor. (5) Her dilde popülerlik skoru 0'dı ("Popüler" kartı
+  boş açılıyordu); dil başına rastgele ~6 özgün + ~4 klasik işaretlendi.
+- **Kapaklar:** 310 "Lingo Studio" kitabından 271'i tipografik yer
+  tutucudaydı. Higgsfield `nano_banana_2_lite` (1 kredi/görsel) ile, mevcut
+  İngilizce kapaklardan ikisi stil referansı verilerek üretildi ve
+  `pipeline/scripts/upload_covers.py` ile yüklendi. Yazar/seri kartları için
+  kare illüstrasyonlar `home/authorImages.ts` kaydından geliyor; kayıtta
+  olmayan yazar kitap kapağına (karo üzerinde, kırpılmadan) düşüyor.
+
+### 1.0.6 turu (2026-09-24, Kelimelerim premium)
+
+Tasarım ve rakip analizi: `docs/plans/2026-09-24-kelimelerim-premium-design.md`.
+Premium'a iki gerçek, sunucu kapılı fayda eklendi: **Akıllı Tekrar**
+(boşluk doldurma kullanıcının okuduğu cümleden, anlam/kelime seçme, yazma,
+dinleme; ücretsizde 24 saatte 1 deneme, `consume_smart_practice()`,
+migration 049; sonuçlar SRS'e yazılıyor) ve **Keşfet paketleri**
+(`level_word_pack()`, migration 050/051; ücretsizde 5 kelime önizleme).
+Ücretsiz: ilerleme kartı, kitap detayında "defterindeki N kelime bu kitapta"
+(`book_saved_word_overlap()`), deste kartı telaffuzu artık öğrenilen dilde
+(eskiden sabit en-US'di). 363 test, typecheck ve lint temiz. Yeni ekranlar
+cihazda GÖZLE doğrulanmadı (önizleme paneli gizliydi); RPC'ler canlıda
+`authenticated` rolüyle doğrulandı.
 
 ### 1.0.3 turu (2026-09-20, özel kelime desteleri + dil çifti bulgusu)
 

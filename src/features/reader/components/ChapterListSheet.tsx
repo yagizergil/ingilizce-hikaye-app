@@ -124,14 +124,15 @@ function ChapterListContent({
           onPress={() => dismiss()}
           accessibilityRole="button"
           accessibilityLabel={closeLabel}
-          style={[styles.closeButton, { backgroundColor: readerColors.highlight }]}
+          style={styles.closeButton}
           hitSlop={spacing.sm}
         >
-          <Ionicons name="close" size={18} color={readerColors.text} />
+          <Ionicons name="close" size={24} color={readerColors.text} />
         </Pressable>
         <Text style={[type.screenTitle, styles.headerTitle, { color: readerColors.text }]}>
           {title}
         </Text>
+        <View style={styles.headerSpacer} />
       </View>
 
       <BottomSheetFlatList
@@ -174,24 +175,27 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: radius.cover,
     borderTopRightRadius: radius.cover,
   },
+  // Kapatma düğmesi başlıkla aynı satırda ve dikey ortalı -- bkz.
+  // ReaderSettingsSheet'teki aynı düzeltme.
   header: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingTop: spacing.sm,
+    paddingTop: spacing.lg,
     paddingBottom: spacing.xs,
     paddingHorizontal: spacing.lg,
   },
   headerTitle: {
+    flex: 1,
     textAlign: "center",
   },
+  headerSpacer: {
+    width: 32,
+  },
   closeButton: {
-    position: "absolute",
-    top: 0,
-    left: spacing.lg,
     width: 32,
     height: 32,
-    borderRadius: radius.full,
-    alignItems: "center",
+    // Dil ayarlarındaki X ile aynı: arka plansız, düz ikon.
+    alignItems: "flex-start",
     justifyContent: "center",
   },
   list: {

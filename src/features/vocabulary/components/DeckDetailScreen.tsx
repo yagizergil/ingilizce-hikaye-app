@@ -9,7 +9,15 @@ import { useTranslation } from "react-i18next";
 import { deckColorHex, monoType, motion, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
-import { Button, EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui";
+import {
+  Button,
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  useToast,
+  ScreenHeader,
+} from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import { useCustomDecksQuery } from "@/features/vocabulary/api/useCustomDecksQuery";
 import { useDeckCardsQuery } from "@/features/vocabulary/api/useDeckCardsQuery";
@@ -216,31 +224,30 @@ export function DeckDetailScreen({ deckId, onBack, onStartReview }: DeckDetailSc
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={onBack}
-          accessibilityRole="button"
-          accessibilityLabel={t("common.back")}
-        >
-          <Ionicons name="chevron-back" size={26} color={theme.text.primary} />
-        </Pressable>
-
-        <View style={styles.headerTitleBlock}>
-          <View style={[styles.swatch, { backgroundColor: deckColorHex(deck.colorKey) }]} />
-          <Text style={[type.sectionHeading, { color: theme.text.primary }]} numberOfLines={1}>
-            {deck.name}
-          </Text>
-        </View>
-
-        <Pressable
-          onPress={() => renameSheetRef.current?.present()}
-          accessibilityRole="button"
-          accessibilityLabel={t("vocabulary.decks.editTitle")}
-          hitSlop={spacing.sm}
-        >
-          <Ionicons name="create-outline" size={22} color={theme.text.secondary} />
-        </Pressable>
-      </View>
+      <ScreenHeader
+        onBack={onBack}
+        title={
+          <View style={styles.headerTitleBlock}>
+            <View style={[styles.swatch, { backgroundColor: deckColorHex(deck.colorKey) }]} />
+            <Text
+              style={[type.sectionHeading, styles.headerTitle, { color: theme.text.primary }]}
+              numberOfLines={1}
+            >
+              {deck.name}
+            </Text>
+          </View>
+        }
+        right={
+          <Pressable
+            onPress={() => renameSheetRef.current?.present()}
+            accessibilityRole="button"
+            accessibilityLabel={t("vocabulary.decks.editTitle")}
+            hitSlop={spacing.sm}
+          >
+            <Ionicons name="create-outline" size={22} color={theme.text.secondary} />
+          </Pressable>
+        }
+      />
 
       {deck.dueCount > 0 ? (
         <View style={styles.reviewCta}>
@@ -286,9 +293,9 @@ export function DeckDetailScreen({ deckId, onBack, onStartReview }: DeckDetailSc
           accessibilityRole="button"
           style={({ pressed }) => (pressed ? { opacity: motion.pressed.opacity } : null)}
         >
-          <Text style={[monoType.label, styles.deleteDeckLabel, { color: theme.danger }]}>
+          <UpperText style={[monoType.label, styles.deleteDeckLabel, { color: theme.danger }]}>
             {t("vocabulary.decks.removeCta")}
-          </Text>
+          </UpperText>
         </Pressable>
       </View>
 
@@ -335,20 +342,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
-    gap: spacing.sm,
-  },
   headerTitleBlock: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.sm,
-    justifyContent: "center",
+    maxWidth: "100%",
+  },
+  headerTitle: {
+    flexShrink: 1,
   },
   swatch: {
     width: 12,

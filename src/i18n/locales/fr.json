@@ -75,7 +75,10 @@
       "title": "En cours de lecture",
       "percent": "{{percent}} %",
       "remove": "Retirer des lectures en cours",
-      "removeAccessibilityLabel": "Retirer {{title}} des lectures en cours"
+      "removeAccessibilityLabel": "Retirer {{title}} des lectures en cours",
+      "removeConfirmTitle": "Retirer ce livre ?",
+      "removeConfirmBody": "Ta progression de lecture dans « {{title}} » sera supprimée. Cette action est irréversible.",
+      "removeConfirmCta": "Retirer"
     },
     "categories": {
       "title": "Genres et thèmes",
@@ -199,7 +202,6 @@
   },
   "bookDetail": {
     "back": "← Bibliothèque",
-    "backAccessibilityLabel": "Retour à la bibliothèque",
     "loading": "Chargement du livre",
     "error": "Impossible de charger le livre",
     "chapters": "Chapitres",
@@ -240,10 +242,10 @@
     "audio": {
       "label": "NARRATION",
       "unlocked": "Cette histoire est lue par une voix studio, chaque mot surligné au fil de la lecture.",
-      "upgradeCta": "Écouter avec Premium",
       "locked": "La narration studio fait partie de Premium. Écoute cette histoire dans une voix naturelle, avec chaque mot surligné au moment où il est lu."
     },
-    "about": "À propos du livre"
+    "about": "À propos du livre",
+    "wordOverlap": "{{count}} mots de ta liste apparaissent dans ce livre"
   },
   "reader": {
     "header": {
@@ -287,8 +289,7 @@
       "failed": "Traduction indisponible. Vérifie ta connexion et réessaie."
     },
     "sentenceSheet": {
-      "explainGrammar": "Expliquer la grammaire",
-      "premiumNotice": "La traduction des phrases et les explications de grammaire arrivent bientôt grâce à l'IA."
+      "translationLabel": "Traduction"
     },
     "settings": {
       "fontSize": "Taille du texte",
@@ -373,7 +374,11 @@
     "hero": {
       "guest": "Invité",
       "anonymous": "Tu lis en tant qu'invité",
-      "memberSince": "Membre depuis {{date}}"
+      "memberSince": "Membre depuis {{date}}",
+      "editName": "Modifier ton nom",
+      "namePlaceholder": "Ton nom",
+      "saveName": "Enregistrer le nom",
+      "nameSaveError": "Impossible d'enregistrer ton nom. Réessaie."
     },
     "streak": {
       "currentLabel": "JOURS D'AFFILÉE",
@@ -538,6 +543,61 @@
           "description": "Ajoute ton premier mot avec le bouton ci-dessous."
         }
       }
+    },
+    "practice": {
+      "kinds": {
+        "meaning": "Choisis le sens",
+        "reverse": "Choisis le mot",
+        "cloze": "Complète la phrase",
+        "typing": "Écris le mot",
+        "listening": "Écoute et choisis le sens"
+      },
+      "typingPlaceholder": "{{hint}}…",
+      "check": "Vérifier",
+      "correct": "Correct !",
+      "wrong": "Pas tout à fait",
+      "answerLine": "{{lemma}} — {{gloss}}",
+      "next": "Continuer",
+      "error": "Impossible de lancer la révision.",
+      "emptyTitle": "Il faut quelques mots de plus",
+      "emptyBody": "Enregistre au moins {{count}} mots pour la révision intelligente.",
+      "doneTitle": "Séance terminée",
+      "score": "{{correct}} / {{total}} justes",
+      "missedTitle": "À revoir",
+      "perfect": "Tout juste, bravo !",
+      "playAgain": "Réécouter"
+    },
+    "hub": {
+      "progressTitle": "Ta progression",
+      "learning": "En cours",
+      "known": "Appris",
+      "total": "Total",
+      "reviewTitle": "Révision",
+      "reviewDue": "{{count}} mots en attente",
+      "reviewNone": "Rien à revoir aujourd'hui",
+      "practiceTitle": "Révision intelligente",
+      "premiumBadge": "Premium",
+      "practiceFreeLeft": "1 essai gratuit aujourd'hui",
+      "practiceFreeUsed": "Nouvel essai demain · Illimité avec Premium",
+      "practiceUnlimited": "Exercices variés, illimités",
+      "openBook": "Retour au livre"
+    },
+    "packs": {
+      "sectionTitle": "Découvrir",
+      "cardTitle": "Pack de mots {{level}}",
+      "cardBody": "Les mots les plus fréquents à ce niveau",
+      "intro": "Les mots présents dans le plus grand nombre d'histoires {{level}}. Ceux que tu as déjà enregistrés n'y sont pas.",
+      "loading": "Préparation du pack…",
+      "error": "Impossible de charger le pack.",
+      "emptyTitle": "Aucun pack à ce niveau",
+      "emptyBody": "Il n'y a pas encore assez de livres de ce niveau dans cette langue.",
+      "lockedTitle": "{{count}} mots de plus verrouillés",
+      "lockedBody": "Passe à Premium pour débloquer le pack complet et l'ajouter à tes paquets.",
+      "unlock": "Débloquer le pack complet",
+      "addToDecks": "Ajouter à mes paquets",
+      "deckName": "Pack {{level}}",
+      "added": "Pack ajouté à tes paquets",
+      "addError": "Impossible d'ajouter le pack. Réessaie."
     }
   },
   "browse": {
@@ -611,7 +671,8 @@
     "startButton": "Commencer la révision",
     "dueBadge": "{{count}} mots prêts",
     "saveFailed_one": "{{count}} mots n'ont pas pu être enregistrés. Vérifiez votre connexion et réessayez.",
-    "saveFailed_other": "{{count}} mots n'ont pas pu être enregistrés. Vérifiez votre connexion et réessayez."
+    "saveFailed_other": "{{count}} mots n'ont pas pu être enregistrés. Vérifiez votre connexion et réessayez.",
+    "saveFailedToast": "Impossible d'enregistrer ta réponse. Vérifie ta connexion."
   },
   "onboarding": {
     "introTitle": "Trouvons ton niveau",
@@ -706,7 +767,10 @@
       "ctaPending_other": "Choisis encore {{count}} mots à travailler",
       "levelPill": "{{level}} · pour toi",
       "unavailable": "Aucun texte n'est encore prêt dans cette langue.",
-      "saveHint": "Touchez le signet pour enregistrer"
+      "saveHint": "Touchez le signet pour enregistrer",
+      "sentenceSubtitle": "Bravo ! Maintenant, appuie longuement sur une phrase.",
+      "ctaSentencePending": "Appuie longuement sur une phrase pour continuer",
+      "sentenceHint": "Appuie longuement sur n'importe quelle phrase du texte pour voir la traduction de la phrase entière."
     },
     "quiz": {
       "title": "Travaille tes mots",
@@ -837,6 +901,14 @@
       "stats": {
         "title": "Voir tes progrès",
         "body": "Temps de lecture, série et niveau : toutes les statistiques."
+      },
+      "smartPractice": {
+        "title": "Révision intelligente",
+        "body": "Complète les phrases que tu as lues, choisis le sens, écris le mot : des exercices variés pour tout retenir."
+      },
+      "wordPacks": {
+        "title": "Packs Découvrir",
+        "body": "Les mots les plus fréquents des livres de chaque niveau, transformés en paquet en un geste."
       }
     },
     "plan": {

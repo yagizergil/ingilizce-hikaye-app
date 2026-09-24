@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { levelAccent, monoType, onLevelAccent } from "@/theme";
+import { levelAccent, monoType, onLevelAccentByLevel } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
 interface LevelBadgeProps {
@@ -44,7 +44,14 @@ export function LevelBadge({ level }: LevelBadgeProps) {
       accessibilityRole="text"
       accessibilityLabel={t("ui.levelBadge.accessibilityLabel", { level })}
     >
-      <Text style={[monoType.levelBadge, { color: known ? onLevelAccent : theme.text.primary }]}>{level}</Text>
+      <Text
+        style={[
+          monoType.levelBadge,
+          { color: known ? onLevelAccentByLevel[level] : theme.text.primary },
+        ]}
+      >
+        {level}
+      </Text>
     </View>
   );
 }

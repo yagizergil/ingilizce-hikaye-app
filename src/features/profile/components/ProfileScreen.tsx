@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -7,13 +7,20 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
 
-import { spacing, type } from "@/theme";
+import { spacing } from "@/theme";
 import { levelAccent } from "@/theme/tokens/colors";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { env } from "@/lib/env";
-import { Card, LoadingState, ErrorState, Hairline, SectionHeader } from "@/components/ui";
+import {
+  Card,
+  LoadingState,
+  ErrorState,
+  Hairline,
+  SectionHeader,
+  ScreenHeader,
+} from "@/components/ui";
 import { useVocabularyQuery } from "@/features/vocabulary";
 import { ReaderSettingsSheet, useReaderSettings } from "@/features/reader";
 import { useOnboardingStatusQuery } from "@/features/onboarding";
@@ -187,9 +194,7 @@ export function ProfileScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <View style={styles.header}>
-        <Text style={[type.screenTitle, { color: theme.text.primary }]}>{t("profile.title")}</Text>
-      </View>
+      <ScreenHeader title={t("profile.title")} />
 
       {isLoading ? (
         <LoadingState message={t("profile.loading")} />
@@ -337,11 +342,6 @@ export function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xs,
-    paddingBottom: spacing.sm,
   },
   scrollContent: {
     paddingBottom: spacing.screenBottom,

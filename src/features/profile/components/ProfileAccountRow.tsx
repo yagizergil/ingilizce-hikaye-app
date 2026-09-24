@@ -6,6 +6,7 @@ import type { ComponentProps } from "react";
 
 import { motion, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { directionalIcon } from "@/lib/rtl";
 
 interface ProfileAccountRowProps {
   label: string;
@@ -59,7 +60,11 @@ export function ProfileAccountRow({
           <Text style={[type.bookTitleMd, { color: theme.text.secondary }]}>{value}</Text>
         ) : null}
         {onPress && !destructive ? (
-          <Ionicons name="chevron-forward" size={18} color={theme.text.secondary} />
+          <Ionicons
+            name={directionalIcon("chevron-forward", "chevron-back")}
+            size={18}
+            color={theme.text.secondary}
+          />
         ) : null}
       </View>
     </>
@@ -84,7 +89,11 @@ export function ProfileAccountRow({
   }
 
   return (
-    <View accessibilityRole="text" accessibilityLabel={accessibilityLabel ?? `${label} ${value ?? ""}`} style={[styles.row, icon ? styles.rowWithIcon : null]}>
+    <View
+      accessibilityRole="text"
+      accessibilityLabel={accessibilityLabel ?? `${label} ${value ?? ""}`}
+      style={[styles.row, icon ? styles.rowWithIcon : null]}
+    >
       {content}
     </View>
   );

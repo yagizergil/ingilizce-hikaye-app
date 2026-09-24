@@ -33,3 +33,11 @@ export { useReviewDeckCardMutation } from "@/features/vocabulary/api/useReviewDe
 export { DecksTab } from "@/features/vocabulary/components/DecksTab";
 export { DeckDetailScreen } from "@/features/vocabulary/components/DeckDetailScreen";
 export { DeckReviewScreen } from "@/features/vocabulary/components/DeckReviewScreen";
+export { SmartPracticeScreen } from "@/features/vocabulary/components/SmartPracticeScreen";
+export { WordPackScreen } from "@/features/vocabulary/components/WordPackScreen";
+export {
+  useSmartPracticeQuotaQuery,
+  consumeSmartPractice,
+} from "@/features/vocabulary/api/useSmartPractice";
+export type { SmartPracticeQuota } from "@/features/vocabulary/api/useSmartPractice";
+export { VocabularyHub } from "@/features/vocabulary/components/VocabularyHub";

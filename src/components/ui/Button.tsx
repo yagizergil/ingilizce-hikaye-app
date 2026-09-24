@@ -1,7 +1,14 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, View, type GestureResponderEvent } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  View,
+  type GestureResponderEvent,
+} from "react-native";
 
 import { monoType, motion, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 /**
  * `primary` 2026-09-07 tasarım revizyonunda mürekkep siyahından accent
@@ -97,7 +104,9 @@ export function Button({
       ) : (
         <View style={styles.content}>
           {icon}
-          <Text style={[monoType.buttonLabel, styles.label, { color: textColor }]}>{label}</Text>
+          <UpperText style={[monoType.buttonLabel, styles.label, { color: textColor }]}>
+            {label}
+          </UpperText>
         </View>
       )}
     </Pressable>

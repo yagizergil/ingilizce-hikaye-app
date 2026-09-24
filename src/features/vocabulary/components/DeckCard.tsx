@@ -7,6 +7,8 @@ import { deckColorHex, monoType, motion, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
 import type { CustomDeck } from "@/features/vocabulary/types";
+import { directionalIcon } from "@/lib/rtl";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface DeckCardProps {
   deck: CustomDeck;
@@ -54,12 +56,16 @@ export function DeckCard({ deck, onPress }: DeckCardProps) {
 
       {deck.dueCount > 0 ? (
         <View style={[styles.dueBadge, { backgroundColor: theme.accent }]}>
-          <Text style={[monoType.label, { color: theme.text.onAccent }]}>
+          <UpperText style={[monoType.label, { color: theme.text.onAccent }]}>
             {t("vocabulary.decks.card.dueBadge", { count: deck.dueCount })}
-          </Text>
+          </UpperText>
         </View>
       ) : (
-        <Ionicons name="chevron-forward" size={18} color={theme.text.secondary} />
+        <Ionicons
+          name={directionalIcon("chevron-forward", "chevron-back")}
+          size={18}
+          color={theme.text.secondary}
+        />
       )}
     </Pressable>
   );

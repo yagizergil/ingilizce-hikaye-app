@@ -10,9 +10,11 @@ import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { maybeRequestReview } from "@/lib/storeReview";
 import { Button, ErrorState, LoadingState } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 import { useSubscriptionQuery } from "@/features/paywall";
 
 import { useBookCompletionQuery } from "@/features/completion/api/useBookCompletionQuery";
+import { directionalIcon } from "@/lib/rtl";
 
 interface BookFinishedScreenProps {
   bookId: string | null;
@@ -104,9 +106,9 @@ export function BookFinishedScreen({
           </View>
 
           <View style={styles.heading}>
-            <Text style={[monoType.eyebrow, styles.centered, { color: theme.text.secondary }]}>
+            <UpperText style={[monoType.eyebrow, styles.centered, { color: theme.text.secondary }]}>
               {t("completion.eyebrow", { count: data.completedBookCount })}
-            </Text>
+            </UpperText>
             <Text style={[type.display, styles.centered, { color: theme.text.primary }]}>
               {data.bookTitle}
             </Text>
@@ -149,7 +151,10 @@ export function BookFinishedScreen({
               accessibilityRole="button"
               style={({ pressed }) => [
                 styles.upgrade,
-                { borderColor: theme.border.hairline, opacity: pressed ? motion.pressed.opacity : 1 },
+                {
+                  borderColor: theme.border.hairline,
+                  opacity: pressed ? motion.pressed.opacity : 1,
+                },
               ]}
             >
               <View style={styles.upgradeText}>
@@ -160,7 +165,11 @@ export function BookFinishedScreen({
                   {t("completion.upgradeHint")}
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={16} color={theme.text.secondary} />
+              <Ionicons
+                name={directionalIcon("chevron-forward", "chevron-back")}
+                size={18}
+                color={theme.text.secondary}
+              />
             </Pressable>
           ) : null}
         </ScrollView>
@@ -176,7 +185,7 @@ function Stat({ value, label }: { value: string; label: string }) {
       <Text style={[monoType.statValueLg, styles.statValue, { color: theme.text.primary }]}>
         {value}
       </Text>
-      <Text style={[monoType.statLabel, { color: theme.text.secondary }]}>{label}</Text>
+      <UpperText style={[monoType.statLabel, { color: theme.text.secondary }]}>{label}</UpperText>
     </View>
   );
 }

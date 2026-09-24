@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { monoType, radius, spacing, type } from "@/theme";
 import { levelAccent } from "@/theme/tokens/colors";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { ComponentProps } from "react";
 
@@ -50,9 +51,9 @@ export function OnboardingTrialTimeline({ trialDays }: OnboardingTrialTimelinePr
         { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
       ]}
     >
-      <Text style={[monoType.eyebrow, { color: theme.text.secondary }]}>
+      <UpperText style={[monoType.eyebrow, { color: theme.text.secondary }]}>
         {t("onboarding.trial.heading")}
-      </Text>
+      </UpperText>
 
       <View style={styles.rows}>
         {/* Rozetleri birbirine bağlayan dikey çizgi -- referanstaki gibi

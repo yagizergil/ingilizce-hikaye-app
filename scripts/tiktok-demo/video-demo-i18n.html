@@ -1,0 +1,253 @@
+<title>Animasyonlu gönderi demosu</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=Nunito:wght@600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF8F4;
+    --ink: #241F19;
+    --ink-soft: #8A8378;
+    --hairline: #E7E2D8;
+    --accent: #A6572E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: #EDE8DE;
+    margin: 0;
+    padding-block: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    font-family: 'Nunito', sans-serif;
+  }
+  .switcher {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline: 16px;
+  }
+  .switcher button {
+    border: 1px solid var(--hairline);
+    background: #fff;
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  .switcher button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .stage {
+    width: 100%;
+    max-width: 380px;
+    padding-inline: 16px;
+  }
+  .phone {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    background: var(--bg);
+    border-radius: 28px;
+    border: 1px solid var(--hairline);
+    overflow: hidden;
+  }
+  .scene {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity .25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .scene.show { opacity: 1; }
+  .pad { padding: 0 30px; }
+  .lit { font-family: 'Literata', Georgia, serif; }
+  .word-hl {
+    position: relative;
+    border-radius: 4px;
+    padding: 1px 2px;
+    transition: background .2s ease, color .2s ease;
+  }
+  .word-hl.active { background: var(--accent); color: #fff; }
+  .sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    margin: 0 16px 16px;
+    padding: 16px 18px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(36,31,25,.15);
+    transform: translateY(120%);
+    transition: transform .45s cubic-bezier(.22,1,.36,1);
+  }
+  .sheet.open { transform: translateY(0); }
+  .hint {
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+</style>
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Language-switchable looping demo of the tap-to-translate reading interaction, for screen recording into a TikTok video</h2>
+<div class="switcher" id="switcher"></div>
+<div class="stage">
+  <div class="phone" id="phone"></div>
+</div>
+<p class="hint">Dili seç, telefonunda aç, ekran kaydı başlat &mdash; döngü otomatik tekrar eder.</p>
+<script>
+  var LANGS = {
+    tr: { label: "TR", rtl: false, font: "Nunito", word: "eavesdrop",
+      sentence: "She didn't mean to eavesdrop, but the door was open.",
+      pos: "FİİL", gloss: "kulak misafiri olmak",
+      hook: "Bu kelimeyi okuyabiliyorsun. Peki ne demek olduğunu biliyor musun?",
+      headline: "OKURKEN BİLMEDİĞİN KELİMEYE DOKUN",
+      listen: "Dinle", save: "Kaydet",
+      cta: "İlk hikâyeni bu akşam bitir.", link: "↑ Biyodaki linkten indir" },
+    en: { label: "EN", rtl: false, font: "Nunito", word: "ephemeral",
+      sentence: "The ephemeral glow of fireflies faded before she could name it.",
+      pos: "ADJECTIVE", gloss: "lasting a very short time",
+      hook: "You can read this word. But do you actually know what it means?",
+      headline: "TAP THE WORD WHILE YOU READ",
+      listen: "Listen", save: "Save",
+      cta: "Finish your first story tonight.", link: "↑ Link in bio" },
+    es: { label: "ES", rtl: false, font: "Nunito", word: "wanderlust",
+      sentence: "She felt a sudden wanderlust for places she'd never seen.",
+      pos: "SUSTANTIVO", gloss: "deseo intenso de viajar",
+      hook: "Puedes leer esta palabra. ¿Pero sabes lo que significa?",
+      headline: "TOCA LA PALABRA MIENTRAS LEES",
+      listen: "Escuchar", save: "Guardar",
+      cta: "Termina tu primera historia esta noche.", link: "↑ Link en la bio" },
+    de: { label: "DE", rtl: false, font: "Nunito", word: "bittersweet",
+      sentence: "It was a bittersweet goodbye at the train station.",
+      pos: "ADJEKTIV", gloss: "bittersüß",
+      hook: "Du kannst dieses Wort lesen. Aber weißt du, was es bedeutet?",
+      headline: "WORT ANTIPPEN WÄHREND DU LIEST",
+      listen: "Anhören", save: "Speichern",
+      cta: "Beende heute Abend deine erste Geschichte.", link: "↑ Link in der Bio" },
+    ar: { label: "AR", rtl: true, font: "Cairo", word: "serendipity",
+      sentence: "It was pure serendipity that they met that day.",
+      pos: "اسم", gloss: "صدفة سعيدة",
+      hook: "تستطيع قراءة هذه الكلمة، لكن هل تعرف معناها؟",
+      headline: "اضغط على الكلمة أثناء القراءة",
+      listen: "استمع", save: "احفظ",
+      cta: "أنهِ قصتك الأولى الليلة.", link: "↑ الرابط في البايو" }
+  };
+
+  var HOOK_END = 2000, TAP_AT = 400, SHEET_CLOSE_AT = 3300, DEMO_END = 6200, TOTAL = 8600;
+  var switcher = document.getElementById('switcher');
+  var phone = document.getElementById('phone');
+  var timers = [];
+  var current = 'tr';
+
+  Object.keys(LANGS).forEach(function (code) {
+    var btn = document.createElement('button');
+    btn.textContent = LANGS[code].label;
+    btn.onclick = function () { render(code); };
+    btn.id = 'btn-' + code;
+    switcher.appendChild(btn);
+  });
+
+  function clearTimers() {
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+
+  function render(code) {
+    current = code;
+    Object.keys(LANGS).forEach(function (c) {
+      document.getElementById('btn-' + c).classList.toggle('active', c === code);
+    });
+    var L = LANGS[code];
+    var dir = L.rtl ? 'rtl' : 'ltr';
+    var align = L.rtl ? 'right' : 'left';
+    var cardDir = L.rtl ? 'row-reverse' : 'row';
+
+    phone.dir = dir;
+    phone.style.fontFamily = "'" + L.font + "', sans-serif";
+    phone.innerHTML =
+      '<div class="scene show" id="sc-hook" style="font-family:inherit;">' +
+        '<div class="pad">' +
+          '<div class="lit" style="font-size:38px;font-weight:700;">' + L.word + '</div>' +
+          '<div style="height:12px;"></div>' +
+          '<div style="font-size:13px;font-weight:700;color:var(--ink-soft);line-height:1.5;">' + L.hook + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="scene" id="sc-demo" style="display:flex;">' +
+        '<div style="position:absolute;top:22px;left:0;right:0;text-align:center;">' +
+          '<div style="font-size:9px;font-weight:800;letter-spacing:.04em;color:var(--accent);">' + L.headline + '</div>' +
+        '</div>' +
+        '<div style="position:absolute;top:46px;left:22px;right:22px;bottom:0;background:var(--bg);border:1px solid var(--hairline);border-radius:20px;overflow:hidden;">' +
+          '<div style="height:3px;background:var(--hairline);position:relative;"><i style="position:absolute;' + (L.rtl ? 'right' : 'left') + ':0;top:0;bottom:0;width:31%;background:var(--accent);display:block;"></i></div>' +
+          '<div class="lit" dir="ltr" style="padding:16px 18px 0;font-size:14px;line-height:1.7;color:var(--ink);text-align:' + align + ';">' +
+            L.sentence.replace(L.word, '<span class="word-hl" id="w">' + L.word + '</span>') +
+          '</div>' +
+          '<div class="sheet" id="sheet">' +
+            '<div style="font-size:9px;font-weight:800;color:var(--ink-soft);">' + L.pos + '</div>' +
+            '<div class="lit" dir="ltr" style="font-style:italic;font-size:17px;margin-top:5px;text-align:' + align + ';">' + L.word + '</div>' +
+            '<div style="font-size:12px;font-weight:800;color:var(--accent);margin-top:3px;">' + L.gloss + '</div>' +
+            '<div style="display:flex;flex-direction:' + cardDir + ';gap:8px;margin-top:12px;">' +
+              '<div style="font-size:9px;font-weight:800;border:1.5px solid var(--ink);padding:7px 10px;border-radius:9px;">🔊 ' + L.listen + '</div>' +
+              '<div style="font-size:9px;font-weight:800;background:var(--ink);color:var(--bg);padding:7px 10px;border-radius:9px;">⭐ ' + L.save + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="scene" id="sc-cta">' +
+        '<div class="pad">' +
+          '<div class="lit" style="font-size:26px;font-weight:700;">Lingo Stories</div>' +
+          '<div style="height:8px;"></div>' +
+          '<div style="font-size:13px;font-weight:700;color:var(--ink-soft);">' + L.cta + '</div>' +
+          '<div style="height:16px;"></div>' +
+          '<div style="font-size:11px;font-weight:800;color:var(--accent);">' + L.link + '</div>' +
+        '</div>' +
+      '</div>';
+
+    clearTimers();
+    loop();
+  }
+
+  function loop() {
+    var hook = document.getElementById('sc-hook');
+    var demo = document.getElementById('sc-demo');
+    var cta = document.getElementById('sc-cta');
+    var w = document.getElementById('w');
+    var sheet = document.getElementById('sheet');
+
+    hook.classList.add('show');
+    demo.classList.remove('show');
+    cta.classList.remove('show');
+    w.classList.remove('active');
+    sheet.classList.remove('open');
+
+    timers.push(setTimeout(function () {
+      hook.classList.remove('show');
+      demo.classList.add('show');
+    }, HOOK_END));
+
+    timers.push(setTimeout(function () {
+      w.classList.add('active');
+      sheet.classList.add('open');
+    }, HOOK_END + TAP_AT));
+
+    timers.push(setTimeout(function () {
+      sheet.classList.remove('open');
+      w.classList.remove('active');
+    }, HOOK_END + SHEET_CLOSE_AT));
+
+    timers.push(setTimeout(function () {
+      demo.classList.remove('show');
+      cta.classList.add('show');
+    }, DEMO_END));
+
+    timers.push(setTimeout(loop, TOTAL));
+  }
+
+  render('tr');
+</script>

@@ -14,8 +14,10 @@ import {
 } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { BookCover, LevelBadge, SectionHeader } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { Book } from "@/features/library/types";
+import { shelfStyles } from "@/features/home/components/shelfLayout";
 
 interface ShelfBookCardProps {
   book: Book;
@@ -71,19 +73,21 @@ function ShelfBookCard({ book, onPress, progressLabel, finished = false }: Shelf
               </View>
             ) : null}
             <View style={styles.badgeOverlay}>
-            <LevelBadge level={book.level} />
-            {progressLabel ? (
-              <View
-                style={[styles.seriesBadge, { backgroundColor: theme.bg.primary }]}
-                accessibilityRole="text"
-                accessibilityLabel={t("home.seriesCard.progress", {
-                  current: progressLabel.split("/")[0],
-                  total: progressLabel.split("/")[1],
-                })}
-              >
-                <Text style={[monoType.badge, { color: theme.text.primary }]}>{progressLabel}</Text>
-              </View>
-            ) : null}
+              <LevelBadge level={book.level} />
+              {progressLabel ? (
+                <View
+                  style={[styles.seriesBadge, { backgroundColor: theme.bg.primary }]}
+                  accessibilityRole="text"
+                  accessibilityLabel={t("home.seriesCard.progress", {
+                    current: progressLabel.split("/")[0],
+                    total: progressLabel.split("/")[1],
+                  })}
+                >
+                  <UpperText style={[monoType.badge, { color: theme.text.primary }]}>
+                    {progressLabel}
+                  </UpperText>
+                </View>
+              ) : null}
             </View>
           </>
         }
@@ -138,12 +142,12 @@ export function BookShelf({
   );
 
   return (
-    <View style={styles.container}>
+    <View style={shelfStyles.container}>
       <SectionHeader
         title={title}
         moreLabel={moreLabel}
         onPressMore={onPressMore}
-        style={styles.head}
+        style={shelfStyles.head}
       />
       <FlashList
         horizontal
@@ -151,7 +155,7 @@ export function BookShelf({
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={shelfStyles.listContent}
       />
     </View>
   );
@@ -163,17 +167,6 @@ export function BookShelf({
 const CARD_WIDTH = coverColumnWidth.shelf;
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: spacing.xxxxl,
-  },
-  head: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
-  },
-  listContent: {
-    paddingHorizontal: spacing.lg,
-    gap: spacing.md,
-  },
   card: {
     width: CARD_WIDTH,
     marginRight: spacing.md,

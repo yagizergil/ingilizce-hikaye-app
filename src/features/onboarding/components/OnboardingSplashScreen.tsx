@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 /**
  * Onboarding'in ilk karesi: marka.
@@ -55,9 +56,9 @@ export function OnboardingSplashScreen({ onDone }: OnboardingSplashScreenProps) 
           {t("app.name")}
         </Text>
         <View style={[styles.rule, { backgroundColor: theme.accent }]} />
-        <Text style={[monoType.label, styles.tagline, { color: theme.text.secondary }]}>
+        <UpperText style={[monoType.label, styles.tagline, { color: theme.text.secondary }]}>
           {t("onboarding.splash.tagline")}
-        </Text>
+        </UpperText>
       </Animated.View>
     </View>
   );

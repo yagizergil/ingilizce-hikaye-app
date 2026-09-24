@@ -28,3 +28,5 @@ export { StatCell } from "@/components/ui/StatCell";
 export type { StatCellSize } from "@/components/ui/StatCell";
 export { SectionHeader } from "@/components/ui/SectionHeader";
 export { ProgressBar } from "@/components/ui/ProgressBar";
+export { ScreenHeader } from "@/components/ui/ScreenHeader";
+export { UpperText, toLocaleUpper } from "@/components/ui/UpperText";

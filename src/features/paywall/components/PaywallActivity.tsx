@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { monoType, paywallType, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { PaywallActivityFacts } from "@/features/paywall/api/usePaywallFactsQuery";
 
@@ -70,9 +71,9 @@ export function PaywallActivity({ activity, blockedWord }: PaywallActivityProps)
         </Text>
       ) : null}
 
-      <Text style={[monoType.eyebrow, { color: theme.text.secondary }]}>
+      <UpperText style={[monoType.eyebrow, { color: theme.text.secondary }]}>
         {t("paywall.activity.heading")}
-      </Text>
+      </UpperText>
 
       <View style={styles.row}>
         {stats.map((stat) => (

@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
-import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { gateOnLanguagePair, useActiveLanguagePairQuery } from "@/features/languagePair";
 
 import type { Book } from "@/features/library/types";
 
@@ -66,14 +66,16 @@ async function fetchCurrentlyReading(
 
 export function useCurrentlyReadingQuery() {
   const queryClient = useQueryClient();
-  const { data: activePair } = useActiveLanguagePairQuery();
+  const pairQuery = useActiveLanguagePairQuery();
+  const activePair = pairQuery.data;
   const targetLanguage = activePair?.targetLanguage ?? null;
 
-  return useQuery({
+  const query = useQuery({
     queryKey: homeQueryKeys.currentlyReading(targetLanguage ?? ""),
     queryFn: () => fetchCurrentlyReading(queryClient, targetLanguage as string),
     enabled: targetLanguage !== null,
   });
+  return gateOnLanguagePair(query, pairQuery);
 }
 
 /**

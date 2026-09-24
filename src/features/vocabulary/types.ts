@@ -36,6 +36,13 @@ export interface VocabularyWord {
   /** `user_lemma_state.state` for this lemma. */
   state: "new" | "learning" | "known" | "ignored" | null;
   createdAt: string;
+  /** Kelimenin okunurken görüldüğü biçim ("went" -- lemması "go"). */
+  surface: string;
+  /** Kelimenin okunduğu cümle (`user_saved_words.context_text`). Akıllı
+   * Tekrar'daki boşluk doldurma alıştırması bundan kuruluyor. */
+  contextText: string | null;
+  /** Kaydedildiği kitap -- satırdan kitaba dönüş için. */
+  bookId: string | null;
 }
 
 export interface VocabularySummary {

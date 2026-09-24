@@ -75,7 +75,10 @@
       "title": "Şu An Okunuyor",
       "percent": "%{{percent}}",
       "remove": "Şu an okunuyor listesinden kaldır",
-      "removeAccessibilityLabel": "{{title}} kitabını şu an okunuyor listesinden kaldır"
+      "removeAccessibilityLabel": "{{title}} kitabını şu an okunuyor listesinden kaldır",
+      "removeConfirmTitle": "Kitap listeden kaldırılsın mı?",
+      "removeConfirmBody": "\"{{title}}\" kitabındaki okuma ilerlemen silinecek. Bu işlem geri alınamaz.",
+      "removeConfirmCta": "Kaldır"
     },
     "categories": {
       "title": "Türler ve Konular",
@@ -199,7 +202,6 @@
   },
   "bookDetail": {
     "back": "← Kitaplık",
-    "backAccessibilityLabel": "Kitaplığa dön",
     "loading": "Kitap yükleniyor",
     "error": "Kitap yüklenemedi",
     "chapters": "Bölümler",
@@ -240,10 +242,10 @@
     "audio": {
       "label": "SESLENDİRME",
       "unlocked": "Bu hikâye stüdyo sesiyle, kelime kelime takip edilerek okunuyor.",
-      "upgradeCta": "Premium ile dinle",
       "locked": "Stüdyo seslendirmesi premium'a dahil. Bu hikâyeyi doğal bir sesle, okuduğun kelime vurgulanarak dinleyebilirsin."
     },
-    "about": "Kitap hakkında"
+    "about": "Kitap hakkında",
+    "wordOverlap": "Kelime defterindeki {{count}} kelime bu kitapta geçiyor"
   },
   "reader": {
     "header": {
@@ -287,8 +289,7 @@
       "failed": "Çeviri şu an alınamadı. Bağlantını kontrol edip tekrar dene."
     },
     "sentenceSheet": {
-      "explainGrammar": "Gramerini açıkla",
-      "premiumNotice": "Cümle çevirisi ve gramer açıklaması yakında AI ile gelecek."
+      "translationLabel": "Çeviri"
     },
     "settings": {
       "fontSize": "Yazı boyutu",
@@ -373,7 +374,11 @@
     "hero": {
       "guest": "Misafir",
       "anonymous": "Misafir olarak okuyorsun",
-      "memberSince": "{{date}} tarihinden beri üye"
+      "memberSince": "{{date}} tarihinden beri üye",
+      "editName": "İsmini düzenle",
+      "namePlaceholder": "Adın",
+      "saveName": "İsmi kaydet",
+      "nameSaveError": "İsim kaydedilemedi. Tekrar dene."
     },
     "streak": {
       "currentLabel": "GÜNLÜK SERİ",
@@ -538,6 +543,61 @@
           "description": "Aşağıdaki düğmeyle ilk kelimeni ekle."
         }
       }
+    },
+    "practice": {
+      "kinds": {
+        "meaning": "Anlamını seç",
+        "reverse": "Kelimeyi seç",
+        "cloze": "Boşluğu doldur",
+        "typing": "Kelimeyi yaz",
+        "listening": "Dinle ve anlamını seç"
+      },
+      "typingPlaceholder": "{{hint}}…",
+      "check": "Kontrol et",
+      "correct": "Doğru!",
+      "wrong": "Olmadı",
+      "answerLine": "{{lemma}} — {{gloss}}",
+      "next": "Devam",
+      "error": "Akıllı Tekrar başlatılamadı.",
+      "emptyTitle": "Biraz daha kelime lazım",
+      "emptyBody": "Akıllı Tekrar için en az {{count}} kelime kaydet.",
+      "doneTitle": "Oturum bitti",
+      "score": "{{correct}} / {{total}} doğru",
+      "missedTitle": "Tekrar bakılacaklar",
+      "perfect": "Hepsi doğru, harika!",
+      "playAgain": "Tekrar dinle"
+    },
+    "hub": {
+      "progressTitle": "İlerlemen",
+      "learning": "Öğreniliyor",
+      "known": "Öğrenildi",
+      "total": "Toplam",
+      "reviewTitle": "Tekrar",
+      "reviewDue": "{{count}} kelime bekliyor",
+      "reviewNone": "Bugün bekleyen yok",
+      "practiceTitle": "Akıllı Tekrar",
+      "premiumBadge": "Premium",
+      "practiceFreeLeft": "Bugün 1 ücretsiz deneme",
+      "practiceFreeUsed": "Yarın yeni deneme · Premium'da sınırsız",
+      "practiceUnlimited": "Karışık alıştırmalar, sınırsız",
+      "openBook": "Kitaba dön"
+    },
+    "packs": {
+      "sectionTitle": "Keşfet",
+      "cardTitle": "{{level}} kelime paketi",
+      "cardBody": "Bu seviyenin kitaplarında en sık geçenler",
+      "intro": "{{level}} seviyesindeki hikâyelerde en çok kitapta geçen kelimeler. Zaten kaydettiklerin listede yok.",
+      "loading": "Paket hazırlanıyor…",
+      "error": "Paket yüklenemedi.",
+      "emptyTitle": "Bu seviyede paket yok",
+      "emptyBody": "Bu dilde bu seviyeden henüz yeterince kitap yok.",
+      "lockedTitle": "{{count}} kelime daha kilitli",
+      "lockedBody": "Tam paketi açmak ve desteye eklemek için Premium'a geç.",
+      "unlock": "Paketin tamamını aç",
+      "addToDecks": "Destelerime ekle",
+      "deckName": "{{level}} paketi",
+      "added": "Paket destelerine eklendi",
+      "addError": "Paket eklenemedi, tekrar dene."
     }
   },
   "browse": {
@@ -611,7 +671,8 @@
     "startButton": "Tekrara başla",
     "dueBadge": "{{count}} kelime hazır",
     "saveFailed_one": "{{count}} kelime kaydedilemedi. Bağlantını kontrol edip tekrar dene.",
-    "saveFailed_other": "{{count}} kelime kaydedilemedi. Bağlantını kontrol edip tekrar dene."
+    "saveFailed_other": "{{count}} kelime kaydedilemedi. Bağlantını kontrol edip tekrar dene.",
+    "saveFailedToast": "Değerlendirme kaydedilemedi. Bağlantını kontrol et."
   },
   "onboarding": {
     "introTitle": "Seviyeni bulalım",
@@ -706,7 +767,10 @@
       "ctaPending_other": "Alıştırma için {{count}} kelime daha seç",
       "levelPill": "{{level}} · sana göre",
       "unavailable": "Bu dilde okuma parçası henüz hazır değil.",
-      "saveHint": "Kaydetmek için yer imine dokun"
+      "saveHint": "Kaydetmek için yer imine dokun",
+      "sentenceSubtitle": "Harika! Şimdi bir cümleye basılı tut.",
+      "ctaSentencePending": "Devam etmek için bir cümleye basılı tut",
+      "sentenceHint": "Metindeki herhangi bir cümleye parmağını basılı tut: tüm cümlenin çevirisi açılır."
     },
     "quiz": {
       "title": "Kelimelerini çalış",
@@ -837,6 +901,14 @@
       "stats": {
         "title": "İlerlemeni gör",
         "body": "Okuma süresi, seri ve seviye istatistiklerinin tamamı."
+      },
+      "smartPractice": {
+        "title": "Akıllı Tekrar",
+        "body": "Okuduğun cümlelerde boşluk doldur, anlamı seç, kelimeyi yaz: karışık alıştırmalarla kelimeler kalıcı olsun."
+      },
+      "wordPacks": {
+        "title": "Keşfet paketleri",
+        "body": "Her seviyenin kitaplarında en sık geçen kelimeler, tek dokunuşla kendi desten olsun."
       }
     },
     "plan": {

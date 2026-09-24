@@ -11,6 +11,9 @@ import type { VocabularyData, VocabularyWord } from "@/features/vocabulary/types
 interface SavedWordRow {
   id: string;
   lemma: string;
+  surface: string;
+  context_text: string | null;
+  book_id: string | null;
   created_at: string;
   books: { title: string } | null;
 }
@@ -45,7 +48,7 @@ interface LemmaStateRow {
 export async function fetchVocabularyData(): Promise<VocabularyData> {
   const { data: savedRows, error: savedError } = await supabase
     .from("user_saved_words")
-    .select("id, lemma, created_at, books(title)")
+    .select("id, lemma, surface, context_text, book_id, created_at, books(title)")
     .order("created_at", { ascending: false })
     .returns<SavedWordRow[]>();
 
@@ -112,6 +115,9 @@ export async function fetchVocabularyData(): Promise<VocabularyData> {
       dueAt: card?.due_at ?? null,
       state: state?.state ?? null,
       createdAt: row.created_at,
+      surface: row.surface,
+      contextText: row.context_text,
+      bookId: row.book_id,
     };
   });
 

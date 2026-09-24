@@ -70,6 +70,7 @@ export function ReaderWord({
           : null,
         isSpoken ? { backgroundColor: spokenBackground } : null,
       ]}
+      suppressHighlighting
       onPress={onPress}
       onLongPress={onLongPress}
     >

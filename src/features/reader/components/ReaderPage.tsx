@@ -164,6 +164,11 @@ function ReaderPageComponent({
             key={`s-${currentSentenceStart}`}
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
+            // iOS basılı tutulan pressable <Text>'e gri bir basma vurgusu
+            // çiziyor. Kelimeler ayrı pressable düğümler olduğu için vurgu
+            // yalnızca cümleye ait boşluk/noktalama parçalarına düşüyor ve
+            // kelimelerin arasında gri kutular olarak görünüyordu.
+            suppressHighlighting
             onLongPress={() => onSentenceLongPress({ sentenceText, paragraphId: paragraph.id })}
           >
             {currentSentenceTokens}

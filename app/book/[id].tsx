@@ -19,6 +19,7 @@ import {
   LoadingState,
   SectionHeader,
   useToast,
+  ScreenHeader,
 } from "@/components/ui";
 import { useFavoritedBookIdsQuery, useToggleFavoriteMutation } from "@/features/home";
 import {
@@ -26,6 +27,7 @@ import {
   BookHero,
   BookSeriesInfo,
   BookStatsRow,
+  BookWordOverlap,
   ChapterListItem,
   useBookAudioAccessQuery,
   useBookDetailQuery,
@@ -175,6 +177,7 @@ export default function BookDetailScreen() {
         style={[styles.container, { backgroundColor: theme.bg.primary }]}
         edges={["top"]}
       >
+        <ScreenHeader title="" onBack={handleBack} />
         <LoadingState message={t("bookDetail.loading")} />
       </SafeAreaView>
     );
@@ -186,6 +189,7 @@ export default function BookDetailScreen() {
         style={[styles.container, { backgroundColor: theme.bg.primary }]}
         edges={["top"]}
       >
+        <ScreenHeader title="" onBack={handleBack} />
         <ErrorState message={t("bookDetail.error")} onRetry={() => void refetch()} />
       </SafeAreaView>
     );
@@ -203,44 +207,37 @@ export default function BookDetailScreen() {
           solda "GERİ" yazısı, sağda kalp karakteri (♥/♡) vardı -- kalp
           bir metin glifiydi, yani platforma göre farklı çiziliyordu ve
           uygulamanın ikon setiyle aynı görsel dile ait değildi. */}
-      <View style={styles.topbar}>
-        <Pressable
-          onPress={handleBack}
-          accessibilityRole="button"
-          accessibilityLabel={t("bookDetail.backAccessibilityLabel")}
-          hitSlop={{ top: spacing.sm, bottom: spacing.sm, left: spacing.sm, right: spacing.sm }}
-        >
-          <Ionicons name="chevron-back" size={26} color={theme.text.primary} />
-        </Pressable>
-        <Pressable
-          onPress={handleToggleFavorite}
-          accessibilityRole="button"
-          accessibilityLabel={t(isFavorited ? "favorites.action.remove" : "favorites.action.add")}
-          hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
-          style={[
-            styles.favoriteButton,
-            { backgroundColor: isFavorited ? theme.accent : theme.bg.surface },
-          ]}
-        >
-          <Ionicons
-            name={isFavorited ? "bookmark" : "bookmark-outline"}
-            size={18}
-            color={isFavorited ? theme.text.onAccent : theme.text.secondary}
-          />
-        </Pressable>
-      </View>
+      <ScreenHeader
+        title=""
+        onBack={handleBack}
+        right={
+          <Pressable
+            onPress={handleToggleFavorite}
+            accessibilityRole="button"
+            accessibilityLabel={t(isFavorited ? "favorites.action.remove" : "favorites.action.add")}
+            hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
+            style={[
+              styles.favoriteButton,
+              { backgroundColor: isFavorited ? theme.accent : theme.bg.surface },
+            ]}
+          >
+            <Ionicons
+              name={isFavorited ? "bookmark" : "bookmark-outline"}
+              size={18}
+              color={isFavorited ? theme.text.onAccent : theme.text.secondary}
+            />
+          </Pressable>
+        }
+      />
 
       <BookHero book={book} />
       <BookStatsRow book={book} progressPercent={progressPercent} />
+      <BookWordOverlap bookId={book.id} />
       {series ? (
         <BookSeriesInfo series={series} onPressNextBook={handlePressNextBookInSeries} />
       ) : null}
 
-      <BookAudioCard
-        bookId={book.id}
-        hasAudio={book.hasAudio}
-        onPressUpgrade={() => router.push("/paywall?source=audio")}
-      />
+      <BookAudioCard bookId={book.id} hasAudio={book.hasAudio} />
 
       <View style={styles.cta}>
         <Button label={ctaLabel} onPress={handlePressCta} disabled={!continueChapter} fullWidth />
@@ -333,14 +330,6 @@ export default function BookDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  topbar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xs,
-    paddingBottom: spacing.xs,
   },
   favoriteButton: {
     width: 36,

@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-na
 
 import { monoType, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { TypeStyle } from "@/theme/tokens/typography";
 
@@ -19,6 +20,9 @@ interface StatCellProps {
   bordered?: boolean;
   /** Blok içindeki sayının rengi (varsayılan: metin rengi). */
   valueColor?: string;
+  /** Sayı ve etiket yan yana hücrelerde farklı genişlikte; "center" ikisini
+   * aynı eksene oturtuyor. */
+  align?: "start" | "center";
   style?: StyleProp<ViewStyle>;
 }
 
@@ -34,6 +38,7 @@ export function StatCell({
   size = "sm",
   bordered = false,
   valueColor,
+  align = "start",
   style,
 }: StatCellProps) {
   const { theme } = useTheme();
@@ -42,14 +47,19 @@ export function StatCell({
     <View
       accessibilityRole="text"
       accessibilityLabel={`${value} ${label}`}
-      style={[bordered && styles.block, bordered && { backgroundColor: theme.highlight }, style]}
+      style={[
+        bordered && styles.block,
+        bordered && { backgroundColor: theme.highlight },
+        align === "center" && styles.centered,
+        style,
+      ]}
     >
       <Text style={[VALUE_STYLE[size], styles.value, { color: valueColor ?? theme.text.primary }]}>
         {value}
       </Text>
-      <Text style={[monoType.statLabel, styles.label, { color: theme.text.secondary }]}>
+      <UpperText style={[monoType.statLabel, styles.label, { color: theme.text.secondary }]}>
         {label}
-      </Text>
+      </UpperText>
     </View>
   );
 }
@@ -58,6 +68,9 @@ const styles = StyleSheet.create({
   block: {
     padding: spacing.md,
     borderRadius: radius.md,
+  },
+  centered: {
+    alignItems: "center",
   },
   value: {
     // Sayılar sütun hâlinde hizalanıyor; orantılı rakam genişliği zıplamayı

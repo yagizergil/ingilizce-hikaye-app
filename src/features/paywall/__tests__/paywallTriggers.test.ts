@@ -60,6 +60,16 @@ const EXPECTED_TRIGGERS: { source: string; where: string; why: string }[] = [
     why: "Ayarlardaki abonelik satırı -- kullanıcının kendi isteğiyle geldiği yer.",
   },
   {
+    source: "smart_practice",
+    where: "src/features/vocabulary/components/SmartPracticeScreen.tsx",
+    why: "Günlük ücretsiz Akıllı Tekrar denemesi bitti; kullanıcı yeni bir oturum istedi.",
+  },
+  {
+    source: "word_pack",
+    where: "src/features/vocabulary/components/WordPackScreen.tsx",
+    why: "Ücretsiz kullanıcı Keşfet paketinin kilitli kısmını açmak istedi.",
+  },
+  {
     source: "onboarding",
     where: "src/features/onboarding/components/OnboardingFlow.tsx",
     why: "Akışın sonunda, onboarding'e özel teklifle.",
@@ -90,6 +100,8 @@ const BENEFITS_WITH_SERVER_GATE: Record<string, string> = {
   aiSentences: "ai_sentence_daily_limit() (migration 029)",
   unlimitedWords: "free_tier_saved_word_limit() + tetikleyici (migration 024)",
   secondLanguagePair: "set_language_pair() -> premium_required (migration 033/037)",
+  smartPractice: "consume_smart_practice() (migration 049)",
+  wordPacks: "level_word_pack() (migration 050)",
 };
 
 describe("paywall vaatleri", () => {
@@ -105,15 +117,12 @@ describe("paywall vaatleri", () => {
 });
 
 describe("paywall tetikleyicileri", () => {
-  it.each(EXPECTED_TRIGGERS)(
-    "$source tetikleyicisi $where içinde duruyor",
-    ({ source, where }) => {
-      const contents = readFile(where);
-      const opensPaywall =
-        contents.includes(`source=${source}`) || contents.includes(`source="${source}"`);
-      expect(opensPaywall).toBe(true);
-    },
-  );
+  it.each(EXPECTED_TRIGGERS)("$source tetikleyicisi $where içinde duruyor", ({ source, where }) => {
+    const contents = readFile(where);
+    const opensPaywall =
+      contents.includes(`source=${source}`) || contents.includes(`source="${source}"`);
+    expect(opensPaywall).toBe(true);
+  });
 
   it("paywall'a giden her çağrı bir kaynak etiketi taşıyor", () => {
     // Kaynaksız bir çağrı huniyi kör eder: paywall'ın nereden açıldığı

@@ -1,11 +1,12 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { useTranslation } from "react-i18next";
 
-import { collectionColors, spacing } from "@/theme";
+import { collectionColors } from "@/theme";
 import { SectionHeader } from "@/components/ui";
 import { CollectionCard, type CollectionCardData } from "@/features/home/components/CollectionCard";
+import { shelfStyles } from "@/features/home/components/shelfLayout";
 
 interface CollectionShelfProps {
   onPressCollection: (collection: CollectionCardData) => void;
@@ -61,29 +62,16 @@ export function CollectionShelf({ onPressCollection, userLevel }: CollectionShel
   );
 
   return (
-    <View style={styles.container}>
-      <SectionHeader title={t("home.collections.title")} style={styles.head} />
+    <View style={shelfStyles.container}>
+      <SectionHeader title={t("home.collections.title")} style={shelfStyles.head} />
       <FlashList
         horizontal
         data={collections}
         keyExtractor={(item) => item.key}
         renderItem={renderItem}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={shelfStyles.listContent}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: spacing.xxxxl,
-  },
-  head: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
-  },
-  listContent: {
-    paddingHorizontal: spacing.lg,
-  },
-});

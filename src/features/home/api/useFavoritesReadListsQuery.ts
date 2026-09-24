@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
-import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { gateOnLanguagePair, useActiveLanguagePairQuery } from "@/features/languagePair";
 
 import type { Book } from "@/features/library/types";
 
@@ -70,12 +70,14 @@ async function fetchFavoritesReadLists(targetLanguage: string): Promise<Favorite
 }
 
 export function useFavoritesReadListsQuery() {
-  const { data: activePair } = useActiveLanguagePairQuery();
+  const pairQuery = useActiveLanguagePairQuery();
+  const activePair = pairQuery.data;
   const targetLanguage = activePair?.targetLanguage ?? null;
 
-  return useQuery({
+  const query = useQuery({
     queryKey: homeQueryKeys.favoritesReadLists(targetLanguage ?? ""),
     queryFn: () => fetchFavoritesReadLists(targetLanguage as string),
     enabled: targetLanguage !== null,
   });
+  return gateOnLanguagePair(query, pairQuery);
 }

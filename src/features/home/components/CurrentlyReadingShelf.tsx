@@ -4,12 +4,20 @@ import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { coverColumnHeight, coverColumnWidth, monoType, onLevelAccent, radius, spacing } from "@/theme";
+import {
+  coverColumnHeight,
+  coverColumnWidth,
+  monoType,
+  onLevelAccent,
+  radius,
+  spacing,
+} from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { BookCover, SectionHeader } from "@/components/ui";
 
 import type { CurrentlyReadingBook } from "@/features/home/api/useCurrentlyReadingQuery";
 import type { Book } from "@/features/library/types";
+import { shelfStyles } from "@/features/home/components/shelfLayout";
 
 interface CurrentlyReadingCardProps {
   entry: CurrentlyReadingBook;
@@ -24,7 +32,11 @@ function CurrentlyReadingCard({ entry, onPress, onRemove }: CurrentlyReadingCard
 
   return (
     <View style={styles.card}>
-      <Pressable onPress={() => onPress(book)} accessibilityRole="button" accessibilityLabel={book.title}>
+      <Pressable
+        onPress={() => onPress(book)}
+        accessibilityRole="button"
+        accessibilityLabel={book.title}
+      >
         <BookCover
           title={book.title}
           author={book.author}
@@ -37,7 +49,9 @@ function CurrentlyReadingCard({ entry, onPress, onRemove }: CurrentlyReadingCard
         onPress={() => onRemove(book)}
         style={[styles.removeButton, { backgroundColor: theme.overlay }]}
         accessibilityRole="button"
-        accessibilityLabel={t("home.currentlyReading.removeAccessibilityLabel", { title: book.title })}
+        accessibilityLabel={t("home.currentlyReading.removeAccessibilityLabel", {
+          title: book.title,
+        })}
         hitSlop={spacing.xs}
       >
         <Ionicons name="close" size={14} color={onLevelAccent} />
@@ -62,7 +76,11 @@ interface CurrentlyReadingShelfProps {
  * "Kaldığın yer" hero at the top of the screen) -- this shows ALL
  * in-progress books, not just the most recent one.
  */
-export function CurrentlyReadingShelf({ books, onPressBook, onRemoveBook }: CurrentlyReadingShelfProps) {
+export function CurrentlyReadingShelf({
+  books,
+  onPressBook,
+  onRemoveBook,
+}: CurrentlyReadingShelfProps) {
   const { t } = useTranslation();
   if (books.length === 0) return null;
 
@@ -71,15 +89,15 @@ export function CurrentlyReadingShelf({ books, onPressBook, onRemoveBook }: Curr
   );
 
   return (
-    <View style={styles.container}>
-      <SectionHeader title={t("home.currentlyReading.title")} style={styles.head} />
+    <View style={shelfStyles.container}>
+      <SectionHeader title={t("home.currentlyReading.title")} style={shelfStyles.head} />
       <FlashList
         horizontal
         data={books}
         keyExtractor={(item) => item.book.id}
         renderItem={renderItem}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={shelfStyles.listContent}
       />
     </View>
   );
@@ -88,17 +106,6 @@ export function CurrentlyReadingShelf({ books, onPressBook, onRemoveBook }: Curr
 const CARD_WIDTH = coverColumnWidth.shelf;
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: spacing.xxxxl,
-  },
-  head: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
-  },
-  listContent: {
-    paddingHorizontal: spacing.lg,
-    gap: spacing.md,
-  },
   card: {
     width: CARD_WIDTH,
     marginRight: spacing.md,

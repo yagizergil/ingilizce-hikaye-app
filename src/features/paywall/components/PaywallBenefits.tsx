@@ -50,6 +50,10 @@ const BENEFITS: { icon: IoniconName; key: string; tint: string }[] = [
   { icon: "flash", key: "unlimitedLookups", tint: levelAccent.B2 },
   { icon: "sparkles", key: "aiSentences", tint: levelAccent.B1 },
   { icon: "bookmarks", key: "unlimitedWords", tint: levelAccent.A1 },
+  // 1.0.6: kapısı consume_smart_practice() (migration 049).
+  { icon: "school", key: "smartPractice", tint: levelAccent.A2 },
+  // 1.0.6: kapısı level_word_pack() (migration 050) -- ücretsizde 5 kelime.
+  { icon: "albums", key: "wordPacks", tint: levelAccent.B1 },
   { icon: "language", key: "secondLanguagePair", tint: levelAccent.C2 },
 ];
 
@@ -96,14 +100,14 @@ export function PaywallBenefits({
                 {benefit.key === "unlimitedLookups"
                   ? t("paywall.benefits.unlimitedLookups.body", { count: freeWordLookups })
                   : benefit.key === "aiSentences"
-                  ? hasQuotas
-                    ? t("paywall.benefits.aiSentences.body", {
-                        premium: aiPremiumLimit,
-                        free: aiFreeLimit,
-                      })
-                    : /* Kotalar okunamadıysa rakamsız hâli -- yanlış bir
+                    ? hasQuotas
+                      ? t("paywall.benefits.aiSentences.body", {
+                          premium: aiPremiumLimit,
+                          free: aiFreeLimit,
+                        })
+                      : /* Kotalar okunamadıysa rakamsız hâli -- yanlış bir
                          sayı göstermektense hiç göstermemek. */
-                      t("paywall.benefits.aiSentences.bodyGeneric")
+                        t("paywall.benefits.aiSentences.bodyGeneric")
                     : t(`paywall.benefits.${benefit.key}.body`)}
               </Text>
             </View>

@@ -7,9 +7,17 @@ import { useTranslation } from "react-i18next";
 
 import i18n from "@/i18n";
 import { storeUiLanguage } from "@/i18n/uiLanguage";
-import { monoType, spacing, type } from "@/theme";
+import { monoType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { Button, EmptyState, ErrorState, LanguageFlag, LoadingState } from "@/components/ui";
+import {
+  Button,
+  EmptyState,
+  ErrorState,
+  LanguageFlag,
+  LoadingState,
+  ScreenHeader,
+} from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 import { CONTENT_TARGET_LANGUAGES, LANGUAGES, getLanguage } from "@/lib/languages";
 import { applyLayoutDirection, reloadApp } from "@/lib/rtl";
 
@@ -18,6 +26,7 @@ import { useSetLanguagePairMutation } from "@/features/languagePair/api/useSetLa
 
 import type { LanguageInfo } from "@/lib/languages";
 import type { OwnedLanguagePair } from "@/features/languagePair/api/useActiveLanguagePairQuery";
+import { directionalIcon } from "@/lib/rtl";
 
 type Phase = "list" | "native" | "target" | "history";
 
@@ -221,21 +230,12 @@ export function ManageLanguagePairsScreen({
         style={[styles.container, { backgroundColor: theme.bg.primary }]}
         edges={["top"]}
       >
-        <View style={styles.topbar}>
-          <Pressable
-            onPress={() => setPhase("list")}
-            accessibilityRole="button"
-            accessibilityLabel={t("common.back")}
-            hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
-          >
-            <Ionicons name="close" size={22} color={theme.text.primary} />
-          </Pressable>
-        </View>
+        <ScreenHeader
+          title={t("languagePair.historyPairs")}
+          onBack={() => setPhase("list")}
+          backIcon="close"
+        />
         <ScrollView contentContainerStyle={styles.content}>
-          <Text style={[type.display, { color: theme.text.primary }]}>
-            {t("languagePair.historyPairs")}
-          </Text>
-
           {setPair.isPending ? (
             <LoadingState />
           ) : (
@@ -263,23 +263,15 @@ export function ManageLanguagePairsScreen({
         style={[styles.container, { backgroundColor: theme.bg.primary }]}
         edges={["top"]}
       >
-        <View style={styles.topbar}>
-          <Pressable
-            onPress={() => {
-              setPhase("list");
-              setPendingNative(null);
-            }}
-            accessibilityRole="button"
-            accessibilityLabel={t("common.back")}
-            hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
-          >
-            <Ionicons name="close" size={22} color={theme.text.primary} />
-          </Pressable>
-        </View>
+        <ScreenHeader
+          title={t(phase === "native" ? "languagePair.nativeTitle" : "languagePair.targetTitle")}
+          onBack={() => {
+            setPhase("list");
+            setPendingNative(null);
+          }}
+          backIcon="close"
+        />
         <ScrollView contentContainerStyle={styles.content}>
-          <Text style={[type.display, { color: theme.text.primary }]}>
-            {t(phase === "native" ? "languagePair.nativeTitle" : "languagePair.targetTitle")}
-          </Text>
           <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
             {t(phase === "native" ? "languagePair.nativeBody" : "languagePair.targetBody")}
           </Text>
@@ -308,22 +300,9 @@ export function ManageLanguagePairsScreen({
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <View style={styles.topbar}>
-        <Pressable
-          onPress={onClose}
-          accessibilityRole="button"
-          accessibilityLabel={t("common.back")}
-          hitSlop={{ top: spacing.ml, bottom: spacing.ml, left: spacing.ml, right: spacing.ml }}
-        >
-          <Ionicons name="close" size={22} color={theme.text.primary} />
-        </Pressable>
-      </View>
+      <ScreenHeader title={t("languagePair.manageTitle")} onBack={onClose} backIcon="close" />
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={[type.display, { color: theme.text.primary }]}>
-          {t("languagePair.manageTitle")}
-        </Text>
-
         {isLoading ? (
           <LoadingState />
         ) : isError ? (
@@ -366,9 +345,9 @@ export function ManageLanguagePairsScreen({
           <>
             {activePair ? (
               <View style={styles.section}>
-                <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
                   {t("languagePair.interfaceLanguageSection")}
-                </Text>
+                </UpperText>
                 <View style={styles.list}>
                   <Pressable
                     onPress={() => setPhase("native")}
@@ -385,16 +364,20 @@ export function ManageLanguagePairsScreen({
                           activePair.nativeLanguage}
                       </Text>
                     </View>
-                    <Ionicons name="chevron-forward" size={16} color={theme.text.secondary} />
+                    <Ionicons
+                      name={directionalIcon("chevron-forward", "chevron-back")}
+                      size={18}
+                      color={theme.text.secondary}
+                    />
                   </Pressable>
                 </View>
               </View>
             ) : null}
 
             <View style={styles.section}>
-              <Text style={[monoType.label, { color: theme.text.secondary }]}>
+              <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
                 {t("languagePair.yourPairs")}
-              </Text>
+              </UpperText>
               <View style={styles.list}>
                 {pairsForCurrentNative.map((pair) => (
                   <PairRow
@@ -412,9 +395,9 @@ export function ManageLanguagePairsScreen({
 
             {addableTargets.length > 0 ? (
               <View style={styles.section}>
-                <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
                   {t("languagePair.addPair")}
-                </Text>
+                </UpperText>
                 <View style={styles.list}>
                   {addableTargets.map((language) => (
                     <PairRow
@@ -444,10 +427,14 @@ export function ManageLanguagePairsScreen({
                     {t("languagePair.historyPairs")}
                   </Text>
                   <View style={styles.rowLabel}>
-                    <Text style={[monoType.label, { color: theme.text.secondary }]}>
+                    <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
                       {historyPairs.length}
-                    </Text>
-                    <Ionicons name="chevron-forward" size={16} color={theme.text.secondary} />
+                    </UpperText>
+                    <Ionicons
+                      name={directionalIcon("chevron-forward", "chevron-back")}
+                      size={18}
+                      color={theme.text.secondary}
+                    />
                   </View>
                 </Pressable>
               </View>
@@ -477,7 +464,9 @@ function LanguageOptionRow({ language, onPress }: { language: LanguageInfo; onPr
           <Text style={[monoType.rowText, { color: theme.text.primary }]}>
             {language.nativeName}
           </Text>
-          <Text style={[monoType.label, { color: theme.text.secondary }]}>{language.nameEn}</Text>
+          <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+            {language.nameEn}
+          </UpperText>
         </View>
       </View>
     </Pressable>
@@ -529,13 +518,17 @@ function PairRow({
         </Text>
       </View>
       {active ? (
-        <Text style={[monoType.label, { color: theme.accent }]}>
+        <UpperText style={[monoType.label, { color: theme.accent }]}>
           {t("languagePair.activeBadge")}
-        </Text>
+        </UpperText>
       ) : showPremiumBadge ? (
         <Ionicons name="lock-closed-outline" size={16} color={theme.text.secondary} />
       ) : (
-        <Ionicons name="chevron-forward" size={16} color={theme.text.secondary} />
+        <Ionicons
+          name={directionalIcon("chevron-forward", "chevron-back")}
+          size={18}
+          color={theme.text.secondary}
+        />
       )}
     </Pressable>
   );
@@ -544,11 +537,6 @@ function PairRow({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  topbar: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xs,
-    paddingBottom: spacing.xs,
   },
   content: {
     paddingHorizontal: spacing.lg,

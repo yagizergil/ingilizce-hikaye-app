@@ -1,10 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { monoType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface ReviewProgressProps {
   current: number;
@@ -30,15 +31,13 @@ export function ReviewProgress({ current, total, onClose }: ReviewProgressProps)
           <Ionicons name="close" size={24} color={theme.text.secondary} />
         </Pressable>
 
-        <Text style={[monoType.label, { color: theme.text.secondary }]}>
+        <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
           {current} / {total}
-        </Text>
+        </UpperText>
       </View>
 
       <View style={[styles.track, { backgroundColor: theme.border.hairline }]}>
-        <View
-          style={[styles.bar, { backgroundColor: theme.accent, width: `${ratio * 100}%` }]}
-        />
+        <View style={[styles.bar, { backgroundColor: theme.accent, width: `${ratio * 100}%` }]} />
       </View>
     </View>
   );

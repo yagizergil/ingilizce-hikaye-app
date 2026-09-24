@@ -1,10 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
 import { badgePadding, monoType, motion, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface StreakChipProps {
   /** Mevcut kesintisiz okuma günü sayısı. */
@@ -56,7 +57,7 @@ export function StreakChip({ streak, readToday, onPress }: StreakChipProps) {
     >
       <Ionicons name={readToday ? "flame" : "flame-outline"} size={14} color={color} />
       <View>
-        <Text style={[monoType.badge, styles.value, { color }]}>{streak}</Text>
+        <UpperText style={[monoType.badge, styles.value, { color }]}>{streak}</UpperText>
       </View>
     </Pressable>
   );

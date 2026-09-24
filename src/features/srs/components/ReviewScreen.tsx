@@ -2,12 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
 import { useTranslation } from "react-i18next";
 
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { trackEvent } from "@/lib/analytics";
-import { Button, ErrorState, LoadingState } from "@/components/ui";
+import { trackError, trackEvent } from "@/lib/analytics";
+import { Button, ErrorState, LoadingState, useToast } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import { useDueCardsQuery } from "@/features/srs/api/useDueCardsQuery";
 import { useReviewCardMutation } from "@/features/srs/api/useReviewCardMutation";
@@ -33,6 +35,8 @@ interface ReviewScreenProps {
  */
 export function ReviewScreen({ onClose }: ReviewScreenProps) {
   const { t } = useTranslation();
+  const { show: showToast } = useToast();
+  const failedToastShownRef = useRef(false);
   const { theme } = useTheme();
   const { data, isLoading, isError, refetch } = useDueCardsQuery();
   const reviewMutation = useReviewCardMutation();
@@ -79,6 +83,7 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
   const handleRate = useCallback(
     (rating: SrsRating) => {
       if (!card) return;
+      void Haptics.selectionAsync().catch((error: unknown) => trackError("srs.rateHaptic", error));
       const shownAt = shownAtRef.current;
       reviewMutation.mutate(
         {
@@ -90,13 +95,23 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
         },
         // Yazılamayan değerlendirmeler sayılıyor; bitiş ekranı bunu
         // söylüyor (gerekçe `useReviewCardMutation`'daki `onError` notunda).
-        { onError: () => setFailedCount((current) => current + 1) },
+        {
+          onError: () => {
+            // İlk hatada hemen söyleniyor: çevrimdışı kalan biri 20 kartı
+            // puanlayıp ancak bitiş ekranında öğrenmesin.
+            if (failedToastShownRef.current === false) {
+              failedToastShownRef.current = true;
+              showToast(t("srs.saveFailedToast"));
+            }
+            setFailedCount((current) => current + 1);
+          },
+        },
       );
       advance();
       // Sonraki kartın süre ölçümü buradan başlıyor.
       shownAtRef.current = Date.now();
     },
-    [card, reviewMutation, advance],
+    [card, reviewMutation, advance, showToast, t],
   );
 
   if (isLoading) {
@@ -172,15 +187,15 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
               ) : null}
 
               {card.bookTitle ? (
-                <Text style={[monoType.label, styles.source, { color: theme.text.secondary }]}>
+                <UpperText style={[monoType.label, styles.source, { color: theme.text.secondary }]}>
                   {card.bookTitle}
-                </Text>
+                </UpperText>
               ) : null}
             </View>
           ) : (
-            <Text style={[monoType.label, styles.hint, { color: theme.text.secondary }]}>
+            <UpperText style={[monoType.label, styles.hint, { color: theme.text.secondary }]}>
               {t("srs.revealHint")}
-            </Text>
+            </UpperText>
           )}
         </ScrollView>
       </Pressable>

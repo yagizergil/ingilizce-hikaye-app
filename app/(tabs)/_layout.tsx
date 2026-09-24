@@ -51,6 +51,13 @@ export default function TabsLayout() {
           height: tabBarContentHeight + insets.bottom,
           paddingTop: spacing.sm,
           paddingBottom: insets.bottom,
+          // Çubuk sayfayla aynı renkte; gölge olmadan içerik ile çubuk
+          // arasında hiçbir sınır görünmüyordu (kullanıcı bulgusu, 2026-09-24).
+          shadowColor: theme.text.primary,
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 8,
+          elevation: 8,
         },
       }}
     >

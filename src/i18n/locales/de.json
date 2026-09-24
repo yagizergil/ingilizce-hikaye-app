@@ -75,7 +75,10 @@
       "title": "Gerade am Lesen",
       "percent": "{{percent}} %",
       "remove": "Aus „Gerade am Lesen“ entfernen",
-      "removeAccessibilityLabel": "{{title}} aus „Gerade am Lesen“ entfernen"
+      "removeAccessibilityLabel": "{{title}} aus „Gerade am Lesen“ entfernen",
+      "removeConfirmTitle": "Buch entfernen?",
+      "removeConfirmBody": "Dein Lesefortschritt in \"{{title}}\" wird gelöscht. Das kann nicht rückgängig gemacht werden.",
+      "removeConfirmCta": "Entfernen"
     },
     "categories": {
       "title": "Genres & Themen",
@@ -199,7 +202,6 @@
   },
   "bookDetail": {
     "back": "← Bibliothek",
-    "backAccessibilityLabel": "Zurück zur Bibliothek",
     "loading": "Buch wird geladen",
     "error": "Buch konnte nicht geladen werden",
     "chapters": "Kapitel",
@@ -240,10 +242,10 @@
     "audio": {
       "label": "VERTONUNG",
       "unlocked": "Diese Geschichte wird von einer Studiostimme gelesen — Wort für Wort hervorgehoben.",
-      "upgradeCta": "Mit Premium anhören",
       "locked": "Die Studiovertonung gehört zu Premium. Hör dir diese Geschichte in einer natürlichen Stimme an, während jedes Wort beim Lesen hervorgehoben wird."
     },
-    "about": "Über dieses Buch"
+    "about": "Über dieses Buch",
+    "wordOverlap": "{{count}} Wörter aus deiner Wortliste kommen in diesem Buch vor"
   },
   "reader": {
     "header": {
@@ -287,8 +289,7 @@
       "failed": "Übersetzung nicht möglich. Prüfe deine Verbindung und versuch es erneut."
     },
     "sentenceSheet": {
-      "explainGrammar": "Grammatik erklären",
-      "premiumNotice": "Satzübersetzung und Grammatikerklärungen kommen bald per KI."
+      "translationLabel": "Übersetzung"
     },
     "settings": {
       "fontSize": "Schriftgröße",
@@ -373,7 +374,11 @@
     "hero": {
       "guest": "Gast",
       "anonymous": "Du liest als Gast",
-      "memberSince": "Dabei seit {{date}}"
+      "memberSince": "Dabei seit {{date}}",
+      "editName": "Namen bearbeiten",
+      "namePlaceholder": "Dein Name",
+      "saveName": "Namen speichern",
+      "nameSaveError": "Name konnte nicht gespeichert werden. Versuch es noch einmal."
     },
     "streak": {
       "currentLabel": "TAGE IN FOLGE",
@@ -538,6 +543,61 @@
           "description": "Füge unten dein erstes Wort hinzu."
         }
       }
+    },
+    "practice": {
+      "kinds": {
+        "meaning": "Wähle die Bedeutung",
+        "reverse": "Wähle das Wort",
+        "cloze": "Fülle die Lücke",
+        "typing": "Tippe das Wort",
+        "listening": "Hör zu und wähle die Bedeutung"
+      },
+      "typingPlaceholder": "{{hint}}…",
+      "check": "Prüfen",
+      "correct": "Richtig!",
+      "wrong": "Nicht ganz",
+      "answerLine": "{{lemma}} — {{gloss}}",
+      "next": "Weiter",
+      "error": "Smartes Üben konnte nicht starten.",
+      "emptyTitle": "Noch ein paar Wörter nötig",
+      "emptyBody": "Speichere mindestens {{count}} Wörter für Smartes Üben.",
+      "doneTitle": "Sitzung beendet",
+      "score": "{{correct}} / {{total}} richtig",
+      "missedTitle": "Zum Wiederholen",
+      "perfect": "Alles richtig, super!",
+      "playAgain": "Nochmal abspielen"
+    },
+    "hub": {
+      "progressTitle": "Dein Fortschritt",
+      "learning": "Lernend",
+      "known": "Gelernt",
+      "total": "Gesamt",
+      "reviewTitle": "Wiederholen",
+      "reviewDue": "{{count}} Wörter warten",
+      "reviewNone": "Heute nichts fällig",
+      "practiceTitle": "Smartes Üben",
+      "premiumBadge": "Premium",
+      "practiceFreeLeft": "Heute 1 Gratis-Versuch",
+      "practiceFreeUsed": "Morgen neuer Versuch · Unbegrenzt mit Premium",
+      "practiceUnlimited": "Gemischte Übungen, unbegrenzt",
+      "openBook": "Zum Buch"
+    },
+    "packs": {
+      "sectionTitle": "Entdecken",
+      "cardTitle": "{{level}}-Wortpaket",
+      "cardBody": "Die häufigsten Wörter auf diesem Niveau",
+      "intro": "Wörter, die in den meisten {{level}}-Geschichten vorkommen. Bereits gespeicherte Wörter fehlen.",
+      "loading": "Paket wird vorbereitet…",
+      "error": "Paket konnte nicht geladen werden.",
+      "emptyTitle": "Kein Paket auf diesem Niveau",
+      "emptyBody": "In dieser Sprache gibt es auf diesem Niveau noch nicht genug Bücher.",
+      "lockedTitle": "{{count}} weitere Wörter gesperrt",
+      "lockedBody": "Mit Premium schaltest du das ganze Paket frei und fügst es deinen Stapeln hinzu.",
+      "unlock": "Ganzes Paket freischalten",
+      "addToDecks": "Zu meinen Stapeln hinzufügen",
+      "deckName": "{{level}}-Paket",
+      "added": "Paket zu deinen Stapeln hinzugefügt",
+      "addError": "Paket konnte nicht hinzugefügt werden. Versuch es erneut."
     }
   },
   "browse": {
@@ -611,7 +671,8 @@
     "startButton": "Wiederholung starten",
     "dueBadge": "{{count}} Wörter bereit",
     "saveFailed_one": "{{count}} Wörter konnten nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut.",
-    "saveFailed_other": "{{count}} Wörter konnten nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut."
+    "saveFailed_other": "{{count}} Wörter konnten nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut.",
+    "saveFailedToast": "Bewertung konnte nicht gespeichert werden. Prüfe deine Verbindung."
   },
   "onboarding": {
     "introTitle": "Finden wir dein Niveau",
@@ -706,7 +767,10 @@
       "ctaPending_other": "Wähle noch {{count}} Wörter zum Üben",
       "levelPill": "{{level}} · für dich",
       "unavailable": "In dieser Sprache gibt es noch keinen Lesetext.",
-      "saveHint": "Zum Speichern aufs Lesezeichen tippen"
+      "saveHint": "Zum Speichern aufs Lesezeichen tippen",
+      "sentenceSubtitle": "Super! Halte jetzt einen Satz gedrückt.",
+      "ctaSentencePending": "Halte einen Satz gedrückt, um weiterzumachen",
+      "sentenceHint": "Halte einen beliebigen Satz im Text gedrückt, um die Übersetzung des ganzen Satzes zu sehen."
     },
     "quiz": {
       "title": "Übe deine Wörter",
@@ -837,6 +901,14 @@
       "stats": {
         "title": "Fortschritt sehen",
         "body": "Lesezeit, Serie und Niveau — vollständige Statistik."
+      },
+      "smartPractice": {
+        "title": "Smartes Üben",
+        "body": "Lücken in Sätzen füllen, die du gelesen hast, Bedeutungen wählen, Wörter tippen – gemischte Übungen, die bleiben."
+      },
+      "wordPacks": {
+        "title": "Entdecken-Pakete",
+        "body": "Die häufigsten Wörter aus den Büchern jedes Niveaus – mit einem Tipp als eigener Stapel."
       }
     },
     "plan": {

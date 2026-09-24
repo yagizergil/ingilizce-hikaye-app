@@ -148,6 +148,8 @@ export interface ThemeColors {
    * zemin görünür ama metnin kontrastını düşürmüyor. */
   spokenHighlight: string;
   danger: string;
+  /** Doğru cevap / başarı geri bildirimi (Akıllı Tekrar). */
+  success: string;
   dangerMuted: string;
   /** No mockup defines a modal/sheet backdrop scrim (Modal usage — e.g.
    * SourceLicenseSheet — predates the mockup set entirely). Derived as a
@@ -167,7 +169,8 @@ const light: ThemeColors = {
   },
   text: {
     primary: mockupLight.ink,
-    secondary: mockupLight.inkSoft,
+    // inkSoft (#8A8378) açık zeminde 3.54:1 idi; 4.5:1 için koyulaştırıldı (5.1:1).
+    secondary: "#6F695F",
     tertiary: mockupLight.inkSoft,
     reading: mockupLight.inkReading,
     inverse: mockupLight.bg,
@@ -185,6 +188,7 @@ const light: ThemeColors = {
   secondaryMuted: "rgba(138, 131, 120, 0.16)", // inkSoft (#8A8378) @ 16%
   spokenHighlight: "rgba(245, 197, 66, 0.38)", // krem zemin (#FAF8F4) üzerinde okunur sarı
   danger: semantic.danger,
+  success: "#2F8F68",
   dangerMuted: "rgba(179, 69, 58, 0.16)",
   overlay: "rgba(0, 0, 0, 0.5)",
 };
@@ -219,7 +223,8 @@ const sepia: ThemeColors = {
   },
   text: {
     primary: "#2B2116",
-    secondary: "#8A7355",
+    // #8A7355 sepya zeminde 3.58:1 idi; bu ton 5.15:1.
+    secondary: "#6E5B42",
     tertiary: "#8A7355",
     reading: "#302517",
     inverse: "#F1E4C9",
@@ -237,6 +242,7 @@ const sepia: ThemeColors = {
   secondaryMuted: "rgba(138, 115, 85, 0.18)", // sepia text.secondary (#8A7355) @ 18%
   spokenHighlight: "rgba(240, 186, 52, 0.34)", // sepia zaten sıcak; alfa biraz düşük
   danger: semantic.danger,
+  success: "#2F8F68",
   dangerMuted: "rgba(179, 69, 58, 0.18)",
   overlay: "rgba(0, 0, 0, 0.5)",
 };
@@ -286,6 +292,7 @@ const dark: ThemeColors = {
   secondaryMuted: "rgba(139, 144, 160, 0.2)", // dark text.secondary (#8B90A0) @ 20% -- Faz 1 renk revizyonuyla güncellendi
   spokenHighlight: "rgba(247, 208, 96, 0.26)", // koyu zeminde açık metin okunur kalsın
   danger: "#D98A7E",
+  success: "#5FB98F",
   dangerMuted: "rgba(217, 138, 126, 0.2)",
   overlay: "rgba(0, 0, 0, 0.6)",
 };
@@ -327,6 +334,24 @@ export const levelAccent: Record<"A1" | "A2" | "B1" | "B2" | "C1" | "C2", string
  * is itself a departure from the single-accent system (see above). */
 export const onLevelAccent = "#FFFFFF";
 
+/**
+ * Seviye rozetinin ÜZERİNDEKİ yazı rengi, seviyeye göre.
+ *
+ * Görsel denetim (2026-09-24): açık dolgularda beyaz yazı okunmuyordu --
+ * B1 sarısı üzerinde 1.76:1, A1/A2/B2'de ~2.5:1 (WCAG 4.5:1 ister). Dolgu
+ * renkleri ürün sahibinin seçtiği marka paleti, o yüzden renk değil yazı
+ * değişiyor: açık dolgularda koyu mürekkep (5.5-10:1), koyularda beyaz.
+ */
+const LEVEL_INK = "#1E1C19";
+export const onLevelAccentByLevel: Record<keyof typeof levelAccent, string> = {
+  A1: LEVEL_INK,
+  A2: LEVEL_INK,
+  B1: LEVEL_INK,
+  B2: LEVEL_INK,
+  C1: onLevelAccent,
+  C2: onLevelAccent,
+};
+
 /** Small, fixed set of flat colors for `CategoryTagCard`'s fallback
  * "cover" (used only when the tag has no real book cover to show, e.g. a
  * genre/theme tag) -- deterministically assigned per tag (by key, not
@@ -359,9 +384,11 @@ export const collectionColors: Record<
   string
 > = {
   popular: "#7C6FF5",
-  audiobooks: "#F2954A",
+  // #F2954A üzerinde beyaz 2.29:1 idi; bu ton 3.78:1.
+  audiobooks: "#D9772E",
   favorites: "#D4567F",
-  review: "#3FA37A",
+  // #3FA37A üzerinde beyaz 3.12:1 idi (sınırda); bu ton 3.99:1.
+  review: "#2F8F68",
   quick: "#4E8FD4",
   myLevel: "#B3752F",
 };

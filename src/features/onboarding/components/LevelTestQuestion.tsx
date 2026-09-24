@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { WordAnswer } from "@/features/onboarding/levelEstimate";
 
@@ -40,9 +41,9 @@ export function LevelTestQuestion({ word, index, total, onAnswer }: LevelTestQue
             style={[styles.bar, { backgroundColor: theme.accent, width: `${progress * 100}%` }]}
           />
         </View>
-        <Text style={[monoType.label, { color: theme.text.secondary }]}>
+        <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
           {index + 1} / {total}
-        </Text>
+        </UpperText>
       </View>
 
       <View style={styles.wordBlock}>

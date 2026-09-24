@@ -75,7 +75,10 @@
       "title": "Currently Reading",
       "percent": "{{percent}}%",
       "remove": "Remove from currently reading",
-      "removeAccessibilityLabel": "Remove {{title}} from currently reading"
+      "removeAccessibilityLabel": "Remove {{title}} from currently reading",
+      "removeConfirmTitle": "Remove this book?",
+      "removeConfirmBody": "Your reading progress in \"{{title}}\" will be deleted. This can't be undone.",
+      "removeConfirmCta": "Remove"
     },
     "categories": {
       "title": "Genres & Themes",
@@ -199,7 +202,6 @@
   },
   "bookDetail": {
     "back": "← Library",
-    "backAccessibilityLabel": "Back to library",
     "loading": "Loading book",
     "error": "Couldn't load book",
     "chapters": "Chapters",
@@ -240,10 +242,10 @@
     "audio": {
       "label": "NARRATION",
       "unlocked": "This story is narrated in a studio voice, highlighted word by word.",
-      "upgradeCta": "Listen with premium",
       "locked": "Studio narration is part of premium. Listen to this story in a natural voice, with each word highlighted as it is read."
     },
-    "about": "About this book"
+    "about": "About this book",
+    "wordOverlap": "{{count}} words from your word list appear in this book"
   },
   "reader": {
     "header": {
@@ -287,8 +289,7 @@
       "failed": "Couldn't fetch the translation. Check your connection and try again."
     },
     "sentenceSheet": {
-      "explainGrammar": "Explain grammar",
-      "premiumNotice": "Sentence translation and grammar explanations are coming soon via AI."
+      "translationLabel": "Translation"
     },
     "settings": {
       "fontSize": "Font size",
@@ -373,7 +374,11 @@
     "hero": {
       "guest": "Guest",
       "anonymous": "Reading as a guest",
-      "memberSince": "Member since {{date}}"
+      "memberSince": "Member since {{date}}",
+      "editName": "Edit your name",
+      "namePlaceholder": "Your name",
+      "saveName": "Save name",
+      "nameSaveError": "Couldn't save your name. Try again."
     },
     "streak": {
       "currentLabel": "DAY STREAK",
@@ -538,6 +543,61 @@
           "description": "Add your first word with the button below."
         }
       }
+    },
+    "practice": {
+      "kinds": {
+        "meaning": "Pick the meaning",
+        "reverse": "Pick the word",
+        "cloze": "Fill in the blank",
+        "typing": "Type the word",
+        "listening": "Listen and pick the meaning"
+      },
+      "typingPlaceholder": "{{hint}}…",
+      "check": "Check",
+      "correct": "Correct!",
+      "wrong": "Not quite",
+      "answerLine": "{{lemma}} — {{gloss}}",
+      "next": "Continue",
+      "error": "Couldn't start Smart Practice.",
+      "emptyTitle": "A few more words needed",
+      "emptyBody": "Save at least {{count}} words to use Smart Practice.",
+      "doneTitle": "Session complete",
+      "score": "{{correct}} / {{total}} correct",
+      "missedTitle": "Words to revisit",
+      "perfect": "All correct, great job!",
+      "playAgain": "Play again"
+    },
+    "hub": {
+      "progressTitle": "Your progress",
+      "learning": "Learning",
+      "known": "Learned",
+      "total": "Total",
+      "reviewTitle": "Review",
+      "reviewDue": "Due: {{count}}",
+      "reviewNone": "Nothing due today",
+      "practiceTitle": "Smart Practice",
+      "premiumBadge": "Premium",
+      "practiceFreeLeft": "1 free try today",
+      "practiceFreeUsed": "New try tomorrow · Unlimited with Premium",
+      "practiceUnlimited": "Mixed exercises, unlimited",
+      "openBook": "Back to book"
+    },
+    "packs": {
+      "sectionTitle": "Explore",
+      "cardTitle": "{{level}} word pack",
+      "cardBody": "The most frequent words at this level",
+      "intro": "Words that appear in the most {{level}} stories. Words you've already saved are left out.",
+      "loading": "Preparing the pack…",
+      "error": "Couldn't load the pack.",
+      "emptyTitle": "No pack at this level",
+      "emptyBody": "There aren't enough books at this level in this language yet.",
+      "lockedTitle": "{{count}} more words locked",
+      "lockedBody": "Go Premium to unlock the full pack and add it to your decks.",
+      "unlock": "Unlock the full pack",
+      "addToDecks": "Add to my decks",
+      "deckName": "{{level}} pack",
+      "added": "Pack added to your decks",
+      "addError": "Couldn't add the pack. Try again."
     }
   },
   "browse": {
@@ -611,7 +671,8 @@
     "startButton": "Start review",
     "dueBadge": "{{count}} words ready",
     "saveFailed_one": "{{count}} words couldn't be saved. Check your connection and try again.",
-    "saveFailed_other": "{{count}} words couldn't be saved. Check your connection and try again."
+    "saveFailed_other": "{{count}} words couldn't be saved. Check your connection and try again.",
+    "saveFailedToast": "Couldn't save your rating. Check your connection."
   },
   "onboarding": {
     "introTitle": "Let's find your level",
@@ -706,7 +767,10 @@
       "ctaPending_other": "Pick {{count}} more words to practise",
       "levelPill": "{{level}} · for you",
       "unavailable": "No reading passage is ready in this language yet.",
-      "saveHint": "Tap the bookmark to save"
+      "saveHint": "Tap the bookmark to save",
+      "sentenceSubtitle": "Great! Now press and hold a sentence.",
+      "ctaSentencePending": "Press and hold a sentence to continue",
+      "sentenceHint": "Press and hold any sentence in the text to see a translation of the whole sentence."
     },
     "quiz": {
       "title": "Practise your words",
@@ -837,6 +901,14 @@
       "stats": {
         "title": "See your progress",
         "body": "Full reading-time, streak and level statistics."
+      },
+      "smartPractice": {
+        "title": "Smart Practice",
+        "body": "Fill in the blanks in sentences you read, pick meanings, type words: mixed exercises that make words stick."
+      },
+      "wordPacks": {
+        "title": "Explore packs",
+        "body": "The most frequent words in each level's books, turned into your own deck with one tap."
       }
     },
     "plan": {

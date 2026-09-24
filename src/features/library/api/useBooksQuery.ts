@@ -6,7 +6,11 @@ import {
   mapBookRow,
   type RawBookRow,
 } from "@/features/library/api/mapBookRow";
-import { fetchActiveLanguagePair, useActiveLanguagePairQuery } from "@/features/languagePair";
+import {
+  fetchActiveLanguagePair,
+  gateOnLanguagePair,
+  useActiveLanguagePairQuery,
+} from "@/features/languagePair";
 import type { Book } from "@/features/library/types";
 
 /**
@@ -55,10 +59,11 @@ export async function fetchBooks(targetLanguage?: string): Promise<Book[]> {
 }
 
 export function useBooksQuery() {
-  const { data: activePair } = useActiveLanguagePairQuery();
+  const pairQuery = useActiveLanguagePairQuery();
+  const activePair = pairQuery.data;
   const targetLanguage = activePair?.targetLanguage ?? null;
 
-  return useQuery({
+  const query = useQuery({
     queryKey: libraryQueryKeys.books(targetLanguage ?? ""),
     queryFn: () => fetchBooks(targetLanguage ?? undefined),
     // Aktif çift henüz gelmeden sorgu başlamıyor -- aksi halde ilk render
@@ -66,4 +71,5 @@ export function useBooksQuery() {
     // gerçek dil gelince İKİNCİ bir istek daha atardı.
     enabled: targetLanguage !== null,
   });
+  return gateOnLanguagePair(query, pairQuery);
 }

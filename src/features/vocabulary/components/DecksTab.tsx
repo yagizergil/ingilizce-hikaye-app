@@ -14,6 +14,7 @@ import { useCustomDecksQuery } from "@/features/vocabulary/api/useCustomDecksQue
 import { useCreateDeckMutation } from "@/features/vocabulary/api/useDeckMutations";
 import { DeckCard } from "@/features/vocabulary/components/DeckCard";
 import { CreateDeckSheet } from "@/features/vocabulary/components/CreateDeckSheet";
+import { ExploreStrip } from "@/features/vocabulary/components/ExploreStrip";
 
 import type { CustomDeck } from "@/features/vocabulary/types";
 
@@ -63,6 +64,11 @@ export function DecksTab() {
     router.push(`/deck/${deck.id}`);
   }, []);
 
+  const handleOpenPack = useCallback((level: string) => {
+    trackEvent("word_pack_opened", { level });
+    router.push({ pathname: "/pack/[level]", params: { level } });
+  }, []);
+
   if (isLoading) {
     return <LoadingState message={t("vocabulary.decks.loading")} />;
   }
@@ -73,21 +79,21 @@ export function DecksTab() {
 
   return (
     <View style={styles.container}>
-      {decks && decks.length > 0 ? (
-        <FlatList
-          data={decks}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <DeckCard deck={item} onPress={handleOpenDeck} />}
-          ItemSeparatorComponent={RowGap}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
-      ) : (
-        <EmptyState
-          title={t("vocabulary.decks.empty.title")}
-          description={t("vocabulary.decks.empty.description")}
-        />
-      )}
+      <FlatList
+        data={decks ?? []}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <DeckCard deck={item} onPress={handleOpenDeck} />}
+        ItemSeparatorComponent={RowGap}
+        ListHeaderComponent={<ExploreStrip onOpenPack={handleOpenPack} />}
+        ListEmptyComponent={
+          <EmptyState
+            title={t("vocabulary.decks.empty.title")}
+            description={t("vocabulary.decks.empty.description")}
+          />
+        }
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      />
 
       <Pressable
         onPress={handleOpenCreate}

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { monoType, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import { CEFR_LEVELS, type CefrLevel } from "@/features/onboarding/levelEstimate";
 
@@ -37,9 +38,9 @@ export function LevelTestResult({
   return (
     <View style={styles.container}>
       <View style={styles.summary}>
-        <Text style={[monoType.label, { color: theme.text.secondary }]}>
+        <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
           {t("onboarding.resultEyebrow")}
-        </Text>
+        </UpperText>
         <Text style={[type.display, { color: theme.text.primary }]}>{selectedLevel}</Text>
         <Text style={[monoType.rowText, styles.centered, { color: theme.text.secondary }]}>
           {t("onboarding.resultSize", { count: estimatedSize })}
@@ -47,9 +48,9 @@ export function LevelTestResult({
       </View>
 
       <View style={styles.adjustBlock}>
-        <Text style={[monoType.label, styles.centered, { color: theme.text.secondary }]}>
+        <UpperText style={[monoType.label, styles.centered, { color: theme.text.secondary }]}>
           {t("onboarding.adjustHint")}
-        </Text>
+        </UpperText>
         <View style={styles.levels}>
           {CEFR_LEVELS.map((level) => {
             const selected = level === selectedLevel;
@@ -69,14 +70,14 @@ export function LevelTestResult({
                 accessibilityState={{ selected }}
                 accessibilityLabel={level}
               >
-                <Text
+                <UpperText
                   style={[
                     monoType.label,
                     { color: selected ? theme.text.inverse : theme.text.primary },
                   ]}
                 >
                   {level}
-                </Text>
+                </UpperText>
               </Pressable>
             );
           })}

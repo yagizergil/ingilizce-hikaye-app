@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 
 import { monoType, motion, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UpperText } from "@/components/ui/UpperText";
 
 interface FilterTabProps {
   label: string;
@@ -22,7 +23,12 @@ interface FilterTabProps {
  * Erişilebilirlik: dokunma hedefi hitSlop ile 44px'e tamamlanıyor ve seçim
  * yalnızca renkle değil dolgu/kontrast farkıyla da anlatılıyor.
  */
-export function FilterTab({ label, selected = false, onPress, accessibilityLabel }: FilterTabProps) {
+export function FilterTab({
+  label,
+  selected = false,
+  onPress,
+  accessibilityLabel,
+}: FilterTabProps) {
   const { theme } = useTheme();
 
   return (
@@ -41,14 +47,11 @@ export function FilterTab({ label, selected = false, onPress, accessibilityLabel
         },
       ]}
     >
-      <Text
-        style={[
-          monoType.eyebrow,
-          { color: selected ? theme.text.inverse : theme.text.secondary },
-        ]}
+      <UpperText
+        style={[monoType.eyebrow, { color: selected ? theme.text.inverse : theme.text.secondary }]}
       >
         {label}
-      </Text>
+      </UpperText>
     </Pressable>
   );
 }

@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { spacing, type } from "@/theme";
+import { spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { ErrorState, LoadingState, SectionHeader } from "@/components/ui";
+import { ErrorState, LoadingState, ScreenHeader, SectionHeader } from "@/components/ui";
 import { useVocabularyQuery } from "@/features/vocabulary";
 
 import { formatReadingTime } from "@/features/profile/api/formatReadingTime";
@@ -80,19 +79,7 @@ export function StatisticsScreen({ onClose }: StatisticsScreenProps) {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={onClose}
-          hitSlop={spacing.sm}
-          accessibilityRole="button"
-          accessibilityLabel={t("common.back")}
-        >
-          <Ionicons name="chevron-back" size={24} color={theme.text.primary} />
-        </Pressable>
-        <Text style={[type.screenTitle, { color: theme.text.primary }]}>
-          {t("profile.stats.screenTitle")}
-        </Text>
-      </View>
+      <ScreenHeader title={t("profile.stats.screenTitle")} onBack={onClose} />
 
       {isLoading ? (
         <LoadingState message={t("profile.loading")} />
@@ -129,24 +116,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.md,
-  },
   scrollContent: {
     paddingBottom: spacing.xxl,
   },
+  // Kartların kendi `marginHorizontal: spacing.lg`i var. Burada ikinci bir
+  // 20pt vermek kartları 40pt'ye itiyordu; aşağıdaki başlık ve ızgara 20pt'de
+  // kalınca "günlük ilerleme" kartı metinle hizasız görünüyordu.
   stack: {
-    paddingHorizontal: spacing.lg,
     gap: spacing.md,
   },
   sectionHeader: {
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
+    paddingTop: spacing.sectionGap,
     paddingBottom: spacing.sm,
   },
 });

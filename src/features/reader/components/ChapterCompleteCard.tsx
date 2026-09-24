@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { monoType, radius, spacing, type } from "@/theme";
 import { Button } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 
 interface ChapterCompleteCardProps {
@@ -70,9 +71,9 @@ export function ChapterCompleteCard({
       </View>
 
       <View style={styles.heading}>
-        <Text style={[monoType.eyebrow, styles.centered, { color: readerColors.textMuted }]}>
+        <UpperText style={[monoType.eyebrow, styles.centered, { color: readerColors.textMuted }]}>
           {t("reader.chapterComplete.eyebrow", { number: sectionIndex + 1 })}
-        </Text>
+        </UpperText>
         <Text style={[type.sectionHeading, styles.centered, { color: readerColors.text }]}>
           {chapterTitle ?? t("reader.chapterComplete.title")}
         </Text>
@@ -126,8 +127,10 @@ function Stat({ value, label }: { value: string; label: string }) {
   const readerColors = useReaderThemeColors();
   return (
     <View style={styles.stat}>
-      <Text style={[monoType.statValue, styles.statValue, { color: readerColors.text }]}>{value}</Text>
-      <Text style={[monoType.statLabel, { color: readerColors.textMuted }]}>{label}</Text>
+      <Text style={[monoType.statValue, styles.statValue, { color: readerColors.text }]}>
+        {value}
+      </Text>
+      <UpperText style={[monoType.statLabel, { color: readerColors.textMuted }]}>{label}</UpperText>
     </View>
   );
 }

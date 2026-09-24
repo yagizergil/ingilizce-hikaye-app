@@ -1,12 +1,19 @@
-import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { forwardRef, useCallback, useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetTextInput,
+} from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { monoType, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 
@@ -45,7 +52,7 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
     const [surface, setSurface] = useState(initial?.surface ?? "");
     const [meaning, setMeaning] = useState(initial?.meaning ?? "");
     const [exampleSentence, setExampleSentence] = useState(initial?.exampleSentence ?? "");
-    const snapPoints = useMemo(() => ["75%"], []);
+    const insets = useSafeAreaInsets();
 
     useEffect(() => {
       setSurface(initial?.surface ?? "");
@@ -81,19 +88,21 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
     return (
       <BottomSheetModal
         ref={ref}
-        snapPoints={snapPoints}
+        enableDynamicSizing
         backdropComponent={renderBackdrop}
         backgroundStyle={{ backgroundColor: theme.bg.surface }}
         handleIndicatorStyle={{ backgroundColor: theme.border.strong }}
         // DENETİM BULGUSU (2026-09-22, kullanıcı bulgusu): bu sheet'te üç
         // metin alanı var ve klavye açılınca girilen alanın ÜSTÜNE
-        // geliyordu -- bkz. CreateDeckSheet.tsx'teki aynı düzeltme notu.
+        // geliyordu. Asıl sebep -- ve bu üç prop'un TEK BAŞINA yeterli
+        // olmamasının sebebi -- alanların düz RN `TextInput` olmasıydı;
+        // bkz. CreateDeckSheet.tsx'teki `BottomSheetTextInput` notu.
         keyboardBehavior="interactive"
         keyboardBlurBehavior="restore"
         android_keyboardInputMode="adjustResize"
       >
         <BottomSheetScrollView
-          contentContainerStyle={styles.content}
+          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.lg }]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -102,10 +111,10 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
           </Text>
 
           <View style={styles.field}>
-            <Text style={[monoType.label, { color: theme.text.secondary }]}>
+            <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
               {t("vocabulary.decks.card.surfaceLabel")}
-            </Text>
-            <TextInput
+            </UpperText>
+            <BottomSheetTextInput
               value={surface}
               onChangeText={setSurface}
               placeholder={t("vocabulary.decks.card.surfacePlaceholder")}
@@ -124,10 +133,10 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
           </View>
 
           <View style={styles.field}>
-            <Text style={[monoType.label, { color: theme.text.secondary }]}>
+            <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
               {t("vocabulary.decks.card.meaningLabel")}
-            </Text>
-            <TextInput
+            </UpperText>
+            <BottomSheetTextInput
               value={meaning}
               onChangeText={setMeaning}
               placeholder={t("vocabulary.decks.card.meaningPlaceholder")}
@@ -146,10 +155,10 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
           </View>
 
           <View style={styles.field}>
-            <Text style={[monoType.label, { color: theme.text.secondary }]}>
+            <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
               {t("vocabulary.decks.card.exampleLabel")}
-            </Text>
-            <TextInput
+            </UpperText>
+            <BottomSheetTextInput
               value={exampleSentence}
               onChangeText={setExampleSentence}
               placeholder={t("vocabulary.decks.card.examplePlaceholder")}
@@ -187,7 +196,6 @@ const styles = StyleSheet.create({
   content: {
     gap: spacing.md,
     padding: spacing.md,
-    paddingBottom: spacing.xl,
   },
   field: {
     gap: spacing.xs,

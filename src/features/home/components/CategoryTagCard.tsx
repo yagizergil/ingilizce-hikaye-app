@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 
-import { categoryTagColors, radius, spacing, type } from "@/theme";
+import { categoryTagColors, coverAspectRatio, radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
 import type { CategoryTag } from "@/features/home/types";
@@ -23,6 +23,8 @@ function colorForKey(key: string): string {
 }
 
 const CARD_WIDTH = 148;
+/** Karonun içinde kapağın etrafında kalan boşluk kadar küçük. */
+const BOOK_COVER_HEIGHT = CARD_WIDTH - 24;
 
 /**
  * "Türler ve Konular" / "Yazarlar ve Seriler" shelf card -- a square
@@ -46,6 +48,7 @@ export function CategoryTagCard({ tag, onPress }: CategoryTagCardProps) {
   // categoryRegistry.ts); yazar ve seri kartlarının etiketi ise hazır
   // metin (kişi/seri adı) ve çevrilmiyor.
   const label = tag.labelKey ? t(tag.labelKey) : tag.label;
+  const isBookCoverTag = tag.coverIsBook === true;
 
   return (
     <Pressable
@@ -54,7 +57,20 @@ export function CategoryTagCard({ tag, onPress }: CategoryTagCardProps) {
       accessibilityRole="button"
       accessibilityLabel={t("home.categoryTag.accessibilityLabel", { label, count: tag.count })}
     >
-      {tag.coverUrl ? (
+      {tag.coverUrl && isBookCoverTag ? (
+        /* Yazar/seri kartlarının görseli bir KİTAP KAPAĞI (2:3). Kare bir
+           kutuya `cover` ile sığdırılınca üstü/altı -- çoğu zaman kapağın
+           başlığı -- kesiliyordu (kullanıcı bulgusu, 2026-09-24). Kapak
+           artık tamamıyla, renkli bir karonun üzerinde duruyor. */
+        <View style={[styles.cover, styles.coverTile, { backgroundColor: colorForKey(tag.key) }]}>
+          <Image
+            source={{ uri: tag.coverUrl }}
+            style={styles.bookCover}
+            contentFit="cover"
+            accessibilityIgnoresInvertColors
+          />
+        </View>
+      ) : tag.coverUrl ? (
         <Image
           source={{ uri: tag.coverUrl }}
           style={styles.cover}
@@ -83,6 +99,15 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     height: CARD_WIDTH,
     borderRadius: radius.cover,
+  },
+  coverTile: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bookCover: {
+    height: BOOK_COVER_HEIGHT,
+    width: BOOK_COVER_HEIGHT * coverAspectRatio,
+    borderRadius: radius.sm,
   },
   label: {
     marginTop: spacing.sm,

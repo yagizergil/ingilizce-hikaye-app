@@ -2,7 +2,7 @@ import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-quer
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
 import { fetchChapterCounts } from "@/features/library/api/fetchChapterCounts";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
-import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { gateOnLanguagePair, useActiveLanguagePairQuery } from "@/features/languagePair";
 import type { Book } from "@/features/library/types";
 
 /**
@@ -40,12 +40,14 @@ export async function fetchLibraryBooks(
 
 export function useLibraryBooksQuery() {
   const queryClient = useQueryClient();
-  const { data: activePair } = useActiveLanguagePairQuery();
+  const pairQuery = useActiveLanguagePairQuery();
+  const activePair = pairQuery.data;
   const targetLanguage = activePair?.targetLanguage ?? null;
 
-  return useQuery({
+  const query = useQuery({
     queryKey: libraryQueryKeys.booksWithChapterCounts(targetLanguage ?? ""),
     queryFn: () => fetchLibraryBooks(queryClient, targetLanguage as string),
     enabled: targetLanguage !== null,
   });
+  return gateOnLanguagePair(query, pairQuery);
 }

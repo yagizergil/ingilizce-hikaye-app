@@ -12,7 +12,10 @@ import type { VocabularyFilter, VocabularyWord } from "@/features/vocabulary/typ
  *  - "known": words whose `user_lemma_state.state` is "known", the
  *    schema's only graduated/mastered signal.
  */
-export function useFilteredWords(words: VocabularyWord[] | undefined, filter: VocabularyFilter): VocabularyWord[] {
+export function useFilteredWords(
+  words: VocabularyWord[] | undefined,
+  filter: VocabularyFilter,
+): VocabularyWord[] {
   return useMemo(() => {
     if (!words) {
       return [];

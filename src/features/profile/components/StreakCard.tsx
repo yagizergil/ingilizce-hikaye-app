@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { monoType, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Card } from "@/components/ui";
+import { UpperText } from "@/components/ui/UpperText";
 
 import type { ProfileDailyMinutes } from "@/features/profile/types";
 
@@ -42,23 +43,27 @@ export function StreakCard({ currentStreak, longestStreak, readToday, weekDays }
       <View style={styles.top}>
         <View style={styles.streakBlock}>
           <View style={styles.streakValueRow}>
-            <Ionicons name="flame" size={26} color={currentStreak > 0 ? theme.accent : theme.text.tertiary} />
+            <Ionicons
+              name="flame"
+              size={26}
+              color={currentStreak > 0 ? theme.accent : theme.text.tertiary}
+            />
             <Text style={[monoType.statValueXl, styles.streakValue, { color: theme.text.primary }]}>
               {currentStreak}
             </Text>
           </View>
-          <Text style={[monoType.statLabel, { color: theme.text.secondary }]}>
+          <UpperText style={[monoType.statLabel, { color: theme.text.secondary }]}>
             {t("profile.streak.currentLabel")}
-          </Text>
+          </UpperText>
         </View>
 
         <View style={styles.longestBlock}>
           <Text style={[monoType.statValue, styles.longestValue, { color: theme.text.primary }]}>
             {longestStreak}
           </Text>
-          <Text style={[monoType.statLabel, { color: theme.text.secondary }]}>
+          <UpperText style={[monoType.statLabel, { color: theme.text.secondary }]}>
             {t("profile.streak.longestLabel")}
-          </Text>
+          </UpperText>
         </View>
       </View>
 
@@ -81,7 +86,9 @@ export function StreakCard({ currentStreak, longestStreak, readToday, weekDays }
                     : { borderColor: theme.border.hairline, borderWidth: 1 },
                 ]}
               >
-                {active ? <Ionicons name="checkmark" size={13} color={theme.text.onAccent} /> : null}
+                {active ? (
+                  <Ionicons name="checkmark" size={13} color={theme.text.onAccent} />
+                ) : null}
               </View>
               <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
                 {t(`profile.streak.days.${DAY_KEYS[index]}`)}

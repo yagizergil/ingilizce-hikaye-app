@@ -35,24 +35,28 @@ export function BookStatsRow({ book, progressPercent }: BookStatsRowProps) {
         size="md"
         value={book.wordCount.toLocaleString("tr-TR")}
         label={t("bookDetail.stats.words")}
+        align="center"
         style={styles.cell}
       />
       <StatCell
         size="md"
         value={String(book.chapters.length)}
         label={t("bookDetail.stats.chapters")}
+        align="center"
         style={styles.cell}
       />
       <StatCell
         size="md"
         value={String(book.estimatedMinutes)}
         label={t("bookDetail.stats.minutes")}
+        align="center"
         style={styles.cell}
       />
       <StatCell
         size="md"
         value={t("bookDetail.stats.completedValue", { percent: progressPercent })}
         label={t("bookDetail.stats.completed")}
+        align="center"
         style={styles.cell}
       />
     </View>

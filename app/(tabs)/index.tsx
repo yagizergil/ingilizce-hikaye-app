@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -9,7 +9,7 @@ import { radius, spacing, type } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { useRefetchOnFocusIfStale } from "@/hooks/useRefetchOnFocusIfStale";
-import { ErrorState, Skeleton } from "@/components/ui";
+import { ErrorState, ScreenHeader } from "@/components/ui";
 import {
   BookShelf,
   useFinishedBookIdsQuery,
@@ -17,6 +17,7 @@ import {
   CollectionShelf,
   CurrentlyReadingShelf,
   EmptyHome,
+  HomeSkeleton,
   LevelGroupCard,
   useCurrentlyReadingQuery,
   useHomeExtrasQuery,
@@ -27,25 +28,6 @@ import { useOnboardingStatusQuery } from "@/features/onboarding";
 
 import type { CategoryTag, CategoryTagNavTarget, CollectionCardData } from "@/features/home";
 import type { Book, LevelGroup } from "@/features/library";
-
-/** Loading placeholder: 3 skeleton shelves, never a blank screen while
- * `useHomeExtrasQuery` is in flight. */
-function HomeSkeleton() {
-  return (
-    <View style={styles.skeletonWrap}>
-      {[0, 1, 2].map((row) => (
-        <View key={row} style={styles.skeletonRow}>
-          <Skeleton width={120} height={20} />
-          <View style={styles.skeletonCovers}>
-            {[0, 1, 2].map((card) => (
-              <Skeleton key={card} width={92} height={138} />
-            ))}
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-}
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -124,10 +106,25 @@ export default function HomeScreen() {
 
   const handleRemoveCurrentlyReading = useCallback(
     (book: Book) => {
-      trackEvent("home_currently_reading_removed", { bookId: book.id });
-      removeFromCurrentlyReadingMutation.mutate(book.id);
+      // Kaldırmak `user_book_progress` satırını SİLİYOR; tek dokunuşla geri
+      // dönüşü olmayan bir kayıp yaşatmamak için önce onay isteniyor.
+      Alert.alert(
+        t("home.currentlyReading.removeConfirmTitle"),
+        t("home.currentlyReading.removeConfirmBody", { title: book.title }),
+        [
+          { text: t("common.cancel"), style: "cancel" },
+          {
+            text: t("home.currentlyReading.removeConfirmCta"),
+            style: "destructive",
+            onPress: () => {
+              trackEvent("home_currently_reading_removed", { bookId: book.id });
+              removeFromCurrentlyReadingMutation.mutate(book.id);
+            },
+          },
+        ],
+      );
     },
-    [removeFromCurrentlyReadingMutation],
+    [removeFromCurrentlyReadingMutation, t],
   );
 
   const handlePressCollection = useCallback(
@@ -169,9 +166,7 @@ export default function HomeScreen() {
         style={[styles.container, { backgroundColor: theme.bg.primary }]}
         edges={["top"]}
       >
-        <View style={styles.topBar}>
-          <Text style={[type.wordmark, { color: theme.text.primary }]}>{t("app.name")}</Text>
-        </View>
+        <ScreenHeader title={t("app.name")} titleStyle={type.wordmark} />
         <HomeSkeleton />
       </SafeAreaView>
     );
@@ -204,9 +199,7 @@ export default function HomeScreen() {
         ana sayfanın üst barına taşınması yalnızca eski bir tasarım
         denemesiydi, referansta karşılığı yok.
       */}
-      <View style={styles.topBar}>
-        <Text style={[type.wordmark, { color: theme.text.primary }]}>{t("app.name")}</Text>
-      </View>
+      <ScreenHeader title={t("app.name")} titleStyle={type.wordmark} />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {!hasAnyContent ? (
@@ -220,6 +213,10 @@ export default function HomeScreen() {
               "devam et" bloğu yok. Kaldığın yere dönme eylemi zaten
               "Şu an okunuyor" rafında (aşağıda) karşılanıyor.
             */}
+            {/* Sıra ürün sahibinin isteği (2026-09-24): kısayollar en üstte,
+                altında yeni kitaplar, sonra okunmakta olanlar. */}
+            <CollectionShelf onPressCollection={handlePressCollection} userLevel={userLevel} />
+
             <BookShelf
               title={t("home.newBooks.title")}
               books={newBooks}
@@ -232,8 +229,6 @@ export default function HomeScreen() {
               onPressBook={handleOpenBook}
               onRemoveBook={handleRemoveCurrentlyReading}
             />
-
-            <CollectionShelf onPressCollection={handlePressCollection} userLevel={userLevel} />
 
             <CategoryShelf
               title={t("home.categories.title")}
@@ -272,30 +267,10 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: spacing.screenBottom,
   },
-  topBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.sm,
-  },
   levelGroups: {
     marginTop: spacing.sectionGap,
     marginHorizontal: spacing.lg,
     borderRadius: radius.cover,
     overflow: "hidden",
-  },
-  skeletonWrap: {
-    paddingHorizontal: spacing.lg,
-    gap: spacing.xxl,
-    marginTop: spacing.md,
-  },
-  skeletonRow: {
-    gap: spacing.sm,
-  },
-  skeletonCovers: {
-    flexDirection: "row",
-    gap: spacing.md,
   },
 });

@@ -1,16 +1,23 @@
 import { useCallback, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
-import { spacing, type } from "@/theme";
+import { spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { useRefetchOnFocusIfStale } from "@/hooks/useRefetchOnFocusIfStale";
-import { LoadingState, ErrorState, EmptyState, FilterTab, useToast } from "@/components/ui";
+import {
+  LoadingState,
+  ErrorState,
+  EmptyState,
+  FilterTab,
+  useToast,
+  ScreenHeader,
+} from "@/components/ui";
 import { useFavoritedBookIdsQuery, useToggleFavoriteMutation } from "@/features/home";
 import {
   BookListRow,
@@ -112,9 +119,7 @@ export default function LibraryScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <View style={styles.header}>
-        <Text style={[type.screenTitle, { color: theme.text.primary }]}>{t("library.title")}</Text>
-      </View>
+      <ScreenHeader title={t("library.title")} />
 
       <View style={[styles.filters, { borderBottomColor: theme.border.hairline }]}>
         {LEVEL_TABS.map((tab) => (
@@ -150,11 +155,6 @@ export default function LibraryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.xs,
   },
   filters: {
     flexDirection: "row",
