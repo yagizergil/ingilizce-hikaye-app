@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
@@ -25,32 +26,36 @@ import type { WordPackWord } from "@/features/vocabulary/api/useWordPackQuery";
 
 /** Ücretsiz kullanıcıya açık gösterilen kelime sayısı; gerisi bulanık. */
 const FREE_VISIBLE_WORDS = 3;
-/** Kilitli listede gösterilen bulanık satır sayısı (listenin devamı hissi). */
-const BLURRED_ROWS = 9;
-
-interface PackRow {
-  key: string;
-  word: WordPackWord;
-  blurred: boolean;
-}
+/** Kilitli listede bulanık gösterilen satır sayısı (listenin devamı hissi). */
+const BLURRED_ROWS = 8;
 
 /**
- * Kilitli pakette ilk 3 kelime açık, ardından bulanık satırlar (kullanıcı
- * bulgusu, 2026-09-25: "listenin tamamı bulanık görünsün, butonu altta").
- * Sunucu ücretsiz kullanıcıya 5 kelime gönderiyor; gerisi hiç gelmiyor,
- * yani bulanık satırların bir kısmı bilerek aynı kelimelerin tekrarı --
- * okunamadıkları için bir şey vaat etmiyorlar, kilit gerçekten sunucuda.
+ * Bulanık önizleme satırları. Sunucu ücretsiz kullanıcıya yalnızca 5 kelime
+ * gönderiyor; gerisi hiç gelmiyor, yani satırların bir kısmı bilerek aynı
+ * kelimelerin tekrarı -- bulanıklığın altında okunamıyorlar ve bir şey vaat
+ * etmiyorlar. Kilit gerçekten sunucuda (migration 050).
  */
-function buildPackRows(words: WordPackWord[], locked: boolean): PackRow[] {
-  if (!locked) return words.map((word) => ({ key: word.lemma, word, blurred: false }));
-  const visible = words.slice(0, FREE_VISIBLE_WORDS);
-  const pool = words.length > 0 ? words : [];
-  const blurred = Array.from({ length: pool.length ? BLURRED_ROWS : 0 }, (_, index) => ({
-    key: `blur-${index}`,
-    word: pool[(FREE_VISIBLE_WORDS + index) % pool.length] as WordPackWord,
-    blurred: true,
-  }));
-  return [...visible.map((word) => ({ key: word.lemma, word, blurred: false })), ...blurred];
+function blurredPreviewWords(words: WordPackWord[]): WordPackWord[] {
+  if (words.length === 0) return [];
+  return Array.from(
+    { length: BLURRED_ROWS },
+    (_, index) => words[(FREE_VISIBLE_WORDS + index) % words.length] as WordPackWord,
+  );
+}
+
+function PackWordRow({ word }: { word: WordPackWord }) {
+  const { theme } = useTheme();
+  return (
+    <View style={[styles.row, { borderColor: theme.border.hairline }]}>
+      <Text style={[type.chapterRowTitle, { color: theme.text.primary }]}>{word.lemma}</Text>
+      <Text
+        style={[monoType.rowText, styles.gloss, { color: theme.text.secondary }]}
+        numberOfLines={1}
+      >
+        {word.gloss ?? "—"}
+      </Text>
+    </View>
+  );
 }
 
 interface WordPackScreenProps {
@@ -66,7 +71,7 @@ interface WordPackScreenProps {
  */
 export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const { theme, themeName } = useTheme();
   const { show: showToast } = useToast();
   const pack = useWordPackQuery(level);
   const addPack = useAddPackToDecksMutation();
@@ -95,32 +100,8 @@ export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
   }, [addPack, level, pack.data, showToast, t]);
 
   const renderWord = useCallback(
-    ({ item }: { item: PackRow }) => {
-      // Kilitli satır: metin renksiz, yalnızca gölgesi görünüyor -- iOS'ta
-      // gerçek bir bulanıklık gibi okunuyor, kelime seçilemiyor.
-      const blurStyle = item.blurred
-        ? { color: "transparent", textShadowColor: theme.text.primary, textShadowRadius: 10 }
-        : null;
-      const row = (
-        <View
-          style={[styles.row, { borderColor: theme.border.hairline }]}
-          importantForAccessibility={item.blurred ? "no-hide-descendants" : "auto"}
-          accessibilityElementsHidden={item.blurred}
-        >
-          <Text style={[type.chapterRowTitle, { color: theme.text.primary }, blurStyle]}>
-            {item.word.lemma}
-          </Text>
-          <Text
-            style={[monoType.rowText, styles.gloss, { color: theme.text.secondary }, blurStyle]}
-            numberOfLines={1}
-          >
-            {item.word.gloss ?? "—"}
-          </Text>
-        </View>
-      );
-      return item.blurred ? <Pressable onPress={handleUnlock}>{row}</Pressable> : row;
-    },
-    [handleUnlock, theme],
+    ({ item }: { item: WordPackWord }) => <PackWordRow word={item} />,
+    [],
   );
 
   const title = t("vocabulary.packs.cardTitle", { level });
@@ -139,11 +120,11 @@ export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
     );
   } else {
     const data = pack.data;
-    const rows = buildPackRows(data.words, data.locked);
+    const visible = data.locked ? data.words.slice(0, FREE_VISIBLE_WORDS) : data.words;
     body = (
       <FlatList
-        data={rows}
-        keyExtractor={(item) => item.key}
+        data={visible}
+        keyExtractor={(item) => item.lemma}
         renderItem={renderWord}
         contentContainerStyle={styles.list}
         ListHeaderComponent={
@@ -153,23 +134,47 @@ export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
         }
         ListFooterComponent={
           data.locked ? (
-            <Pressable
-              onPress={handleUnlock}
-              accessibilityRole="button"
-              style={[
-                styles.locked,
-                { backgroundColor: theme.accentMuted, borderColor: theme.accent },
-              ]}
-            >
-              <Ionicons name="lock-closed" size={22} color={theme.accent} />
-              <Text style={[type.chapterRowTitle, styles.center, { color: theme.text.primary }]}>
-                {t("vocabulary.packs.lockedTitle", { count: data.total - FREE_VISIBLE_WORDS })}
-              </Text>
-              <Text style={[monoType.metaTight, styles.center, { color: theme.text.secondary }]}>
-                {t("vocabulary.packs.lockedBody")}
-              </Text>
-              <Button label={t("vocabulary.packs.unlock")} onPress={handleUnlock} fullWidth />
-            </Pressable>
+            <View>
+              {/*
+              KULLANICI BULGUSU (2026-09-25): önceki sürüm bulanıklığı
+              saydam metin + textShadow ile taklit ediyordu; iOS saydam
+              metnin gölgesini çizmiyor, geriye yalnızca boş ayırıcı
+              çizgiler kalıyordu. Satırlar artık normal çiziliyor ve
+              üstüne gerçek bir BlurView biniyor.
+            */}
+              <Pressable
+                onPress={handleUnlock}
+                accessibilityElementsHidden
+                importantForAccessibility="no-hide-descendants"
+                style={styles.blurredList}
+              >
+                {blurredPreviewWords(data.words).map((word, index) => (
+                  <PackWordRow key={`blur-${index}`} word={word} />
+                ))}
+                <BlurView
+                  intensity={22}
+                  tint={themeName === "dark" ? "dark" : "light"}
+                  style={StyleSheet.absoluteFill}
+                />
+              </Pressable>
+              <Pressable
+                onPress={handleUnlock}
+                accessibilityRole="button"
+                style={[
+                  styles.locked,
+                  { backgroundColor: theme.accentMuted, borderColor: theme.accent },
+                ]}
+              >
+                <Ionicons name="lock-closed" size={22} color={theme.accent} />
+                <Text style={[type.chapterRowTitle, styles.center, { color: theme.text.primary }]}>
+                  {t("vocabulary.packs.lockedTitle", { count: data.total - FREE_VISIBLE_WORDS })}
+                </Text>
+                <Text style={[monoType.metaTight, styles.center, { color: theme.text.secondary }]}>
+                  {t("vocabulary.packs.lockedBody")}
+                </Text>
+                <Button label={t("vocabulary.packs.unlock")} onPress={handleUnlock} fullWidth />
+              </Pressable>
+            </View>
           ) : (
             <View style={styles.footer}>
               <Button
@@ -216,6 +221,9 @@ const styles = StyleSheet.create({
   gloss: {
     flexShrink: 1,
     textAlign: "right",
+  },
+  blurredList: {
+    overflow: "hidden",
   },
   locked: {
     marginTop: spacing.lg,
