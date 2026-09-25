@@ -66,6 +66,12 @@ export const CATEGORY_DEFINITIONS: readonly CategoryDefinition[] = [
 export const CATEGORY_IMAGE_BASE =
   "https://lzewiwkwcshwxsfwybml.supabase.co/storage/v1/object/public/category-images";
 
+/**
+ * Görseller aynı adla yeniden yüklendiğinde (1.0.7: yağlı boya seti)
+ * expo-image eskisini önbellekten göstermesin diye sürüm parametresi.
+ */
+const CATEGORY_IMAGE_VERSION = 2;
+
 export function categoryImageUrl(key: string): string {
-  return `${CATEGORY_IMAGE_BASE}/${key}.jpg`;
+  return `${CATEGORY_IMAGE_BASE}/${key}.jpg?v=${CATEGORY_IMAGE_VERSION}`;
 }

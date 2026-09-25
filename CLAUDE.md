@@ -551,6 +551,25 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
   kare illüstrasyonlar `home/authorImages.ts` kaydından geliyor; kayıtta
   olmayan yazar kitap kapağına (karo üzerinde, kırpılmadan) düşüyor.
 
+### 1.0.7 turu (2026-09-25, cihaz geri bildirimi + kapaklar)
+
+- **Onboarding sonunda paywall hiç çıkmıyordu.** Akış paywall'dan önce
+  profili kaydediyor, `["onboarding"]` geçersiz kılınıyor, `OnboardingGate`
+  `completed: true` görüp akışı söküyordu. Kapı artık akış başladıysa
+  `onDone`'a kadar açık kalıyor.
+- İlk okuma pasajı artık gerçek düzyazı (başlık/tarih/"Letter 1" satırları
+  eleniyor, `isReadableProse`); "11th" gibi sıra sayıları tıklanamıyor
+  (`isNumericToken`). Kitap zevki adımı önce klasikleri gösteriyor.
+- Kelime paketi: 3 açık kelime + bulanık liste + altta kilit kartı.
+  Bölüm listesinde numara, kitaptan kelimeler sheet'i kayıttan hemen sonra
+  yenileniyor, istatistik kartları kutulu, paywall'da buton üstte, hesap
+  silme onay kutusunda tik.
+- **Kapaklar:** 310 Lingo Studio kapağının tamamı yağlı boya stiline
+  geçti, altta başlık + "LINGO STUDIO" bandı
+  (`pipeline/scripts/compose_lingo_covers.py`; CJK/Arapça Noto fontla,
+  Arapça reshaper+bidi ile). Tür/yazar/seri kartlarının 43 kare görseli
+  de aynı stilde; `categoryImageUrl` önbellek için `?v=2` taşıyor.
+
 ### 1.0.6 turu (2026-09-24, Kelimelerim premium)
 
 Tasarım ve rakip analizi: `docs/plans/2026-09-24-kelimelerim-premium-design.md`.

@@ -25,7 +25,28 @@ from PIL import Image, ImageDraw, ImageFont
 SIZE = (1200, 1800)
 FONT_BOLD = "C:/Windows/Fonts/segoeuib.ttf"
 FONT_SEMI = "C:/Windows/Fonts/seguisb.ttf"
+FONTS_DIR = Path(__file__).resolve().parents[1] / "assets" / "fonts"
+# Segoe UI'da CJK/Arapça glif yok -- o dillerde başlık Noto ile basılıyor.
+SCRIPT_FONTS = {
+    "zh": FONTS_DIR / "NotoSansCJKsc-Bold.otf",
+    "ja": FONTS_DIR / "NotoSansCJKjp-Bold.otf",
+    "ar": FONTS_DIR / "NotoNaskhArabic-Variable.ttf",
+}
 AUTHOR = "LINGO STUDIO"
+
+
+def display_title(title: str, language: str) -> str:
+    """Büyük harfe çevirir (Türkçe i->İ) ve Arapçayı şekillendirip sağdan sola dizer."""
+    if language == "ar":
+        import arabic_reshaper
+        from bidi.algorithm import get_display
+
+        return get_display(arabic_reshaper.reshape(title))
+    if language in ("zh", "ja"):
+        return title
+    if language == "tr":
+        title = title.replace("i", "İ").replace("ı", "I")
+    return title.upper()
 
 
 def wrap(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, width: int) -> list[str]:
@@ -44,6 +65,20 @@ def wrap(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, wid
     return lines
 
 
+def wrap_chars(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, width: int) -> list[str]:
+    lines: list[str] = []
+    current = ""
+    for char in text:
+        if draw.textlength(current + char, font=font) <= width:
+            current += char
+        else:
+            lines.append(current)
+            current = char
+    if current:
+        lines.append(current)
+    return lines
+
+
 def fit_cover(image: Image.Image) -> Image.Image:
     image = image.convert("RGB")
     target = SIZE[0] / SIZE[1]
@@ -57,7 +92,7 @@ def fit_cover(image: Image.Image) -> Image.Image:
     return image.resize(SIZE, Image.LANCZOS)
 
 
-def compose(image: Image.Image, title: str) -> Image.Image:
+def compose(image: Image.Image, title: str, language: str = "en") -> Image.Image:
     image = fit_cover(image).convert("RGBA")
     overlay = Image.new("RGBA", SIZE, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
@@ -66,8 +101,14 @@ def compose(image: Image.Image, title: str) -> Image.Image:
     inner = SIZE[0] - 2 * margin - 80
     size = 104
     while True:
-        font = ImageFont.truetype(FONT_BOLD, size)
-        lines = wrap(draw, title.upper(), font, inner)
+        font = ImageFont.truetype(str(SCRIPT_FONTS.get(language, FONT_BOLD)), size)
+        text = display_title(title, language)
+        # CJK'de boşluk yok: kelime yerine karakter karakter kırılıyor.
+        lines = (
+            wrap_chars(draw, text, font, inner)
+            if language in ("zh", "ja")
+            else wrap(draw, text, font, inner)
+        )
         if len(lines) <= 3 or size <= 64:
             break
         size -= 6
@@ -93,8 +134,15 @@ def compose(image: Image.Image, title: str) -> Image.Image:
 
 def main() -> int:
     urls_path, scenes_path, books_path, out_dir = map(Path, sys.argv[1:5])
-    order = list(json.loads(scenes_path.read_text(encoding="utf-8")).keys())
-    titles = {b["slug"]: b["title"] for b in json.loads(books_path.read_text(encoding="utf-8"))}
+    books = json.loads(books_path.read_text(encoding="utf-8"))
+    # scenes.json verilmezse ("-") sıra kitap listesinin kendi sırası.
+    order = (
+        [b["slug"] for b in books]
+        if str(scenes_path) == "-"
+        else list(json.loads(scenes_path.read_text(encoding="utf-8")).keys())
+    )
+    titles = {b["slug"]: b["title"] for b in books}
+    languages = {b["slug"]: b.get("target_language", "en") for b in books}
     out_dir.mkdir(parents=True, exist_ok=True)
 
     with httpx.Client(timeout=120) as client:
@@ -102,7 +150,7 @@ def main() -> int:
             index, url = line.split(" ", 1)
             slug = order[int(index)]
             data = client.get(url).content
-            cover = compose(Image.open(BytesIO(data)), titles[slug])
+            cover = compose(Image.open(BytesIO(data)), titles[slug], languages[slug])
             cover.save(out_dir / f"{slug}.png")
             print("ok", slug)
     return 0
