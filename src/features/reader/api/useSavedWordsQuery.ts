@@ -350,6 +350,10 @@ function useWordActionMutation(type: WordActionType, errorMessageKey: string) {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: lemmaStatesQueryKey });
+      // "Kitaptan kelimeler" sayfası da anında güncellenmeli (kullanıcı
+      // bulgusu, 2026-09-25: kaydedilen kelime ancak uygulama yeniden
+      // açılınca görünüyordu -- bu anahtar hiç geçersiz kılınmıyordu).
+      void queryClient.invalidateQueries({ queryKey: ["reader", "bookSavedWords"] });
     },
   });
 }
@@ -407,6 +411,7 @@ export function useRemoveSavedWordMutation() {
       // sorgu anahtarlarına uzanmak hem CLAUDE.md'nin feature sınırını
       // deler hem de barrel'lar arasında döngüsel import yaratırdı.
       void queryClient.invalidateQueries({ queryKey: lemmaStatesQueryKey });
+      void queryClient.invalidateQueries({ queryKey: ["reader", "bookSavedWords"] });
     },
   });
 }

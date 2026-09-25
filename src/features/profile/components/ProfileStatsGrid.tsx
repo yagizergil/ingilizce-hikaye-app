@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 
 import { spacing } from "@/theme";
-import { StatCell } from "@/components/ui";
+import { Card, StatCell } from "@/components/ui";
 
 export interface ProfileStatItem {
   key: string;
@@ -27,7 +27,12 @@ export function ProfileStatsGrid({ items }: ProfileStatsGridProps) {
   return (
     <View style={styles.grid}>
       {items.map((item) => (
-        <StatCell key={item.key} value={item.value} label={item.label} size="lg" bordered style={styles.cell} />
+        // Streak ve haftalık grafik kartlarıyla aynı kutu (kullanıcı bulgusu,
+        // 2026-09-25: "tüm zamanlar" hücreleri düz zeminde kalıp ekranda
+        // tutarsız duruyordu).
+        <Card key={item.key} style={styles.cell}>
+          <StatCell value={item.value} label={item.label} size="lg" />
+        </Card>
       ))}
     </View>
   );
@@ -41,6 +46,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   cell: {
+    padding: spacing.md,
     // İki sütun + aradaki boşluk.
     flexBasis: "47%",
     flexGrow: 1,

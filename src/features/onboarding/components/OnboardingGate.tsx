@@ -43,6 +43,23 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
   const showFlow = !isError && data && !data.completed;
 
   /**
+   * Akış bir kez başladıysa `onDone`'a kadar AÇIK kalıyor.
+   *
+   * HATA (kullanıcı bulgusu, 2026-09-25): akış paywall'dan ÖNCE profili
+   * kaydediyor (`startFinishing`) ve mutation `["onboarding"]`ı geçersiz
+   * kılıyor. Yeniden çekilen durum `completed: true` dönünce bu kapı akışı
+   * söküp uygulamayı gösteriyordu -- "yolun" ekranından sonra paywall hiç
+   * çıkmıyordu. Durum sorgusu "gösterilsin mi"ye karar veriyor, "ne zaman
+   * bitsin"e değil; bitişi yalnızca akışın kendisi söylüyor.
+   */
+  const [flowStarted, setFlowStarted] = useState(false);
+  // Render sırasında türetilen durum (React'in önerdiği desen, efekt değil):
+  // efektle kurulsaydı durumun `completed` döndüğü render'da bir kare
+  // uygulama görünebilirdi.
+  if (showFlow && !flowStarted) setFlowStarted(true);
+  const flowVisible = Boolean(showFlow) || (flowStarted && !finishing);
+
+  /**
    * Onboarding biterken navigasyonu KÖKE alıyoruz.
    *
    * NEDEN: akış gösterilirken `Stack` mount edilmiş değil, ama Expo
@@ -53,10 +70,10 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
    * yığındaki artığı temizliyor.
    */
   useEffect(() => {
-    if (!finishing || showFlow || returnedRef.current) return;
+    if (!finishing || flowVisible || returnedRef.current) return;
     returnedRef.current = true;
     router.replace("/");
-  }, [finishing, showFlow]);
+  }, [finishing, flowVisible]);
 
   if (isLoading) {
     return (
@@ -66,7 +83,7 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
     );
   }
 
-  if (showFlow) {
+  if (flowVisible) {
     return <OnboardingFlow onDone={handleDone} />;
   }
 

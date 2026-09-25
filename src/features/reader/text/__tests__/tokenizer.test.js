@@ -186,6 +186,13 @@ describe("isNumericToken", () => {
     expect(isNumericToken("42")).toBe(true);
   });
 
+  it("is true for ordinals like 11th / 1st / 22nd", () => {
+    expect(isNumericToken("11th")).toBe(true);
+    expect(isNumericToken("1st")).toBe(true);
+    expect(isNumericToken("22nd")).toBe(true);
+    expect(isNumericToken("fourth")).toBe(false);
+  });
+
   it("is false for a real word", () => {
     expect(isNumericToken("Frankenstein")).toBe(false);
   });

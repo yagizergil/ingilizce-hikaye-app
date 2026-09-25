@@ -57,77 +57,143 @@ function levelsToTry(level: string | null): string[] {
   return [ladder[index - 1] as string, ladder[index] as string];
 }
 
-async function fetchOnboardingContent(
-  targetLanguage: string,
-  level: string | null,
-): Promise<OnboardingContent> {
-  const levels = levelsToTry(level);
+const LINGO_STUDIO_AUTHOR = "Lingo Studio";
 
-  const { data: bookRows, error: bookError } = await supabase
-    .from("books")
-    .select("id, slug, title, author, cover_url, cefr_level")
-    .eq("status", "published")
-    .eq("target_language", targetLanguage)
-    .in("cefr_level", levels)
-    .order("popularity_score", { ascending: false })
-    .limit(TASTE_BOOK_COUNT);
+/** Pasaj adayı olarak okunacak paragraf sayısı (ilk bölüm(ler)in başı). */
+const PASSAGE_SCAN_LIMIT = 60;
 
-  if (bookError) throw bookError;
+/** "Güzel, uzun" bir paragrafın alt sınırı (karakter). */
+const MIN_PROSE_LENGTH = 220;
 
-  const books: OnboardingBook[] = (bookRows ?? []).map((row) => ({
+/**
+ * Bir paragrafın okunabilir DÜZYAZI olup olmadığı (saf, testli).
+ *
+ * KULLANICI BULGUSU (2026-09-25): ilk okuma adımı Frankenstein'ın mektup
+ * başlığını ("To Mrs. Saville, England / St. Petersburgh, Dec. 11th, 17—")
+ * gösteriyordu -- bölümün İLK iki paragrafı körü körüne alınıyordu. Başlık,
+ * tarih, hitap ve bölüm adı satırları kısa, rakam içeren ya da cümle
+ * noktalaması taşımayan satırlar; hepsi burada eleniyor.
+ */
+export function isReadableProse(text: string): boolean {
+  const trimmed = text.trim();
+  // CJK'de karakter başına bilgi çok daha yoğun; aynı eşik orada çok uzun olurdu.
+  const isCjk = /[぀-ヿ一-鿿]/.test(trimmed);
+  if (trimmed.length < (isCjk ? MIN_PROSE_LENGTH / 3 : MIN_PROSE_LENGTH)) return false;
+  if (/[0-9]/.test(trimmed)) return false;
+  if (/^(chapter|letter|book|part|volume)\b/i.test(trimmed)) return false;
+  // Tamamı büyük harf başlık satırı (harf büyüklüğü olmayan yazılarda uygulanmaz).
+  const hasCase = trimmed.toUpperCase() !== trimmed.toLowerCase();
+  if (hasCase && trimmed === trimmed.toUpperCase()) return false;
+  const sentenceEnds = trimmed.match(/[.!?](\s|$)|[。！？]/g)?.length ?? 0;
+  return sentenceEnds >= 2;
+}
+
+/** Ardışık iki düzyazı paragrafı tercih eder; yoksa en iyi tekini. */
+export function pickPassageParagraphs(texts: string[]): string[] {
+  for (let i = 0; i < texts.length - 1; i++) {
+    const a = texts[i] as string;
+    const b = texts[i + 1] as string;
+    if (isReadableProse(a) && isReadableProse(b)) return [a.trim(), b.trim()];
+  }
+  const single = texts.find(isReadableProse);
+  return single ? [single.trim()] : [];
+}
+
+function mapBook(row: Record<string, unknown>): OnboardingBook {
+  return {
     id: row.id as string,
     slug: row.slug as string,
     title: row.title as string,
     author: (row.author as string | null) ?? null,
     coverUrl: (row.cover_url as string | null) ?? null,
     cefrLevel: (row.cefr_level as string | null) ?? null,
-  }));
+  };
+}
 
-  /**
-   * DENETİM BULGUSU (2026-09-18, kullanıcı geri bildirimi): "B2 kitapları
-   * göstersin diye bastım, yine B1 gösterdi." `levels` bilerek seçilen
-   * seviye + bir altını sorguluyor (yukarıdaki yorum: "ilk temasta güven
-   * veriyor") ve sonuçlar `popularity_score`'a göre sıralanıyor -- yani
-   * `books[0]` her zaman kullanıcının SEÇTİĞİ seviyeden olmuyordu, alt
-   * seviyede daha popüler bir klasik varsa oradan seçiliyordu. Kitap
-   * ZEVKİ adımında (kapak ızgarası) bu karışım kasıtlı ve zararsız --
-   * ama tek başına gösterilen "ilk okuma PASAJI" kullanıcının az önce
-   * seçtiği seviyeyi TEMSİL ETMELİ. Önce tam seviye eşleşmesi aranıyor,
-   * yalnızca o seviyede hiç kitap yoksa popülerliğe göre ilk sıradaki
-   * (bir alt seviyeden) kitaba düşülüyor.
-   */
-  const source = (level ? books.find((book) => book.cefrLevel === level) : undefined) ?? books[0];
-  if (!source) return { books, passage: null };
-
-  // Pasaj: ilk bölümün ilk paragrafları.
+async function fetchPassage(book: OnboardingBook): Promise<OnboardingPassage | null> {
   const { data: sectionRows, error: sectionError } = await supabase
     .from("book_sections")
     .select("id")
-    .eq("book_id", source.id)
+    .eq("book_id", book.id)
     .order("order_index", { ascending: true })
-    .limit(1);
-
+    .limit(2);
   if (sectionError) throw sectionError;
-  const sectionId = sectionRows?.[0]?.id as string | undefined;
-  if (!sectionId) return { books, passage: null };
 
-  const { data: paragraphRows, error: paragraphError } = await supabase
-    .from("book_paragraphs")
-    .select("text")
-    .eq("section_id", sectionId)
-    .order("order_index", { ascending: true })
-    .limit(PASSAGE_PARAGRAPH_COUNT);
+  for (const section of sectionRows ?? []) {
+    const { data: paragraphRows, error: paragraphError } = await supabase
+      .from("book_paragraphs")
+      .select("text")
+      .eq("section_id", section.id as string)
+      .order("order_index", { ascending: true })
+      .limit(PASSAGE_SCAN_LIMIT);
+    if (paragraphError) throw paragraphError;
 
-  if (paragraphError) throw paragraphError;
+    const paragraphs = pickPassageParagraphs(
+      (paragraphRows ?? []).map((row) => (row.text as string | null) ?? ""),
+    ).slice(0, PASSAGE_PARAGRAPH_COUNT);
+    if (paragraphs.length > 0) {
+      return { bookId: book.id, bookTitle: book.title, paragraphs };
+    }
+  }
+  return null;
+}
 
-  const paragraphs = (paragraphRows ?? [])
-    .map((row) => (row.text as string | null) ?? "")
-    .filter((text) => text.trim().length > 0);
+async function fetchOnboardingContent(
+  targetLanguage: string,
+  level: string | null,
+): Promise<OnboardingContent> {
+  const columns = "id, slug, title, author, cover_url, cefr_level";
 
-  return {
-    books,
-    passage: paragraphs.length ? { bookId: source.id, bookTitle: source.title, paragraphs } : null,
-  };
+  /**
+   * KİTAP ZEVKİ: önce KLASİKLER (kullanıcı bulgusu, 2026-09-25). Lingo
+   * Studio kapaklarında başlık/yazar yazmıyor; kullanıcı yalnızca bir
+   * resme bakıp "bunu okumak isterim" diyemiyor. Klasikler tanınıyor.
+   * O dilde klasik azsa Lingo Studio ile tamamlanıyor.
+   */
+  const { data: classicRows, error: classicError } = await supabase
+    .from("books")
+    .select(columns)
+    .eq("status", "published")
+    .eq("target_language", targetLanguage)
+    .neq("author", LINGO_STUDIO_AUTHOR)
+    .not("cover_url", "is", null)
+    .order("popularity_score", { ascending: false })
+    .limit(TASTE_BOOK_COUNT);
+  if (classicError) throw classicError;
+
+  const levels = levelsToTry(level);
+  const { data: levelRows, error: levelError } = await supabase
+    .from("books")
+    .select(columns)
+    .eq("status", "published")
+    .eq("target_language", targetLanguage)
+    .in("cefr_level", level ? [level, ...levels] : levels)
+    .order("popularity_score", { ascending: false })
+    .limit(TASTE_BOOK_COUNT * 2);
+  if (levelError) throw levelError;
+
+  const classics = (classicRows ?? []).map(mapBook);
+  const levelBooks = (levelRows ?? []).map(mapBook);
+  const seen = new Set(classics.map((book) => book.id));
+  const books = [...classics, ...levelBooks.filter((book) => !seen.has(book.id))].slice(
+    0,
+    TASTE_BOOK_COUNT,
+  );
+
+  /**
+   * PASAJ: kullanıcının seçtiği seviyeyi temsil etmeli (2026-09-18 bulgusu).
+   * Önce tam seviye, sonra bir altı; her aday kitapta okunabilir düzyazı
+   * bulunana kadar denenir.
+   */
+  const candidates = [
+    ...levelBooks.filter((book) => book.cefrLevel === level),
+    ...levelBooks.filter((book) => book.cefrLevel !== level),
+  ].slice(0, 4);
+  for (const candidate of candidates) {
+    const passage = await fetchPassage(candidate);
+    if (passage) return { books, passage };
+  }
+  return { books, passage: null };
 }
 
 export function useOnboardingContentQuery(targetLanguage: string | null, level: string | null) {

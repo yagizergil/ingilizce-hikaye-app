@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.xs,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.sm,
     paddingHorizontal: spacing.lg,
   },
   headerTitle: {

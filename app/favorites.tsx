@@ -105,7 +105,13 @@ export default function FavoritesScreen() {
           </View>
         );
       }
-      return <BookListRow book={item.book} onPress={handleOpenBook} />;
+      // Kitaplar arasında kütüphane/gözat ile aynı boşluk (kullanıcı
+      // bulgusu: satırlar birbirine yapışıktı).
+      return (
+        <View style={styles.bookRow}>
+          <BookListRow book={item.book} onPress={handleOpenBook} />
+        </View>
+      );
     },
     [handleOpenBook],
   );
@@ -147,6 +153,9 @@ const styles = StyleSheet.create({
   },
   sectionHead: {
     paddingTop: spacing.xl,
+    paddingBottom: spacing.sm,
+  },
+  bookRow: {
     paddingBottom: spacing.sm,
   },
   emptySection: {

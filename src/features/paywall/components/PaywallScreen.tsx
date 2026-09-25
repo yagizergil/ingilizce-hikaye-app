@@ -446,14 +446,8 @@ export function PaywallScreen({
        * sınıf olarak ortadan kaldırıyor — yasal bağlantılar ve satın alma
        * düğmesi, cihaz ne olursa olsun her zaman ekranda. */}
       <View style={[styles.footer, { borderTopColor: theme.border.hairline }]}>
-        <PaywallLegal
-          priceString={selected?.pkg.product.priceString ?? null}
-          trialDays={selected?.trial?.days ?? null}
-          periodLabel={periodLabel}
-          onRestore={isPurchasesAvailable ? () => void handleRestore() : undefined}
-          restoreBusy={busy?.kind === "restore"}
-        />
-
+        {/* Buton ÜSTTE, deneme/fiyat metni altında (kullanıcı bulgusu,
+            2026-09-25): göz önce eylemi görüyor, koşulu hemen altında. */}
         {isPurchasesAvailable && options.length > 0 ? (
           <Pressable
             onPress={() => void handlePurchase()}
@@ -473,6 +467,14 @@ export function PaywallScreen({
             </Text>
           </Pressable>
         ) : null}
+
+        <PaywallLegal
+          priceString={selected?.pkg.product.priceString ?? null}
+          trialDays={selected?.trial?.days ?? null}
+          periodLabel={periodLabel}
+          onRestore={isPurchasesAvailable ? () => void handleRestore() : undefined}
+          restoreBusy={busy?.kind === "restore"}
+        />
       </View>
     </SafeAreaView>
   );

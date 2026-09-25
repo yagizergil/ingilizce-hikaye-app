@@ -156,6 +156,18 @@ function ChapterListContent({
             <Text
               style={[
                 monoType.rowText,
+                styles.rowNumber,
+                {
+                  color:
+                    item.id === currentChapterId ? readerColors.accent : readerColors.textMuted,
+                },
+              ]}
+            >
+              {index + 1}
+            </Text>
+            <Text
+              style={[
+                monoType.rowText,
                 styles.rowText,
                 { color: item.id === currentChapterId ? readerColors.accent : readerColors.text },
               ]}
@@ -208,9 +220,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   row: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: spacing.sm,
     paddingVertical: spacing.md,
   },
+  // Bölüm numarası (kullanıcı bulgusu: listede kaçıncı bölüm olduğu yazmıyordu).
+  rowNumber: {
+    minWidth: 24,
+    fontVariant: ["tabular-nums"],
+  },
   rowText: {
+    flex: 1,
     fontWeight: "600",
   },
 });

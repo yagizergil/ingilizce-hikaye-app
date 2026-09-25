@@ -23,6 +23,36 @@ import { useAddPackToDecksMutation } from "@/features/vocabulary/api/useAddPackT
 
 import type { WordPackWord } from "@/features/vocabulary/api/useWordPackQuery";
 
+/** Ücretsiz kullanıcıya açık gösterilen kelime sayısı; gerisi bulanık. */
+const FREE_VISIBLE_WORDS = 3;
+/** Kilitli listede gösterilen bulanık satır sayısı (listenin devamı hissi). */
+const BLURRED_ROWS = 9;
+
+interface PackRow {
+  key: string;
+  word: WordPackWord;
+  blurred: boolean;
+}
+
+/**
+ * Kilitli pakette ilk 3 kelime açık, ardından bulanık satırlar (kullanıcı
+ * bulgusu, 2026-09-25: "listenin tamamı bulanık görünsün, butonu altta").
+ * Sunucu ücretsiz kullanıcıya 5 kelime gönderiyor; gerisi hiç gelmiyor,
+ * yani bulanık satırların bir kısmı bilerek aynı kelimelerin tekrarı --
+ * okunamadıkları için bir şey vaat etmiyorlar, kilit gerçekten sunucuda.
+ */
+function buildPackRows(words: WordPackWord[], locked: boolean): PackRow[] {
+  if (!locked) return words.map((word) => ({ key: word.lemma, word, blurred: false }));
+  const visible = words.slice(0, FREE_VISIBLE_WORDS);
+  const pool = words.length > 0 ? words : [];
+  const blurred = Array.from({ length: pool.length ? BLURRED_ROWS : 0 }, (_, index) => ({
+    key: `blur-${index}`,
+    word: pool[(FREE_VISIBLE_WORDS + index) % pool.length] as WordPackWord,
+    blurred: true,
+  }));
+  return [...visible.map((word) => ({ key: word.lemma, word, blurred: false })), ...blurred];
+}
+
 interface WordPackScreenProps {
   level: string;
   onClose: () => void;
@@ -65,18 +95,32 @@ export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
   }, [addPack, level, pack.data, showToast, t]);
 
   const renderWord = useCallback(
-    ({ item }: { item: WordPackWord }) => (
-      <View style={[styles.row, { borderColor: theme.border.hairline }]}>
-        <Text style={[type.chapterRowTitle, { color: theme.text.primary }]}>{item.lemma}</Text>
-        <Text
-          style={[monoType.rowText, styles.gloss, { color: theme.text.secondary }]}
-          numberOfLines={1}
+    ({ item }: { item: PackRow }) => {
+      // Kilitli satır: metin renksiz, yalnızca gölgesi görünüyor -- iOS'ta
+      // gerçek bir bulanıklık gibi okunuyor, kelime seçilemiyor.
+      const blurStyle = item.blurred
+        ? { color: "transparent", textShadowColor: theme.text.primary, textShadowRadius: 10 }
+        : null;
+      const row = (
+        <View
+          style={[styles.row, { borderColor: theme.border.hairline }]}
+          importantForAccessibility={item.blurred ? "no-hide-descendants" : "auto"}
+          accessibilityElementsHidden={item.blurred}
         >
-          {item.gloss ?? "—"}
-        </Text>
-      </View>
-    ),
-    [theme],
+          <Text style={[type.chapterRowTitle, { color: theme.text.primary }, blurStyle]}>
+            {item.word.lemma}
+          </Text>
+          <Text
+            style={[monoType.rowText, styles.gloss, { color: theme.text.secondary }, blurStyle]}
+            numberOfLines={1}
+          >
+            {item.word.gloss ?? "—"}
+          </Text>
+        </View>
+      );
+      return item.blurred ? <Pressable onPress={handleUnlock}>{row}</Pressable> : row;
+    },
+    [handleUnlock, theme],
   );
 
   const title = t("vocabulary.packs.cardTitle", { level });
@@ -95,10 +139,11 @@ export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
     );
   } else {
     const data = pack.data;
+    const rows = buildPackRows(data.words, data.locked);
     body = (
       <FlatList
-        data={data.words}
-        keyExtractor={(item) => item.lemma}
+        data={rows}
+        keyExtractor={(item) => item.key}
         renderItem={renderWord}
         contentContainerStyle={styles.list}
         ListHeaderComponent={
@@ -118,7 +163,7 @@ export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
             >
               <Ionicons name="lock-closed" size={22} color={theme.accent} />
               <Text style={[type.chapterRowTitle, styles.center, { color: theme.text.primary }]}>
-                {t("vocabulary.packs.lockedTitle", { count: data.total - data.words.length })}
+                {t("vocabulary.packs.lockedTitle", { count: data.total - FREE_VISIBLE_WORDS })}
               </Text>
               <Text style={[monoType.metaTight, styles.center, { color: theme.text.secondary }]}>
                 {t("vocabulary.packs.lockedBody")}

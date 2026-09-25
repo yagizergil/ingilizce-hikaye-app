@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
 
+import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
@@ -56,10 +57,18 @@ export function DeleteAccountScreen({ onDeleted, onCancel }: DeleteAccountScreen
         <Text style={[monoType.rowText, styles.listTitle, { color: theme.text.primary }]}>
           {t("account.delete.listTitle")}
         </Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>{t("account.delete.item1")}</Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>{t("account.delete.item2")}</Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>{t("account.delete.item3")}</Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>{t("account.delete.item4")}</Text>
+        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
+          {t("account.delete.item1")}
+        </Text>
+        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
+          {t("account.delete.item2")}
+        </Text>
+        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
+          {t("account.delete.item3")}
+        </Text>
+        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
+          {t("account.delete.item4")}
+        </Text>
 
         <Pressable
           style={styles.checkboxRow}
@@ -75,7 +84,11 @@ export function DeleteAccountScreen({ onDeleted, onCancel }: DeleteAccountScreen
                 backgroundColor: confirmed ? theme.danger : "transparent",
               },
             ]}
-          />
+          >
+            {/* Yalnızca boyalı kare "işaretli" gibi okunmuyordu (kullanıcı
+                bulgusu, 2026-09-25) -- tik işareti görünür onay. */}
+            {confirmed ? <Ionicons name="checkmark" size={16} color={theme.text.onAccent} /> : null}
+          </View>
           <Text style={[monoType.metaTight, styles.checkboxLabel, { color: theme.text.primary }]}>
             {t("account.delete.confirmLabel")}
           </Text>
@@ -93,7 +106,9 @@ export function DeleteAccountScreen({ onDeleted, onCancel }: DeleteAccountScreen
         </View>
 
         <Pressable style={styles.cancelButton} onPress={onCancel}>
-          <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>{t("common.back")}</Text>
+          <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
+            {t("common.back")}
+          </Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -131,6 +146,8 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: radius.sm,
     borderWidth: StyleSheet.hairlineWidth * 2,
+    alignItems: "center",
+    justifyContent: "center",
   },
   checkboxLabel: {
     flex: 1,

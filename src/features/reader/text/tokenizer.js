@@ -102,8 +102,15 @@ function tokenize(text) {
 // içeren karışık token'lara dokunulmuyor -- onlar gerçek kelime gibi
 // davranmaya devam ediyor.
 var PURE_DIGITS_RE = /^[\p{N}]+$/u;
+// Sıra sayıları da sayı ("11th", "1st", "22nd", "3rd"): 2026-09-25'te
+// "11th" lemmatize edilip "on'uncu" gibi uydurma bir karşılık alıyordu.
+var ORDINAL_RE = /^[\p{N}]+(st|nd|rd|th|e|er|ème|º|ª)$/iu;
 function isNumericToken(text) {
-  return typeof text === "string" && text.length > 0 && PURE_DIGITS_RE.test(text);
+  return (
+    typeof text === "string" &&
+    text.length > 0 &&
+    (PURE_DIGITS_RE.test(text) || ORDINAL_RE.test(text))
+  );
 }
 
 // Short list of common base nouns that end in "-er"/"-or" and must NEVER be
