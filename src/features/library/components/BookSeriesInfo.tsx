@@ -26,11 +26,14 @@ export function BookSeriesInfo({ series, onPressNextBook }: BookSeriesInfoProps)
   return (
     <View style={styles.container}>
       <Text style={[monoType.meta, { color: theme.text.secondary }]}>
-        {t("bookDetail.series.position", { index: series.currentIndex + 1 })} — {t(series.collectionTitleKey)}
+        {t("bookDetail.series.position", { index: series.currentIndex + 1 })} —{" "}
+        {t(series.collectionTitleKey)}
       </Text>
       {series.nextBook ? (
         <Pressable
-          onPress={() => onPressNextBook((series.nextBook as NonNullable<typeof series.nextBook>).id)}
+          onPress={() =>
+            onPressNextBook((series.nextBook as NonNullable<typeof series.nextBook>).id)
+          }
           accessibilityRole="link"
           hitSlop={{ top: spacing.sm, bottom: spacing.sm, left: spacing.sm, right: spacing.sm }}
         >

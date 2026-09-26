@@ -214,6 +214,14 @@ export function useChapterAudio({
   const lastKeyRef = useRef<string | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  /**
+   * Duraklatılmışken art arda basışlarda `player.currentTime` `seekTo`dan
+   * hemen sonra güncellenmiyor (asenkron); ikinci basış eski zamandan
+   * hesaplanıp aynı kelimeye düşüyordu. Son atlanan zaman burada tutuluyor
+   * ve yalnızca ses ÇALMIYORKEN kullanılıyor.
+   */
+  const lastSkipTimeRef = useRef<number | null>(null);
+
   const paragraphIndexById = useRef<Map<string, number>>(new Map());
   useEffect(() => {
     paragraphIndexById.current = new Map(
@@ -247,6 +255,7 @@ export function useChapterAudio({
       trackError("chapterAudio.stop", error);
     }
     lastKeyRef.current = null;
+    lastSkipTimeRef.current = null;
     setSpokenKey(null);
     setStatus("idle");
   }, [clearTick, player, setSpokenKey, setStatus]);
@@ -309,34 +318,62 @@ export function useChapterAudio({
    * Çalmıyorken de çalışıyor: duraklatıp okuduğu yeri geri almak isteyen
    * kullanıcı için ok tuşları, oynat düğmesine basmayı gerektirmemeli.
    */
+  const idByParagraphIndex = useRef<Map<number, string>>(new Map());
+  useEffect(() => {
+    idByParagraphIndex.current = new Map(
+      (chapter?.paragraphs ?? []).map((p) => [p.paragraphIndex, p.id]),
+    );
+  }, [chapter?.paragraphs]);
+
   const skipWord = useCallback(
     (delta: number) => {
       const timings = timingsQuery.data?.words ?? [];
       if (timings.length === 0) return;
 
+      const baseTime =
+        !player.playing && lastSkipTimeRef.current !== null
+          ? lastSkipTimeRef.current
+          : player.currentTime;
+
       const current = findWordIndexAtTime(
         timings.map((word) => ({ key: "", time: word.t })),
-        player.currentTime,
+        baseTime,
       );
 
       // Hiç başlamamışsa (-1) ileri = ilk kelime, geri = başa dön.
       const next = Math.min(Math.max(current + delta, 0), timings.length - 1);
-      const target = timings[next]?.t;
+      const target = timings[next];
       if (target === undefined) return;
 
       try {
-        void player.seekTo(target);
+        void player.seekTo(target.t);
       } catch (error) {
         trackError("chapterAudio.skipWord", error);
         return;
       }
+      lastSkipTimeRef.current = target.t;
 
-      // Vurgu hemen güncellensin: bir sonraki tick'i beklemek, basışla
-      // görsel tepki arasında yarım saniyelik bir boşluk bırakıyordu.
+      // Hedef kelime başka bir sayfadaysa önce oraya geç: bölümün tamamı
+      // üzerinden atlıyoruz, yani sayfa sınırını geçebiliyoruz.
+      const paragraphId = idByParagraphIndex.current.get(target.p);
+      if (paragraphId) readerRef.current?.showPosition(paragraphId, target.s);
+
       recomputePageWords();
+
+      // KULLANICI BULGUSU (2026-09-26): duraklatılmışken oklar sesi
+      // kaydırıyor ama vurgu yerinde kalıyordu -- vurguyu yalnızca `tick`
+      // güncelliyor ve duraklatınca tick duruyor. Vurgu burada, atlanan
+      // kelimeye doğrudan taşınıyor.
+      const words = pageWordsRef.current;
+      const index = findWordIndexAtTime(words, target.t);
+      const word = index >= 0 ? words[index] : undefined;
+      if (word) {
+        lastKeyRef.current = word.key;
+        setSpokenKey(word.key);
+      }
       trackEvent("reader_audio_word_skipped", { delta });
     },
-    [player, recomputePageWords, timingsQuery.data],
+    [player, readerRef, recomputePageWords, setSpokenKey, timingsQuery.data],
   );
 
   const toggle = useCallback(() => {
@@ -347,6 +384,7 @@ export function useChapterAudio({
 
     if (!available) return;
 
+    lastSkipTimeRef.current = null;
     recomputePageWords();
 
     // Ses ekranda duran sayfada değilse oraya taşınıyor; aynı sayfadaysa

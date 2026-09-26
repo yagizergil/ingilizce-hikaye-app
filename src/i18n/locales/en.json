@@ -210,7 +210,8 @@
       "continue": "Continue reading — Chapter {{index}}",
       "listen": "Listen",
       "listenAccessibilityLabel": "Listen to this book",
-      "listenLockedAccessibilityLabel": "Listen — premium feature"
+      "listenLockedAccessibilityLabel": "Listen — premium feature",
+      "reread": "Read again"
     },
     "stats": {
       "words": "Words",

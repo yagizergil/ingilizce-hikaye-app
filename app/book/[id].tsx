@@ -195,9 +195,10 @@ export default function BookDetailScreen() {
     );
   }
 
-  const { book, progressPercent, continueChapter, hasStarted } = data;
-  const ctaLabel =
-    hasStarted && continueChapter
+  const { book, progressPercent, continueChapter, hasStarted, isFinished } = data;
+  const ctaLabel = isFinished
+    ? t("bookDetail.cta.reread")
+    : hasStarted && continueChapter
       ? t("bookDetail.cta.continue", { index: continueChapter.index })
       : t("bookDetail.cta.start");
 

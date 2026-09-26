@@ -32,10 +32,11 @@ async function fetchBook(id: string): Promise<Book | null> {
 
   if (sectionsError) throw sectionsError;
 
-  const chapters: Chapter[] = ((sectionRows ?? []) as RawSectionRow[]).map((section) => ({
+  const chapters: Chapter[] = ((sectionRows ?? []) as RawSectionRow[]).map((section, position) => ({
     id: section.id,
-    index: section.order_index,
-    title: section.title ?? `${section.order_index}`,
+    // Listedeki sıradan: `order_index` çoğu kitapta 0'dan başlıyor.
+    index: position + 1,
+    title: section.title ?? `${position + 1}`,
     progressPercent: 0,
   }));
 

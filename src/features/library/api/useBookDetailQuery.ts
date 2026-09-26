@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
+import { computeBookProgress } from "@/features/library/api/bookProgress";
 import {
   BOOK_SELECT_COLUMNS,
   mapBookRow,
@@ -35,6 +36,8 @@ export interface BookDetailData {
   /** Whether the reader has any recorded progress on this book — drives
    * the CTA copy ("Okumaya devam et" vs "Okumaya başla"). */
   hasStarted: boolean;
+  /** Kitap tamamen bitirildi -- CTA "Baştan oku" olmalı, "devam et" değil. */
+  isFinished: boolean;
 }
 
 /**
@@ -87,27 +90,27 @@ async function fetchBookDetail(id: string): Promise<BookDetailData | null> {
     progressRow = data;
   }
 
-  const currentSection = progressRow?.section_id
-    ? (sections.find((section) => section.id === progressRow?.section_id) ?? null)
-    : null;
-  const isFinished = progressRow?.finished_at != null;
-  const currentOrderIndex = isFinished
-    ? Number.POSITIVE_INFINITY
-    : (currentSection?.order_index ?? Number.NEGATIVE_INFINITY);
+  const progress = computeBookProgress(sections, progressRow);
 
-  const chapters: Chapter[] = sections.map((section) => ({
+  // Bölüm numarası LİSTEDEKİ SIRADAN türetiliyor, `order_index`ten değil:
+  // 577 kitabın 544'ünde `order_index` 0'dan başlıyor ve CTA "Bölüm 0"
+  // yazıyordu (kullanıcı bulgusu, 2026-09-26).
+  const chapters: Chapter[] = sections.map((section, position) => ({
     id: section.id,
-    index: section.order_index,
-    title: section.title ?? `${section.order_index}`,
-    progressPercent: section.order_index < currentOrderIndex ? 100 : 0,
+    index: position + 1,
+    title: section.title ?? `${position + 1}`,
+    progressPercent:
+      progress.isFinished ||
+      (progress.currentPosition !== null && position < progress.currentPosition)
+        ? 100
+        : 0,
     estimatedMinutes: section.estimated_minutes ?? 0,
   }));
 
-  const hasStarted = progressRow != null && (currentSection != null || isFinished);
-
+  // Bitirilmiş kitapta "devam" edilecek bölüm yok: baştan başlanıyor.
   const continueChapter =
-    (hasStarted && !isFinished
-      ? chapters.find((chapter) => chapter.id === currentSection?.id)
+    (progress.hasStarted && !progress.isFinished && progress.currentPosition !== null
+      ? chapters[progress.currentPosition]
       : undefined) ??
     chapters[0] ??
     null;
@@ -115,14 +118,15 @@ async function fetchBookDetail(id: string): Promise<BookDetailData | null> {
   const book: Book = {
     ...mapBookRow(bookRow as RawBookRow),
     chapters,
-    comprehensionPercent: progressRow ? Math.round(progressRow.percent) : 0,
+    comprehensionPercent: progress.percent,
   };
 
   return {
     book,
-    progressPercent: progressRow ? Math.round(progressRow.percent) : 0,
+    progressPercent: progress.percent,
     continueChapter,
-    hasStarted,
+    hasStarted: progress.hasStarted,
+    isFinished: progress.isFinished,
   };
 }
 

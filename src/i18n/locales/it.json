@@ -210,7 +210,8 @@
       "continue": "Continua — capitolo {{index}}",
       "listen": "Ascolta",
       "listenAccessibilityLabel": "Ascolta questo libro",
-      "listenLockedAccessibilityLabel": "Ascolta — funzione premium"
+      "listenLockedAccessibilityLabel": "Ascolta — funzione premium",
+      "reread": "Rileggi"
     },
     "stats": {
       "words": "Parole",

@@ -12,7 +12,10 @@ async function fetchFavoritedBookIds(): Promise<Set<string>> {
   const userId = userData.user?.id;
   if (!userId) return new Set();
 
-  const { data, error } = await supabase.from("user_favorites").select("book_id").eq("user_id", userId);
+  const { data, error } = await supabase
+    .from("user_favorites")
+    .select("book_id")
+    .eq("user_id", userId);
   if (error) throw error;
 
   return new Set((data as RawFavoriteRow[]).map((row) => row.book_id));

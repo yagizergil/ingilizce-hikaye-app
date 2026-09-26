@@ -214,7 +214,8 @@
       "continue": "Продолжить чтение — глава {{index}}",
       "listen": "Слушать",
       "listenAccessibilityLabel": "Слушать эту книгу",
-      "listenLockedAccessibilityLabel": "Слушать — премиум-функция"
+      "listenLockedAccessibilityLabel": "Слушать — премиум-функция",
+      "reread": "Прочитать снова"
     },
     "stats": {
       "words": "Слова",

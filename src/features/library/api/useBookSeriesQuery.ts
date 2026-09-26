@@ -70,7 +70,7 @@ async function fetchBookSeries(bookId: string): Promise<BookSeriesData | null> {
 
   if (booksError) throw booksError;
 
-  const booksById = new Map((bookRows as RawBookRow[] | null ?? []).map((row) => [row.id, row]));
+  const booksById = new Map(((bookRows as RawBookRow[] | null) ?? []).map((row) => [row.id, row]));
 
   const books: SeriesBook[] = rows
     .map((row) => {

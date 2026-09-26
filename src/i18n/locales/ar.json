@@ -218,7 +218,8 @@
       "continue": "متابعة القراءة — الفصل {{index}}",
       "listen": "استمع",
       "listenAccessibilityLabel": "الاستماع إلى هذا الكتاب",
-      "listenLockedAccessibilityLabel": "استمع — ميزة مميّزة"
+      "listenLockedAccessibilityLabel": "استمع — ميزة مميّزة",
+      "reread": "اقرأ مجدداً"
     },
     "stats": {
       "words": "كلمة",

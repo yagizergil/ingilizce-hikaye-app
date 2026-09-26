@@ -42,7 +42,11 @@ export function ChapterListItem({ chapter, onPress }: ChapterListItemProps) {
         {isDone ? " ✓" : ""}
       </Text>
       <Text
-        style={[type.chapterRowTitle, styles.title, { color: isDone ? theme.text.secondary : theme.text.primary }]}
+        style={[
+          type.chapterRowTitle,
+          styles.title,
+          { color: isDone ? theme.text.secondary : theme.text.primary },
+        ]}
         numberOfLines={1}
       >
         {chapter.title}

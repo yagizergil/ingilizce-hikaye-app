@@ -210,7 +210,8 @@
       "continue": "続きを読む — 第 {{index}} 章",
       "listen": "聴く",
       "listenAccessibilityLabel": "この本を聴く",
-      "listenLockedAccessibilityLabel": "聴く — プレミアム機能"
+      "listenLockedAccessibilityLabel": "聴く — プレミアム機能",
+      "reread": "もう一度読む"
     },
     "stats": {
       "words": "語数",

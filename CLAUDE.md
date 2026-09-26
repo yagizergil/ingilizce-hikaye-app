@@ -551,6 +551,21 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
   kare illüstrasyonlar `home/authorImages.ts` kaydından geliyor; kayıtta
   olmayan yazar kitap kapağına (karo üzerinde, kırpılmadan) düşüyor.
 
+### 1.0.8 turu (2026-09-26)
+
+- **Duraklatılmışken kelime atlama vurguyu güncellemiyordu:** vurguyu
+  yalnızca `tick` güncelliyor, duraklatınca durduruluyordu. `skipWord`
+  artık hedef kelimeyi doğrudan vurguluyor, gerekirse sayfayı değiştiriyor
+  (`PaginatedReaderHandle.showPosition`) ve art arda basışlar için son
+  hedef zamanı ref'te tutuyor.
+- **Kitap tamamlanma yüzdesi yanlıştı:** `user_book_progress.percent`
+  BÖLÜM içi ilerleme ama kitap ekranı ve "Şu an okunuyor" rafı onu kitabın
+  tamamı gibi gösteriyordu (ilk bölümün sonu = "%100"). Sütun anlamı
+  korundu; kitap yüzdesi `library/api/bookProgress.ts` ile türetiliyor
+  (bitmemiş kitap en çok %99). CTA "Bölüm 0" diyordu: 577 kitabın 544'ünde
+  `order_index` 0'dan başlıyor, numara artık listedeki sıradan. Bitirilmiş
+  kitapta CTA "Baştan oku".
+
 ### 1.0.7 turu (2026-09-25, cihaz geri bildirimi + kapaklar)
 
 - **Onboarding sonunda paywall hiç çıkmıyordu.** Akış paywall'dan önce

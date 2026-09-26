@@ -88,6 +88,16 @@ export interface PaginatedReaderHandle {
   getCurrentPageSpeech: () => SpeechSegment[];
   /** Bir sonraki sayfaya geçer. Son sayfadaysa `false` döner. */
   advancePage: () => boolean;
+  /**
+   * Verilen paragraf/karakter konumunu içeren sayfaya geçer (gerekiyorsa,
+   * geri de). Konum zaten görünen sayfadaysa hiçbir şey yapmaz. Sayfa
+   * bulunamazsa `false`.
+   *
+   * KULLANIM: duraklatılmışken kelime atlama (ok tuşları) hedef kelimeyi
+   * başka bir sayfaya taşıyabiliyor; vurgunun ekranda görünmesi için sayfa
+   * de oraya gitmeli.
+   */
+  showPosition: (paragraphId: string, charOffset: number) => boolean;
 }
 
 interface PaginatedReaderViewProps {
@@ -595,6 +605,18 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
           const current = currentPageRef.current;
           if (current >= pages.length - 1) return false;
           const target = current + 1;
+          currentPageRef.current = target;
+          setAnchorFromPage(target, pages);
+          listRef.current?.scrollToIndex({ index: target, animated: true });
+          onPageChange({ page: target, totalPages: pages.length });
+          reportPositionForPage(target, pages);
+          return true;
+        },
+        showPosition: (paragraphId, charOffset) => {
+          if (!pages || pages.length === 0) return false;
+          const target = findPageForPosition(pages, paragraphId, charOffset);
+          if (target === null || target === undefined) return false;
+          if (target === currentPageRef.current) return true;
           currentPageRef.current = target;
           setAnchorFromPage(target, pages);
           listRef.current?.scrollToIndex({ index: target, animated: true });

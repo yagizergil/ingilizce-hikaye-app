@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient, type QueryClient } from "@tansta
 
 import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
+import { computeBookProgress } from "@/features/library/api/bookProgress";
 import { homeQueryKeys } from "@/features/home/api/queryKeys";
 import { libraryQueryKeys } from "@/features/library/api/queryKeys";
 import { gateOnLanguagePair, useActiveLanguagePairQuery } from "@/features/languagePair";
@@ -15,6 +16,7 @@ export interface CurrentlyReadingBook {
 
 interface RawProgressRow {
   book_id: string;
+  section_id: string | null;
   percent: number;
 }
 
@@ -40,7 +42,7 @@ async function fetchCurrentlyReading(
 
   const { data: progressRows, error } = await supabase
     .from("user_book_progress")
-    .select("book_id, percent")
+    .select("book_id, section_id, percent")
     .eq("user_id", userId)
     .is("finished_at", null)
     .order("last_read_at", { ascending: false })
@@ -56,10 +58,32 @@ async function fetchCurrentlyReading(
   });
   const booksById = new Map(books.map((book) => [book.id, book]));
 
+  // `percent` sütunu BÖLÜM içi ilerleme; raftaki yüzde kitabın tamamı için
+  // olmalı (bkz. bookProgress.ts). Bölüm sayısı için yalnızca bu birkaç
+  // kitabın bölüm kimlikleri çekiliyor.
+  const { data: sectionRows, error: sectionsError } = await supabase
+    .from("book_sections")
+    .select("id, book_id, order_index")
+    .in(
+      "book_id",
+      progressRows.map((row) => row.book_id),
+    )
+    .order("order_index", { ascending: true });
+  if (sectionsError) throw sectionsError;
+
+  const sectionsByBook = new Map<string, { id: string }[]>();
+  for (const section of sectionRows ?? []) {
+    const list = sectionsByBook.get(section.book_id as string) ?? [];
+    list.push({ id: section.id as string });
+    sectionsByBook.set(section.book_id as string, list);
+  }
+
   return progressRows
     .map((row) => {
       const book = booksById.get(row.book_id);
-      return book ? { book, progressPercent: Math.round(row.percent) } : null;
+      if (!book) return null;
+      const progress = computeBookProgress(sectionsByBook.get(row.book_id) ?? [], row);
+      return { book, progressPercent: progress.percent };
     })
     .filter((entry): entry is CurrentlyReadingBook => entry !== null);
 }

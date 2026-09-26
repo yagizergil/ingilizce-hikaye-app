@@ -210,7 +210,8 @@
       "continue": "继续阅读 — 第 {{index}} 章",
       "listen": "收听",
       "listenAccessibilityLabel": "收听这本书",
-      "listenLockedAccessibilityLabel": "收听 — 高级功能"
+      "listenLockedAccessibilityLabel": "收听 — 高级功能",
+      "reread": "重新阅读"
     },
     "stats": {
       "words": "词数",
