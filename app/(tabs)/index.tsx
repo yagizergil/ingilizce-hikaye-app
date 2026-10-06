@@ -126,9 +126,6 @@ export default function HomeScreen() {
   const categoryTags = extras?.categoryTags ?? [];
   const continueItem = currentlyReading?.[0] ?? null;
   const recommended = useRecommendedBook();
-  /** Hiç okumamış kullanıcıya sıfırlarla dolu bir istatistik kartı göstermek
-   * "henüz hiçbir şey yapmadın" demek; ilk okumaya kadar gizli. */
-  const hasHistory = (stats?.totalActiveDays ?? 0) > 0;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: palette.page }]} edges={[]}>
@@ -164,21 +161,23 @@ export default function HomeScreen() {
             <StartReadingCard onPress={() => router.push("/library")} />
           )}
         </Animated.View>
-        {hasHistory ? (
-          <HomeStatsCard
-            goalMinutes={goal?.goal ?? 10}
-            minutesToday={goal?.today ?? minutesToday}
-            goalDays={goal?.goalDays ?? 0}
-            streak={goal?.streak ?? 0}
-            booksRead={stats?.completedBookCount ?? 0}
-            milestone={challenge.milestone}
-            milestoneFraction={challenge.fraction}
-            milestoneBonus={MILESTONE_BONUS[challenge.milestone] ?? 0}
-            completedAll={challenge.completedAll}
-            dateKey={today}
-            onPressMore={() => router.push("/statistics")}
-          />
-        ) : null}
+        {/* Her zaman görünür (2026-10-07): hedef halkası yeni kullanıcı
+            için de anlamlı ("Hedefe 10 dk kaldı"); eskiden ilk okumaya kadar
+            gizliydi ve kart "kayboldu" sanılıyordu. */}
+        <HomeStatsCard
+          goalMinutes={goal?.goal ?? 10}
+          minutesToday={goal?.today ?? minutesToday}
+          goalDays={goal?.goalDays ?? 0}
+          streak={goal?.streak ?? 0}
+          booksRead={stats?.completedBookCount ?? 0}
+          totalMinutes={stats?.totalMinutes ?? 0}
+          milestone={challenge.milestone}
+          milestoneFraction={challenge.fraction}
+          milestoneBonus={MILESTONE_BONUS[challenge.milestone] ?? 0}
+          completedAll={challenge.completedAll}
+          dateKey={today}
+          onPressMore={() => router.push("/statistics")}
+        />
         {isExtrasError ? (
           <ErrorState message={t("home.error")} onRetry={() => void refetchExtras()} />
         ) : isExtrasLoading ? (

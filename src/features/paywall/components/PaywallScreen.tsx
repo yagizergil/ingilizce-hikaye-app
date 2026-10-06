@@ -389,8 +389,6 @@ export function PaywallScreen({
           <PaywallActivity activity={facts.activity} blockedWord={blockedWord} />
         ) : null}
 
-        {intro}
-
         {!isPurchasesAvailable ? (
           <Text style={[paywallType.legal, styles.centered, { color: theme.text.secondary }]}>
             {t("paywall.unavailableInExpoGo")}
@@ -428,6 +426,12 @@ export function PaywallScreen({
             }}
           />
         )}
+
+        {/* Ek içerik (onboarding'in deneme takvimi) planların ALTINDA
+            (kullanıcı bulgusu, 2026-10-07): üstteyken aylık planı ekranın
+            dışına itiyor, onboarding paywall'ı diğerlerinden farklı ve
+            yıllığa yönlendirici görünüyordu. */}
+        {intro}
 
         <Text
           style={[paywallType.sectionLabel, styles.sectionLabel, { color: theme.text.secondary }]}

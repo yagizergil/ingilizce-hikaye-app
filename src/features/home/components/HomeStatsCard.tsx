@@ -20,6 +20,8 @@ interface HomeStatsCardProps {
   /** Ardışık hedef günleri. */
   streak: number;
   booksRead: number;
+  /** Toplam öğrenme süresi (dk) -- eski kartta da vardı, korunuyor. */
+  totalMinutes: number;
   /** Bir sonraki basamak ve çubuk doluluğu (`profile/goal.ts`). */
   milestone: number;
   milestoneFraction: number;
@@ -29,7 +31,7 @@ interface HomeStatsCardProps {
   onPressMore: () => void;
 }
 
-const ICON_CALENDAR = require("../../../../assets/home/icon-stat-calendar.png") as number;
+const ICON_CLOCK = require("../../../../assets/home/icon-stat-clock.png") as number;
 const ICON_BOOK = require("../../../../assets/home/icon-stat-book.png") as number;
 
 const RING = 64;
@@ -159,13 +161,13 @@ export function HomeStatsCard(props: HomeStatsCardProps) {
 
       <View style={styles.statRow}>
         <View style={styles.stat}>
-          <Image source={ICON_CALENDAR} style={styles.statIcon} contentFit="cover" transition={0} />
+          <Image source={ICON_CLOCK} style={styles.statIcon} contentFit="cover" transition={0} />
           <View>
             <Text style={[homeType.statValue, { color: palette.valueInk }]}>
-              {t("home.goal.streakValue", { count: props.streak })}
+              {t("home.stats.minutesValue", { count: props.totalMinutes })}
             </Text>
             <Text style={[homeType.statLabel, { color: palette.muted }]} numberOfLines={1}>
-              {t("home.goal.streakLabel")}
+              {t("home.stats.readingTime")}
             </Text>
           </View>
         </View>
