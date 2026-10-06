@@ -11,7 +11,7 @@ import { LANGUAGES } from "@/lib/languages";
 import { trackEvent } from "@/lib/analytics";
 
 import { useSetLanguagePairMutation } from "@/features/languagePair";
-import { PaywallScreen, useSubscriptionQuery, useTrialDays } from "@/features/paywall";
+import { PaywallScreen, useSubscriptionQuery } from "@/features/paywall";
 import { useCompleteOnboardingMutation } from "@/features/onboarding/api/useCompleteOnboardingMutation";
 import { useOnboardingContentQuery } from "@/features/onboarding/api/useOnboardingContentQuery";
 import { useOnboardingGlossesQuery } from "@/features/onboarding/api/useOnboardingGlossesQuery";
@@ -27,7 +27,6 @@ import { OnboardingProjectionStep } from "@/features/onboarding/components/Onboa
 import { OnboardingQuizStep } from "@/features/onboarding/components/OnboardingQuizStep";
 import { OnboardingSplashScreen } from "@/features/onboarding/components/OnboardingSplashScreen";
 import { OnboardingSuccessStep } from "@/features/onboarding/components/OnboardingSuccessStep";
-import { OnboardingTrialTimeline } from "@/features/onboarding/components/OnboardingTrialTimeline";
 import { OnboardingIntroCarousel } from "@/features/onboarding/components/OnboardingIntroCarousel";
 import { OnboardingMeetMascot } from "@/features/onboarding/components/OnboardingMeetMascot";
 import { OnboardingWordsCelebrationStep } from "@/features/onboarding/components/OnboardingWordsCelebrationStep";
@@ -94,7 +93,6 @@ interface OnboardingFlowProps {
 export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const { t } = useTranslation();
   const setPair = useSetLanguagePairMutation();
-  const trialDays = useTrialDays();
   const subscription = useSubscriptionQuery();
   const completeOnboarding = useCompleteOnboardingMutation();
   const saveFavorites = useSaveOnboardingFavoritesMutation();
@@ -451,15 +449,10 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
 
   if (step === "paywall") {
     return (
-      <PaywallScreen
-        source="onboarding"
-        // Onboarding'e özel teklif; RevenueCat'te tanımlı değilse
-        // varsayılana düşüyor (bkz. fetchOfferingPackages).
-        offeringId="onboarding"
-        highlightIntroOffer
-        onClose={handlePaywallClosed}
-        intro={<OnboardingTrialTimeline trialDays={trialDays} />}
-      />
+      // Uygulamanın her yerdeki paywall'ının AYNISI (ürün sahibi kararı,
+      // 2026-10-07): ayrı teklif, üst rozet ve deneme takvimi planları
+      // aşağı itiyor, aylık plan kaydırmadan görünmüyordu.
+      <PaywallScreen source="onboarding" onClose={handlePaywallClosed} />
     );
   }
 
