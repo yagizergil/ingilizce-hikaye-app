@@ -87,6 +87,23 @@ BUCKET = "book-audio"
 # "en-US-Wavenet-F" yapmak yeterli — baska hicbir sey degismez.
 VOICE_NAME = "en-US-Neural2-F"
 LANGUAGE_CODE = "en-US"
+
+# Diger hedef diller (2026-10-06). Hepsi WaveNet: `<mark>` + timepointing
+# destekliyor (kelime vurgusu). Ucretsiz kota (2026-10-06, fiyat sayfasi):
+# WaveNet+Standard ortak 4M/ay, Neural2 ayri 1M/ay.
+# Ingilizce mevcut 207 bolumle tutarli kalsin diye Neural2-F olarak kaldi.
+VOICES: dict[str, tuple[str, str]] = {
+    "en": ("en-US", "en-US-Neural2-F"),
+    "de": ("de-DE", "de-DE-Wavenet-G"),
+    "fr": ("fr-FR", "fr-FR-Wavenet-F"),
+    "es": ("es-ES", "es-ES-Wavenet-F"),
+    "it": ("it-IT", "it-IT-Wavenet-E"),
+    "ru": ("ru-RU", "ru-RU-Wavenet-E"),
+    "tr": ("tr-TR", "tr-TR-Wavenet-C"),
+    "ar": ("ar-XA", "ar-XA-Wavenet-D"),
+    "zh": ("cmn-CN", "cmn-CN-Wavenet-A"),
+    "ja": ("ja-JP", "ja-JP-Wavenet-A"),
+}
 SPEAKING_RATE = 0.92  # Dil ogrenen icin biraz yavas; 1.0 anadili hizi.
 
 # Google'in sert siniri: istek basina 5.000 BAYT (karakter degil).
@@ -104,8 +121,57 @@ if hasattr(sys.stdout, "reconfigure"):
 # SSML uretimi
 # --------------------------------------------------------------------------
 
-# Kelime = harf/rakam dizisi (kesme isareti iceride kalabilir: "don't").
-WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:['’][0-9A-Za-z]+)*")
+import unicodedata
+
+
+def _is_word_char(ch: str) -> bool:
+    return unicodedata.category(ch)[0] in ("L", "N")
+
+
+class _Match:
+    def __init__(self, text: str, start: int, end: int) -> None:
+        self._text, self._start, self._end = text, start, end
+
+    def start(self) -> int:
+        return self._start
+
+    def end(self) -> int:
+        return self._end
+
+    def group(self, _: int = 0) -> str:
+        return self._text[self._start : self._end]
+
+
+class _WordRe:
+    """Uygulamanin tokenizer'inin (`src/features/reader/text/tokenizer.js`)
+    BIREBIR kopyasi: herhangi bir Unicode harf/rakam dizisi; kesme isareti
+    yalnizca ardindan harf geliyorsa kelimenin parcasi. Eskiden yalnizca
+    Latin harflerini taniyordu -- Kiril, Arap, Japon metninde isaret
+    uretilmez, vurgu hic calismazdi. Isaret baslangiclari istemcinin kelime
+    baslangiclariyla eslesmek ZORUNDA (mapTimingsToPage).
+    """
+
+    def finditer(self, text: str):
+        i, n = 0, len(text)
+        while i < n:
+            if not _is_word_char(text[i]):
+                i += 1
+                continue
+            j = i + 1
+            while j < n:
+                c = text[j]
+                if _is_word_char(c):
+                    j += 1
+                    continue
+                if c in ("'", "\u2019") and j + 1 < n and _is_word_char(text[j + 1]):
+                    j += 2
+                    continue
+                break
+            yield _Match(text, i, j)
+            i = j
+
+
+WORD_RE = _WordRe()
 
 
 def escape_ssml(text: str) -> str:
@@ -135,6 +201,38 @@ class Chunk:
         return len(self.ssml.encode("utf-8"))
 
 
+SENTENCE_END_RE = re.compile(r"[.!?\u3002\uff01\uff1f\u061f]+[\"'\u201d\u2019\u00bb)]*\s*")
+
+
+def _units(paragraphs: list[tuple[int, str]]):
+    """(paragraf, metin, paragraf icindeki baslangic) birimleri.
+
+    Tek basina 5.000 bayt sinirini asan paragraf (Kiril/Arap harfleri 2
+    bayt, her kelimenin `<mark>` etiketi de bayta dahil) cumle sinirlarindan
+    bolunur. Isaret konumlari paragrafa gore kalir (`base` eklenir), yani
+    uygulamadaki eslesme degismez.
+    """
+    budget = MAX_REQUEST_BYTES - 200  # <speak>/<p> sarmalayicilari icin pay
+
+    def size(t: str) -> int:
+        # Metin baytlari + her kelimenin isareti (~24 bayt) + kacis payi.
+        return len(t.encode("utf-8")) + 24 * sum(1 for _ in WORD_RE.finditer(t)) + 40
+
+    for para_index, text in paragraphs:
+        if size(text) <= budget:
+            yield para_index, text, 0
+            continue
+        start = 0
+        cut = 0
+        for match in SENTENCE_END_RE.finditer(text):
+            if size(text[start : match.end()]) > budget and cut > start:
+                yield para_index, text[start:cut], start
+                start = cut
+            cut = match.end()
+        if start < len(text):
+            yield para_index, text[start:], start
+
+
 def build_chunks(paragraphs: list[tuple[int, str]]) -> list[Chunk]:
     """Paragraflari 5.000 baytlik siniri asmayan SSML parcalarina boler.
 
@@ -161,7 +259,7 @@ def build_chunks(paragraphs: list[tuple[int, str]]) -> list[Chunk]:
         current_body = []
         current_words = []
 
-    for para_index, text in paragraphs:
+    for para_index, text, base in _units(paragraphs):
         pieces: list[str] = []
         words: list[WordRef] = []
         cursor = 0
@@ -176,8 +274,8 @@ def build_chunks(paragraphs: list[tuple[int, str]]) -> list[Chunk]:
                 WordRef(
                     mark=mark,
                     paragraph_index=para_index,
-                    char_start=match.start(),
-                    char_end=match.end(),
+                    char_start=base + match.start(),
+                    char_end=base + match.end(),
                 )
             )
             cursor = match.end()
@@ -206,7 +304,9 @@ def supabase_headers() -> dict[str, str]:
     return {"Authorization": f"Bearer {SERVICE_KEY}", "apikey": SERVICE_KEY}
 
 
-def fetch_sections(client: httpx.Client, slug: str | None, force: bool = False) -> list[dict]:
+def fetch_sections(
+    client: httpx.Client, slug: str | None, force: bool = False, lang: str = "en"
+) -> list[dict]:
     """Seslendirilecek bolumleri, paragraflariyla birlikte getirir.
 
     NEDEN VARSAYILAN OLARAK ATLIYOR (`force=False`): bu is 207 bolum ve
@@ -218,8 +318,9 @@ def fetch_sections(client: httpx.Client, slug: str | None, force: bool = False) 
     `--force`.
     """
     params = {
-        "select": "id,order_index,title,book_id,audio_url,audio_timings_url,books!inner(slug,title,is_original,status)",
+        "select": "id,order_index,title,book_id,audio_url,audio_timings_url,books!inner(slug,title,is_original,status,target_language)",
         "books.is_original": "eq.true",
+        "books.target_language": f"eq.{lang}",
         "books.status": "eq.published",
         "order": "book_id,order_index",
     }
@@ -292,6 +393,13 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="API cagirmadan dogrula")
     parser.add_argument("--slug", help="Yalnizca bu kitap")
     parser.add_argument("--limit", type=int, help="En fazla bu kadar bolum isle")
+    parser.add_argument("--lang", default="en", choices=sorted(VOICES), help="Hedef dil")
+    parser.add_argument(
+        "--max-chars",
+        type=int,
+        default=0,
+        help="Bu calistirmada en fazla bu kadar faturalanabilir karakter",
+    )
     parser.add_argument(
         "--force",
         action="store_true",
@@ -301,7 +409,8 @@ def main() -> int:
 
     with httpx.Client(timeout=180) as client:
         print("Bolumler getiriliyor...")
-        sections = fetch_sections(client, args.slug, force=args.force)
+        sections = fetch_sections(client, args.slug, force=args.force, lang=args.lang)
+        language_code, voice_name = VOICES[args.lang]
         if args.limit:
             sections = sections[: args.limit]
         if not sections:
@@ -317,22 +426,26 @@ def main() -> int:
         plans: list[tuple[dict, list[Chunk]]] = []
         for section in sections:
             chunks = build_chunks(section["paragraphs"])
+            # `<mark>` faturalandirilmiyor; onlari cikarip say.
+            cost = sum(len(re.sub(r'<mark name="w\d+"/>', "", c.ssml)) for c in chunks)
+            # Butce: bolum ya butun girer ya hic; yarim bolum yok.
+            if args.max_chars and billable + cost > args.max_chars:
+                break
             plans.append((section, chunks))
             total_chunks += len(chunks)
+            billable += cost
             for chunk in chunks:
                 total_words += len(chunk.words)
-                # `<mark>` faturalandirilmiyor; onlari cikarip say.
-                billable += len(re.sub(r'<mark name="w\d+"/>', "", chunk.ssml))
                 if chunk.byte_size > 5000:
                     oversize.append(f"{section['books']['slug']} #{section['order_index']}")
 
-        print(f"\n  kitap            {len({s['book_id'] for s in sections})}")
-        print(f"  bolum            {len(sections)}")
+        print(f"\n  kitap            {len({s['book_id'] for s, _ in plans})}")
+        print(f"  bolum            {len(plans)} / {len(sections)}")
         print(f"  istek (parca)    {total_chunks}")
         print(f"  kelime           {total_words}")
         print(f"  faturalanabilir  {billable:,} karakter  (~{billable/1_000_000:.3f}M)")
-        print(f"  WaveNet kotasi   1.000.000 / ay")
-        print(f"  ses              {VOICE_NAME}")
+        print(f"  WaveNet kotasi   4.000.000 / ay (Standard ile ortak; Neural2 ayrica 1M)")
+        print(f"  ses              {voice_name}")
 
         if oversize:
             print(f"\n  HATA: {len(oversize)} parca 5.000 bayt sinirini asiyor:")
@@ -351,7 +464,7 @@ def main() -> int:
         from google.cloud import texttospeech_v1beta1 as tts
 
         tts_client = tts.TextToSpeechClient()
-        voice = tts.VoiceSelectionParams(language_code=LANGUAGE_CODE, name=VOICE_NAME)
+        voice = tts.VoiceSelectionParams(language_code=language_code, name=voice_name)
         audio_config = tts.AudioConfig(
             audio_encoding=tts.AudioEncoding.MP3, speaking_rate=SPEAKING_RATE
         )
@@ -412,7 +525,7 @@ def main() -> int:
             timings_url = upload(
                 client,
                 f"{slug}/{section['order_index']}.json",
-                json.dumps({"voice": VOICE_NAME, "words": timings}, ensure_ascii=False).encode("utf-8"),
+                json.dumps({"voice": voice_name, "words": timings}, ensure_ascii=False).encode("utf-8"),
                 "application/json",
             )
 
@@ -430,6 +543,16 @@ def main() -> int:
         # Kitap seviyesindeki bayrak.
         book_ids = {s["book_id"] for s, _ in plans}
         for book_id in book_ids:
+            # Yalnizca TUM bolumleri sesli olan kitap isaretlenir: butceyle
+            # yarim kalan kitap "sesli" diye listelenmesin.
+            missing = client.get(
+                f"{SUPABASE_URL}/rest/v1/book_sections",
+                params={"select": "id", "book_id": f"eq.{book_id}", "audio_url": "is.null", "limit": "1"},
+                headers=supabase_headers(),
+            )
+            missing.raise_for_status()
+            if missing.json():
+                continue
             client.patch(
                 f"{SUPABASE_URL}/rest/v1/books",
                 params={"id": f"eq.{book_id}"},

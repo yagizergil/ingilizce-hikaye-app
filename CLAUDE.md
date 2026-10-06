@@ -16,7 +16,8 @@ metinler. Gelir premium abonelikten geliyor.
 migration 038), sınırsız kelime defteri, yüksek AI cümle çevirisi kotası,
 ikinci dil çifti, **Akıllı Tekrar** (1.0.6; ücretsizde 24 saatte 1 deneme,
 kapısı `consume_smart_practice()` -- migration 049; tasarım
-`docs/plans/2026-09-24-kelimelerim-premium-design.md`).
+`docs/plans/2026-09-24-kelimelerim-premium-design.md`), **kitap quizlerinin 2. ve 3. basamağı** (1. basamak ücretsiz; kapısı RLS + `has_active_premium()`
+-- migration 052).
 
 **AŞAĞIDAKİLER PREMIUM DEĞİL** ve paywall'a yazılamaz (2026-09-14 denetim
 bulgusu): aralıklı tekrar (SRS'te hiçbir yetki kontrolü yok, ücretsiz
@@ -28,8 +29,10 @@ kararı.
 
 **Dinlemek premium'dur** (bkz. ADR-012). Bölüm seslendirmesi önceden
 üretilmiş stüdyo kaydıyla yapılıyor ve özgün 63 hikâyede var; klasiklerde
-yok. Erişimi olmayan kullanıcıda seslendirme düğmesi hiç görünmüyor —
-kilit ikonu ya da "yükselt" düğmesi değil, düğmenin kendisi yok.
+yok. **Değişti (2026-10-06, ürün sahibi kararı):** seslendirmesi olan
+kitapta premium olmayan kullanıcı okuyucunun oku/dinle hapını görür; dinle
+yuvarlağı kilit rozetli ve paywall'a gider (`source=reader_listen`).
+Kendiliğinden açılan bir teklif, banner ya da modal hâlâ YOK.
 
 **Kelime telaffuzu ÜCRETSİZ ve öyle kalacak.** Sözlük kartındaki hoparlör
 cihazın kendi motoruyla (`expo-speech`) tek kelimeyi okuyor. Bu bir dinleme
@@ -485,8 +488,8 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
   aynı migration'da `ENABLE ROW LEVEL SECURITY` ve en az bir policy içerir.
 - **Okuma ekranında paywall** — `features/reader` içine premium
   promosyonu, banner, interstitial veya "yükseltmek ister misin" modalı
-  eklenmez (bkz. Ürün İlkesi #1). Kilitli görünen bir düğme de buna dâhil:
-  erişim yoksa kontrol GİZLENİR, kilitlenmez.
+  eklenmez (bkz. Ürün İlkesi #1). Tek istisna, kullanıcının KENDİ bastığı
+  oku/dinle hapındaki kilitli dinle yuvarlağı (2026-10-06 kararı).
 - **Kelime telaffuzunu ücretli yapma** — sözlük kartındaki hoparlör
   ücretsiz kalır. Bölüm seslendirmesi premium, telaffuz değil (ADR-012).
 
@@ -497,6 +500,94 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 > `docs/ROADMAP.md` ve `docs/STATE.md` çok daha eski; çelişki olursa burası
 > geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
 > içinde.
+
+### 1.0.9 turu (2026-10-06): okuyucu, çok dilli ses, onboarding, maskot Lumi, okur seviyesi
+
+- **Maskotun adı Lumi** (ışık çağrışımı, Port Lumen bağı, 10 dilde kolay).
+  Onboarding: logolu açılış (`assets/brand/lingo-wordmark.png`, kaynak
+  `candidates/lingo-o-kus.png`) -> 3 sayfalık tanıtım
+  (`OnboardingIntroCarousel`, görseller `assets/onboarding/intro-1..3.jpg`,
+  Higgsfield nano_banana_2 2K) -> "Merhaba, ben Lumi" -> dil seçimi. Tüm
+  onboarding adımlarında gökyüzü başlık + köşede Lumi (`OnboardingScaffold`).
+  Uygulama ikonu DEĞİŞTİRİLMEDİ (oylama bekliyor; aday
+  `candidates/lingo-ikon-goz-kirpan.png`).
+- **Seslendirme tüm dillerde:** `generate_audio.py --lang <dil>` (WaveNet,
+  `<mark>` zamanlaması; kelime sınırları uygulamanın tokenizer'ının birebir
+  kopyası; uzun paragraf cümle sınırından bölünüyor; `--max-chars` bütçe).
+  Ücretsiz kota (Google fiyat sayfası, 2026-10-06): WaveNet+Standard
+  ortak **4M/ay**, Neural2 ayrı 1M/ay. On dilin tamamı 2026-10-06'da
+  üretildi (~1,85M karakter, ücretsiz kota içinde).
+- **Okuyucu:** sayfa sesi her tick'te izliyor (eşik yerine sesin okuduğu
+  kelimenin sayfası); bekleyen `seekTo` hedefi tick'te kullanılıyor (ileri-
+  geri zıplama); Oku/Dinle'de okuyucu yeniden kurulmuyor; mod hapı akış
+  içinde (metni kapatmıyor); dinlemede metnin tamamı görünüyor, maskot yok.
+- **Okur seviyesi (XP, migration 053):** `get_user_xp()` XP'yi var olan
+  kayıtlardan türetir (okuma dk x2 [gün 60 dk], kelime x3 [gün 30], tekrar x2
+  [gün 100], quiz en iyi doğru x5, bitirilen kitap x100); yalnızca 2026-10-06
+  ve sonrası sayılır, herkes Seviye 1'den başlar. Eğri `profile/xp.ts`
+  (L->L+1 = 100+50(L-1)), unvanlar her 5 seviyede. Ana sayfa/Ara hapı ve
+  İstatistik'teki `LevelCard` bunu okur (eskiden CEFR seviyesini "seviye"
+  diye gösteriyordu).
+- Kitabım ve Kelimelerim listeleri ana sayfada önceden çekilir; Kitabım'da
+  "yükleniyor" yok. Okuyucu bölüm önbelleği `initialDataUpdatedAt: 0`
+  (eskiden çevrimdışı kopya hiç tazelenmiyor, sonradan eklenen ses
+  görünmüyordu). Dil çifti değişince `["vocabulary"]` ve `["srs"]` da
+  geçersiz kılınır.
+- Kitap detayında "Okumaya başla" üstte, "Dinle" altında; premium değilse
+  taç + "Premium" ve paywall.
+- İçerik: `josefine-mutzenbacher-...-de` (çocuk istismarı) yayından
+  kaldırıldı (`needs_review`). Diğer erotik/uygunsuz klasikler gözden
+  geçirilmeli (bkz. 1.0.9 raporu).
+- Paywall başlığı kaynağa göre (`HEADLINE_BY_SOURCE`), "istediğin zaman
+  iptal" satırı, "Sana özel" ifadesi kaldırıldı. Quiz 1. basamağı geçen
+  ücretsiz kullanıcıya "2. basamak açıldı" kartı. Ses efektleri
+  (`src/lib/sfx.ts`, `scripts/build-sfx.py`, Profil'den kapatılabilir).
+
+### Yeni tasarım dili, tüm ekranlar (2026-10-05)
+
+Funfluent referanslı yeniden tasarım (Gabarito, beyaz zemin, amber #F5B531
+vurgu, 26 pt yuvarlak kartlar, krem daire ikonlar) artık uygulamanın TAMAMINDA:
+ana sayfa, Ara, Kitabım, Quiz, Profil, kategoriler, gözat, Kelime tekrarı
+(+ Destelerim, kelime paketi, deste detayı/tekrarı), Tekrar, Akıllı Tekrar,
+istatistik, dil ayarları, kitap/bölüm bitti, hesap silme, paywall, okuma
+ayarları sheet'i. Onboarding, splash ve geliştirici önizlemeleri bu dilde DEĞİL.
+
+- **Maskot v2 (2026-10-05 öğleden sonra, YÜRÜRLÜKTE):** dokuz poz yeniden
+  üretildi: her poz 2K şeffaf temiz çizim (gpt_image_2_5, referans maskot)
+  -> yeşil perdeye yerleştirildi -> Kling 3.0 Pro (sessiz, 4 sn, başlangıç =
+  bitiş karesi, 1440 px, ~7 kredi/video) -> `scripts/build-mascot-sprites.py`
+  (48 kare, 448 px; taç/kutlama 576 px; ölçüler `assets/anim/_meta.json`,
+  bileşen oradan okuyor). Kaynak videolar `hikayeads/papagan/src_v2/`.
+  `MascotAnim` görseli YALNIZCA ekran odaktayken bağlı tutar (sekmeler arka
+  planda bağlı; aksi hâlde beş sprite sayfası ~200 MB). Seedance 2.0 da
+  denendi: 960 px ve 18 kredi, Kling'den iyi değil. Aşağıdaki v1 notu tarih.
+- **Maskot = sprite animasyonu (2026-10-05 gece turu, v1):** `components/ui/MascotAnim`
+  `assets/anim/mascot-*.webp`: Higgsfield videosunun 24 fps'lik 48 gerçek
+  karesi tek bir WebP ızgarasında (8x6, kare 384 px + 10 px şeffaf kenar).
+  Reanimated UI iş parçacığında kareleri ileri-geri kaydırıyor (4 sn döngü);
+  JS/React render'a hiç dokunmuyor. Ekran odakta değilse ve "hareketi azalt"
+  açıksa duruyor. ESKİ YOL (animasyonlu WebP + açılışta hepsini belleğe
+  çözen `preloadMascots`) donmaların ve 12 fps görünümün sebebiydi, silindi.
+  Üretim: `hikayeads/papagan/make_sprites.py src sprites` (kaynak mp4'ler
+  `hikayeads/papagan/src/`). Kayıtlar: home, search, loading, quiz, profile,
+  words, books (yakın çekim, kamera zumu yok), crown (paywall), party (bitiş).
+- **İkonlar:** `components/ui/UiIcon` Higgsfield'da üretilmiş krem daire ikonlar
+  (`assets/home/icon-ui-*.png`). Satır/kart başlarında Ionicons yerine bunlar.
+- **Ortak başlık:** `SkyHeader`; seans ekranları (tekrar, akıllı tekrar) başlıksız,
+  `ReviewProgress` + beyaz büyük kart + `ReviewRatingBar` (hap düğmeler).
+- Quiz ekranının üstünde artık maskot yok (kartta quiz çözen papağan var).
+- Okuma ayarları sheet'inde canlı önizleme kartı var (`reader.settings.previewText`).
+- **Performans turu (2026-10-05 gece):** sekmeler `freezeOnBlur`; profil ve
+  ana sayfa veriyi beklemeden çiziliyor (eskiden tam ekran "yükleniyor");
+  Kitabım/gözat odakta koşulsuz refetch yerine `useRefetchOnFocusIfStale`;
+  arama sonuçları 40 satırla sınırlı; `monoType` token'ları büyük harf/harf
+  aralığı/9-11 pt'den arındırıldı ve 35 tamamen büyük harfli çeviri anahtarı
+  10 dilde cümle düzenine çevrildi; ölü bileşenler (eski raflar, HomeHero,
+  BookListRow, ScreenHeader, Card, ProgressBar, ReaderAudioBar...) ve
+  kullanılmayan `lottie-react-native` kaldırıldı.
+- **Doğrulanmadı:** cihazda akıcılık (web önizlemesinde bakıldı), okuyucu
+  (web'de sayfalama çalışmıyor). Akıcılık RELEASE derlemesinde ölçülmeli:
+  geliştirme derlemesi (Expo dev client) JS'i yavaş çalıştırır.
 
 ### 1.0.5 turu (2026-09-24, cihaz geri bildirimi + görsel denetim + kapaklar)
 
@@ -565,6 +656,150 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
   (bitmemiş kitap en çok %99). CTA "Bölüm 0" diyordu: 577 kitabın 544'ünde
   `order_index` 0'dan başlıyor, numara artık listedeki sıradan. Bitirilmiş
   kitapta CTA "Baştan oku".
+
+### Kitap quizleri, beyaz ekran, yazı ölçeği, logo (2026-10-05)
+
+- **Kitap quizleri (migration 052):** her kitapta kolaydan zora 3 basamak:
+  1 Kelime (6 soru, bağlamda anlam, ÜCRETSİZ), 2 Anlama (8, olgu, premium),
+  3 Derin okuma (8, çıkarım/sıra/niyet, premium). Basamak öncekinden %60
+  alınca açılır (`features/quiz/levelState.ts`, testli; öğrenme sırası,
+  güvenlik değil). Premium kapısı SUNUCUDA: `book_quiz_questions` RLS'i 2-3.
+  basamak satırlarını yalnızca premium'a gösterir, sonucu tek yazan
+  `submit_book_quiz()`. Sorular `pipeline/scripts/generate_book_quizzes.py`
+  ile kitabın kendi metninden, kendi dilinde/seviyesinde üretilir (uzun
+  kitapta bölümlere yayılmış ~6000 kelimelik örneklem; doğrulama + 3 deneme;
+  seçenekler karıştırılır; `--shard i/n` ile paralel). Ekranlar: Quiz
+  sekmesinde "Kitap quizleri" rafı, `/book-quiz/[bookId]` basamaklar,
+  `/quiz-question?quizId=` (kontrol et -> doğru/yanlış + açıklama), kitap
+  detayında giriş kartı. Örnek sorular (`sampleQuestions.ts`) silindi.
+  Paywall faydalarına eklendi (`paywallTriggers.test.ts` kapıyı kayda geçiriyor).
+- **Beyaz ekran (sekme değişince bazen bembeyaz, başka sekmeye gidip dönünce
+  düzeliyor):** sekmelere eklenen JS `animation: "fade"` sahnenin opaklığını
+  sürüyordu; geçiş yarıda kesilince opaklık 0'da kalıyordu. Kaldırıldı,
+  sekme geçişi animasyonsuz (iOS yerel davranışı). Cihazda doğrulanmadı.
+- **Yazı ölçeği büyütüldü:** en sık kullanılan metin (`homeType.cardSub`,
+  56 kullanım) 12,5 pt, bölüm başlıkları 15,5 pt'ydi -- "soft değil, bir şey
+  eksik" hissinin ana kaynağı (hiyerarşi düz ve sıkışık). iOS Dynamic Type
+  adımlarına çekildi: bölüm başlığı 19 kalın, kart başlığı 17, ikincil 14,
+  etiket 13,5 (`src/theme/tokens/home.ts`). Web önizlemesinde ana sayfa,
+  Quiz, kitap detayı taşmasız doğrulandı.
+- **Logo:** `assets/brand/lingo-logo.svg` (+1024/1406 PNG), üretici
+  `scripts/build-logo.py`. Maskot papağan (sprite karesi) "Lingo" yazılı
+  kitabın üstünden çıkıyor, gökyüzü mavisi zemin. Henüz `assets/icon.png`
+  yerine KONMADI. Papağanın Funfluent maskotuna benzerliği riski (bkz. splash
+  notu) logo için de geçerli.
+- `yagoli` kullanıcısına manuel premium (2036'ya kadar, `manual_dev_grant`).
+
+### Karakterli seriler (2026-10-05, pilot)
+
+Özgün içeriğin yeni katmanı: yetişkin okura yönelik, karakterlere bağlı
+seriler. Sistem `pipeline/universe/` altında (tam belge:
+`pipeline/universe/README.md`): ortak dünya (Port Lumen), SABİT ana kadro
+(Leo A1, Nora A2, Kai B1, Mara B2 -- `world.yaml` `main_characters`; yeni
+ana karakter açılmaz, "Kai için yeni seri" = Kai'ye yeni seri kartı), seri kartları (10 dilde
+başlık/açıklama, bölüm planı), süreklilik kayıtları. Üretim:
+`scripts/generate_series_episode.py --series <id> --next` (istem = seviye
+kuralları + dünya + karakter + önceki bölüm özetleri; `check_story` ile
+kapalı döngü). Kimlik kuralı: `series-id` kalıcı, devam sezonu yeni kart
+(`continues:`), kitap slug'ı `<series-id>-eNN[-dil]`. Her serinin 1. bölümü
+`pipeline/stories/` altında, doğrulayıcıdan geçti ve YAYINDA (yalnızca
+İngilizce; kapakları henüz yok). Yayın: `src.cli run --file stories/<slug>.md
+--slug <slug>` (tüm zincir; `run --book` diye bir seçenek YOK). Her bölüm
+9 dile ZORUNLU uyarlanır: `scripts/adapt_series_episode.py --slug <slug>
+--lang all` (aynı seviyede yeniden yazım + dil doğrulayıcısı + tanıtım metni)
+ve `scripts/publish_series_multilang.py --slug <slug>` (`<series-id>-<dil>`
+koleksiyonu). Mara (B2) e01 Kai'nin dükkânında biter. Koleksiyon çeviri anahtarları (`collections.<series-id>[-dil]`)
+`scripts/export_series_i18n.py` ile üretilip 10 dil dosyasına eklendi.
+
+### Funfluent yeniden tasarımı (2026-10-04, referans ekranlar)
+
+Ana sayfa, Ara ("Discover"), kitap detayı, okuyucu (oku/dinle modu), sözlük
+kartı, yükleniyor ve quiz soru ekranı kullanıcının verdiği Funfluent
+referanslarından piksel ölçülerek yeniden yazıldı. Ölçüler ve renkler
+`src/theme/tokens/home.ts` (homeColors/homeMetrics/homeType, detail*,
+search*, quiz*); yazı tipi Gabarito (artık uygulamanın tamamında:
+`fontFamily.nunito*` token'ları da Gabarito'ya çözülüyor). Görseller Higgsfield'dan üretildi (`assets/home/`).
+
+- **Sekmeler:** Ana Sayfa, Ara (`library.tsx`), Kitabım (`mybooks.tsx` ->
+  `FavoritesContent`), Quiz (`quiz.tsx`; Kelimelerim `vocabulary.tsx` gizli
+  sekme, Quiz'den açılıyor), Profil. Ana sayfada raflar YOK: "Kitapların" ve
+  "Popüler kitaplar" Ara'da; ana sayfada devam kartı + haftalık şerit +
+  8 kategori (`/categories` hepsini gösteriyor).
+- **Maskot animasyonu:** artık `components/ui/MascotAnim` sprite animasyonu
+  (bkz. "Yeni tasarım dili, tüm ekranlar"); `AnimatedMascot` silindi.
+- **Quiz soruları ŞİMDİLİK ÖRNEK** (`features/quiz/sampleQuestions.ts`);
+  kitaba özel sorular sonraki aşama.
+- **Web'de okuyucu sayfalaması çalışmaz** (`onTextLayout` yok); okuyucu
+  yalnızca telefonda doğrulanabilir.
+- `.claude/skills/taste-skill` (leonxlnx/taste-skill, MIT) kuruldu; web/landing
+  odaklı, burada yalnızca ilkeleri (mevcut sistemi koru, anti-şablon,
+  reduced-motion) uygulandı.
+
+### Lingo splash önizlemesi (2026-10-04, geliştirici aracı)
+
+Referans videonun (Funfluent, yalnızca TASARIM referansı: illüstrasyon ve
+maskot kopyalanmadı) 31-95. kareleri tek tek okunup `features/splash`
+altında yeniden kuruldu: harfler sırayla düşer -> papağan küçük bir
+noktadan büyür, zıplar, tek gözle göz kırpar, kıvılcımlar çıkar -> her
+dilde selamlama SOHBET BALONLARI (beyaz gövde, açık mavi yazı, kuşa bakan
+küçük kuyruk; renkli daire YOK -- referans böyle). Sıcak, gün doğumu
+paleti; renkler/ölçüler `src/theme/tokens/splash.ts`, süreler
+`splashTimeline.ts`, geometri `splashLayout.ts` (çakışma/taşma 7 telefon
+boyutu için testli), klip `splashClips.ts`.
+
+- **Erişim:** Profil'de sürüm yazısına ardışık 7 kez dokununca "Splash
+  ekranını önizle" satırı açılıyor (kalıcı); `__DEV__` derlemesinde her
+  zaman görünür. Rota `app/dev-splash.tsx`. Henüz GERÇEK açılışa bağlı
+  DEĞİL.
+- **Papağan klibi (KARARLI: A seçildi, B/C/D ve seçici silindi):**
+  Higgsfield `grok_video_v15_lite` çıktısı, ilk üretim. Kuş zıplarken
+  videonun üst kenarından çıkıp ibiği KESİYORDU (13-22. kareler; piksel
+  kaynakta yok): ibiğin görünen kısmının eğimi uzatılıp ucu tamamlandı,
+  tuval üstten uzatıldı (tek düzenleme; ayrıca beyaz arka plan şeffaf
+  yapıldı ve küçültüldü). Göz kırpan göz ekranın solundaki göz.
+- **Balonlar:** üstte 6 dağınık (kenara yaslı, farklı iç boşluk ve dikey
+  sapma), kuşun iki yanında 4 kısa; beyaz sohbet balonu + açık mavi yazı +
+  kuşa bakan kuyruk.
+- **Higgsfield maliyeti:** bu iş ~60 kredi harcadı. DERS: klibi üretmeden
+  önce kuşu kadrajın %50'sine küçült, üstte %35+ boşluk bırak, "profile
+  dönme"yi yasakla; üretilen karelerde kenara değme ve tek-göz kırpmayı
+  kare kare doğrula. Yeni üretimden önce kullanıcıya maliyeti söyle.
+- **Dikkat:** papağan Funfluent'in maskotu Macca'ya benziyor; yayın
+  öncesi kendi maskotumuzla değiştirilmeli (telif/marka riski).
+- Web önizlemesinde "hareketi azalt" açıksa Reanimated animasyonları
+  atlıyor (son kare gösterilir). Gerçek cihazda gözle doğrulanmadı.
+
+### Onboarding "eğlenceli macera" sayfası (2026-10-04, geliştirici önizlemesi)
+
+Referans: Funfluent onboarding 1. sayfa (yalnızca DÜZEN ve HAREKET DİLİ).
+Üstte animasyonlu orman sahnesi, altında koyu yeşil zeminde sarı başlık
+(harf harf yazılır), alt başlık, noktalar ve beyaz "Başla" düğmesi.
+`OnboardingAdventureIntro` + `AdventureScene/Leaf/Parrot/Words/TypewriterText`
+(+ `adventureAssets.ts`, `adventureLayout.ts`, renk `tokens/onboardingIntro.ts`).
+
+- **SABİT KARAKTER (ürün sahibi kararı):** az önce üretilen genç, gözlüklü
+  kadın (hardal ceket, deri çanta, kitap) uygulamanın karakteri. DEĞİŞMEZ;
+  tüm yeni görseller bu karakterle üretilmeli. Karakter görseli
+  `nano_banana_2_lite` (1 kredi).
+- **HAREKET KATMANLI VE KODDAN, VİDEO DEĞİL:** yapay zekâ videosu (Kling 3.0,
+  2 deneme, 17,5 kredi) referanstaki gibi yumuşak/akıcı olmadı ve papağan
+  yanlış hareket etti; üstelik 15 fps'e eşit olmayan aralıkla indirmek
+  titrek akış verdi. Çözüm: videonun 1. karesi (onaylı görsel, 1076 px)
+  katmanlara ayrıldı (OpenCV: papağan renk+şekil maskesi, Telea ile temiz
+  zemin, köşe yaprak kesitleri, papağan sağ gözünün yarım/kapalı kareleri) ve
+  Reanimated ile 60 fps oynatılıyor: yapraklar köşeden sallanır, papağan
+  ayaklarından sallanıp zıplar ve tek gözle göz kırpar, sahne nefes alır.
+  Üretim betikleri: C:/Users/PC/Desktop/hikayeads/onboarding/ (layers/).
+- **Kelime balonları** kitaptan süzülüp karakterin boş yanlarına gider
+  (video modelleri okunur yazı üretemiyor); yerleşim testli.
+- **Erişim:** Profil geliştirici bölümünde "Onboarding ekranını önizle"
+  (rota `app/dev-onboarding.tsx`; splash satırıyla aynı gizli 7 dokunuş).
+  "Başla"/kapat önizlemeyi kapatır; gerçek onboarding akışına BAĞLI DEĞİL.
+  Diğer iki tanıtım sayfası henüz yok, noktalar sabit.
+- **Sahne ölçüsü:** kısa ekranda üstten kırpılır; alttaki dalgalı kenar ve
+  düz yeşile geçiş (`#0B3C33`) hep görünür.
+- Web/tarayıcıda test EDİLMEDİ (ürün sahibi telefonda deneyecek); katman
+  hareketi bilgisayarda kare kare çizilip hayalet/dikiş için incelendi.
 
 ### 1.0.7 turu (2026-09-25, cihaz geri bildirimi + kapaklar)
 
@@ -1136,9 +1371,8 @@ bilinçli bir adım:
 
 ```
 cd pipeline
-.venv/Scripts/python.exe -m src.cli ingest --file stories/<slug>.md
-.venv/Scripts/python.exe -m src.cli run --book <slug>
-.venv/Scripts/python.exe -m src.cli publish --book <slug>
+.venv/Scripts/python.exe -m src.cli run --file stories/<slug>.md --slug <slug>
+# (ingest -> extract -> profile -> validate -> lemmas -> publish; tek komut)
 ```
 
 ### İçerik: B2 basamağı (devam ediyor)

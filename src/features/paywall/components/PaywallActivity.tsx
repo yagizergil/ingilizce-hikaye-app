@@ -2,9 +2,8 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
-import { monoType, paywallType, radius, spacing } from "@/theme";
+import { detailColors, homeColors, homeMetrics, homeSpace, homeType, paywallType } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { UpperText } from "@/components/ui/UpperText";
 
 import type { PaywallActivityFacts } from "@/features/paywall/api/usePaywallFactsQuery";
 
@@ -71,15 +70,15 @@ export function PaywallActivity({ activity, blockedWord }: PaywallActivityProps)
         </Text>
       ) : null}
 
-      <UpperText style={[monoType.eyebrow, { color: theme.text.secondary }]}>
+      <Text style={[homeType.sectionTitle, { color: theme.text.primary }]}>
         {t("paywall.activity.heading")}
-      </UpperText>
+      </Text>
 
       <View style={styles.row}>
         {stats.map((stat) => (
           <View key={stat.key} style={styles.stat}>
-            <Text style={[paywallType.planTitle, { color: theme.accent }]}>{stat.value}</Text>
-            <Text style={[monoType.metaTight, styles.statLabel, { color: theme.text.secondary }]}>
+            <Text style={[paywallType.title, { color: detailColors.amberDeep }]}>{stat.value}</Text>
+            <Text style={[homeType.cardSub, styles.statLabel, { color: theme.text.secondary }]}>
               {stat.label}
             </Text>
           </View>
@@ -91,10 +90,15 @@ export function PaywallActivity({ activity, blockedWord }: PaywallActivityProps)
 
 const styles = StyleSheet.create({
   container: {
-    gap: spacing.sm,
-    marginTop: spacing.md,
-    padding: spacing.md,
-    borderRadius: radius.lg,
+    gap: homeSpace.md,
+    marginTop: homeSpace.md,
+    padding: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
   blocked: {
     textAlign: "center",
@@ -102,12 +106,12 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: spacing.sm,
+    gap: homeSpace.sm,
   },
   stat: {
     flex: 1,
     alignItems: "center",
-    gap: spacing.xxs,
+    gap: homeSpace.xs,
   },
   statLabel: {
     textAlign: "center",

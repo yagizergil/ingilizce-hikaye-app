@@ -117,11 +117,7 @@ describe("buildReminderPlan", () => {
         NOON,
       );
 
-      expect(plan.map((item) => item.id)).toEqual([
-        "streakRescue",
-        "reviewDue",
-        "continueReading",
-      ]);
+      expect(plan.map((item) => item.id)).toEqual(["streakRescue", "reviewDue", "continueReading"]);
 
       const days = plan.map((item) => item.fireAt.toDateString());
       expect(new Set(days).size).toBe(plan.length);
@@ -146,10 +142,7 @@ describe("buildReminderPlan", () => {
   it("ay sonunda bir sonraki aya doğru şekilde taşar", () => {
     // 30 Eylül + 3 gün = 3 Ekim. Elle gün toplayan bir hesap burada patlardı.
     const monthEnd = new Date(2026, 8, 30, 14, 0, 0, 0);
-    const plan = buildReminderPlan(
-      { ...baseInput, unfinishedBookTitle: "Frankenstein" },
-      monthEnd,
-    );
+    const plan = buildReminderPlan({ ...baseInput, unfinishedBookTitle: "Frankenstein" }, monthEnd);
     expect(plan[0]?.fireAt.getMonth()).toBe(9);
     expect(plan[0]?.fireAt.getDate()).toBe(3);
   });

@@ -3,10 +3,13 @@
     "name": "Lingo"
   },
   "tabs": {
-    "home": "本",
+    "home": "ホーム",
     "library": "ライブラリ",
     "vocabulary": "単語",
-    "profile": "設定"
+    "profile": "プロフィール",
+    "search": "検索",
+    "myBooks": "マイブック",
+    "quiz": "クイズ"
   },
   "placeholder": {
     "comingSoon": "近日公開"
@@ -138,12 +141,218 @@
       "myLevel": "あなたのレベル",
       "favorites": "お気に入り",
       "review": "単語の復習"
+    },
+    "header": {
+      "welcome": "ようこそ",
+      "welcomeBackLead": "おかえりなさい、",
+      "level": "レベル {{level}}",
+      "levelAccessibility": "レベル {{level}}、次のレベルまで {{percent}}% 達成",
+      "streakAccessibility": "{{count}} 日連続",
+      "languageAccessibility": "言語ペアを変更"
+    },
+    "stats": {
+      "weekValue": "{{done}} / {{total}}",
+      "weekLabel": "日数チャレンジ",
+      "more": "詳細な統計",
+      "today": "今日のここまで",
+      "booksRead": "読んだ本",
+      "readingTime": "学習時間",
+      "minutesValue": "{{count}} 分"
+    },
+    "seeAll": "すべて見る",
+    "categoryGrid": {
+      "title": "本のカテゴリ"
+    },
+    "yourBooks": "あなたの本",
+    "popularBooks": "人気の本",
+    "continue": {
+      "title": "続きを読む",
+      "cta": "続ける",
+      "percent": "%{{percent}}",
+      "accessibility": "{{title}}、{{percent}}% 読了、続ける"
+    },
+    "week": {
+      "title": "今週",
+      "count": "{{count}}/7 日",
+      "dayAccessibility": "{{day}}：{{count}} 分"
+    },
+    "start": {
+      "title": "今すぐ始める",
+      "description": "最初の物語を選んで、読みながら単語をタップしましょう。",
+      "cta": "本を探す"
+    },
+    "recommended": {
+      "eyebrow": "あなたにおすすめ",
+      "meta": "{{level}} · 約{{minutes}}分",
+      "cta": "読み始める",
+      "browse": "ほかの本を見る",
+      "accessibility": "{{title}}、読み始める"
     }
   },
   "collections": {
     "ozSeries": {
       "title": "オズ・シリーズ",
       "description": "L. Frank Baum が描いたオズの国を舞台にした古典シリーズです。"
+    },
+    "kai-repair-files-b1": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-tr": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-de": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-fr": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-it": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-es": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-ru": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-ar": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-zh": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "kai-repair-files-b1-ja": {
+      "title": "カイの修理店ファイル",
+      "description": "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+    },
+    "leo-little-cafe-a1": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-tr": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-de": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-fr": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-it": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-es": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-ru": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-ar": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-zh": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "leo-little-cafe-a1-ja": {
+      "title": "レオの小さなカフェ",
+      "description": "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+    },
+    "mara-lind-investigates-b2": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-tr": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-de": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-fr": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-it": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-es": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-ru": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-ar": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-zh": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "mara-lind-investigates-b2-ja": {
+      "title": "マラ・リンドの調査",
+      "description": "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+    },
+    "nora-night-train-a2": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-tr": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-de": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-fr": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-it": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-es": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-ru": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-ar": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-zh": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+    },
+    "nora-night-train-a2-ja": {
+      "title": "ノラと夜行列車",
+      "description": "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
     }
   },
   "library": {
@@ -164,7 +373,9 @@
       "finishedTag": "読了"
     },
     "search": {
-      "placeholder": "タイトル・著者・ジャンルで検索"
+      "title": "検索",
+      "subtitle": "どの本を読みたいですか？",
+      "placeholder": "本を検索"
     },
     "sort": {
       "recommended": "おすすめ",
@@ -198,7 +409,22 @@
     "card": {
       "minutes": "{{count}} 分",
       "audio": "音声"
-    }
+    },
+    "levelChips": {
+      "all": "すべて",
+      "beginner": "A1–A2",
+      "intermediate": "B1–B2",
+      "advanced": "C1–C2"
+    },
+    "shelves": {
+      "forLevel": "あなたのレベルに合う本",
+      "short": "短いお話",
+      "new": "新着",
+      "audio": "音声付き",
+      "suggested": "こちらもおすすめ"
+    },
+    "clearSearch": "検索をクリア",
+    "resultsLimited": "最初の{{count}}件を表示中。検索を絞り込んでください。"
   },
   "bookDetail": {
     "back": "← ライブラリ",
@@ -211,7 +437,8 @@
       "listen": "聴く",
       "listenAccessibilityLabel": "この本を聴く",
       "listenLockedAccessibilityLabel": "聴く — プレミアム機能",
-      "reread": "もう一度読む"
+      "reread": "もう一度読む",
+      "premiumTag": "Premium"
     },
     "stats": {
       "words": "語数",
@@ -246,7 +473,12 @@
       "locked": "スタジオ・ナレーションはプレミアムの機能です。自然な声で、読んでいる単語がハイライトされながら物語を聴けます。"
     },
     "about": "この本について",
-    "wordOverlap": "単語帳の {{count}} 語がこの本に登場します"
+    "wordOverlap": "単語帳の {{count}} 語がこの本に登場します",
+    "byAuthor": "著者：{{author}}",
+    "statChapters": "{{count}} 章",
+    "statMinutes": "{{count}} 分",
+    "synopsis": "あらすじ",
+    "share": "共有"
   },
   "reader": {
     "header": {
@@ -256,7 +488,8 @@
       "pauseSpeech": "読み上げを一時停止",
       "chapterList": "目次",
       "quotaRemaining": "今日はあと{{count}}回翻訳できます",
-      "bookWords": "この本の単語"
+      "bookWords": "この本の単語",
+      "menu": "メニュー"
     },
     "wordSheet": {
       "pronounce": "発音を聞く",
@@ -280,7 +513,10 @@
         "interjection": "（間投）",
         "other": ""
       },
-      "moreDetail": "詳細を表示"
+      "moreDetail": "詳細を表示",
+      "definitions": "定義",
+      "meaning": "意味",
+      "moreDefinitions": "その他の定義"
     },
     "sentenceTranslation": {
       "toggle": "文の訳を表示",
@@ -324,7 +560,8 @@
         "enhanced": "拡張"
       },
       "voiceUpgradeHint": "辞書の単語を読み上げるのは端末の音声です。より自然な声にするには、設定 > アクセシビリティ > 読み上げコンテンツ > 声 > 英語 から音声をダウンロードしてください。無料で一度きりの作業です。（章のナレーションは別で、スタジオ収録の音声を使います。）",
-      "title": "設定"
+      "title": "設定",
+      "previewText": "本屋の扉の上の小さな鈴が鳴り、冷たい風が入り込んだ。"
     },
     "chapterComplete": {
       "title": "この章を読み終えました",
@@ -351,7 +588,10 @@
     "wordAlreadySaved": "この単語はすでに保存されています。",
     "footer": {
       "nextChapter": "次の章",
-      "finishBook": "読み終える"
+      "finishBook": "読み終える",
+      "of": "/",
+      "prevPage": "前のページ",
+      "nextPage": "次のページ"
     },
     "chapterList": {
       "title": "目次"
@@ -368,6 +608,19 @@
       "pause": "読み上げを一時停止",
       "previousWord": "前の単語",
       "nextWord": "次の単語"
+    },
+    "loading": {
+      "title": "読み込み中...",
+      "subtitle": "本を取ってくるので少し待ってね！"
+    },
+    "mode": {
+      "read": "読む",
+      "listen": "聞く",
+      "listenLocked": "聞く（Premium）"
+    },
+    "listen": {
+      "back10": "10秒戻る",
+      "forward10": "10秒進む"
     }
   },
   "profile": {
@@ -416,7 +669,8 @@
       "totalTimeLabel": "総読書時間",
       "totalActiveDaysLabel": "読書した日数",
       "screenTitle": "統計",
-      "rowValue": "{{minutes}} 分 · {{streak}}日連続"
+      "rowValue": "{{minutes}} 分 · {{streak}}日連続",
+      "subtitle": "連続読書と今週の進捗"
     },
     "account": {
       "sectionTitle": "アカウント",
@@ -431,9 +685,52 @@
       "languageEn": "英語",
       "rateUs": "アプリを評価",
       "deleteAccount": "アカウントを削除",
-      "devReplayOnboarding": "アカウントをリセットしてオンボーディングをやり直す（開発者）"
+      "devReplayOnboarding": "アカウントをリセットしてオンボーディングをやり直す（開発者）",
+      "devSplashPreview": "スプラッシュ画面をプレビュー（開発者）",
+      "devUnlocked": "開発者ツールを有効にしました",
+      "devOnboardingPreview": "オンボーディングをプレビュー（開発者）"
     },
-    "footer": "{{name}} — バージョン {{version}}"
+    "footer": "{{name}} — バージョン {{version}}",
+    "subtitle": "アカウントと設定",
+    "premium": {
+      "title": "Premium にする",
+      "description": "スタジオ朗読、無制限の翻訳、スマート復習。",
+      "cta": "Premium を見る",
+      "activeTitle": "Premium 会員です",
+      "activeDescription": "すべて解放されました。読書を楽しんで！"
+    },
+    "sections": {
+      "learning": "学習",
+      "reading": "読書と言語"
+    },
+    "sfx": {
+      "label": "効果音",
+      "hint": "クイズと復習の正解・不正解の音"
+    },
+    "level": {
+      "levelLabel": "レベル {{level}}",
+      "today": "今日 +{{xp}} XP",
+      "progress": "{{current}} / {{needed}} XP",
+      "toNext": "レベル {{level}} まであと {{xp}} XP",
+      "xp": "{{xp}} XP",
+      "sources": {
+        "reading": "読書",
+        "words": "保存した単語",
+        "reviews": "単語の復習",
+        "quiz": "クイズの正解",
+        "books": "読み終えた本"
+      },
+      "howTo": "読むほどXPがたまります：1分ごとに2、単語の保存で3、復習で2、クイズ正解で5、本を読み終えると100。",
+      "ranks": {
+        "newcomer": "ニューリーダー",
+        "curious": "好奇心旺盛な読者",
+        "bookworm": "本の虫",
+        "storyHunter": "物語ハンター",
+        "explorer": "言語探検家",
+        "master": "達人リーダー",
+        "legend": "伝説の読者"
+      }
+    }
   },
   "vocabulary": {
     "title": "単語帳",
@@ -641,7 +938,8 @@
       "emptyBoth": {
         "title": "ここはまだ空です",
         "description": "お気に入りにした本や読み始めた本がここに表示されます。"
-      }
+      },
+      "subtitle": "お気に入りと読んだ本"
     }
   },
   "account": {
@@ -866,6 +1164,31 @@
       "bodyPremium": "すべて整いました。Premiumが有効です。読み始めましょう。",
       "bodyFree": "すべて整いました。すべての本が無料です。読み始めましょう。",
       "cta": "読み始める"
+    },
+    "adventure": {
+      "title": "冒険しながら言語を学ぼう",
+      "subtitle": "読むことで語学力を深めよう。"
+    },
+    "intro": {
+      "adventure": {
+        "title": "楽しく語学を学ぶ冒険",
+        "body": "読書で語学力を深めよう。"
+      },
+      "skills": {
+        "title": "語学力を伸ばそう",
+        "body": "単語と読解をマスターしよう。"
+      },
+      "stories": {
+        "title": "物語あふれる世界へ",
+        "body": "好きな本を選んで読み始めよう。"
+      },
+      "next": "次へ",
+      "start": "はじめる"
+    },
+    "mascot": {
+      "title": "こんにちは、ルミだよ！",
+      "body": "楽しい冒険の準備はできた？",
+      "cta": "続ける"
     }
   },
   "paywall": {
@@ -910,6 +1233,10 @@
       "wordPacks": {
         "title": "探索パック",
         "body": "各レベルの本で最もよく出る単語を、ワンタップで自分のデッキに。"
+      },
+      "bookQuizzes": {
+        "title": "本のクイズ",
+        "body": "すべての本で「理解」と「深い読み」レベル"
       }
     },
     "plan": {
@@ -954,8 +1281,8 @@
     "unavailableInExpoGo": "購入はビルド済みアプリでのみ動作します",
     "upgradeRow": "プレミアム",
     "wordListFull": "単語帳は {{count}}/{{limit}} 使用中",
-    "benefitsSectionTitle": "PREMIUM で増えること",
-    "introOffer": "あなたへ：年額プランで {{percent}}% お得",
+    "benefitsSectionTitle": "Premium で増えること",
+    "introOffer": "年間プランで{{percent}}%お得",
     "activity": {
       "heading": "この7日間",
       "daysRead_one": "日読んだ",
@@ -965,7 +1292,30 @@
       "wordsSaved_one": "語保存した",
       "wordsSaved_other": "語保存した",
       "blockedWord": "「{{word}}」が待っています。"
-    }
+    },
+    "headlines": {
+      "listen": {
+        "title": "物語を聞いて学ぼう",
+        "subtitle": "スタジオ朗読、読んでいる単語をハイライト。"
+      },
+      "quiz": {
+        "title": "本を本当に理解できた？",
+        "subtitle": "読解・深読みクイズで力を試そう。"
+      },
+      "words": {
+        "title": "難しい単語で止まらない",
+        "subtitle": "無制限の単語翻訳で読み続けよう。"
+      },
+      "sentences": {
+        "title": "難しい文もこわくない",
+        "subtitle": "どんな文の意味もすぐに確認。"
+      },
+      "practice": {
+        "title": "単語をしっかり定着",
+        "subtitle": "スマート復習で毎日無制限に練習。"
+      }
+    },
+    "cancelAnytime": "いつでも解約できます。"
   },
   "reminders": {
     "settingsLabel": "リマインダー",
@@ -1026,5 +1376,123 @@
     "noPairTitle": "まだ言語ペアがありません",
     "noPairBody": "話す言語と読みたい言語を選んでください。最初のペアは無料です。",
     "choosePairCta": "言語ペアを選ぶ"
+  },
+  "splash": {
+    "replay": "もう一度再生"
+  },
+  "categoriesScreen": {
+    "subtitle": "{{count}} カテゴリ",
+    "count": "{{count}} 冊"
+  },
+  "quiz": {
+    "next": "次の問題",
+    "finish": "終了",
+    "progress": "{{current}}/{{total}}",
+    "progressAccessibility": "{{total}} 問中 {{current}} 問目",
+    "result": {
+      "title": "{{total}} 問中 {{correct}} 問正解",
+      "perfect": "すごい、全問正解です！",
+      "keepGoing": "読み続ければ、次はもっと良くなります。",
+      "retry": "もう一度",
+      "close": "閉じる",
+      "nextLevelTitle": "レベル2解放：読解",
+      "nextLevelBody": "Premiumで本の理解度を試そう。"
+    },
+    "home": {
+      "title": "クイズ",
+      "subtitle": "読んだ内容を試そう",
+      "bookQuiz": {
+        "title": "ブッククイズ",
+        "description": "読んだ本についての問題",
+        "cta": "スタート"
+      },
+      "words": {
+        "title": "単語の復習",
+        "description": "保存した単語とデッキ"
+      },
+      "tip": {
+        "title": "1日5分",
+        "description": "短く頻繁な練習は長時間より効果的です。"
+      },
+      "hero": {
+        "due": {
+          "title": "復習の時間：{{count}} 語",
+          "description": "忘れる前に数分で復習しましょう。",
+          "cta": "復習を始める"
+        },
+        "practice": {
+          "title": "保存した {{count}} 語で練習しよう",
+          "description": "穴埋め・意味・リスニング問題。",
+          "cta": "練習を始める"
+        },
+        "empty": {
+          "title": "最初の単語を保存しよう",
+          "description": "読書中に知らない単語をタップして保存すると、ここで復習できます。",
+          "cta": "読み始める"
+        }
+      },
+      "stats": {
+        "due": "復習待ち",
+        "saved": "保存済み",
+        "known": "習得済み"
+      },
+      "moreTitle": "練習メニュー",
+      "smartLocked": "スマート復習には {{count}} 語以上の保存が必要です。",
+      "books": {
+        "title": "本のクイズ",
+        "subtitle": "読んだ本から、やさしい順に",
+        "error": "本のクイズを読み込めませんでした。タップして再試行。"
+      }
+    },
+    "check": "答え合わせ",
+    "feedback": {
+      "right": "正解！",
+      "wrong": "おしい！"
+    },
+    "kind": {
+      "vocabulary": "語彙",
+      "fact": "事実",
+      "inference": "推論",
+      "sequence": "順序",
+      "motive": "動機"
+    },
+    "levels": {
+      "1": {
+        "title": "ことば",
+        "description": "本に出てくる言葉を文脈で"
+      },
+      "2": {
+        "title": "理解",
+        "description": "だれが・何を・どこで・何が起きた"
+      },
+      "3": {
+        "title": "深い読み",
+        "description": "なぜ・推論・出来事の順番"
+      },
+      "status": {
+        "done": "クリア · {{correct}}/{{total}}",
+        "premium": "Premium で解放",
+        "locked": "前のレベルで60%を取ろう",
+        "retry": "もう一度 · 最高 {{correct}}/{{total}}",
+        "open": "{{n}} 問 · スタート"
+      },
+      "screenTitle": "本のクイズ",
+      "subtitle": "やさしい→むずかしいの3レベル",
+      "note": "前のレベルで60%取ると次が開きます。",
+      "empty": {
+        "title": "この本のクイズは準備中です",
+        "description": "まもなく登場します。"
+      }
+    },
+    "entry": {
+      "title": "本のクイズ",
+      "progress": "{{passed}}/{{total}} レベル完了"
+    },
+    "error": "クイズを読み込めませんでした。",
+    "emptyTitle": "このクイズにはまだ問題がありません。",
+    "saveError": "結果を保存できませんでした。接続を確認してもう一度お試しください。",
+    "leaveTitle": "クイズを終了しますか？",
+    "leaveBody": "進捗は保存されません。",
+    "leaveConfirm": "終了"
   }
 }

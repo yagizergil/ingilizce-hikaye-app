@@ -138,6 +138,12 @@ export function useChapterQuery(chapterId: string) {
       }
     },
     initialData: () => getCachedChapter(chapterId) ?? undefined,
+    // Çevrimdışı kopya ANINDA gösterilir ama BAYAT sayılır: arka planda
+    // sunucudan tazelenir. Eskiden `initialDataUpdatedAt` yoktu, kopya
+    // "şimdi çekildi" sayılıyor ve hiç yenilenmiyordu -- bölüme sonradan
+    // eklenen stüdyo sesi (2026-10-06, 9 dil) daha önce açılmış bölümlerde
+    // hiç görünmüyordu ("Dinle'ye basınca bir şey olmuyor").
+    initialDataUpdatedAt: 0,
     staleTime: 5 * 60 * 1000,
   });
 }

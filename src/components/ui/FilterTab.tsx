@@ -1,8 +1,6 @@
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 
-import { monoType, motion, radius, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
-import { UpperText } from "@/components/ui/UpperText";
+import { detailColors, detailType, homeColors, motion, radius, spacing } from "@/theme";
 
 interface FilterTabProps {
   label: string;
@@ -29,8 +27,6 @@ export function FilterTab({
   onPress,
   accessibilityLabel,
 }: FilterTabProps) {
-  const { theme } = useTheme();
-
   return (
     <Pressable
       accessibilityRole="tab"
@@ -41,26 +37,29 @@ export function FilterTab({
       style={({ pressed }) => [
         styles.pill,
         {
-          backgroundColor: selected ? theme.text.primary : theme.bg.surface,
-          borderColor: selected ? theme.text.primary : theme.border.hairline,
+          backgroundColor: selected ? detailColors.amber : homeColors.peach,
           opacity: pressed ? motion.pressed.opacity : 1,
         },
       ]}
     >
-      <UpperText
-        style={[monoType.eyebrow, { color: selected ? theme.text.inverse : theme.text.secondary }]}
+      <Text
+        style={[
+          detailType.statLabel,
+          { color: selected ? detailColors.amberInk : homeColors.mutedStrong },
+        ]}
       >
         {label}
-      </UpperText>
+      </Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   pill: {
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
+    height: 36,
+    paddingHorizontal: spacing.ml,
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: radius.full,
-    borderWidth: StyleSheet.hairlineWidth,
   },
 });

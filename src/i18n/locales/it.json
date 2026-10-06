@@ -3,10 +3,13 @@
     "name": "Lingo"
   },
   "tabs": {
-    "home": "Libri",
+    "home": "Home",
     "library": "Libreria",
     "vocabulary": "Parole",
-    "profile": "Impostazioni"
+    "profile": "Profilo",
+    "search": "Cerca",
+    "myBooks": "Il mio libro",
+    "quiz": "Quiz"
   },
   "placeholder": {
     "comingSoon": "Presto disponibile"
@@ -44,14 +47,14 @@
     },
     "books": {
       "title": "Libri",
-      "more": "TUTTI →"
+      "more": "Tutti →"
     },
     "book": {
       "words": "{{value}} parole",
       "chapters": "{{value}} capitoli"
     },
     "shelves": {
-      "more": "TUTTI →",
+      "more": "Tutti →",
       "forYou": "Per te",
       "shortReads": "Letture brevi",
       "byGenre": "Per genere",
@@ -116,8 +119,8 @@
       "accessibilityLabel": "{{favoritesCount}} preferiti, {{readCount}} libri letti"
     },
     "hero": {
-      "levelEyebrow": "IL TUO LIVELLO · {{level}}",
-      "welcomeEyebrow": "BENVENUTO",
+      "levelEyebrow": "Il tuo livello · {{level}}",
+      "welcomeEyebrow": "Benvenuto",
       "title": "Cosa leggiamo oggi?",
       "continueBody": "{{percent}}% completato. Riprendi da dove eri rimasto.",
       "startBody": "Inizia con storie brevi al tuo livello — ognuna si legge tutta d'un fiato.",
@@ -138,12 +141,218 @@
       "myLevel": "Al tuo livello",
       "favorites": "Preferiti",
       "review": "Ripasso parole"
+    },
+    "header": {
+      "welcome": "Benvenuto",
+      "welcomeBackLead": "Bentornato,",
+      "level": "Livello {{level}}",
+      "levelAccessibility": "Livello {{level}}, {{percent}}% verso il prossimo livello",
+      "streakAccessibility": "Serie di {{count}} giorni",
+      "languageAccessibility": "Cambia coppia di lingue"
+    },
+    "stats": {
+      "weekValue": "{{done}} / {{total}}",
+      "weekLabel": "Sfida dei giorni",
+      "more": "Statistiche dettagliate",
+      "today": "Finora oggi",
+      "booksRead": "Libri letti",
+      "readingTime": "Tempo di studio",
+      "minutesValue": "{{count}} min"
+    },
+    "seeAll": "Vedi tutto",
+    "categoryGrid": {
+      "title": "Categorie di libri"
+    },
+    "yourBooks": "I tuoi libri",
+    "popularBooks": "Libri popolari",
+    "continue": {
+      "title": "Continua a leggere",
+      "cta": "Continua",
+      "percent": "%{{percent}}",
+      "accessibility": "{{title}}, {{percent}}% letto, continua"
+    },
+    "week": {
+      "title": "Questa settimana",
+      "count": "{{count}}/7 giorni",
+      "dayAccessibility": "{{day}}: {{count}} min"
+    },
+    "start": {
+      "title": "Inizia ora",
+      "description": "Scegli la tua prima storia e tocca le parole mentre leggi.",
+      "cta": "Scopri libri"
+    },
+    "recommended": {
+      "eyebrow": "Per te",
+      "meta": "{{level}} · ~{{minutes}} min",
+      "cta": "Inizia a leggere",
+      "browse": "Sfoglia altri libri",
+      "accessibility": "{{title}}, inizia a leggere"
     }
   },
   "collections": {
     "ozSeries": {
       "title": "La serie di Oz",
       "description": "La classica serie di romanzi di L. Frank Baum ambientata nel mondo di Oz."
+    },
+    "kai-repair-files-b1": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-tr": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-de": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-fr": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-it": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-es": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-ru": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-ar": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-zh": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "kai-repair-files-b1-ja": {
+      "title": "I casi dell'officina di Kai",
+      "description": "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+    },
+    "leo-little-cafe-a1": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-tr": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-de": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-fr": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-it": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-es": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-ru": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-ar": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-zh": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "leo-little-cafe-a1-ja": {
+      "title": "Il piccolo caffè di Leo",
+      "description": "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+    },
+    "mara-lind-investigates-b2": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-tr": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-de": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-fr": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-it": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-es": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-ru": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-ar": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-zh": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "mara-lind-investigates-b2-ja": {
+      "title": "Mara Lind indaga",
+      "description": "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+    },
+    "nora-night-train-a2": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-tr": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-de": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-fr": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-it": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-es": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-ru": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-ar": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-zh": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+    },
+    "nora-night-train-a2-ja": {
+      "title": "Treno notturno con Nora",
+      "description": "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
     }
   },
   "library": {
@@ -164,7 +373,9 @@
       "finishedTag": "letto"
     },
     "search": {
-      "placeholder": "Cerca titolo, autore o genere"
+      "title": "Cerca",
+      "subtitle": "Quale libro vuoi leggere?",
+      "placeholder": "Cerca un libro"
     },
     "sort": {
       "recommended": "Consigliati",
@@ -198,7 +409,22 @@
     "card": {
       "minutes": "{{count}} min",
       "audio": "Audio"
-    }
+    },
+    "levelChips": {
+      "all": "Tutti",
+      "beginner": "A1–A2",
+      "intermediate": "B1–B2",
+      "advanced": "C1–C2"
+    },
+    "shelves": {
+      "forLevel": "Adatti al tuo livello",
+      "short": "Letture brevi",
+      "new": "Novità",
+      "audio": "Con audio",
+      "suggested": "Potrebbero piacerti"
+    },
+    "clearSearch": "Cancella ricerca",
+    "resultsLimited": "Primi {{count}} risultati; affina la ricerca."
   },
   "bookDetail": {
     "back": "← Libreria",
@@ -211,7 +437,8 @@
       "listen": "Ascolta",
       "listenAccessibilityLabel": "Ascolta questo libro",
       "listenLockedAccessibilityLabel": "Ascolta — funzione premium",
-      "reread": "Rileggi"
+      "reread": "Rileggi",
+      "premiumTag": "Premium"
     },
     "stats": {
       "words": "Parole",
@@ -241,12 +468,17 @@
       "lastBook": "Ultimo libro di questa serie"
     },
     "audio": {
-      "label": "NARRAZIONE",
+      "label": "Narrazione",
       "unlocked": "Questa storia è narrata con voce da studio, con ogni parola evidenziata mentre viene letta.",
       "locked": "La narrazione in studio fa parte di Premium. Ascolta questa storia con una voce naturale, con ogni parola evidenziata mentre viene letta."
     },
     "about": "Informazioni sul libro",
-    "wordOverlap": "{{count}} parole della tua lista compaiono in questo libro"
+    "wordOverlap": "{{count}} parole della tua lista compaiono in questo libro",
+    "byAuthor": "Di {{author}}",
+    "statChapters": "{{count}} capitoli",
+    "statMinutes": "{{count}} min",
+    "synopsis": "Sinossi",
+    "share": "Condividi"
   },
   "reader": {
     "header": {
@@ -256,7 +488,8 @@
       "pauseSpeech": "Metti in pausa la lettura",
       "chapterList": "Indice",
       "quotaRemaining": "Ti restano {{count}} traduzioni oggi",
-      "bookWords": "Parole dal libro"
+      "bookWords": "Parole dal libro",
+      "menu": "Menu"
     },
     "wordSheet": {
       "pronounce": "Pronuncia",
@@ -280,7 +513,10 @@
         "interjection": "(inter.)",
         "other": ""
       },
-      "moreDetail": "Mostra dettagli"
+      "moreDetail": "Mostra dettagli",
+      "definitions": "Definizioni",
+      "meaning": "Significato",
+      "moreDefinitions": "Altre definizioni"
     },
     "sentenceTranslation": {
       "toggle": "Mostra la traduzione della frase",
@@ -324,15 +560,16 @@
         "enhanced": "migliorata"
       },
       "voiceUpgradeHint": "La voce del dispositivo che legge le parole del dizionario. Per un suono più naturale: Impostazioni > Accessibilità > Contenuto letto > Voci > Inglese, quindi scarica una voce. È gratis e si fa una volta sola. (La narrazione dei capitoli è un'altra cosa — arriva da una registrazione in studio.)",
-      "title": "Impostazioni"
+      "title": "Impostazioni",
+      "previewText": "Il campanello sopra la porta della libreria suonò e un vento freddo scivolò dentro."
     },
     "chapterComplete": {
       "title": "Capitolo completato",
       "nextChapter": "Capitolo successivo",
       "bookFinished": "Hai finito il libro. Ottimo lavoro!",
-      "eyebrow": "CAPITOLO {{number}}",
-      "wordsLabel": "PAROLE",
-      "minutesLabel": "MINUTI",
+      "eyebrow": "Capitolo {{number}}",
+      "wordsLabel": "Parole",
+      "minutesLabel": "Minuti",
       "minutesValue": "{{count}} min",
       "backToBook": "Torna al libro",
       "finishBook": "Concludi il libro"
@@ -350,8 +587,11 @@
     },
     "wordAlreadySaved": "Questa parola è già salvata.",
     "footer": {
-      "nextChapter": "CAPITOLO SUCCESSIVO",
-      "finishBook": "CONCLUDI IL LIBRO"
+      "nextChapter": "Capitolo successivo",
+      "finishBook": "Concludi il libro",
+      "of": "di",
+      "prevPage": "Pagina precedente",
+      "nextPage": "Pagina successiva"
     },
     "chapterList": {
       "title": "Indice"
@@ -368,6 +608,19 @@
       "pause": "Metti in pausa la narrazione",
       "previousWord": "Parola precedente",
       "nextWord": "Parola successiva"
+    },
+    "loading": {
+      "title": "Caricamento...",
+      "subtitle": "Aspetta un attimo mentre prendo il libro per te!"
+    },
+    "mode": {
+      "read": "Leggi",
+      "listen": "Ascolta",
+      "listenLocked": "Ascolta (Premium)"
+    },
+    "listen": {
+      "back10": "Indietro di 10 secondi",
+      "forward10": "Avanti di 10 secondi"
     }
   },
   "profile": {
@@ -382,8 +635,8 @@
       "nameSaveError": "Impossibile salvare il nome. Riprova."
     },
     "streak": {
-      "currentLabel": "GIORNI DI FILA",
-      "longestLabel": "SERIE PIÙ LUNGA",
+      "currentLabel": "Giorni di fila",
+      "longestLabel": "Serie più lunga",
       "weekAccessibilityLabel": "Questa settimana hai letto in {{count}} giorni",
       "keepGoing": "Leggi un po' oggi per tenere viva la serie di {{count}} giorni.",
       "startToday": "Leggi qualche pagina oggi e inizia una serie.",
@@ -398,7 +651,7 @@
       }
     },
     "week": {
-      "title": "QUESTA SETTIMANA",
+      "title": "Questa settimana",
       "totalMinutes": "{{count}} min",
       "dayAccessibilityLabel": "{{day}}: {{count}} minuti",
       "empty": "Questa settimana non hai ancora letto."
@@ -416,7 +669,8 @@
       "totalTimeLabel": "Tempo di lettura totale",
       "totalActiveDaysLabel": "Giorni di lettura",
       "screenTitle": "Le mie statistiche",
-      "rowValue": "{{minutes}} min · serie di {{streak}} giorni"
+      "rowValue": "{{minutes}} min · serie di {{streak}} giorni",
+      "subtitle": "La tua serie di lettura e i progressi"
     },
     "account": {
       "sectionTitle": "Account",
@@ -431,9 +685,52 @@
       "languageEn": "Inglese",
       "rateUs": "Valutaci",
       "deleteAccount": "Elimina il mio account",
-      "devReplayOnboarding": "Reimposta l'account e rivedi l'onboarding (sviluppatore)"
+      "devReplayOnboarding": "Reimposta l'account e rivedi l'onboarding (sviluppatore)",
+      "devSplashPreview": "Anteprima schermata iniziale (sviluppatore)",
+      "devUnlocked": "Strumenti sviluppatore attivati",
+      "devOnboardingPreview": "Anteprima schermata onboarding (sviluppatore)"
     },
-    "footer": "{{name}} — versione {{version}}"
+    "footer": "{{name}} — versione {{version}}",
+    "subtitle": "Il tuo account e le impostazioni",
+    "premium": {
+      "title": "Passa a Premium",
+      "description": "Narrazione in studio, traduzioni illimitate e Ripasso intelligente.",
+      "cta": "Scopri Premium",
+      "activeTitle": "Sei Premium",
+      "activeDescription": "Tutto sbloccato. Buona lettura!"
+    },
+    "sections": {
+      "learning": "Apprendimento",
+      "reading": "Lettura e lingua"
+    },
+    "sfx": {
+      "label": "Effetti sonori",
+      "hint": "Suoni giusto/sbagliato in quiz e ripasso"
+    },
+    "level": {
+      "levelLabel": "Livello {{level}}",
+      "today": "+{{xp}} XP oggi",
+      "progress": "{{current}} / {{needed}} XP",
+      "toNext": "{{xp}} XP al livello {{level}}",
+      "xp": "{{xp}} XP",
+      "sources": {
+        "reading": "Lettura",
+        "words": "Parole salvate",
+        "reviews": "Ripassi",
+        "quiz": "Risposte corrette",
+        "books": "Libri finiti"
+      },
+      "howTo": "Guadagni XP leggendo: 2 al minuto, 3 per ogni parola salvata, 2 per ripasso, 5 per risposta corretta, 100 per libro finito.",
+      "ranks": {
+        "newcomer": "Nuovo lettore",
+        "curious": "Lettore curioso",
+        "bookworm": "Topo di biblioteca",
+        "storyHunter": "Cacciatore di storie",
+        "explorer": "Esploratore di lingue",
+        "master": "Lettore esperto",
+        "legend": "Lettore leggendario"
+      }
+    }
   },
   "vocabulary": {
     "title": "Quaderno",
@@ -641,7 +938,8 @@
       "emptyBoth": {
         "title": "Qui non c'è ancora niente",
         "description": "I libri che aggiungi ai preferiti o inizi a leggere compariranno qui."
-      }
+      },
+      "subtitle": "I tuoi preferiti e i libri letti"
     }
   },
   "account": {
@@ -662,9 +960,9 @@
     "loadError": "Non è stato possibile caricare le carte di ripasso.",
     "revealHint": "Tocca per vedere il significato",
     "noGloss": "Nessuna traduzione trovata",
-    "ratingAgain": "DI NUOVO",
-    "ratingHard": "DIFFICILE",
-    "ratingEasy": "FACILE",
+    "ratingAgain": "Di nuovo",
+    "ratingHard": "Difficile",
+    "ratingEasy": "Facile",
     "doneTitle": "Per oggi hai finito",
     "doneMessage": "Hai ripassato {{count}} parole.",
     "emptyTitle": "Niente da ripassare",
@@ -678,19 +976,19 @@
   "onboarding": {
     "introTitle": "Troviamo il tuo livello",
     "introBody": "Ti mostriamo qualche parola inglese. Per ognuna dicci se la conosci, se non sei sicuro o se non la conosci. Useremo le risposte per consigliarti i libri giusti.",
-    "introDuration": "CIRCA 1 MINUTO",
+    "introDuration": "Circa 1 minuto",
     "start": "Iniziamo",
     "skip": "Non ora",
     "answerKnown": "La conosco",
     "answerUnsure": "Non sono sicuro",
     "answerUnknown": "Non la conosco",
-    "resultEyebrow": "INIZIA A LEGGERE DA QUI",
+    "resultEyebrow": "Inizia a leggere da qui",
     "resultSize": "Conosci circa {{count}} parole.",
-    "adjustHint": "CAMBIALO SE NON TI SEMBRA GIUSTO",
+    "adjustHint": "Cambialo se non ti sembra giusto",
     "finish": "Vai ai libri",
     "loadError": "Non è stato possibile caricare le parole del test.",
     "splash": {
-      "tagline": "IMPARA UNA LINGUA CON LE STORIE"
+      "tagline": "Impara una lingua con le storie"
     },
     "welcome": {
       "title": "Leggi storie, impara una lingua",
@@ -866,13 +1164,38 @@
       "bodyPremium": "Tutto pronto. Premium è attivo: inizia a leggere.",
       "bodyFree": "Tutto pronto. Tutti i libri sono gratuiti: inizia a leggere.",
       "cta": "Inizia a leggere"
+    },
+    "adventure": {
+      "title": "Impara le lingue con un'avventura",
+      "subtitle": "Approfondisci le tue competenze leggendo."
+    },
+    "intro": {
+      "adventure": {
+        "title": "Un'avventura divertente per imparare le lingue",
+        "body": "Approfondisci le tue competenze leggendo."
+      },
+      "skills": {
+        "title": "Migliora le tue competenze",
+        "body": "Padroneggia parole e comprensione."
+      },
+      "stories": {
+        "title": "Entra in un mondo pieno di storie",
+        "body": "Scegli il tuo libro preferito e inizia a leggere."
+      },
+      "next": "Avanti",
+      "start": "Inizia"
+    },
+    "mascot": {
+      "title": "Ciao, sono Lumi!",
+      "body": "Pronto per un'avventura divertente?",
+      "cta": "Continua"
     }
   },
   "paywall": {
     "title": "Fai restare le parole che leggi",
     "subtitle": "Le storie sono sempre gratuite. Premium ti aiuta a non perdere quello che impari.",
-    "socialProof_one": "{{count}} STORIA · DA A1 A C2",
-    "socialProof_other": "{{count}} STORIE · DA A1 A C2",
+    "socialProof_one": "{{count}} storia · da A1 a C2",
+    "socialProof_other": "{{count}} storie · da A1 a C2",
     "benefits": {
       "studioAudio": {
         "title": "Ascolta e capisci",
@@ -910,12 +1233,16 @@
       "wordPacks": {
         "title": "Pacchetti Esplora",
         "body": "Le parole più frequenti nei libri di ogni livello, trasformate nel tuo mazzo con un tocco."
+      },
+      "bookQuizzes": {
+        "title": "Quiz dei libri",
+        "body": "Livelli Comprensione e Lettura profonda per ogni libro"
       }
     },
     "plan": {
       "annual": "Annuale",
       "monthly": "Mensile",
-      "savings": "RISPARMIA {{percent}}%",
+      "savings": "Risparmia {{percent}}%",
       "perMonth": "{{price}}/mese",
       "trialDays_one": "{{count}} giorno gratis",
       "trialDays_other": "{{count}} giorni gratis",
@@ -936,7 +1263,7 @@
       "privacy": "Informativa sulla privacy",
       "privacyMissing": "Il link all'informativa sulla privacy non è configurato"
     },
-    "freeAlwaysNote": "TUTTI I LIBRI RESTANO GRATIS, PER SEMPRE",
+    "freeAlwaysNote": "Tutti i libri restano gratis, per sempre",
     "restore": "Ripristina gli acquisti",
     "purchaseError": "Non è stato possibile completare l'acquisto. Riprova.",
     "notEntitledTitle": "L'abbonamento non si vede ancora",
@@ -951,13 +1278,13 @@
     "restoreErrorBody": "Non è stato possibile verificare i tuoi acquisti. Controlla la connessione e riprova.",
     "noPackages": "Non è stato possibile caricare le opzioni di abbonamento.",
     "retryPackages": "Riprova",
-    "unavailableInExpoGo": "GLI ACQUISTI FUNZIONANO SOLO IN UNA BUILD COMPILATA",
+    "unavailableInExpoGo": "Gli acquisti funzionano solo in una build compilata",
     "upgradeRow": "Premium",
     "wordListFull": "Il tuo quaderno è pieno a {{count}}/{{limit}}",
-    "benefitsSectionTitle": "COSA AGGIUNGE PREMIUM",
-    "introOffer": "PER TE: RISPARMIA IL {{percent}}% CON L'ANNUALE",
+    "benefitsSectionTitle": "Cosa aggiunge Premium",
+    "introOffer": "Risparmia il {{percent}}% con il piano annuale",
     "activity": {
-      "heading": "I TUOI ULTIMI 7 GIORNI",
+      "heading": "I tuoi ultimi 7 giorni",
       "daysRead_one": "giorno di lettura",
       "daysRead_other": "giorni di lettura",
       "wordsLookedUp_one": "parola cercata",
@@ -965,7 +1292,30 @@
       "wordsSaved_one": "parola salvata",
       "wordsSaved_other": "parole salvate",
       "blockedWord": "«{{word}}» ti sta aspettando."
-    }
+    },
+    "headlines": {
+      "listen": {
+        "title": "Impara ascoltando le storie",
+        "subtitle": "Narrazione in studio con la parola evidenziata."
+      },
+      "quiz": {
+        "title": "Hai davvero capito il libro?",
+        "subtitle": "Mettiti alla prova con quiz di comprensione e lettura profonda."
+      },
+      "words": {
+        "title": "Non fermarti a una parola difficile",
+        "subtitle": "Continua a leggere con traduzioni illimitate."
+      },
+      "sentences": {
+        "title": "Frasi difficili? Nessun problema",
+        "subtitle": "Vedi subito il significato di ogni frase."
+      },
+      "practice": {
+        "title": "Parole che restano",
+        "subtitle": "Esercitati ogni giorno senza limiti con il Ripasso intelligente."
+      }
+    },
+    "cancelAnytime": "Annulla quando vuoi."
   },
   "reminders": {
     "settingsLabel": "Promemoria",
@@ -991,8 +1341,8 @@
     }
   },
   "completion": {
-    "eyebrow_one": "HAI FINITO IL TUO {{count}}° LIBRO",
-    "eyebrow_other": "HAI FINITO IL TUO {{count}}° LIBRO",
+    "eyebrow_one": "Hai finito il tuo {{count}}° libro",
+    "eyebrow_other": "Hai finito il tuo {{count}}° libro",
     "wordsLabel": "parole salvate",
     "minutesValue_one": "{{count}} min",
     "minutesValue_other": "{{count}} min",
@@ -1008,7 +1358,7 @@
     "nativeBody": "L'app e le traduzioni delle parole verranno mostrate in questa lingua.",
     "targetTitle": "Che lingua vuoi leggere?",
     "targetBody": "Le storie saranno in questa lingua. La tua prima scelta è gratuita.",
-    "comingSoonLabel": "PRESTO",
+    "comingSoonLabel": "Presto",
     "comingSoonBadge": "Presto",
     "saveError": "Non è stato possibile salvare la tua coppia di lingue. Riprova.",
     "unexpectedPremiumRequired": "Questa selezione richiede inaspettatamente Premium. Riprova.",
@@ -1016,15 +1366,133 @@
     "restartBody": "L'arabo cambia il layout dello schermo da destra a sinistra. Riavvia l'app per applicare questa modifica.",
     "restartCta": "Riavvia",
     "manageTitle": "Le tue coppie di lingue",
-    "yourPairs": "LE TUE COPPIE",
-    "addPair": "AGGIUNGI UNA COPPIA",
+    "yourPairs": "Le tue coppie",
+    "addPair": "Aggiungi una coppia",
     "activeBadge": "Attiva",
-    "interfaceLanguageSection": "LINGUA DELL'INTERFACCIA",
+    "interfaceLanguageSection": "Lingua dell'interfaccia",
     "pairArrow": "{{from}} → {{to}}",
-    "historyPairs": "COPPIE PRECEDENTI",
+    "historyPairs": "Coppie precedenti",
     "loadError": "Impossibile caricare le tue coppie di lingue.",
     "noPairTitle": "Non hai ancora una coppia di lingue",
     "noPairBody": "Scegli la lingua che parli e quella in cui vuoi leggere. La prima coppia è gratuita.",
     "choosePairCta": "Scegli una coppia di lingue"
+  },
+  "splash": {
+    "replay": "Riproduci di nuovo"
+  },
+  "categoriesScreen": {
+    "subtitle": "{{count}} categorie",
+    "count": "{{count}} libri"
+  },
+  "quiz": {
+    "next": "Prossima domanda",
+    "finish": "Fine",
+    "progress": "{{current}}/{{total}}",
+    "progressAccessibility": "Domanda {{current}} di {{total}}",
+    "result": {
+      "title": "{{correct}} su {{total}} corrette",
+      "perfect": "Fantastico, le hai azzeccate tutte!",
+      "keepGoing": "Continua a leggere, la prossima volta andrà ancora meglio.",
+      "retry": "Riprova",
+      "close": "Chiudi",
+      "nextLevelTitle": "Livello 2 sbloccato: Comprensione",
+      "nextLevelBody": "Metti alla prova la tua comprensione con Premium."
+    },
+    "home": {
+      "title": "Quiz",
+      "subtitle": "Metti alla prova ciò che hai letto",
+      "bookQuiz": {
+        "title": "Quiz del libro",
+        "description": "Domande sul libro che hai letto",
+        "cta": "Inizia"
+      },
+      "words": {
+        "title": "Ripasso parole",
+        "description": "Le tue parole salvate e i mazzi"
+      },
+      "tip": {
+        "title": "5 minuti al giorno",
+        "description": "Poco ma spesso batte le sessioni lunghe."
+      },
+      "hero": {
+        "due": {
+          "title": "Da ripassare: {{count}} parole",
+          "description": "Ripassale in pochi minuti prima di dimenticarle.",
+          "cta": "Inizia il ripasso"
+        },
+        "practice": {
+          "title": "Esercitati con le tue {{count}} parole salvate",
+          "description": "Completamento, significato e ascolto.",
+          "cta": "Inizia"
+        },
+        "empty": {
+          "title": "Salva la tua prima parola",
+          "description": "Tocca una parola sconosciuta mentre leggi e salvala; qui la ripasserai.",
+          "cta": "Inizia a leggere"
+        }
+      },
+      "stats": {
+        "due": "Da ripassare",
+        "saved": "Salvate",
+        "known": "Imparate"
+      },
+      "moreTitle": "Modi per esercitarsi",
+      "smartLocked": "Salva almeno {{count}} parole per il Ripasso intelligente.",
+      "books": {
+        "title": "Quiz dei libri",
+        "subtitle": "Dai libri che leggi, dal facile al difficile",
+        "error": "Impossibile caricare i quiz. Tocca per riprovare."
+      }
+    },
+    "check": "Verifica",
+    "feedback": {
+      "right": "Giusto!",
+      "wrong": "Non proprio"
+    },
+    "kind": {
+      "vocabulary": "Lessico",
+      "fact": "Fatto",
+      "inference": "Deduzione",
+      "sequence": "Sequenza",
+      "motive": "Motivo"
+    },
+    "levels": {
+      "1": {
+        "title": "Parole",
+        "description": "Parole del libro nel contesto"
+      },
+      "2": {
+        "title": "Comprensione",
+        "description": "Chi, cosa, dove, cosa è successo"
+      },
+      "3": {
+        "title": "Lettura profonda",
+        "description": "Perché, deduzioni e ordine degli eventi"
+      },
+      "status": {
+        "done": "Fatto · {{correct}}/{{total}}",
+        "premium": "Sblocca con Premium",
+        "locked": "Ottieni il 60% al livello precedente",
+        "retry": "Riprova · migliore {{correct}}/{{total}}",
+        "open": "{{n}} domande · Inizia"
+      },
+      "screenTitle": "Quiz del libro",
+      "subtitle": "Tre livelli, dal facile al difficile",
+      "note": "Un livello si apre col 60% nel precedente.",
+      "empty": {
+        "title": "Il quiz di questo libro è in arrivo",
+        "description": "Sarà qui a breve."
+      }
+    },
+    "entry": {
+      "title": "Quiz del libro",
+      "progress": "{{passed}}/{{total}} livelli completati"
+    },
+    "error": "Impossibile caricare il quiz.",
+    "emptyTitle": "Questo quiz non ha ancora domande.",
+    "saveError": "Impossibile salvare il risultato. Controlla la connessione e riprova.",
+    "leaveTitle": "Uscire dal quiz?",
+    "leaveBody": "I tuoi progressi non verranno salvati.",
+    "leaveConfirm": "Esci"
   }
 }

@@ -3,8 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { TabBarButton } from "@/components/ui/TabBarButton";
-import { spacing } from "@/theme/tokens/spacing";
-import { tabBarContentHeight } from "@/theme/tokens/layout";
+import { homeColors, homeMetrics } from "@/theme/tokens/home";
 import { useTheme } from "@/theme/useTheme";
 
 /**
@@ -38,26 +37,38 @@ import { useTheme } from "@/theme/useTheme";
  */
 export default function TabsLayout() {
   const { t } = useTranslation();
-  const { theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const { theme } = useTheme();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        // Arka plandaki sekmeler dondurulur (react-native-screens): görünmeyen
+        // ekranlar sorgu güncellemelerinde yeniden render olup sekme
+        // geçişini takıltmıyor.
+        freezeOnBlur: true,
+        // Sekme geçişi BİLEREK animasyonsuz (iOS'un yerel sekme çubuğu da
+        // öyle). Bir ara `animation: "fade"` vardı: JS tarafında sahnenin
+        // opaklığını sürüyordu ve geçiş yarıda kesilince (sekmeye basılırken
+        // bir ekran itilince) sahne opaklık 0'da kalıyor, kullanıcı başka
+        // sekmeye gidip dönene kadar BEMBEYAZ ekran görüyordu.
+        tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: theme.bg.primary,
+          // Beyaz, üst köşeleri yuvarlak yüzen çubuk (Funfluent referansı).
+          backgroundColor: theme.bg.surface,
           borderTopWidth: 0,
-          height: tabBarContentHeight + insets.bottom,
-          paddingTop: spacing.sm,
-          paddingBottom: insets.bottom,
-          // Çubuk sayfayla aynı renkte; gölge olmadan içerik ile çubuk
-          // arasında hiçbir sınır görünmüyordu (kullanıcı bulgusu, 2026-09-24).
-          shadowColor: theme.text.primary,
-          shadowOffset: { width: 0, height: -2 },
+          borderRadius: homeMetrics.tabBarRadius,
+          height: homeMetrics.tabBarHeight,
+          marginHorizontal: homeMetrics.tabBarMargin,
+          marginBottom: Math.max(insets.bottom, homeMetrics.tabBarMargin / 2),
+          paddingTop: 0,
+          paddingBottom: 0,
+          shadowColor: homeColors.shadow,
+          shadowOffset: { width: 0, height: -4 },
           shadowOpacity: 0.08,
-          shadowRadius: 8,
-          elevation: 8,
+          shadowRadius: 14,
+          elevation: 12,
         },
       }}
     >
@@ -68,39 +79,57 @@ export default function TabsLayout() {
           tabBarButton: (props) => (
             <TabBarButton
               {...props}
-              iconOutline="library-outline"
-              iconActive="library"
+              icon={require("../../assets/home/tab-home.png") as number}
+              iconActive={require("../../assets/home/tab-home-active.png") as number}
               label={t("tabs.home")}
             />
           ),
         }}
       />
-      {/*
-        FAZ 2 (2026-09-14, referans uygulama eşleştirmesi): referans ("dicto")
-        3 sekmeli -- Kitaplar/Kelimeler/Ayarlar. Bizde "index" (ana sayfa
-        akışı: yeni kitaplar, şu an okunuyor, koleksiyonlar, seviyelere göre
-        kitaplar) zaten referansın "Kitaplar" sekmesiyle birebir aynı içeriği
-        taşıyor -- bu yüzden "Kütüphane" (filtre + tüm katalog listesi) ayrı
-        bir sekme DEĞİL, `/browse` rotasıyla aynı işi yapan fazlalık bir
-        4. sekmeydi. `href: null` bunu tab bar'dan gizliyor; rota (ve
-        `EmptyHome`'un boş katalog CTA'sı gibi doğrudan linkler) hâlâ
-        çalışıyor, yalnızca alt barda görünmüyor.
-      */}
-      <Tabs.Screen name="library" options={{ href: null }} />
       <Tabs.Screen
-        name="vocabulary"
+        name="library"
         options={{
-          title: t("tabs.vocabulary"),
+          title: t("tabs.search"),
           tabBarButton: (props) => (
             <TabBarButton
               {...props}
-              iconOutline="book-outline"
-              iconActive="book"
-              label={t("tabs.vocabulary")}
+              icon={require("../../assets/home/tab-search.png") as number}
+              iconActive={require("../../assets/home/tab-search-active.png") as number}
+              label={t("tabs.search")}
             />
           ),
         }}
       />
+      <Tabs.Screen
+        name="mybooks"
+        options={{
+          title: t("tabs.myBooks"),
+          tabBarButton: (props) => (
+            <TabBarButton
+              {...props}
+              icon={require("../../assets/home/tab-mybook.png") as number}
+              iconActive={require("../../assets/home/tab-mybook-active.png") as number}
+              label={t("tabs.myBooks")}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="quiz"
+        options={{
+          title: t("tabs.quiz"),
+          tabBarButton: (props) => (
+            <TabBarButton
+              {...props}
+              icon={require("../../assets/home/tab-quiz.png") as number}
+              iconActive={require("../../assets/home/tab-quiz-active.png") as number}
+              label={t("tabs.quiz")}
+            />
+          ),
+        }}
+      />
+      {/* Kelimelerim (kelime defteri, desteler, Akıllı Tekrar) artık Quiz sekmesinden açılıyor. */}
+      <Tabs.Screen name="vocabulary" options={{ href: null }} />
       <Tabs.Screen
         name="profile"
         options={{
@@ -108,8 +137,8 @@ export default function TabsLayout() {
           tabBarButton: (props) => (
             <TabBarButton
               {...props}
-              iconOutline="settings-outline"
-              iconActive="settings"
+              icon={require("../../assets/home/tab-profile.png") as number}
+              iconActive={require("../../assets/home/tab-profile-active.png") as number}
               label={t("tabs.profile")}
             />
           ),

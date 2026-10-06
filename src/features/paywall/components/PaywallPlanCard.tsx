@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -27,18 +26,13 @@ interface PaywallPlanCardProps {
  * Seçili durum yalnızca renkle değil, dolu radyo + tik ile de anlatılıyor
  * (renk körlüğü ve yüksek kontrast modları).
  */
-export function PaywallPlanCard({
-  options,
-  selectedId,
-  onSelect,
-  disabled,
-}: PaywallPlanCardProps) {
+export function PaywallPlanCard({ options, selectedId, onSelect, disabled }: PaywallPlanCardProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
   return (
-    <View style={[styles.card, { backgroundColor: theme.bg.surface }]} accessibilityRole="radiogroup">
-      {options.map((option, index) => {
+    <View style={styles.card} accessibilityRole="radiogroup">
+      {options.map((option) => {
         const selected = option.pkg.identifier === selectedId;
         const title =
           option.kind === "annual"
@@ -48,11 +42,7 @@ export function PaywallPlanCard({
               : option.pkg.product.title;
 
         return (
-          <Fragment key={option.pkg.identifier}>
-            {index > 0 ? (
-              <View style={[styles.divider, { backgroundColor: theme.border.hairline }]} />
-            ) : null}
-
+          <View key={option.pkg.identifier}>
             <Pressable
               onPress={() => onSelect(option)}
               disabled={disabled}
@@ -67,7 +57,11 @@ export function PaywallPlanCard({
                 .join(". ")}
               style={({ pressed }) => [
                 styles.row,
-                { opacity: pressed ? motion.pressed.opacity : 1 },
+                {
+                  backgroundColor: theme.bg.surface,
+                  borderColor: selected ? theme.accent : theme.bg.surface,
+                  opacity: pressed ? motion.pressed.opacity : 1,
+                },
               ]}
             >
               {/* Deneme rozeti satırın ÜSTÜNDE, başlık hizasında --
@@ -122,7 +116,7 @@ export function PaywallPlanCard({
                 </Text>
               </View>
             </Pressable>
-          </Fragment>
+          </View>
         );
       })}
     </View>
@@ -131,14 +125,11 @@ export function PaywallPlanCard({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radius.lg,
-    overflow: "hidden",
-  },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    marginHorizontal: spacing.md,
+    gap: spacing.sm,
   },
   row: {
+    borderRadius: paywallMetrics.cardRadius,
+    borderWidth: 2,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     gap: spacing.xs,

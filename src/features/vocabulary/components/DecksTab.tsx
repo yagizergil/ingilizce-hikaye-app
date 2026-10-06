@@ -6,8 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
 
-import { motion, radius, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import { detailColors, homeColors, homeMetrics, homeSpace, motion } from "@/theme";
 import { trackEvent } from "@/lib/analytics";
 import { EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui";
 import { useCustomDecksQuery } from "@/features/vocabulary/api/useCustomDecksQuery";
@@ -19,7 +18,7 @@ import { ExploreStrip } from "@/features/vocabulary/components/ExploreStrip";
 import type { CustomDeck } from "@/features/vocabulary/types";
 
 function RowGap() {
-  return <View style={{ height: spacing.xs }} />;
+  return <View style={styles.gap} />;
 }
 
 /**
@@ -31,7 +30,6 @@ function RowGap() {
  */
 export function DecksTab() {
   const { t } = useTranslation();
-  const { theme } = useTheme();
   const { show: showToast } = useToast();
   const { data: decks, isLoading, isError, refetch } = useCustomDecksQuery();
   const createDeck = useCreateDeckMutation();
@@ -99,13 +97,9 @@ export function DecksTab() {
         onPress={handleOpenCreate}
         accessibilityRole="button"
         accessibilityLabel={t("vocabulary.decks.createCta")}
-        style={({ pressed }) => [
-          styles.fab,
-          { backgroundColor: theme.accent },
-          pressed ? { opacity: motion.pressed.opacity } : null,
-        ]}
+        style={({ pressed }) => [styles.fab, pressed ? { opacity: motion.pressed.opacity } : null]}
       >
-        <Ionicons name="add" size={28} color={theme.text.onAccent} />
+        <Ionicons name="add" size={28} color={detailColors.amberInk} />
       </Pressable>
 
       <CreateDeckSheet ref={createSheetRef} onSubmit={handleCreate} submitting={submitting} />
@@ -117,19 +111,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  gap: {
+    height: homeSpace.md,
+  },
   listContent: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.screenBottom,
+    paddingHorizontal: homeMetrics.gutter,
+    paddingBottom: homeMetrics.tabBarHeight * 2,
   },
   fab: {
     position: "absolute",
-    right: spacing.lg,
-    bottom: spacing.lg,
-    width: 56,
-    height: 56,
-    borderRadius: radius.full,
+    right: homeMetrics.gutter,
+    bottom: homeSpace.xl,
+    width: homeMetrics.continueButton + homeSpace.xl,
+    height: homeMetrics.continueButton + homeSpace.xl,
+    borderRadius: (homeMetrics.continueButton + homeSpace.xl) / 2,
+    backgroundColor: detailColors.amber,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 4,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 14,
+    elevation: 6,
   },
 });

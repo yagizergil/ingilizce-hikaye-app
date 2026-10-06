@@ -1,9 +1,18 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+
+import { Ionicons } from "@expo/vector-icons";
 
 import { useTranslation } from "react-i18next";
 
-import { monoType, spacing, type } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import {
+  detailColors,
+  detailMetrics,
+  detailType,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+} from "@/theme";
 
 import type { Chapter } from "@/features/library/types";
 
@@ -22,7 +31,6 @@ interface ChapterListItemProps {
  */
 export function ChapterListItem({ chapter, onPress }: ChapterListItemProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
   const isDone = chapter.progressPercent >= 100;
   const indexLabel = String(chapter.index).padStart(2, "0");
 
@@ -37,39 +45,51 @@ export function ChapterListItem({ chapter, onPress }: ChapterListItemProps) {
         status: isDone ? t("bookDetail.chapterRow.done") : t("bookDetail.chapterRow.notDone"),
       })}
     >
-      <Text style={[monoType.chapterIndex, styles.index, { color: theme.text.secondary }]}>
-        {indexLabel}
-        {isDone ? " ✓" : ""}
-      </Text>
+      <View style={[styles.index, isDone ? styles.indexDone : null]}>
+        {isDone ? (
+          <Ionicons name="checkmark" size={16} color={detailColors.amberInk} />
+        ) : (
+          <Text style={[homeType.statLabel, { color: detailColors.amberInk }]}>{indexLabel}</Text>
+        )}
+      </View>
       <Text
         style={[
-          type.chapterRowTitle,
+          detailType.statLabel,
           styles.title,
-          { color: isDone ? theme.text.secondary : theme.text.primary },
+          { color: isDone ? detailColors.muted : detailColors.title },
         ]}
         numberOfLines={1}
       >
         {chapter.title}
       </Text>
-      <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
+      <Text style={[homeType.cardSub, { color: detailColors.muted }]}>
         {t("bookDetail.chapterRow.duration", { minutes: chapter.estimatedMinutes ?? 0 })}
       </Text>
     </Pressable>
   );
 }
 
+const INDEX_SIZE = 34;
+
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
-    alignItems: "baseline",
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    minHeight: 44,
+    alignItems: "center",
+    gap: homeSpace.md,
+    paddingHorizontal: detailMetrics.gutter,
+    paddingVertical: homeSpace.md,
+    minHeight: homeMetrics.rowIcon + homeSpace.lg,
   },
   index: {
-    width: spacing.ml,
-    flexShrink: 0,
+    width: INDEX_SIZE,
+    height: INDEX_SIZE,
+    borderRadius: INDEX_SIZE / 2,
+    backgroundColor: homeColors.peach,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  indexDone: {
+    backgroundColor: detailColors.amber,
   },
   title: {
     flex: 1,

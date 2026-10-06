@@ -1,14 +1,13 @@
 import { Fragment } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { paywallMetrics, paywallType, radius, spacing } from "@/theme";
-import { levelAccent, onLevelAccent } from "@/theme/tokens/colors";
+import { paywallMetrics, paywallType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UiIcon } from "@/components/ui";
 
-type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
+import type { UiIconName } from "@/components/ui";
 
 /**
  * Premium'un ne KATTIĞI — neyi kilitlediği değil.
@@ -42,19 +41,22 @@ type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
  * referanstan; burada renk bir SINIFLAMA değil, satırları birbirinden
  * ayıran bir işaret -- o yüzden altı madde altı farklı renk.
  */
-const BENEFITS: { icon: IoniconName; key: string; tint: string }[] = [
-  { icon: "headset", key: "studioAudio", tint: levelAccent.C1 },
+const BENEFITS: { icon: UiIconName; key: string }[] = [
+  { icon: "headphones", key: "studioAudio" },
   // Ücretsiz katmanda günlük kelime çevirisi sınırı var (migration 038);
   // bu madde o sınırın kalkmasını anlatıyor ve paywall'ın en sık
   // tetiklendiği yer de orası.
-  { icon: "flash", key: "unlimitedLookups", tint: levelAccent.B2 },
-  { icon: "sparkles", key: "aiSentences", tint: levelAccent.B1 },
-  { icon: "bookmarks", key: "unlimitedWords", tint: levelAccent.A1 },
+  { icon: "bolt", key: "unlimitedLookups" },
+  { icon: "sparkle", key: "aiSentences" },
+  { icon: "bookmark", key: "unlimitedWords" },
   // 1.0.6: kapısı consume_smart_practice() (migration 049).
-  { icon: "school", key: "smartPractice", tint: levelAccent.A2 },
+  { icon: "bulb", key: "smartPractice" },
+  // 2026-10-05: kitap quizlerinin 2. ve 3. basamağı; kapısı RLS
+  // (migration 052, has_active_premium). 1. basamak ücretsiz.
+  { icon: "trophy", key: "bookQuizzes" },
   // 1.0.6: kapısı level_word_pack() (migration 050) -- ücretsizde 5 kelime.
-  { icon: "albums", key: "wordPacks", tint: levelAccent.B1 },
-  { icon: "language", key: "secondLanguagePair", tint: levelAccent.C2 },
+  { icon: "cards", key: "wordPacks" },
+  { icon: "globe", key: "secondLanguagePair" },
 ];
 
 interface PaywallBenefitsProps {
@@ -88,9 +90,7 @@ export function PaywallBenefits({
           ) : null}
 
           <View style={styles.row}>
-            <View style={[styles.iconTile, { backgroundColor: benefit.tint }]}>
-              <Ionicons name={benefit.icon} size={17} color={onLevelAccent} />
-            </View>
+            <UiIcon name={benefit.icon} size={paywallMetrics.benefitIcon} />
 
             <View style={styles.text}>
               <Text style={[paywallType.benefitTitle, { color: theme.text.primary }]}>
@@ -120,7 +120,7 @@ export function PaywallBenefits({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radius.lg,
+    borderRadius: paywallMetrics.cardRadius,
     overflow: "hidden",
   },
   divider: {
@@ -131,16 +131,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     // İkon başlığın ilk satırıyla hizalı; açıklama iki satıra taşarsa ikon
     // ortaya kaymıyor (referanstaki hizalama).
-    alignItems: "flex-start",
+    alignItems: "center",
     gap: spacing.sm,
     padding: spacing.md,
-  },
-  iconTile: {
-    width: paywallMetrics.benefitIcon,
-    height: paywallMetrics.benefitIcon,
-    borderRadius: radius.sm,
-    alignItems: "center",
-    justifyContent: "center",
   },
   text: {
     flex: 1,

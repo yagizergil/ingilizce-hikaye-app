@@ -1,0 +1,65 @@
+{
+  "books": {
+    "w": 339,
+    "h": 464,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  },
+  "crown": {
+    "w": 397,
+    "h": 592,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  },
+  "home": {
+    "w": 464,
+    "h": 384,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  },
+  "loading": {
+    "w": 338,
+    "h": 464,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  },
+  "party": {
+    "w": 592,
+    "h": 575,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  },
+  "profile": {
+    "w": 430,
+    "h": 464,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  },
+  "quiz": {
+    "w": 298,
+    "h": 464,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  },
+  "search": {
+    "w": 339,
+    "h": 464,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  },
+  "words": {
+    "w": 464,
+    "h": 416,
+    "cols": 8,
+    "rows": 6,
+    "frames": 48
+  }
+}

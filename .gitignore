@@ -55,3 +55,8 @@ pipeline/gcloud-tts.json
 docs/reference/*.jpeg
 docs/reference/*.jpg
 docs/reference/*.png
+
+# Logo adaylari ve degistirilen varliklarin yedekleri (yerelde kalir)
+assets/brand/candidates/
+*.prev.png
+*.prev.jpg

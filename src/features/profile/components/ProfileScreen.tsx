@@ -1,30 +1,23 @@
 import { useCallback, useEffect, useRef } from "react";
-import { Alert, ScrollView, StyleSheet } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
 
-import { spacing } from "@/theme";
-import { levelAccent } from "@/theme/tokens/colors";
+import { detailType, homeColors, homeMetrics, homeSpace, homeType, mascotSize } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { env } from "@/lib/env";
-import {
-  Card,
-  LoadingState,
-  ErrorState,
-  Hairline,
-  SectionHeader,
-  ScreenHeader,
-} from "@/components/ui";
+import { ErrorState, Hairline, MascotAnim, SkyHeader } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 import { useVocabularyQuery } from "@/features/vocabulary";
 import { ReaderSettingsSheet, useReaderSettings } from "@/features/reader";
 import { useOnboardingStatusQuery } from "@/features/onboarding";
 import { ReminderSettingsRow } from "@/features/reminders";
+import { SoundEffectsRow } from "@/features/profile/components/SoundEffectsRow";
 import { useActiveLanguagePairQuery } from "@/features/languagePair";
 import { getLanguage } from "@/lib/languages";
 import { openWriteReviewPage } from "@/lib/storeReview";
@@ -34,8 +27,11 @@ import { useProfileAuthStatus } from "@/features/profile/api/useProfileAuthStatu
 import { useProfileStatsQuery } from "@/features/profile/api/useProfileStatsQuery";
 import { useSubscriptionStatusQuery } from "@/features/profile/api/useSubscriptionStatusQuery";
 import { ProfileHero } from "@/features/profile/components/ProfileHero";
+import { ProfilePremiumCard } from "@/features/profile/components/ProfilePremiumCard";
+import { ProfileStatTiles } from "@/features/profile/components/ProfileStatTiles";
 import { ProfileAccountRow } from "@/features/profile/components/ProfileAccountRow";
 import { ProfileFooter } from "@/features/profile/components/ProfileFooter";
+import { useDevToolsUnlock } from "@/features/profile/hooks/useDevToolsUnlock";
 
 /**
  * Profil ekranı.
@@ -63,7 +59,8 @@ import { ProfileFooter } from "@/features/profile/components/ProfileFooter";
  */
 export function ProfileScreen() {
   const { t, i18n } = useTranslation();
-  const { theme, themeName } = useTheme();
+  const { theme } = useTheme();
+  const palette = useHomePalette();
   /** Yazı boyutu ve tema satırlarının açtığı sheet -- okuma ekranındakiyle
    * AYNI bileşen (gerekçe satırların yanındaki notta). */
   const settingsSheetRef = useRef<BottomSheetModal>(null);
@@ -91,6 +88,12 @@ export function ProfileScreen() {
     trackEvent("profile_delete_account_opened");
     router.push("/delete-account");
   }, []);
+
+  // Geliştirici araçları üretimde gizli; sürüm yazısına 7 kez dokununca açılıyor.
+  const { unlocked: devToolsUnlocked, registerTap: registerVersionTap } = useDevToolsUnlock();
+  const handleVersionPress = useCallback(() => {
+    if (registerVersionTap()) Alert.alert(t("profile.account.devUnlocked"));
+  }, [registerVersionTap, t]);
 
   /**
    * GELİŞTİRİCİ ARACI: akışı SIFIRDAN, hiç hesap yokmuş gibi başlatır.
@@ -185,26 +188,32 @@ export function ProfileScreen() {
 
   const stats = statsQuery.data;
 
-  const isLoading =
-    statsQuery.isLoading || vocabularyQuery.isLoading || subscriptionQuery.isLoading;
-  const isError = statsQuery.isError || vocabularyQuery.isError || subscriptionQuery.isError;
+  /**
+   * EKRAN YÜKLEME BEKLEMİYOR (2026-10-05, kullanıcı bulgusu: "profile
+   * tıklayınca 'profil yükleniyor' diyor"). Eskiden üç sorgu bitene kadar
+   * bütün ekran bir yükleniyor durumuydu; oysa kimlik ve ayar satırlarının
+   * hiçbiri o sorgulara bağlı değil. Şimdi ekran anında çiziliyor, yalnızca
+   * sayılar gelene kadar "–" gösteriyor; sayılar alınamazsa karoların
+   * yerinde küçük bir yeniden dene kartı çıkıyor.
+   */
+  const statsError = statsQuery.isError;
 
   const languageCode = i18n.language.startsWith("tr") ? "tr" : "en";
   const subscriptionTier = subscriptionQuery.data ?? "free";
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <ScreenHeader title={t("profile.title")} />
-
-      {isLoading ? (
-        <LoadingState message={t("profile.loading")} />
-      ) : isError || !stats ? (
-        <ErrorState message={t("profile.error")} onRetry={handleRetry} />
-      ) : (
+    <View style={[styles.container, { backgroundColor: palette.page }]}>
+      {
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
+          <SkyHeader
+            title={t("tabs.profile")}
+            subtitle={t("profile.subtitle")}
+            extraBottom={homeMetrics.profileSkyExtra}
+            art={<MascotAnim name="profile" width={mascotSize.header} />}
+          />
           <ProfileHero
             displayName={displayName}
             email={email}
@@ -213,59 +222,56 @@ export function ProfileScreen() {
             memberSince={memberSince}
           />
 
-          {/* İSTATİSTİKLER ARTIK AYRI BİR EKRAN (bkz. StatisticsScreen).
-              Seri kartı, haftalık grafik ve dört sayı burada, ayarların en
-              üstünde duruyordu; "dili değiştir" için gelen kullanıcı
-              aradığı satıra ulaşmadan önce üç blok istatistik geçiyordu.
-              Şimdi ayarlarda tek satır, içerik kendi sayfasında. */}
-          <SectionHeader title={t("profile.stats.sectionTitle")} style={styles.sectionHeader} />
-
-          <Card style={styles.rows} bordered>
-            <ProfileAccountRow
-              icon="stats-chart"
-              iconColor={levelAccent.A2}
-              label={t("profile.stats.screenTitle")}
-              value={t("profile.stats.rowValue", {
-                minutes: stats.totalMinutes,
-                streak: stats.currentStreak,
-              })}
-              onPress={handleOpenStatistics}
+          {statsError ? (
+            <ErrorState message={t("profile.error")} onRetry={handleRetry} />
+          ) : (
+            <ProfileStatTiles
+              streak={stats?.currentStreak ?? null}
+              totalMinutes={stats?.totalMinutes ?? null}
+              completedBooks={stats?.completedBookCount ?? null}
             />
-          </Card>
+          )}
 
-          <SectionHeader title={t("profile.account.sectionTitle")} style={styles.sectionHeader} />
+          {/* Abonelik durumu bilinmeden kart çizilmiyor: premium kullanıcıya
+              bir an "Premium'a geç" göstermek yanlış olurdu. */}
+          {subscriptionQuery.data ? (
+            <ProfilePremiumCard
+              isPremium={subscriptionTier !== "free"}
+              onPress={handleOpenPaywall}
+            />
+          ) : null}
 
-          <Card style={styles.rows} bordered>
+          <Text style={[homeType.sectionTitle, styles.sectionHeader, { color: palette.ink }]}>
+            {t("profile.sections.learning")}
+          </Text>
+          <View style={[styles.rows, { backgroundColor: palette.card }]}>
             <ProfileAccountRow
-              icon="star"
-              iconColor={levelAccent.B1}
-              label={t("profile.account.subscription")}
-              value={t(
-                subscriptionTier === "free"
-                  ? "profile.account.subscriptionFree"
-                  : "profile.account.subscriptionPremium",
-              )}
-              onPress={subscriptionTier === "free" ? handleOpenPaywall : undefined}
+              icon="chart"
+              label={t("profile.stats.screenTitle")}
+              value={
+                stats
+                  ? t("profile.stats.rowValue", {
+                      minutes: stats.totalMinutes,
+                      streak: stats.currentStreak,
+                    })
+                  : undefined
+              }
+              onPress={handleOpenStatistics}
             />
             <Hairline />
             <ReminderSettingsRow />
             <Hairline />
-            {/*
-              DENETİM BULGUSU (2026-09-19, kullanıcı bildirimi): bu iki
-              satırın `onPress`i HİÇ YOKTU. Yani ayarlarda yazı boyutu ve
-              tema yazıyordu, güncel değeri de gösteriyordu, ama dokunmak
-              hiçbir şey yapmıyordu -- kullanıcı ikisini de buradan
-              değiştiremiyordu. Değerler zaten global store'larda
-              (`useReaderSettings`, `useTheme`), yani ayar VARDI; ona
-              ulaşmanın tek yolu okuma ekranının içindeki sheet'ti.
+            <SoundEffectsRow />
+          </View>
 
-              Yeni bir ayar ekranı YAZILMADI: aynı sheet açılıyor. İkinci
-              bir kopya yazmak, iki kontrolün zamanla ayrışması demekti --
-              bu projede bugün tam da o sınıftan birkaç hata düzeltildi.
-            */}
+          <Text style={[homeType.sectionTitle, styles.sectionHeader, { color: palette.ink }]}>
+            {t("profile.sections.reading")}
+          </Text>
+          <View style={[styles.rows, { backgroundColor: palette.card }]}>
+            {/* Yazı boyutu ve tema okuma ekranındaki sheet'in AYNISINI açar;
+                ikinci bir ayar kopyası ayrışırdı. */}
             <ProfileAccountRow
-              icon="text"
-              iconColor={levelAccent.A1}
+              icon="textsize"
               label={t("profile.account.fontSize")}
               value={t("profile.account.fontSizeValue", {
                 percent: Math.round(fontScalePercent * 100),
@@ -274,21 +280,11 @@ export function ProfileScreen() {
             />
             <Hairline />
             <ProfileAccountRow
-              icon="moon"
-              iconColor={levelAccent.C2}
-              label={t("profile.account.theme")}
-              value={t(`reader.settings.themeOptions.${themeName}`)}
-              onPress={() => settingsSheetRef.current?.present()}
-            />
-            <Hairline />
-            <ProfileAccountRow
               icon="globe"
-              iconColor={levelAccent.A1}
               label={t("profile.account.language")}
               value={
                 languagePairQuery.data
                   ? // Ok YÖNÜ de çeviriden geliyor: Arapça'da "←" olmalı.
-                    // Koda gömülü "→" Arapça arayüzde yanlış yönü gösteriyordu.
                     t("languagePair.pairArrow", {
                       from:
                         getLanguage(languagePairQuery.data.nativeLanguage)?.nativeName ??
@@ -301,41 +297,69 @@ export function ProfileScreen() {
               }
               onPress={() => router.push("/language-settings")}
             />
-            <Hairline />
+          </View>
+
+          <Text style={[homeType.sectionTitle, styles.sectionHeader, { color: palette.ink }]}>
+            {t("profile.account.sectionTitle")}
+          </Text>
+          <View style={[styles.rows, { backgroundColor: palette.card }]}>
             <ProfileAccountRow
-              icon="star-outline"
-              iconColor={levelAccent.B2}
+              icon="trophy"
               label={t("profile.account.rateUs")}
               onPress={handleRateUs}
             />
-            <Hairline />
+          </View>
 
-            <ProfileAccountRow
-              label={t("profile.account.deleteAccount")}
-              onPress={handleDeleteAccount}
-              destructive
-            />
-          </Card>
+          {/* İkonlu satırların arasında ikonsuz bir satır hizasız duruyordu;
+              yıkıcı eylem kartın dışında, ortalı bir metin düğmesi. */}
+          <Pressable
+            onPress={handleDeleteAccount}
+            accessibilityRole="button"
+            hitSlop={homeSpace.sm}
+            style={({ pressed }) => [styles.deleteButton, pressed ? styles.pressed : null]}
+          >
+            <Text style={[detailType.statLabel, { color: theme.danger }]}>
+              {t("profile.account.deleteAccount")}
+            </Text>
+          </Pressable>
 
-          {/* GELİŞTİRİCİ ARACI -- yalnızca geliştirme derlemesinde.
-              `__DEV__` üretim paketinde `false` olduğu için bu blok
-              Metro tarafından tamamen elenir; App Store'a giden ikilide
-              ne düğme ne de çağırdığı kod bulunur. */}
-          {__DEV__ ? (
-            <Card style={styles.rows} bordered>
+          {/* GELİŞTİRİCİ ARAÇLARI. Önizleme satırı geliştirme derlemesinde HER
+              ZAMAN, üretim/TestFlight'ta ise yalnızca sürüm yazısına 7 kez
+              dokunulunca (kalıcı) görünür. Hesabı silen "onboarding'i
+              baştan oynat" aracı yalnızca `__DEV__` altında: `__DEV__`
+              üretim paketinde `false` olduğu için Metro o kodu tamamen
+              eler; App Store'a giden ikilide o düğme ve çağırdığı kod yok. */}
+          {__DEV__ || devToolsUnlocked ? (
+            <View style={[styles.rows, { backgroundColor: palette.card }]}>
               <ProfileAccountRow
-                label={t("profile.account.devReplayOnboarding")}
-                onPress={handleReplayOnboarding}
+                label={t("profile.account.devSplashPreview")}
+                onPress={() => router.push("/dev-splash")}
               />
-            </Card>
+              <Hairline />
+              <ProfileAccountRow
+                label={t("profile.account.devOnboardingPreview")}
+                onPress={() => router.push("/dev-onboarding")}
+              />
+              {/* Hesabı SİLEN araç yalnızca geliştirme derlemesinde kalıyor:
+                  gizli açılışla erişilen bir üretim ikilisinde olmamalı. */}
+              {__DEV__ ? (
+                <>
+                  <Hairline />
+                  <ProfileAccountRow
+                    label={t("profile.account.devReplayOnboarding")}
+                    onPress={handleReplayOnboarding}
+                  />
+                </>
+              ) : null}
+            </View>
           ) : null}
 
-          <ProfileFooter />
+          <ProfileFooter onPress={handleVersionPress} />
         </ScrollView>
-      )}
+      }
 
-      <ReaderSettingsSheet ref={settingsSheetRef} />
-    </SafeAreaView>
+      <ReaderSettingsSheet ref={settingsSheetRef} showTheme={false} />
+    </View>
   );
 }
 
@@ -344,22 +368,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: spacing.screenBottom,
-  },
-  // Kimlik bloğunun altındaki iki kart aynı ritimde dursun.
-  stack: {
-    gap: spacing.sm,
-    marginTop: spacing.md,
+    paddingBottom: homeMetrics.tabBarHeight + homeMetrics.tabBarMargin * 2,
   },
   sectionHeader: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sectionGap,
-    paddingBottom: spacing.sm,
+    paddingHorizontal: homeMetrics.gutter + homeSpace.xs,
+    paddingTop: homeMetrics.sectionTop,
+    paddingBottom: homeSpace.md,
+  },
+  deleteButton: {
+    alignSelf: "center",
+    marginTop: homeSpace.lg,
+    padding: homeSpace.md,
+  },
+  pressed: {
+    opacity: 0.6,
   },
   rows: {
-    // Card kendi iç boşluğunu veriyor; ekran kenarından uzaklık burada.
-    marginHorizontal: spacing.lg,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.md,
+    marginHorizontal: homeMetrics.gutter,
+    paddingVertical: homeSpace.xs,
+    paddingHorizontal: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
 });

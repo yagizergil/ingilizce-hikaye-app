@@ -4,8 +4,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import * as Speech from "expo-speech";
 
-import { monoType, motion, radius, spacing, type } from "@/theme";
+import { detailType, homeColors, homeMetrics, homeSpace, homeType, motion } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { useHomePalette } from "@/features/home/useHomePalette";
 import { useTargetTtsLocale } from "@/features/languagePair";
 
 import type { CustomDeckCard } from "@/features/vocabulary/types";
@@ -28,26 +29,29 @@ interface DeckCardRowProps {
 export function DeckCardRow({ card, onEdit, onDelete }: DeckCardRowProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
+  const palette = useHomePalette();
   // Deste kelimeleri öğrenilen dilde; eskiden her zaman "en-US" okunuyordu.
   const ttsLocale = useTargetTtsLocale();
 
   return (
-    <View style={[styles.row, { borderBottomColor: theme.border.hairline }]}>
+    <View style={[styles.row, { backgroundColor: palette.card }]}>
       <Pressable
         onPress={() => Speech.speak(card.surface, { language: ttsLocale })}
         accessibilityRole="button"
         accessibilityLabel={t("reader.wordSheet.pronounce")}
-        hitSlop={spacing.sm}
+        hitSlop={homeSpace.sm}
       >
-        <Ionicons name="volume-medium-outline" size={22} color={theme.text.secondary} />
+        <View style={styles.speaker}>
+          <Ionicons name="volume-medium" size={20} color={homeColors.muted} />
+        </View>
       </Pressable>
 
       <Pressable style={styles.textBlock} onPress={() => onEdit(card)} accessibilityRole="button">
-        <Text style={[type.bookTitleMd, { color: theme.text.primary }]} numberOfLines={1}>
+        <Text style={[detailType.sectionTitle, { color: palette.ink }]} numberOfLines={1}>
           {card.surface}
         </Text>
         <Text
-          style={[monoType.rowText, styles.meaning, { color: theme.text.secondary }]}
+          style={[homeType.cardSub, styles.meaning, { color: palette.muted }]}
           numberOfLines={1}
         >
           {card.meaning}
@@ -60,10 +64,10 @@ export function DeckCardRow({ card, onEdit, onDelete }: DeckCardRowProps) {
         accessibilityLabel={t("vocabulary.decks.card.removeAccessibilityLabel", {
           surface: card.surface,
         })}
-        hitSlop={spacing.sm}
+        hitSlop={homeSpace.sm}
         style={({ pressed }) => [
           styles.deleteButton,
-          { backgroundColor: theme.bg.surface },
+          { backgroundColor: homeColors.peach },
           pressed ? { opacity: motion.pressed.opacity } : null,
         ]}
       >
@@ -73,25 +77,41 @@ export function DeckCardRow({ card, onEdit, onDelete }: DeckCardRowProps) {
   );
 }
 
+const ICON_BUTTON = 40;
+
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.md,
-    minHeight: 44,
-    paddingVertical: spacing.sm,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: homeSpace.md,
+    minHeight: homeMetrics.rowIcon + homeSpace.xl,
+    paddingVertical: homeSpace.md,
+    paddingHorizontal: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  speaker: {
+    width: ICON_BUTTON,
+    height: ICON_BUTTON,
+    borderRadius: ICON_BUTTON / 2,
+    backgroundColor: homeColors.peach,
+    alignItems: "center",
+    justifyContent: "center",
   },
   textBlock: {
     flex: 1,
   },
   meaning: {
-    marginTop: spacing.xxs,
+    marginTop: homeSpace.xs,
   },
   deleteButton: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.sm,
+    width: ICON_BUTTON,
+    height: ICON_BUTTON,
+    borderRadius: ICON_BUTTON / 2,
     alignItems: "center",
     justifyContent: "center",
   },

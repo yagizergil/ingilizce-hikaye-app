@@ -1,0 +1,49 @@
+id: kai-repair-files-b1
+character: kai
+level: B1
+season: 1
+continues: null
+genres: [drama, mystery]
+themes: [ethics, privacy, family]
+format: >
+  Episodes of 2000-3000 words, 3-5 chapters. A customer brings a broken
+  device; while repairing it Kai sees a small part of their life and faces a
+  moral choice. Ends with a decision and its consequence.
+titles:
+  tr: "Tamirci Kai'nin Dosyaları"
+  en: "The Repair Shop Files"
+  de: "Die Akten der Reparaturwerkstatt"
+  fr: "Les dossiers de l'atelier"
+  it: "I casi dell'officina di Kai"
+  es: "Los casos del taller de Kai"
+  ru: "Дела мастерской Кая"
+  ar: "ملفات ورشة كاي"
+  zh: "凯的维修铺档案"
+  ja: "カイの修理店ファイル"
+descriptions:
+  tr: "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+  en: "Every broken phone that comes into Kai's tiny shop opens a small door into someone's life."
+  de: "Jedes kaputte Handy in Kais kleiner Werkstatt öffnet eine Tür in das Leben eines Menschen."
+  fr: "Chaque téléphone cassé qui arrive chez Kai ouvre une petite porte sur une vie."
+  it: "Ogni telefono rotto nella piccola bottega di Kai apre una porta sulla vita di qualcuno."
+  es: "Cada teléfono roto que llega al taller de Kai abre una pequeña puerta a la vida de alguien."
+  ru: "Каждый сломанный телефон в мастерской Кая приоткрывает дверь в чью-то жизнь."
+  ar: "كل هاتف معطّل يصل إلى ورشة كاي يفتح بابًا صغيرًا على حياة أحدهم."
+  zh: "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+  ja: "カイの小さな店に届く壊れたスマホは、誰かの人生への小さな扉を開く。"
+next_hooks:
+  - A phone full of unsent messages to the same person.
+  - Mara Lind brings a phone that was clearly broken on purpose.
+episodes:
+  - index: 1
+    slug: kai-repair-files-b1-e01
+    title: The Voice Note
+    premise: >
+      A teenage boy brings his late grandmother's old phone and asks Kai to
+      recover one voice note. When Kai finds it, he also finds a second
+      message the family has never heard.
+    status: published
+  - index: 2
+    slug: kai-repair-files-b1-e02
+    premise: A phone full of unsent messages to the same person, all starting "I am sorry".
+    status: planned

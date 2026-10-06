@@ -201,11 +201,7 @@ export function trackEvent(name: string, params?: AnalyticsParams): void {
  * `analytics_events_params_size` kısıtı satır başına 4 KB'lık bir üst sınır
  * koyuyor.
  */
-export function trackError(
-  source: string,
-  error: unknown,
-  extra?: AnalyticsParams,
-): void {
+export function trackError(source: string, error: unknown, extra?: AnalyticsParams): void {
   const message = error instanceof Error ? error.message : String(error);
   const stack = error instanceof Error ? (error.stack ?? "") : "";
   trackEvent("client_error", {

@@ -2,11 +2,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import type { ComponentProps } from "react";
-
-import { motion, radius, spacing, type } from "@/theme";
+import { detailType, homeColors, homeSpace, homeType, motion } from "@/theme";
+import { UiIcon } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 import { useTheme } from "@/theme/useTheme";
 import { directionalIcon } from "@/lib/rtl";
+
+import type { UiIconName } from "@/components/ui";
 
 interface ProfileAccountRowProps {
   label: string;
@@ -15,8 +17,7 @@ interface ProfileAccountRowProps {
    * satır ikon taşımıyor ve daha alçak oluyor -- referansta da öyle:
    * ikonlu satır 50 pt, ikonsuz satır 43 pt.
    */
-  icon?: ComponentProps<typeof Ionicons>["name"];
-  iconColor?: string;
+  icon?: UiIconName;
   /** Info rows (profile.html `.row .k` / `.row .v`) show a value; action
    * rows (sign-out, delete-account) omit it and rely on `onPress`. */
   value?: string;
@@ -36,34 +37,30 @@ export function ProfileAccountRow({
   label,
   value,
   icon,
-  iconColor,
   onPress,
   destructive = false,
   accessibilityLabel,
 }: ProfileAccountRowProps) {
   const { theme } = useTheme();
-  const labelColor = destructive ? theme.danger : theme.text.primary;
+  const palette = useHomePalette();
+  const labelColor = destructive ? theme.danger : palette.ink;
 
   // 2026-09-07 tasarım revizyonu: dokunulabilir satırlar bilgi satırlarıyla
   // birebir aynı görünüyordu — "Abonelik" satırı paywall'u açıyor ama bunun
   // hiçbir işareti yoktu. Dokunulabilir satırlara bir chevron geliyor.
   const content = (
     <>
-      {icon ? (
-        <View style={[styles.iconTile, { backgroundColor: iconColor ?? theme.accent }]}>
-          <Ionicons name={icon} size={17} color={theme.text.onAccent} />
-        </View>
-      ) : null}
-      <Text style={[type.bookTitleMd, styles.label, { color: labelColor }]}>{label}</Text>
+      {icon ? <UiIcon name={icon} size={ICON_TILE} /> : null}
+      <Text style={[detailType.statLabel, styles.label, { color: labelColor }]}>{label}</Text>
       <View style={styles.right}>
         {value !== undefined ? (
-          <Text style={[type.bookTitleMd, { color: theme.text.secondary }]}>{value}</Text>
+          <Text style={[homeType.statLabel, { color: palette.muted }]}>{value}</Text>
         ) : null}
         {onPress && !destructive ? (
           <Ionicons
             name={directionalIcon("chevron-forward", "chevron-back")}
             size={18}
-            color={theme.text.secondary}
+            color={homeColors.muted}
           />
         ) : null}
       </View>
@@ -106,15 +103,15 @@ export function ProfileAccountRow({
  *   ikon karesi 67x67 px -> 28x28 pt, sol kenardan 38 px -> 16 pt
  *   satır metni ~17 pt kalın, değer aynı ölçüde ama ikincil renkte
  */
-const ROW_HEIGHT = 43;
-const ROW_HEIGHT_WITH_ICON = 50;
-const ICON_TILE = 28;
+const ROW_HEIGHT = 48;
+const ROW_HEIGHT_WITH_ICON = 60;
+const ICON_TILE = 40;
 
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.sm,
+    gap: homeSpace.md,
     minHeight: ROW_HEIGHT,
   },
   rowWithIcon: {
@@ -123,17 +120,10 @@ const styles = StyleSheet.create({
   label: {
     flex: 1,
   },
-  iconTile: {
-    width: ICON_TILE,
-    height: ICON_TILE,
-    borderRadius: radius.sm,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   right: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xs,
+    gap: homeSpace.xs,
   },
   touchable: {
     minHeight: ROW_HEIGHT,

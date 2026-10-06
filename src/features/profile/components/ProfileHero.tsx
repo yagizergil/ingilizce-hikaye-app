@@ -5,9 +5,16 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing, type } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
-import { UpperText } from "@/components/ui/UpperText";
+import {
+  detailColors,
+  detailMetrics,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+  quizType,
+} from "@/theme";
+import { useHomePalette } from "@/features/home/useHomePalette";
 import { useToast } from "@/components/ui";
 import { useUpdateDisplayNameMutation } from "@/features/profile/api/useUpdateDisplayNameMutation";
 
@@ -49,7 +56,7 @@ export function ProfileHero({
   memberSince,
 }: ProfileHeroProps) {
   const { t, i18n } = useTranslation();
-  const { theme } = useTheme();
+  const palette = useHomePalette();
   const { show: showToast } = useToast();
   const updateName = useUpdateDisplayNameMutation();
   const [editing, setEditing] = useState(false);
@@ -91,11 +98,9 @@ export function ProfileHero({
     : null;
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.deep }]}>
-      <View style={[styles.avatar, { backgroundColor: theme.accent }]}>
-        <Text style={[type.heroTitle, styles.initial, { color: theme.text.onAccent }]}>
-          {initial}
-        </Text>
+    <View style={[styles.container, { backgroundColor: palette.card }]}>
+      <View style={styles.avatar}>
+        <Text style={[quizType.question, styles.initial]}>{initial}</Text>
       </View>
 
       <View style={styles.identity}>
@@ -105,31 +110,27 @@ export function ProfileHero({
               value={draft}
               onChangeText={setDraft}
               placeholder={t("profile.hero.namePlaceholder")}
-              placeholderTextColor={theme.onDeep}
+              placeholderTextColor={homeColors.muted}
               maxLength={MAX_NAME_LENGTH}
               autoFocus
               returnKeyType="done"
               onSubmitEditing={saveName}
-              style={[
-                type.bookTitleLg,
-                styles.nameInput,
-                { color: theme.onDeep, borderBottomColor: theme.onDeep },
-              ]}
+              style={[quizType.question, styles.nameInput, { color: palette.ink }]}
             />
             <Pressable
               onPress={saveName}
               disabled={updateName.isPending}
               accessibilityRole="button"
               accessibilityLabel={t("profile.hero.saveName")}
-              hitSlop={spacing.sm}
+              hitSlop={homeSpace.sm}
             >
-              <Ionicons name="checkmark" size={22} color={theme.onDeep} />
+              <Ionicons name="checkmark" size={22} color={detailColors.green} />
             </Pressable>
           </View>
         ) : (
           <View style={styles.nameRow}>
             <Text
-              style={[type.bookTitleLg, styles.nameText, { color: theme.onDeep }]}
+              style={[quizType.question, styles.nameText, { color: palette.ink }]}
               numberOfLines={1}
             >
               {name}
@@ -138,21 +139,21 @@ export function ProfileHero({
               onPress={startEditing}
               accessibilityRole="button"
               accessibilityLabel={t("profile.hero.editName")}
-              hitSlop={spacing.sm}
+              hitSlop={homeSpace.sm}
             >
-              <Ionicons name="pencil" size={16} color={theme.onDeep} />
+              <Ionicons name="pencil" size={16} color={homeColors.muted} />
             </Pressable>
           </View>
         )}
 
         <View style={styles.meta}>
           {targetLevel ? (
-            <View style={[styles.levelChip, { borderColor: theme.onDeep }]}>
-              <UpperText style={[monoType.label, { color: theme.onDeep }]}>{targetLevel}</UpperText>
+            <View style={styles.levelChip}>
+              <Text style={[homeType.statLabel, styles.levelText]}>{targetLevel}</Text>
             </View>
           ) : null}
           <Text
-            style={[monoType.metaTight, styles.metaText, { color: theme.onDeep }]}
+            style={[homeType.statLabel, styles.metaText, { color: palette.muted }]}
             numberOfLines={1}
           >
             {/* İsmini giren kullanıcıya "misafir olarak okuyorsun" demek
@@ -165,39 +166,44 @@ export function ProfileHero({
   );
 }
 
-const AVATAR_SIZE = 60;
 const MAX_NAME_LENGTH = 40;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.md,
-    marginHorizontal: spacing.lg,
-    padding: spacing.md,
-    borderRadius: radius.lg,
+    gap: homeSpace.lg,
+    marginHorizontal: homeMetrics.gutter,
+    marginTop: -detailMetrics.profileOverlap,
+    padding: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 22,
+    elevation: 5,
   },
   avatar: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
+    width: detailMetrics.profileAvatar,
+    height: detailMetrics.profileAvatar,
+    borderRadius: detailMetrics.profileAvatar / 2,
+    backgroundColor: detailColors.amber,
     alignItems: "center",
     justifyContent: "center",
   },
   initial: {
-    // Baş harf rozetin tam ortasında dursun; yazı tipinin kendi üst/alt
-    // boşluğu (Android) merkezi kaydırıyor.
+    color: detailColors.amberInk,
     textAlign: "center",
     includeFontPadding: false,
   },
   identity: {
     flex: 1,
-    gap: spacing.xxs,
+    gap: homeSpace.xs,
   },
   nameRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xs,
+    gap: homeSpace.sm,
   },
   nameText: {
     flexShrink: 1,
@@ -205,21 +211,26 @@ const styles = StyleSheet.create({
   nameInput: {
     flex: 1,
     borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: homeColors.muted,
   },
   meta: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xs,
+    gap: homeSpace.sm,
   },
   metaText: {
     flexShrink: 1,
-    // Koyu zemin üstünde ikincil bilgi: aynı renk, düşük opaklık.
-    opacity: 0.75,
   },
   levelChip: {
-    paddingHorizontal: spacing.xs,
-    paddingVertical: spacing.xxs,
-    borderRadius: radius.sm,
-    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: homeSpace.md,
+    height: detailMetrics.profileChip,
+    borderRadius: detailMetrics.profileChip / 2,
+    backgroundColor: detailColors.amber,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  levelText: {
+    color: detailColors.amberInk,
+    fontWeight: "700",
   },
 });

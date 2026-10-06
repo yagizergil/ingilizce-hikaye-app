@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { View, Text, Pressable, StyleSheet, Alert } from "react-native";
+import { View, Text, Pressable, ScrollView, StyleSheet, Alert } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
-import { spacing, radius, type, monoType } from "@/theme";
+import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { Button } from "@/components/ui";
+import { Button, SkyHeader } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 import { supabase } from "@/lib/supabase";
 import { env } from "@/lib/env";
+import { trackError } from "@/lib/analytics";
+import { reloadApp } from "@/lib/rtl";
 
 interface DeleteAccountScreenProps {
   onDeleted: () => void;
@@ -19,11 +22,14 @@ interface DeleteAccountScreenProps {
 export function DeleteAccountScreen({ onDeleted, onCancel }: DeleteAccountScreenProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
+  const palette = useHomePalette();
   const [confirmed, setConfirmed] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    let deleted = false;
     try {
       const { data } = await supabase.auth.getSession();
       const accessToken = data.session?.access_token;
@@ -34,44 +40,61 @@ export function DeleteAccountScreen({ onDeleted, onCancel }: DeleteAccountScreen
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!response.ok) throw new Error("delete failed");
+      deleted = true;
 
-      await supabase.auth.signOut();
-      onDeleted();
-    } catch {
-      Alert.alert(t("common.errorTitle"), t("account.delete.error"));
+      // DENETİM BULGUSU (2026-10-06): eskiden yalnızca sunucuya `signOut()`
+      // gidip köke dönülüyordu. Oturum kalmıyor, önbellekte silinen hesabın
+      // verisi (onboarding "bitti", premium, kitaplar) görünmeye devam
+      // ediyor ve her sorgu boş dönüyordu. Doğru sıra Profil'deki
+      // "baştan başla" ile aynı: yerel çıkış (hesap artık yok, sunucu
+      // çıkışı 403 verirdi) -> yeni anonim oturum -> önbelleği temizle ->
+      // uygulamayı yeniden yükle.
+      await supabase.auth.signOut({ scope: "local" });
+      const { error } = await supabase.auth.signInAnonymously();
+      if (error) throw error;
+      queryClient.clear();
+      const reloaded = await reloadApp();
+      if (!reloaded) onDeleted();
+    } catch (error) {
+      trackError("account.delete", error, { deleted });
+      if (deleted) {
+        // Hesap silindi; yalnızca sonraki adım düştü. "Silinemedi" demek
+        // yanlış olurdu -- köke dön, açılış yeni oturumu kendisi kurar.
+        queryClient.clear();
+        onDeleted();
+      } else {
+        Alert.alert(t("common.errorTitle"), t("account.delete.error"));
+      }
     } finally {
       setIsDeleting(false);
     }
   };
 
-  return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]}>
-      <View style={styles.content}>
-        <Text style={[type.screenTitle, styles.title, { color: theme.text.primary }]}>
-          {t("account.delete.title")}
-        </Text>
-        <Text style={[monoType.rowText, styles.body, { color: theme.text.secondary }]}>
-          {t("account.delete.body")}
-        </Text>
+  const items = ["item1", "item2", "item3", "item4"] as const;
 
-        <Text style={[monoType.rowText, styles.listTitle, { color: theme.text.primary }]}>
-          {t("account.delete.listTitle")}
-        </Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
-          {t("account.delete.item1")}
-        </Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
-          {t("account.delete.item2")}
-        </Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
-          {t("account.delete.item3")}
-        </Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
-          {t("account.delete.item4")}
-        </Text>
+  return (
+    <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
+      <SkyHeader title={t("account.delete.title")} onBack={onCancel} />
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={[styles.card, { backgroundColor: palette.card }]}>
+          <Text style={[homeType.cardSub, { color: palette.muted }]}>
+            {t("account.delete.body")}
+          </Text>
+          <Text style={[detailType.sectionTitle, { color: palette.ink }]}>
+            {t("account.delete.listTitle")}
+          </Text>
+          {items.map((item) => (
+            <View key={item} style={styles.itemRow}>
+              <Ionicons name="ellipse" size={8} color={theme.danger} />
+              <Text style={[detailType.statLabel, styles.itemText, { color: palette.ink }]}>
+                {t(`account.delete.${item}`)}
+              </Text>
+            </View>
+          ))}
+        </View>
 
         <Pressable
-          style={styles.checkboxRow}
+          style={[styles.card, styles.checkboxRow, { backgroundColor: palette.card }]}
           onPress={() => setConfirmed((prev) => !prev)}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: confirmed }}
@@ -80,83 +103,76 @@ export function DeleteAccountScreen({ onDeleted, onCancel }: DeleteAccountScreen
             style={[
               styles.checkbox,
               {
-                borderColor: confirmed ? theme.danger : theme.border.strong,
+                borderColor: confirmed ? theme.danger : homeColors.muted,
                 backgroundColor: confirmed ? theme.danger : "transparent",
               },
             ]}
           >
             {/* Yalnızca boyalı kare "işaretli" gibi okunmuyordu (kullanıcı
                 bulgusu, 2026-09-25) -- tik işareti görünür onay. */}
-            {confirmed ? <Ionicons name="checkmark" size={16} color={theme.text.onAccent} /> : null}
+            {confirmed ? <Ionicons name="checkmark" size={16} color={detailColors.circle} /> : null}
           </View>
-          <Text style={[monoType.metaTight, styles.checkboxLabel, { color: theme.text.primary }]}>
+          <Text style={[detailType.statLabel, styles.checkboxLabel, { color: palette.ink }]}>
             {t("account.delete.confirmLabel")}
           </Text>
         </Pressable>
 
-        <View style={styles.deleteButtonWrap}>
-          <Button
-            label={t("account.delete.confirmButton")}
-            onPress={() => void handleDelete()}
-            disabled={!confirmed || isDeleting}
-            loading={isDeleting}
-            variant="destructive"
-            fullWidth
-          />
-        </View>
-
-        <Pressable style={styles.cancelButton} onPress={onCancel}>
-          <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
-            {t("common.back")}
-          </Text>
-        </Pressable>
-      </View>
-    </SafeAreaView>
+        <Button
+          label={t("account.delete.confirmButton")}
+          onPress={() => void handleDelete()}
+          disabled={!confirmed || isDeleting}
+          loading={isDeleting}
+          variant="destructive"
+          fullWidth
+        />
+        <Button label={t("common.back")} onPress={onCancel} variant="secondary" fullWidth />
+      </ScrollView>
+    </View>
   );
 }
+
+const CHECKBOX = 26;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   content: {
+    paddingHorizontal: homeMetrics.gutter,
+    paddingBottom: homeSpace.xl * 2,
+    gap: homeSpace.lg,
+  },
+  card: {
+    gap: homeSpace.md,
+    padding: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
+  },
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: homeSpace.md,
+  },
+  itemText: {
     flex: 1,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    gap: spacing.xs,
-  },
-  title: {
-    marginBottom: spacing.sm,
-  },
-  body: {
-    marginBottom: spacing.md,
-  },
-  listTitle: {
-    fontWeight: "600",
-    marginBottom: spacing.xs,
   },
   checkboxRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.sm,
-    marginTop: spacing.lg,
   },
   checkbox: {
-    width: 22,
-    height: 22,
-    borderRadius: radius.sm,
-    borderWidth: StyleSheet.hairlineWidth * 2,
+    width: CHECKBOX,
+    height: CHECKBOX,
+    borderRadius: CHECKBOX / 2,
+    borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
   },
   checkboxLabel: {
     flex: 1,
-  },
-  deleteButtonWrap: {
-    marginTop: spacing.lg,
-  },
-  cancelButton: {
-    marginTop: spacing.sm,
-    alignItems: "center",
   },
 });

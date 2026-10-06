@@ -1,12 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { router, useFocusEffect } from "expo-router";
 
-import { monoType, spacing } from "@/theme";
+import {
+  detailColors,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+  spacing,
+  mascotSize,
+} from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import {
@@ -15,9 +22,10 @@ import {
   EmptyState,
   SegmentedControl,
   useToast,
-  ScreenHeader,
+  MascotAnim,
+  SkyHeader,
+  UiIcon,
 } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
 import { useRemoveSavedWordMutation } from "@/features/reader";
 import { useSubscriptionQuery } from "@/features/paywall";
 import {
@@ -44,7 +52,7 @@ const FILTER_TABS: VocabularyFilter[] = ["all", "due", "known"];
 type MainTab = "words" | "decks";
 
 function RowGap() {
-  return <View style={{ height: spacing.xs }} />;
+  return <View style={{ height: homeSpace.md }} />;
 }
 
 export default function VocabularyScreen() {
@@ -226,8 +234,13 @@ export default function VocabularyScreen() {
   ];
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <ScreenHeader title={t("vocabulary.title")} />
+    <View style={[styles.container, { backgroundColor: theme.bg.surface }]}>
+      <SkyHeader
+        title={t("quiz.home.words.title")}
+        subtitle={t("quiz.home.words.description")}
+        onBack={() => router.back()}
+        art={<MascotAnim name="words" width={mascotSize.header} />}
+      />
 
       <View style={styles.filters}>
         <SegmentedControl
@@ -253,17 +266,14 @@ export default function VocabularyScreen() {
           </View>
 
           {showWordListStrip && subscription.data ? (
-            <Pressable
-              style={[styles.strip, { borderColor: theme.border.hairline }]}
-              onPress={handleOpenPaywall}
-              accessibilityRole="button"
-            >
-              <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+            <Pressable style={styles.strip} onPress={handleOpenPaywall} accessibilityRole="button">
+              <UiIcon name="crown" size={homeMetrics.rowIcon} />
+              <Text style={[homeType.statLabel, styles.stripText]}>
                 {t("paywall.wordListFull", {
                   count: subscription.data.savedWordCount,
                   limit: subscription.data.savedWordLimit,
                 })}
-              </UpperText>
+              </Text>
             </Pressable>
           ) : null}
 
@@ -307,7 +317,7 @@ export default function VocabularyScreen() {
           )}
         </>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -316,11 +326,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   filters: {
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: homeMetrics.gutter,
     paddingBottom: spacing.md,
   },
   listContent: {
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: homeMetrics.gutter,
     paddingBottom: spacing.screenBottom,
   },
   reviewCta: {
@@ -332,12 +342,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   strip: {
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.md,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 6,
+    flexDirection: "row",
     alignItems: "center",
+    gap: homeSpace.md,
+    marginHorizontal: homeMetrics.gutter,
+    marginTop: homeSpace.md,
+    padding: homeSpace.md,
+    borderRadius: homeMetrics.cardRadius,
+    backgroundColor: homeColors.peach,
+  },
+  stripText: {
+    flex: 1,
+    color: detailColors.amberInk,
   },
 });

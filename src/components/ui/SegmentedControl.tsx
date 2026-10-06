@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { monoType, radius, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import { detailColors, detailType, homeColors, radius, spacing } from "@/theme";
 
 export interface SegmentOption<T extends string> {
   value: T;
@@ -28,16 +27,14 @@ export function SegmentedControl<T extends string>({
   value,
   onChange,
 }: SegmentedControlProps<T>) {
-  const { theme } = useTheme();
-
   return (
-    <View style={[styles.track, { backgroundColor: theme.bg.surface }]}>
+    <View style={styles.track}>
       {options.map((option) => {
         const selected = option.value === value;
         return (
           <Pressable
             key={option.value}
-            style={[styles.segment, selected && { backgroundColor: theme.secondaryMuted }]}
+            style={[styles.segment, selected && styles.segmentSelected]}
             onPress={() => onChange(option.value)}
             accessibilityRole="tab"
             accessibilityState={{ selected }}
@@ -45,9 +42,9 @@ export function SegmentedControl<T extends string>({
           >
             <Text
               style={[
-                monoType.rowText,
+                detailType.statLabel,
                 styles.label,
-                { color: selected ? theme.text.primary : theme.text.secondary },
+                { color: selected ? detailColors.amberInk : homeColors.mutedStrong },
               ]}
               numberOfLines={1}
             >
@@ -63,6 +60,7 @@ export function SegmentedControl<T extends string>({
 const styles = StyleSheet.create({
   track: {
     flexDirection: "row",
+    backgroundColor: homeColors.peach,
     borderRadius: radius.full,
     padding: spacing.xxs,
   },
@@ -72,6 +70,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: spacing.sm,
     borderRadius: radius.full,
+  },
+  segmentSelected: {
+    backgroundColor: detailColors.amber,
   },
   label: {
     fontWeight: "700",

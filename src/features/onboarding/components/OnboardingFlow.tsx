@@ -28,7 +28,8 @@ import { OnboardingQuizStep } from "@/features/onboarding/components/OnboardingQ
 import { OnboardingSplashScreen } from "@/features/onboarding/components/OnboardingSplashScreen";
 import { OnboardingSuccessStep } from "@/features/onboarding/components/OnboardingSuccessStep";
 import { OnboardingTrialTimeline } from "@/features/onboarding/components/OnboardingTrialTimeline";
-import { OnboardingWelcomeScreen } from "@/features/onboarding/components/OnboardingWelcomeScreen";
+import { OnboardingIntroCarousel } from "@/features/onboarding/components/OnboardingIntroCarousel";
+import { OnboardingMeetMascot } from "@/features/onboarding/components/OnboardingMeetMascot";
 import { OnboardingWordsCelebrationStep } from "@/features/onboarding/components/OnboardingWordsCelebrationStep";
 
 import type { OnboardingWord } from "@/features/onboarding/components/OnboardingFirstReadStep";
@@ -51,6 +52,7 @@ import type { CefrLevel } from "@/features/onboarding/levelEstimate";
 type Step =
   | "splash"
   | "welcome"
+  | "mascot"
   | "native"
   | "target"
   | "level"
@@ -313,7 +315,8 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const handlePaywallClosed = useCallback(() => setStep("success"), []);
 
   if (step === "splash") return <OnboardingSplashScreen onDone={() => setStep("welcome")} />;
-  if (step === "welcome") return <OnboardingWelcomeScreen onStart={() => setStep("native")} />;
+  if (step === "welcome") return <OnboardingIntroCarousel onDone={() => setStep("mascot")} />;
+  if (step === "mascot") return <OnboardingMeetMascot onContinue={() => setStep("native")} />;
 
   if (step === "native") {
     return (

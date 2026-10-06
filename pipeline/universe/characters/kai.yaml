@@ -1,0 +1,27 @@
+id: kai
+name: Kai Doren
+names: { tr: Kai, en: Kai, de: Kai, fr: Kai, it: Kai, es: Kai, ru: Кай, ar: كاي, zh: 凯, ja: カイ }
+age: 25
+role: Repairs phones and old electronics in a tiny shop in the Old Market.
+home: Shares a flat with his older sister Lina, a nurse who works night shifts.
+personality:
+  - quiet, curious, very patient with broken things
+  - good at noticing what people do not say
+  - has a strong sense of right and wrong, but hates conflict
+wants: to save enough money to open a bigger workshop and teach repair to young people
+flaw: gets too involved in his customers' private lives
+voice: few words, dry humour, thinks before he speaks
+core_rule: >
+  Kai sees a small part of people's lives through the devices he repairs
+  (a photo, a message, a voice note). Every episode turns on a choice: is it
+  right to use what he has seen to help, or must he stay out of it?
+recurring_cast:
+  - Lina Doren, his sister, practical and funny
+  - Mr Okafor, the old shop owner next door who sells radios and gives advice
+  - Mara Lind (see mara.yaml), a journalist who brings him her broken phones
+setting: old-market
+visual:
+  appearance: mid twenties, short black hair, round glasses, light stubble
+  clothes: grey hoodie with a small screwdriver in the pocket, dark jeans
+  props: phone with a cracked screen, tiny screwdrivers, desk lamp
+  palette: cool greys, electric blue, warm lamp orange

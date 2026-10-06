@@ -62,6 +62,11 @@ export function useSetLanguagePairMutation() {
          */
         void queryClient.invalidateQueries({ queryKey: languagePairQueryKeys.all });
         void queryClient.invalidateQueries({ queryKey: ["profile"] });
+        // Kelime defteri ve tekrar kartları çevirileri o anki çiftin ana
+        // dilinden çekiyor ama anahtarlarında dil yok: çift değişince eski
+        // dilin karşılıkları görünmeye devam ediyordu (2026-10-06).
+        void queryClient.invalidateQueries({ queryKey: ["vocabulary"] });
+        void queryClient.invalidateQueries({ queryKey: ["srs"] });
       }
     },
   });

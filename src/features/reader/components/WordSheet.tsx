@@ -1,25 +1,27 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Animated,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import * as Speech from "expo-speech";
+import { Image } from "expo-image";
 
-import { motion, radius, spacing, monoType, readingType, type } from "@/theme";
+import {
+  detailColors,
+  detailMetrics,
+  detailType,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+  motion,
+  radius,
+  spacing,
+} from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
-import { LevelBadge, Skeleton } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
-import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
+import { LevelBadge, Skeleton, SlideUpModal } from "@/components/ui";
 import { getVoiceIdentifier } from "@/features/reader/tts/pronunciationVoice";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
 import { pairLemmaQueryKey, usePairLemmaLookup } from "@/features/reader/api/usePairLemmaLookup";
@@ -164,7 +166,7 @@ function buildSentenceSegments(
  * silmeden koruyoruz.
  */
 export function WordSheet({
-  word,
+  word: wordProp,
   lemmaDictionary,
   lemmaState,
   onSave,
@@ -175,27 +177,17 @@ export function WordSheet({
   onDismiss,
   onSentenceQuotaExhausted,
 }: WordSheetProps) {
+  /**
+   * Panel kapanırken (kaydırma animasyonu sürerken) içerik boşalmasın diye
+   * son kelime tutuluyor; görünürlük yine `wordProp`tan geliyor.
+   */
+  const [lastWord, setLastWord] = useState(wordProp);
+  if (wordProp && wordProp !== lastWord) setLastWord(wordProp);
+  const word = wordProp ?? lastWord;
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { theme } = useTheme();
-  const readerColors = useReaderThemeColors();
   const speechVoiceId = useReaderSettings((state) => state.speechVoiceId);
-  const { height: screenHeight } = useWindowDimensions();
-
-  /**
-   * Kartın ölçülen yüksekliği -- yalnızca "tercih edilen tarafa sığıyor mu"
-   * sorusunu cevaplamak için. İlk karede bilinmiyor; o karede tercih
-   * doğrudan uygulanıyor, ölçüm gelince gerekiyorsa taraf değişiyor.
-   *
-   * NEDEN ÖLÇÜM AÇILAN KELİMEYLE BİRLİKTE SAKLANIYOR: kart içeriği (ve
-   * yüksekliği) kelimeye göre değişiyor, bir önceki kelimenin ölçümüyle
-   * karar vermek kartı yanlış tarafa koyabilirdi. Bunu bir `useEffect` ile
-   * sıfırlamak yerine ölçümün KİME ait olduğunu saklayıp render sırasında
-   * karşılaştırmak, gereksiz bir render turu açmıyor.
-   */
-  const measurementKey = `${word?.lemma ?? ""}@${word?.anchorY ?? ""}`;
-  const [measurement, setMeasurement] = useState<{ key: string; height: number } | null>(null);
-  const cardHeight = measurement?.key === measurementKey ? measurement.height : 0;
 
   const activePairQuery = useActiveLanguagePairQuery();
   /**
@@ -570,389 +562,322 @@ export function WordSheet({
 
   const isSaved = lemmaState === "learning";
 
-  /**
-   * Kartın dikey yerleşimi -- referans uygulamada (dicto) kart ekranın
-   * ortasında SABİT DURMUYOR: dokunulan kelime ekranın üst yarısındaysa
-   * kartın kelimenin ALTINDA, alt yarısındaysa ÜSTÜNDE açılıyor.
-   *
-   * `null` dönmesi "eski davranış: dikeyde ortala" demek ve iki durumda
-   * oluyor: (1) çağıran konum bilgisi vermediyse, (2) kart hiçbir tarafa
-   * sığmıyorsa (çok uzun içerik + ekranın tam ortasına yakın bir dokunma) --
-   * sığmayan bir kartı zorla yerleştirmek içeriği ekran dışına taşırırdı.
-   */
-  const anchorStyle = useMemo(() => {
-    const anchorY = word?.anchorY;
-    if (anchorY === undefined) return null;
-
-    const topOffset = anchorY + ANCHOR_GAP;
-    const bottomOffset = screenHeight - anchorY + ANCHOR_GAP;
-    const below = { top: topOffset } as const;
-    const above = { bottom: bottomOffset } as const;
-
-    const preferBelow = anchorY < screenHeight / 2;
-    if (cardHeight === 0) return preferBelow ? below : above;
-
-    const spaceBelow = screenHeight - topOffset - EDGE_MARGIN;
-    const spaceAbove = anchorY - ANCHOR_GAP - EDGE_MARGIN;
-
-    if (preferBelow && cardHeight <= spaceBelow) return below;
-    if (!preferBelow && cardHeight <= spaceAbove) return above;
-    // Tercih edilen taraf yetmedi: diğer tarafı dene, o da yetmezse ortala.
-    if (cardHeight <= spaceBelow) return below;
-    if (cardHeight <= spaceAbove) return above;
-    return null;
-  }, [word?.anchorY, screenHeight, cardHeight]);
+  const surfaceTitle = word ? word.surface.charAt(0).toUpperCase() + word.surface.slice(1) : "";
 
   return (
-    <Modal
-      visible={word !== null}
-      transparent
-      animationType="fade"
-      statusBarTranslucent
-      onRequestClose={handleDismiss}
+    <SlideUpModal
+      visible={wordProp !== null}
+      onClose={handleDismiss}
+      sheetStyle={[styles.sheet, { backgroundColor: theme.bg.surface }]}
     >
-      <Pressable
-        style={[styles.backdrop, { backgroundColor: theme.overlay }]}
-        onPress={handleDismiss}
-        accessibilityRole="none"
-      >
-        {/* İç Pressable: kartın içine dokunmak arkadaki backdrop'un
-            `onPress`ini (kapatma) TETİKLEMEMELİ -- olay burada durduruluyor. */}
-        <Pressable
-          style={[
-            styles.card,
-            { backgroundColor: theme.bg.surface },
-            anchorStyle ? [styles.cardAnchored, anchorStyle] : null,
-          ]}
-          onLayout={(event) =>
-            setMeasurement({ key: measurementKey, height: event.nativeEvent.layout.height })
-          }
-          onPress={(event) => event.stopPropagation()}
-        >
-          {word ? (
-            <>
+      {word ? (
+        <>
+          <View style={styles.handle} />
+
+          <View style={styles.sheetHeader}>
+            <Text style={[detailType.sheetTitle, { color: detailColors.title }]}>
+              {t("reader.wordSheet.definitions")}
+            </Text>
+            <Pressable
+              onPress={onDismiss}
+              accessibilityRole="button"
+              accessibilityLabel={t("common.close")}
+              hitSlop={spacing.md}
+            >
+              <Ionicons name="close" size={24} color={detailColors.muted} />
+            </Pressable>
+          </View>
+
+          <View style={styles.wordRow}>
+            <View style={styles.wordTexts}>
+              <Text style={[detailType.sheetWord, { color: detailColors.green }]}>
+                {surfaceTitle}
+              </Text>
+              {entry?.ipa ? (
+                <Text style={[detailType.sheetTitle, styles.ipa]}>{entry.ipa}</Text>
+              ) : null}
+            </View>
+            <Pressable
+              onPress={handlePronounce}
+              accessibilityRole="button"
+              accessibilityLabel={t("reader.wordSheet.pronounce")}
+              style={styles.speaker}
+            >
+              <Ionicons name="volume-high" size={22} color={detailColors.amberInk} />
+            </Pressable>
+          </View>
+
+          {/* HİYERARŞİ (2026-10-05, kullanıcı bulgusu): kullanıcının aradığı
+                  şey çeviri; eskiden "Anlam" etiketi başlık gibi büyük, çevirinin
+                  kendisi en küçük gövde yazısıydı ve gözden kaçıyordu. Şimdi
+                  etiket küçük ve gri, çeviri kartın en büyük yazısı. */}
+          <View style={styles.meaningCard}>
+            <View style={styles.meaningHead}>
+              <Text style={[homeType.statLabel, { color: detailColors.muted }]}>
+                {t("reader.wordSheet.meaning")}
+              </Text>
+              {entry?.cefrLevel ? <LevelBadge level={entry.cefrLevel} /> : null}
+            </View>
+            {primaryGloss ? (
+              <Animated.Text style={[detailType.heroTitle, styles.gloss, { opacity: glossFade }]}>
+                {primaryGloss}
+              </Animated.Text>
+            ) : isResolvingTranslation ? (
+              <View accessibilityLabel={t("reader.wordSheet.lookingUpTranslation")}>
+                <Skeleton width={180} height={28} borderRadius={radius.sm} />
+              </View>
+            ) : (
+              <Text style={[detailType.statLabel, { color: detailColors.body }]}>
+                {t("reader.wordSheet.noTranslation")}
+              </Text>
+            )}
+          </View>
+
+          <View style={styles.chips}>
+            <Animated.View
+              style={{
+                flex: 1,
+                transform: [
+                  {
+                    scale: savePulse.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 1.12],
+                    }),
+                  },
+                ],
+              }}
+            >
               <Pressable
-                onPress={onDismiss}
+                onPress={isSaved ? onUnsave : onSave}
                 accessibilityRole="button"
-                accessibilityLabel={t("common.close")}
-                style={[styles.closeButton, { backgroundColor: readerColors.highlight }]}
-                hitSlop={spacing.sm}
+                style={[styles.chip, styles.chipSave, isSaved ? styles.chipActive : null]}
               >
-                <Ionicons name="close" size={18} color={readerColors.text} />
+                <Text style={[detailType.statLabel, { color: detailColors.amberInk }]}>
+                  {t(isSaved ? "reader.wordSheet.savedRemove" : "reader.wordSheet.save")}
+                </Text>
               </Pressable>
+            </Animated.View>
+            <Pressable
+              onPress={lemmaState === "known" ? onUnmarkKnown : onMarkKnown}
+              accessibilityRole="button"
+              style={[styles.chip, styles.chipFlex]}
+            >
+              <Text style={[detailType.statLabel, { color: detailColors.chipText }]}>
+                {t(lemmaState === "known" ? "reader.wordSheet.knownUndo" : "reader.wordSheet.know")}
+              </Text>
+            </Pressable>
+          </View>
 
-              <View style={styles.wordBlock}>
-                {primaryGloss ? (
-                  /* Karşılık BELİRİYOR, bir anda basılmıyor: yer tutucudan
-                     metne geçiş sert bir takas gibi görünüyordu. */
-                  <Animated.Text
-                    style={[
-                      type.wordLemma,
-                      styles.wordText,
-                      { color: readerColors.text, opacity: glossFade },
-                    ]}
-                  >
-                    {primaryGloss}
-                  </Animated.Text>
-                ) : isResolvingTranslation ? (
-                  /* Metin yerine yer tutucu: bekleme cümlesi gelecek olan
-                     şeyin YERİNİ tutmuyordu, karşılık gelince kart
-                     zıplıyordu. Yer tutucu karşılığın SATIR YÜKSEKLİĞİNDE
-                     (25 pt) duruyor, yani geçişte hiçbir şey kaymıyor. */
-                  <View
-                    style={styles.wordSkeleton}
-                    accessibilityLabel={t("reader.wordSheet.lookingUpTranslation")}
-                  >
-                    <Skeleton width={156} height={25} borderRadius={radius.sm} />
-                  </View>
-                ) : (
-                  <Text
-                    style={[type.wordLemma, styles.wordText, { color: readerColors.textMuted }]}
-                  >
-                    {t("reader.wordSheet.noTranslation")}
-                  </Text>
-                )}
-                {entry?.cefrLevel ? (
-                  <View style={styles.levelBadgeWrap}>
-                    <LevelBadge level={entry.cefrLevel} />
-                  </View>
-                ) : null}
-              </View>
+          {saveHint ? (
+            <Text style={[detailType.statLabel, styles.saveHint, { color: detailColors.green }]}>
+              {saveHint}
+            </Text>
+          ) : null}
 
-              <View style={styles.iconRow}>
-                {/* Sarmalayıcı yalnızca DÖNÜŞÜM taşıyor: erişilebilirlik
-                    rolü/etiketi yok, yoksa düğme VoiceOver'da iki ayrı
-                    öğeye bölünürdü. Nabız sunum, etiket değil. */}
-                <Animated.View
-                  style={{
-                    transform: [
-                      {
-                        scale: savePulse.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [1, 1.12],
-                        }),
-                      },
-                    ],
-                  }}
-                >
-                  <Pressable
-                    onPress={isSaved ? onUnsave : onSave}
-                    accessibilityRole="button"
-                    accessibilityLabel={t(
-                      isSaved ? "reader.wordSheet.savedRemove" : "reader.wordSheet.save",
-                    )}
-                    style={[
-                      styles.iconButton,
-                      { backgroundColor: isSaved ? readerColors.accent : readerColors.highlight },
-                    ]}
-                  >
-                    <Ionicons
-                      name={isSaved ? "bookmark" : "bookmark-outline"}
-                      size={18}
-                      color={isSaved ? readerColors.background : readerColors.text}
-                    />
-                  </Pressable>
-                </Animated.View>
+          <Pressable
+            onPress={handleToggleDetail}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: isDetailOpen }}
+            style={styles.more}
+          >
+            <Text style={[detailType.sheetMore, { color: detailColors.amberDeep }]}>
+              {t("reader.wordSheet.moreDefinitions")}
+            </Text>
+            <Ionicons
+              name={isDetailOpen ? "chevron-up" : "chevron-down"}
+              size={16}
+              color={detailColors.amberDeep}
+            />
+          </Pressable>
 
-                <Pressable
-                  onPress={handlePronounce}
-                  accessibilityRole="button"
-                  accessibilityLabel={t("reader.wordSheet.pronounce")}
-                  style={[styles.iconButton, { backgroundColor: readerColors.highlight }]}
-                >
-                  <Ionicons name="volume-medium-outline" size={18} color={readerColors.text} />
-                </Pressable>
-
-                <Pressable
-                  onPress={handleToggleDetail}
-                  accessibilityRole="button"
-                  accessibilityLabel={t("reader.wordSheet.moreDetail")}
-                  accessibilityState={{ expanded: isDetailOpen }}
-                  style={[
-                    styles.iconButton,
-                    {
-                      backgroundColor: isDetailOpen ? readerColors.accent : readerColors.highlight,
-                    },
-                  ]}
-                >
-                  <Ionicons
-                    name="reader-outline"
-                    size={18}
-                    color={isDetailOpen ? readerColors.background : readerColors.text}
-                  />
-                </Pressable>
-              </View>
-
-              {/* Açıklama ikon sırasının ALTINDA ve tam genişlikte. Tek bir
-                  ikonun altına koymak `space-between` içindeki o öğeyi
-                  genişletir ve diğer iki ikonu kaydırırdı -- reader'ın
-                  ölçülmüş sırası yalnızca prop verilmediğinde eşleşirdi. */}
-              {saveHint ? (
-                <Text style={[monoType.metaTight, styles.saveHint, { color: readerColors.accent }]}>
-                  {saveHint}
+          {isDetailOpen ? (
+            <View style={styles.detailBlock}>
+              {otherSenses.length > 0 ? (
+                <Text style={[detailType.sheetBody, { color: detailColors.body }]}>
+                  {otherSenses
+                    .map((sense) =>
+                      sense.pos
+                        ? t("reader.wordSheet.senseWithPos", {
+                            pos: t(`reader.wordSheet.pos.${sense.pos}`, {
+                              defaultValue: sense.pos,
+                            }),
+                            gloss: sense.trGloss,
+                          })
+                        : sense.trGloss,
+                    )
+                    .join(" · ")}
                 </Text>
               ) : null}
 
-              {isDetailOpen ? (
-                <View style={styles.detailBlock}>
-                  {entry?.ipa ? (
-                    <Text style={[monoType.wordGlossMono, { color: readerColors.textMuted }]}>
-                      {entry.ipa}
-                    </Text>
-                  ) : null}
-
-                  {otherSenses.length > 0 ? (
-                    <Text style={[monoType.rowText, { color: readerColors.textMuted }]}>
-                      {otherSenses
-                        .map((sense) =>
-                          sense.pos
-                            ? t("reader.wordSheet.senseWithPos", {
-                                pos: t(`reader.wordSheet.pos.${sense.pos}`, {
-                                  defaultValue: sense.pos,
-                                }),
-                                gloss: sense.trGloss,
-                              })
-                            : sense.trGloss,
-                        )
-                        .join(" · ")}
-                    </Text>
-                  ) : null}
-
-                  <Text style={[monoType.rowText, { color: readerColors.textMuted }]}>
-                    {segments.map((segment, index) =>
-                      segment.emphasized ? (
-                        <Text
-                          key={index}
-                          style={[
-                            styles.emphasis,
-                            { color: readerColors.text, backgroundColor: readerColors.highlight },
-                          ]}
-                        >
-                          {segment.text}
-                        </Text>
-                      ) : (
-                        <Text key={index}>{segment.text}</Text>
-                      ),
-                    )}
-                  </Text>
-
-                  <Pressable
-                    onPress={() => void sentenceTranslation.refetch()}
-                    accessibilityRole="button"
-                    accessibilityLabel={t("reader.sentenceTranslation.toggle")}
-                  >
-                    <UpperText style={[monoType.buttonLabel, { color: readerColors.accent }]}>
-                      {t("reader.sentenceTranslation.toggle")}
-                    </UpperText>
-                  </Pressable>
-                  {sentenceTranslation.isFetching ? (
-                    <Text style={[readingType.gloss, { color: readerColors.textMuted }]}>
-                      {t("reader.sentenceTranslation.loading")}
-                    </Text>
-                  ) : sentenceTranslation.data?.translation ? (
-                    <Text style={[readingType.gloss, { color: readerColors.text }]}>
-                      {sentenceTranslation.data.translation}
-                    </Text>
-                  ) : sentenceQuotaExhausted ? (
-                    /* Kota tavanı: eskiden bu dal `null` döndürüyordu, yani
-                       düğmeye basılıyor ve ekranda hiçbir şey olmuyordu --
-                       kullanıcı için arıza ile sınır ayırt edilemezdi. */
-                    <Pressable
-                      onPress={onSentenceQuotaExhausted}
-                      disabled={!onSentenceQuotaExhausted}
-                      accessibilityRole={onSentenceQuotaExhausted ? "button" : "text"}
+              <Text style={[detailType.sheetBody, { color: detailColors.body }]}>
+                {segments.map((segment, index) =>
+                  segment.emphasized ? (
+                    <Text
+                      key={index}
+                      style={[
+                        styles.emphasis,
+                        {
+                          color: detailColors.title,
+                          backgroundColor: detailColors.wordHighlight,
+                        },
+                      ]}
                     >
-                      <Text style={[readingType.gloss, { color: readerColors.textMuted }]}>
-                        {t("reader.sentenceTranslation.quotaExhausted")}
-                      </Text>
-                    </Pressable>
-                  ) : sentenceTranslation.isError ? (
-                    <Text style={[readingType.gloss, { color: readerColors.textMuted }]}>
-                      {t("reader.sentenceTranslation.failed")}
+                      {segment.text}
                     </Text>
-                  ) : null}
+                  ) : (
+                    <Text key={index}>{segment.text}</Text>
+                  ),
+                )}
+              </Text>
 
-                  <Pressable
-                    onPress={lemmaState === "known" ? onUnmarkKnown : onMarkKnown}
-                    accessibilityRole="button"
-                  >
-                    <UpperText style={[monoType.buttonLabel, { color: readerColors.textMuted }]}>
-                      {t(
-                        lemmaState === "known"
-                          ? "reader.wordSheet.knownUndo"
-                          : "reader.wordSheet.know",
-                      )}
-                    </UpperText>
-                  </Pressable>
-                </View>
+              <Pressable
+                onPress={() => void sentenceTranslation.refetch()}
+                accessibilityRole="button"
+                accessibilityLabel={t("reader.sentenceTranslation.toggle")}
+              >
+                <Text style={[detailType.sheetMore, { color: detailColors.amberDeep }]}>
+                  {t("reader.sentenceTranslation.toggle")}
+                </Text>
+              </Pressable>
+              {sentenceTranslation.isFetching ? (
+                <Text style={[detailType.sheetBody, { color: detailColors.body }]}>
+                  {t("reader.sentenceTranslation.loading")}
+                </Text>
+              ) : sentenceTranslation.data?.translation ? (
+                <Text style={[detailType.sheetBody, { color: detailColors.title }]}>
+                  {sentenceTranslation.data.translation}
+                </Text>
+              ) : sentenceQuotaExhausted ? (
+                <Pressable
+                  onPress={onSentenceQuotaExhausted}
+                  disabled={!onSentenceQuotaExhausted}
+                  accessibilityRole={onSentenceQuotaExhausted ? "button" : "text"}
+                >
+                  <Text style={[detailType.sheetBody, { color: detailColors.body }]}>
+                    {t("reader.sentenceTranslation.quotaExhausted")}
+                  </Text>
+                </Pressable>
+              ) : sentenceTranslation.isError ? (
+                <Text style={[detailType.sheetBody, { color: detailColors.body }]}>
+                  {t("reader.sentenceTranslation.failed")}
+                </Text>
               ) : null}
-            </>
+            </View>
           ) : null}
-        </Pressable>
-      </Pressable>
-    </Modal>
+
+          <Image source={FOOTER} style={styles.footer} contentFit="cover" transition={0} />
+        </>
+      ) : null}
+    </SlideUpModal>
   );
 }
 
-/**
- * Dokunma noktası ile kartın kenarı arasındaki boşluk.
- *
- * NEDEN DOKUNMA NOKTASINDAN ÖLÇÜLÜYOR: elimizdeki tek konum bilgisi
- * `pageY`, yani parmağın değdiği nokta -- kelimenin satır kutusunun sınırı
- * değil (satır içi `<Text>` React Native'de güvenilir ölçülemiyor, bkz.
- * `ReaderWordTapPayload.anchorY`). Bu yüzden boşluk, satır yüksekliğinin
- * yarısını da kapsayacak kadar geniş: aksi hâlde kart dokunulan kelimenin
- * ÜSTÜNE binerdi.
- *
- * Değer referans ekran görüntüsünden oranlanarak türetildi (kelime kutusu
- * ile kart arasında ~18pt + tipik satır yüksekliğinin yarısı). Gerçek
- * cihazda fazla/az görünürse ayarlanacak TEK yer burası.
- */
-const ANCHOR_GAP = 32;
-
-/** Kartın ekran kenarına yapışmasını önleyen asgari pay. */
-const EDGE_MARGIN = 16;
+const FOOTER = require("../../../../assets/home/sheet-footer.jpg") as number;
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  // `position: absolute` + yalnızca dikey offset: yatayda hizalama
-  // backdrop'un `alignItems: "center"`'ından gelmeye devam ediyor, yani
-  // kart referanstaki gibi yatayda ORTALI kalıyor -- değişen tek şey
-  // dikey konum.
-  cardAnchored: {
-    position: "absolute",
-  },
-  // FAZ 5 DÜZELTMESİ (2026-09-14): kart genişliği referans ekran
-  // görüntüsüyle doğrudan oranlanarak ölçüldü -- ekran genişliğinin
-  // ~%65'i (öncekinde "100% - yatay boşluk", pratikte ekranın ~%87'si
-  // kadar dolduruyordu, referanstan belirgin şekilde daha genişti).
-  // Yüzde tabanlı genişlik, sabit bir piksel değerinden (ör. 340) farklı
-  // olarak her ekran boyutunda aynı ORANI koruyor.
-  card: {
-    width: "65%",
-    borderRadius: radius.cover,
-    paddingHorizontal: spacing.ml,
-    paddingTop: spacing.ml,
-    paddingBottom: spacing.ml,
+  sheet: {
+    borderTopLeftRadius: detailMetrics.sheetRadius,
+    borderTopRightRadius: detailMetrics.sheetRadius,
+    overflow: "hidden",
+    paddingTop: spacing.sm,
     gap: spacing.md,
   },
-  // Diğer sheet'lerdeki kapatma düğmesiyle aynı ölçü (32pt, 18pt ikon).
-  // Köşeye yakın kalıyor ki ortalı kelimenin üstüne binmesin.
-  closeButton: {
-    position: "absolute",
-    top: spacing.sm,
-    right: spacing.sm,
-    width: 32,
-    height: 32,
-    borderRadius: radius.full,
+  handle: {
+    alignSelf: "center",
+    width: detailMetrics.handleWidth,
+    height: detailMetrics.handleHeight,
+    borderRadius: detailMetrics.handleHeight / 2,
+    backgroundColor: detailColors.chipBorder,
+  },
+  // Bütün satırlar AYNI kenar boşluğunda (eskiden üç farklı değer vardı:
+  // gutter-3, gutter+10, gutter-3 -- metin sütunları birbirine hizasızdı).
+  sheetHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: detailMetrics.gutter,
+    paddingTop: spacing.sm,
+  },
+  wordRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: detailMetrics.gutter,
+  },
+  wordTexts: {
+    flex: 1,
+  },
+  ipa: {
+    color: detailColors.title,
+  },
+  speaker: {
+    width: detailMetrics.speaker,
+    height: detailMetrics.speaker,
+    borderRadius: detailMetrics.speaker / 2,
+    backgroundColor: detailColors.amber,
     alignItems: "center",
     justifyContent: "center",
   },
-  wordSkeleton: {
-    alignItems: "center",
+  meaningCard: {
+    marginHorizontal: detailMetrics.gutter,
+    padding: homeSpace.lg,
+    gap: homeSpace.sm,
+    borderRadius: homeMetrics.cardRadius,
+    backgroundColor: homeColors.peach,
   },
-  wordBlock: {
-    alignItems: "center",
-    gap: spacing.xs,
-    marginTop: spacing.xs,
-  },
-  wordText: {
-    textAlign: "center",
-  },
-  levelBadgeWrap: {
-    marginTop: spacing.xxs,
-  },
-  // FAZ 9 DÜZELTMESİ (2026-09-14): referansta ikonlar ortada dar bir
-  // kümede DEĞİL, kartın iç genişliğine YAYILMIŞ (ilk ikon sola yakın,
-  // son ikon sağa yakın) -- `justifyContent: "center"` + sabit `gap`
-  // ikonları birbirine fazla yaklaştırıyordu. `space-between` bunları
-  // satırın tüm genişliğine eşit aralıklarla dağıtıyor.
-  iconRow: {
+  meaningHead: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: spacing.sm,
+    gap: spacing.sm,
+  },
+  gloss: {
+    color: detailColors.title,
+  },
+  chips: {
+    flexDirection: "row",
+    gap: homeSpace.md,
+    paddingHorizontal: detailMetrics.gutter,
+  },
+  chip: {
+    height: homeMetrics.continueButton + homeSpace.md,
+    paddingHorizontal: spacing.ml,
+    borderRadius: radius.full,
+    borderWidth: 1.5,
+    borderColor: detailColors.chipBorder,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  chipFlex: {
+    flex: 1,
+  },
+  chipSave: {
+    borderColor: homeColors.peach,
+    backgroundColor: homeColors.peach,
+  },
+  chipActive: {
+    backgroundColor: detailColors.amber,
+    borderColor: detailColors.amber,
   },
   saveHint: {
     textAlign: "center",
-    paddingTop: spacing.xs,
   },
-  // Apple'ın en küçük dokunma hedefi 44pt; kelime kartının kaydet/bildim
-  // düğmeleri uygulamanın en çok basılan kontrolleri.
-  iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
+  more: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: spacing.xs,
   },
   detailBlock: {
     gap: spacing.sm,
+    paddingHorizontal: detailMetrics.gutter,
   },
   emphasis: {
     fontWeight: "700",
+  },
+  footer: {
+    width: "100%",
+    height: detailMetrics.sheetFooter,
+    marginTop: spacing.xs,
   },
 });

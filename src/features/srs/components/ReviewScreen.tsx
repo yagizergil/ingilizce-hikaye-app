@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { useTranslation } from "react-i18next";
 
-import { monoType, spacing, type } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
 import { trackError, trackEvent } from "@/lib/analytics";
-import { Button, ErrorState, LoadingState, useToast } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
+import { Button, ErrorState, LoadingState, MascotAnim, UiIcon, useToast } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 
 import { useDueCardsQuery } from "@/features/srs/api/useDueCardsQuery";
 import { useReviewCardMutation } from "@/features/srs/api/useReviewCardMutation";
@@ -18,6 +17,7 @@ import { useReviewSession } from "@/features/srs/hooks/useReviewSession";
 import { ReviewRatingBar } from "@/features/srs/components/ReviewRatingBar";
 
 import type { SrsRating } from "@/features/srs/scheduler";
+import { playSfx } from "@/lib/sfx";
 
 interface ReviewScreenProps {
   onClose: () => void;
@@ -37,7 +37,9 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
   const { t } = useTranslation();
   const { show: showToast } = useToast();
   const failedToastShownRef = useRef(false);
-  const { theme } = useTheme();
+  const palette = useHomePalette();
+  const insets = useSafeAreaInsets();
+  const pageStyle = [styles.fill, { backgroundColor: palette.page, paddingTop: insets.top }];
   const { data, isLoading, isError, refetch } = useDueCardsQuery();
   const reviewMutation = useReviewCardMutation();
 
@@ -83,6 +85,7 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
   const handleRate = useCallback(
     (rating: SrsRating) => {
       if (!card) return;
+      playSfx(rating === "again" ? "wrong" : "correct");
       void Haptics.selectionAsync().catch((error: unknown) => trackError("srs.rateHaptic", error));
       const shownAt = shownAtRef.current;
       reviewMutation.mutate(
@@ -116,28 +119,32 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
+      <View style={pageStyle}>
         <LoadingState />
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (isError) {
     return (
-      <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
+      <View style={pageStyle}>
         <ErrorState message={t("srs.loadError")} onRetry={() => void refetch()} />
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (finished) {
     return (
-      <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
+      <View style={pageStyle}>
         <View style={styles.centered}>
-          <Text style={[type.sectionHeading, { color: theme.text.primary }]}>
+          <MascotAnim
+            name={reviewedCount > 0 ? "party" : "books"}
+            width={homeMetrics.startMascot * 2}
+          />
+          <Text style={[detailType.heroTitle, styles.centeredText, { color: palette.ink }]}>
             {reviewedCount > 0 ? t("srs.doneTitle") : t("srs.emptyTitle")}
           </Text>
-          <Text style={[monoType.rowText, styles.centeredText, { color: theme.text.secondary }]}>
+          <Text style={[homeType.cardSub, styles.centeredText, { color: palette.muted }]}>
             {reviewedCount > 0
               ? t("srs.doneMessage", { count: reviewedCount })
               : t("srs.emptyMessage")}
@@ -145,20 +152,24 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
           {/* Hiçbiri yazılamadıysa "tekrar ettin" demek düpedüz yanlış
               olurdu: kartlar hâlâ vadesi gelmiş durumda. */}
           {failedCount > 0 ? (
-            <Text style={[monoType.rowText, styles.centeredText, { color: theme.accent }]}>
+            <Text
+              style={[homeType.cardSub, styles.centeredText, { color: detailColors.amberDeep }]}
+            >
               {t("srs.saveFailed", { count: failedCount })}
             </Text>
           ) : null}
-          <Button label={t("common.back")} onPress={onClose} variant="secondary" size="sm" />
+          <View style={styles.doneButton}>
+            <Button label={t("common.back")} onPress={onClose} fullWidth />
+          </View>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (!card) return null;
 
   return (
-    <SafeAreaView style={[styles.fill, { backgroundColor: theme.bg.primary }]}>
+    <View style={pageStyle}>
       <ReviewProgress current={position} total={total} onClose={onClose} />
 
       <Pressable
@@ -169,39 +180,51 @@ export function ReviewScreen({ onClose }: ReviewScreenProps) {
         accessibilityRole="button"
         accessibilityLabel={revealed ? card.lemma : t("srs.revealHint")}
       >
-        <ScrollView contentContainerStyle={styles.cardContent} showsVerticalScrollIndicator={false}>
-          <Text style={[type.display, styles.word, { color: theme.text.primary }]}>
-            {card.surface}
-          </Text>
+        <View style={[styles.card, { backgroundColor: palette.card }]}>
+          <ScrollView
+            contentContainerStyle={styles.cardContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <UiIcon name="cards" size={homeMetrics.statTileIcon} />
+            <Text style={[detailType.sheetWord, styles.word, { color: palette.ink }]}>
+              {card.surface}
+            </Text>
 
-          {revealed ? (
-            <View style={styles.answer}>
-              <Text style={[type.sectionHeading, styles.gloss, { color: theme.accent }]}>
-                {card.gloss ?? t("srs.noGloss")}
-              </Text>
-
-              {card.contextText ? (
-                <Text style={[monoType.rowText, styles.context, { color: theme.text.secondary }]}>
-                  {card.contextText}
+            {revealed ? (
+              <View style={styles.answer}>
+                <Text
+                  style={[detailType.heroTitle, styles.gloss, { color: detailColors.amberDeep }]}
+                >
+                  {card.gloss ?? t("srs.noGloss")}
                 </Text>
-              ) : null}
 
-              {card.bookTitle ? (
-                <UpperText style={[monoType.label, styles.source, { color: theme.text.secondary }]}>
-                  {card.bookTitle}
-                </UpperText>
-              ) : null}
-            </View>
-          ) : (
-            <UpperText style={[monoType.label, styles.hint, { color: theme.text.secondary }]}>
-              {t("srs.revealHint")}
-            </UpperText>
-          )}
-        </ScrollView>
+                {card.contextText ? (
+                  <Text style={[homeType.cardSub, styles.context, { color: palette.muted }]}>
+                    {card.contextText}
+                  </Text>
+                ) : null}
+
+                {card.bookTitle ? (
+                  <View style={styles.source}>
+                    <Text style={[homeType.statLabel, { color: detailColors.amberInk }]}>
+                      {card.bookTitle}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+            ) : (
+              <View style={styles.hint}>
+                <Text style={[homeType.statLabel, { color: detailColors.amberInk }]}>
+                  {t("srs.revealHint")}
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+        </View>
       </Pressable>
 
-      {revealed ? <ReviewRatingBar onRate={handleRate} /> : null}
-    </SafeAreaView>
+      {revealed ? <ReviewRatingBar onRate={handleRate} /> : <View style={styles.ratingSpacer} />}
+    </View>
   );
 }
 
@@ -213,33 +236,51 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: spacing.md,
-    paddingHorizontal: spacing.xl,
+    gap: homeSpace.md,
+    paddingHorizontal: homeMetrics.gutter,
   },
   centeredText: {
     textAlign: "center",
   },
+  doneButton: {
+    alignSelf: "stretch",
+    marginTop: homeSpace.lg,
+  },
   cardArea: {
     flex: 1,
+    padding: homeMetrics.gutter,
+  },
+  card: {
+    flex: 1,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 24,
+    elevation: 5,
   },
   cardContent: {
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.xxl,
-    gap: spacing.lg,
+    paddingHorizontal: homeSpace.xl,
+    paddingVertical: homeSpace.xl,
+    gap: homeSpace.lg,
   },
   word: {
     textAlign: "center",
   },
   hint: {
-    textAlign: "center",
-    opacity: 0.7,
+    paddingHorizontal: homeSpace.lg,
+    height: homeMetrics.continueButton,
+    borderRadius: homeMetrics.continueButton / 2,
+    backgroundColor: homeColors.peach,
+    alignItems: "center",
+    justifyContent: "center",
   },
   answer: {
     alignItems: "center",
-    gap: spacing.md,
+    gap: homeSpace.md,
   },
   gloss: {
     textAlign: "center",
@@ -248,7 +289,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   source: {
-    textAlign: "center",
-    opacity: 0.7,
+    paddingHorizontal: homeSpace.lg,
+    height: homeMetrics.continueButton,
+    borderRadius: homeMetrics.continueButton / 2,
+    backgroundColor: homeColors.peach,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ratingSpacer: {
+    height: homeMetrics.continueButton + homeSpace.lg * 2 + homeSpace.xl,
   },
 });

@@ -2,7 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 
-import { CEFR_LEVELS, type CefrLevel, type LevelTestItem } from "@/features/onboarding/levelEstimate";
+import {
+  CEFR_LEVELS,
+  type CefrLevel,
+  type LevelTestItem,
+} from "@/features/onboarding/levelEstimate";
 
 /** Her CEFR bandından kaç kelime sorulacak. 6 × 6 bant = 36 soru, ~60-90 sn. */
 export const WORDS_PER_BAND = 6;

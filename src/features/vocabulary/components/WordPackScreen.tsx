@@ -3,11 +3,10 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
 
-import { monoType, radius, spacing, type } from "@/theme";
+import { monoType, radius, spacing, type, mascotSize } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import {
@@ -15,7 +14,8 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
-  ScreenHeader,
+  MascotAnim,
+  SkyHeader,
   useToast,
 } from "@/components/ui";
 
@@ -192,10 +192,14 @@ export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]}>
-      <ScreenHeader title={title} onBack={onClose} />
+    <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
+      <SkyHeader
+        title={title}
+        onBack={onClose}
+        art={<MascotAnim name="words" width={mascotSize.header} />}
+      />
       {body}
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -1,9 +1,4 @@
-import {
-  NEW_CARD,
-  cardStage,
-  scheduleCard,
-  type SrsCardState,
-} from "@/features/srs/scheduler";
+import { NEW_CARD, cardStage, scheduleCard, type SrsCardState } from "@/features/srs/scheduler";
 
 /** Sabit bir "şimdi" — testlerin gerçek saate bağlı olmaması için. */
 const NOW = new Date("2026-09-07T12:00:00.000Z");
@@ -159,15 +154,11 @@ describe("cardStage", () => {
   });
 
   it("kısa aralıklı kart 'learning'", () => {
-    expect(cardStage({ repetitions: 2, intervalDays: 6, ease: 2.5, lapses: 0 })).toBe(
-      "learning",
-    );
+    expect(cardStage({ repetitions: 2, intervalDays: 6, ease: 2.5, lapses: 0 })).toBe("learning");
   });
 
   it("21 gün ve üstü aralık 'known'", () => {
-    expect(cardStage({ repetitions: 5, intervalDays: 21, ease: 2.5, lapses: 0 })).toBe(
-      "known",
-    );
+    expect(cardStage({ repetitions: 5, intervalDays: 21, ease: 2.5, lapses: 0 })).toBe("known");
   });
 
   it("unutulan kart 'learning'e geri döner", () => {

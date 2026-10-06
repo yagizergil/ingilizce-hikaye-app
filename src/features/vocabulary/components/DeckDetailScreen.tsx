@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, Pressable, StyleSheet, View } from "react-native";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
-import { deckColorHex, monoType, motion, radius, spacing, type } from "@/theme";
+import { homeMetrics, homeSpace, monoType, motion, spacing, mascotSize } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import {
@@ -15,7 +14,8 @@ import {
   ErrorState,
   LoadingState,
   useToast,
-  ScreenHeader,
+  MascotAnim,
+  SkyHeader,
 } from "@/components/ui";
 import { UpperText } from "@/components/ui/UpperText";
 
@@ -198,23 +198,17 @@ export function DeckDetailScreen({ deckId, onBack, onStartReview }: DeckDetailSc
    */
   if (isDeckLoading) {
     return (
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: theme.bg.primary }]}
-        edges={["top"]}
-      >
+      <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
         <LoadingState message={t("vocabulary.decks.loading")} />
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (isDeckError) {
     return (
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: theme.bg.primary }]}
-        edges={["top"]}
-      >
+      <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
         <ErrorState message={t("vocabulary.decks.error")} onRetry={() => void refetchDecks()} />
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -223,41 +217,29 @@ export function DeckDetailScreen({ deckId, onBack, onStartReview }: DeckDetailSc
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <ScreenHeader
+    <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
+      <SkyHeader
+        title={deck.name}
+        subtitle={t("vocabulary.decks.card.wordCount", { count: deck.cardCount })}
         onBack={onBack}
-        title={
-          <View style={styles.headerTitleBlock}>
-            <View style={[styles.swatch, { backgroundColor: deckColorHex(deck.colorKey) }]} />
-            <Text
-              style={[type.sectionHeading, styles.headerTitle, { color: theme.text.primary }]}
-              numberOfLines={1}
-            >
-              {deck.name}
-            </Text>
-          </View>
-        }
-        right={
-          <Pressable
-            onPress={() => renameSheetRef.current?.present()}
-            accessibilityRole="button"
-            accessibilityLabel={t("vocabulary.decks.editTitle")}
-            hitSlop={spacing.sm}
-          >
-            <Ionicons name="create-outline" size={22} color={theme.text.secondary} />
-          </Pressable>
-        }
+        art={<MascotAnim name="words" width={mascotSize.header} />}
       />
 
-      {deck.dueCount > 0 ? (
-        <View style={styles.reviewCta}>
+      <View style={styles.reviewCta}>
+        {deck.dueCount > 0 ? (
           <Button
             label={t("vocabulary.decks.review.startCta", { count: deck.dueCount })}
             onPress={() => onStartReview(deckId)}
             fullWidth
           />
-        </View>
-      ) : null}
+        ) : null}
+        <Button
+          label={t("vocabulary.decks.editTitle")}
+          onPress={() => renameSheetRef.current?.present()}
+          variant="secondary"
+          fullWidth
+        />
+      </View>
 
       {isLoading ? (
         <LoadingState message={t("vocabulary.decks.loading")} />
@@ -320,7 +302,7 @@ export function DeckDetailScreen({ deckId, onBack, onStartReview }: DeckDetailSc
         onSubmit={handleRenameDeck}
         submitting={deckSubmitting}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -342,23 +324,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  headerTitleBlock: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    maxWidth: "100%",
-  },
-  headerTitle: {
-    flexShrink: 1,
-  },
-  swatch: {
-    width: 12,
-    height: 12,
-    borderRadius: radius.full,
-  },
   reviewCta: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.md,
+    paddingHorizontal: homeMetrics.gutter,
+    paddingTop: homeSpace.lg,
+    paddingBottom: homeSpace.md,
+    gap: homeSpace.sm,
   },
   listContent: {
     paddingHorizontal: spacing.lg,

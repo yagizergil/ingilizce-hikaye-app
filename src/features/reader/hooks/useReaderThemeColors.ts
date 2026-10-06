@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 
 import { colors } from "@/theme/colors";
-import { useTheme } from "@/theme/useTheme";
+import { detailColors } from "@/theme/tokens/home";
+import { useReaderModeStore } from "@/features/reader/hooks/useReaderModeStore";
+import { useReadingTheme } from "@/theme/useTheme";
 
 export interface ReaderThemeColors {
   background: string;
@@ -30,10 +32,27 @@ export interface ReaderThemeColors {
  * actual cause of the "loads, glitches, goes blank" bug reports, not the
  * CSS pagination math (which was a separate, real, but secondary bug). */
 export function useReaderThemeColors(): ReaderThemeColors {
-  const { themeName } = useTheme();
+  const { themeName } = useReadingTheme();
+  const listening = useReaderModeStore((state) => state.mode === "listen");
 
   return useMemo(() => {
     const theme = colors[themeName];
+    if (listening) {
+      // Dinleme modu: kahverengi zemin, krem metin (referans ekranı).
+      return {
+        background: detailColors.listenBg,
+        text: detailColors.listenText,
+        textMuted: detailColors.listenDim,
+        highlight: "rgba(255, 241, 227, 0.16)",
+        // Eskiden krem %22: kahverengi zeminde okunan kelime neredeyse
+        // seçilmiyordu ("vurgu düzgün değil"). Amber %45 belirgin, krem
+        // metin üstünde hâlâ okunur.
+        spokenHighlight: "rgba(245, 181, 49, 0.45)",
+        accent: detailColors.amber,
+        savedUnderline: detailColors.amber,
+        border: "rgba(255, 241, 227, 0.2)",
+      };
+    }
     return {
       background: theme.bg.reading,
       text: theme.text.reading,
@@ -56,5 +75,5 @@ export function useReaderThemeColors(): ReaderThemeColors {
       savedUnderline: theme.accent,
       border: theme.border.hairline,
     };
-  }, [themeName]);
+  }, [themeName, listening]);
 }

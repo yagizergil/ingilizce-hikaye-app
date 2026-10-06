@@ -1,28 +1,31 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { monoType, spacing, type } from "@/theme";
+import { homeType, spacing, mascotSize } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-
 import { Button } from "@/components/ui/Button";
+import { MascotAnim } from "@/components/ui/MascotAnim";
 
 interface ErrorStateProps {
   message: string;
   onRetry?: () => void;
 }
 
-/** Token fix for the new type system — see EmptyState.tsx for the same
- * `type.heading`/`type.body` -> `type.sectionHeading`/`monoType.rowText`
- * rationale. */
+/** Hata durumu: etrafına bakınan maskot, başlık, mesaj ve "Tekrar dene" düğmesi. */
 export function ErrorState({ message, onRetry }: ErrorStateProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
   return (
     <View style={styles.container}>
-      <Text style={[type.sectionHeading, { color: theme.danger }]}>{t("common.errorTitle")}</Text>
-      <Text style={[monoType.rowText, styles.message, { color: theme.text.secondary }]}>{message}</Text>
-      {onRetry ? <Button label={t("common.retry")} onPress={onRetry} variant="secondary" size="sm" /> : null}
+      <MascotAnim name="search" width={mascotSize.empty} />
+      <Text style={[homeType.sectionTitle, { color: theme.text.primary }]}>
+        {t("common.errorTitle")}
+      </Text>
+      <Text style={[homeType.cardSub, styles.message, { color: theme.text.secondary }]}>
+        {message}
+      </Text>
+      {onRetry ? <Button label={t("common.retry")} onPress={onRetry} size="sm" /> : null}
     </View>
   );
 }

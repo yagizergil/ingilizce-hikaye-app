@@ -10,6 +10,7 @@ import {
 } from "@/features/library/api/mapBookRow";
 
 import type { Book, Chapter } from "@/features/library/types";
+import { queryClient } from "@/lib/queryClient";
 
 interface RawSectionRow {
   id: string;
@@ -132,6 +133,18 @@ async function fetchBookDetail(id: string): Promise<BookDetailData | null> {
 
 export function useBookDetailQuery(id: string) {
   return useQuery({
+    queryKey: libraryQueryKeys.bookDetail(id),
+    queryFn: () => fetchBookDetail(id),
+  });
+}
+
+/**
+ * Kitaba dokunulduğu anda detayı çekmeye başlar: ekran geçişi (~300 ms)
+ * sürerken veri gelir ve detay ekranı çoğu zaman yükleniyor göstermeden
+ * açılır. Zaten tazeyse istek atılmaz.
+ */
+export function prefetchBookDetail(id: string): void {
+  void queryClient.prefetchQuery({
     queryKey: libraryQueryKeys.bookDetail(id),
     queryFn: () => fetchBookDetail(id),
   });

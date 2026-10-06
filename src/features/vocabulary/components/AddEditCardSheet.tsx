@@ -10,10 +10,9 @@ import {
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { monoType, radius, spacing, type } from "@/theme";
+import { detailType, homeColors, homeMetrics, homeSpace, homeType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
 
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 
@@ -106,14 +105,14 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Text style={[type.sectionHeading, { color: theme.text.primary }]}>
+          <Text style={[detailType.sheetTitle, { color: theme.text.primary }]}>
             {initial ? t("vocabulary.decks.card.editTitle") : t("vocabulary.decks.card.addTitle")}
           </Text>
 
           <View style={styles.field}>
-            <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+            <Text style={[homeType.statLabel, { color: theme.text.secondary }]}>
               {t("vocabulary.decks.card.surfaceLabel")}
-            </UpperText>
+            </Text>
             <BottomSheetTextInput
               value={surface}
               onChangeText={setSurface}
@@ -122,10 +121,10 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
               maxLength={MAX_FIELD_LENGTH}
               style={[
                 styles.input,
-                type.chapterRowTitle,
+                detailType.statLabel,
                 {
                   color: theme.text.primary,
-                  borderColor: theme.border.hairline,
+                  borderColor: homeColors.peach,
                   backgroundColor: theme.bg.primary,
                 },
               ]}
@@ -133,9 +132,9 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
           </View>
 
           <View style={styles.field}>
-            <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+            <Text style={[homeType.statLabel, { color: theme.text.secondary }]}>
               {t("vocabulary.decks.card.meaningLabel")}
-            </UpperText>
+            </Text>
             <BottomSheetTextInput
               value={meaning}
               onChangeText={setMeaning}
@@ -144,10 +143,10 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
               maxLength={MAX_FIELD_LENGTH}
               style={[
                 styles.input,
-                type.chapterRowTitle,
+                detailType.statLabel,
                 {
                   color: theme.text.primary,
-                  borderColor: theme.border.hairline,
+                  borderColor: homeColors.peach,
                   backgroundColor: theme.bg.primary,
                 },
               ]}
@@ -155,9 +154,9 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
           </View>
 
           <View style={styles.field}>
-            <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+            <Text style={[homeType.statLabel, { color: theme.text.secondary }]}>
               {t("vocabulary.decks.card.exampleLabel")}
-            </UpperText>
+            </Text>
             <BottomSheetTextInput
               value={exampleSentence}
               onChangeText={setExampleSentence}
@@ -169,10 +168,10 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
               style={[
                 styles.input,
                 styles.multiline,
-                type.chapterRowTitle,
+                detailType.statLabel,
                 {
                   color: theme.text.primary,
-                  borderColor: theme.border.hairline,
+                  borderColor: homeColors.peach,
                   backgroundColor: theme.bg.primary,
                 },
               ]}
@@ -194,17 +193,18 @@ export const AddEditCardSheet = forwardRef<BottomSheetModal, AddEditCardSheetPro
 
 const styles = StyleSheet.create({
   content: {
-    gap: spacing.md,
-    padding: spacing.md,
+    gap: homeSpace.md,
+    paddingHorizontal: homeMetrics.gutter,
+    paddingTop: homeSpace.lg,
   },
   field: {
     gap: spacing.xs,
   },
   input: {
-    minHeight: 48,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.md,
+    minHeight: homeMetrics.continueButton + homeSpace.lg,
+    borderWidth: 2,
+    borderRadius: homeSpace.lg,
+    paddingHorizontal: homeSpace.lg,
   },
   multiline: {
     minHeight: 88,

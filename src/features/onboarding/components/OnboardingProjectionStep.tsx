@@ -309,18 +309,12 @@ export function OnboardingProjectionStep({
                 height={FEATURE_ICON_SIZE}
               />
               <View style={styles.featureText}>
-                <Text
-                  style={[type.bookTitleMd, { color: theme.text.primary }]}
-                  numberOfLines={2}
-                >
+                <Text style={[type.bookTitleMd, { color: theme.text.primary }]} numberOfLines={2}>
                   {feature === "daily" && dailyGoalMinutes
                     ? t("onboarding.goal.minutes", { count: dailyGoalMinutes })
                     : t(`onboarding.path.features.${feature}.title`)}
                 </Text>
-                <Text
-                  style={[monoType.rowText, { color: theme.text.secondary }]}
-                  numberOfLines={2}
-                >
+                <Text style={[monoType.rowText, { color: theme.text.secondary }]} numberOfLines={2}>
                   {t(`onboarding.path.features.${feature}.body`)}
                 </Text>
               </View>

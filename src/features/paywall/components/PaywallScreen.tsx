@@ -2,16 +2,24 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import LottieView from "lottie-react-native";
+import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
-import { paywallMetrics, paywallType, radius, spacing } from "@/theme";
+import {
+  homeMetrics,
+  paywallMetrics,
+  paywallType,
+  radius,
+  searchColors,
+  spacing,
+  mascotSize,
+} from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import { isPurchasesAvailable, purchasePackage, restorePurchases } from "@/lib/revenuecat";
-import { Button, LoadingState } from "@/components/ui";
+import { Button, LoadingState, MascotAnim } from "@/components/ui";
 
 import { useOfferingsQuery } from "@/features/paywall/api/useOfferingsQuery";
 import { usePaywallFactsQuery } from "@/features/paywall/api/usePaywallFactsQuery";
@@ -25,10 +33,6 @@ import { PaywallBenefits } from "@/features/paywall/components/PaywallBenefits";
 import { PaywallLegal } from "@/features/paywall/components/PaywallLegal";
 import { PaywallPlanCard } from "@/features/paywall/components/PaywallPlanCard";
 import { buildPlanOptions } from "@/features/paywall/planModel";
-
-// Lottie kaynağı proje kökündeki assets/ altında; alias (@) src/ işaret
-// ettiği için burada göreli yol kullanılıyor.
-import crownAnimation from "../../../../assets/crown.json";
 
 import type { ReactNode } from "react";
 
@@ -95,7 +99,7 @@ export function PaywallScreen({
   highlightIntroOffer = false,
 }: PaywallScreenProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const { theme, themeName } = useTheme();
   const queryClient = useQueryClient();
   const { data: packages, isLoading, isFetching, refetch } = useOfferingsQuery(offeringId);
   const { data: facts } = usePaywallFactsQuery();
@@ -312,6 +316,10 @@ export function PaywallScreen({
     );
   }, [onClose, refreshStatus, t]);
 
+  // Başlık, paywall'ın açıldığı ana göre: kullanıcı o an neyi istiyorsa
+  // onu söyle (dinlemek, quiz, kelime...). Bilinmeyen kaynakta genel başlık.
+  const headline = HEADLINE_BY_SOURCE[source] ?? null;
+
   const ctaLabel = selected?.trial
     ? t("paywall.ctaTrial", { count: selected.trial.days })
     : t("paywall.ctaSubscribe");
@@ -331,6 +339,17 @@ export function PaywallScreen({
           2026-09-09) doğrudan sebebiydi: iPad'de içerik taşıyor, inceleyen
           kişi kesilmiş bir düğme görüyor ve altta daha fazlası olduğuna dair
           hiçbir işaret bulunmuyordu. */}
+      {themeName === "light" ? (
+        <Svg style={styles.sky} width="100%" height={homeMetrics.paywallSky}>
+          <Defs>
+            <LinearGradient id="paywallSky" x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor={searchColors.skyTop} />
+              <Stop offset="1" stopColor={searchColors.skyBottom} />
+            </LinearGradient>
+          </Defs>
+          <Rect x="0" y="0" width="100%" height="100%" fill="url(#paywallSky)" />
+        </Svg>
+      ) : null}
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.headerRow}>
           <Pressable
@@ -345,10 +364,9 @@ export function PaywallScreen({
           </Pressable>
         </View>
 
-        {/* Taç -- assets/crown.json (Lottie). Statik bir ikon yerine
-            animasyon: referansın tepesinde de hareketli bir taç var ve
-            ekranın tek "kutlama" öğesi bu. */}
-        <LottieView source={crownAnimation} autoPlay loop style={styles.crown} />
+        {/* Taçlı maskot (assets/anim/mascot-crown.webp): ekranın tek
+            "kutlama" öğesi. */}
+        <MascotAnim name="crown" width={mascotSize.hero} style={styles.crown} />
 
         {highlightIntroOffer && selected?.savingsPercent != null ? (
           <View style={[styles.introRibbon, { backgroundColor: theme.accent }]}>
@@ -359,10 +377,10 @@ export function PaywallScreen({
         ) : null}
 
         <Text style={[paywallType.title, styles.centered, { color: theme.text.primary }]}>
-          {t("paywall.title")}
+          {t(headline ? `paywall.headlines.${headline}.title` : "paywall.title")}
         </Text>
         <Text style={[paywallType.subtitle, styles.centered, { color: theme.text.secondary }]}>
-          {t("paywall.subtitle")}
+          {t(headline ? `paywall.headlines.${headline}.subtitle` : "paywall.subtitle")}
         </Text>
 
         {/* Kullanıcının kendi rakamları. Geçmişi yoksa `activity` null
@@ -467,6 +485,11 @@ export function PaywallScreen({
             </Text>
           </Pressable>
         ) : null}
+        {isPurchasesAvailable && options.length > 0 ? (
+          <Text style={[paywallType.legal, styles.centered, { color: theme.text.secondary }]}>
+            {t("paywall.cancelAnytime")}
+          </Text>
+        ) : null}
 
         <PaywallLegal
           priceString={selected?.pkg.product.priceString ?? null}
@@ -479,6 +502,17 @@ export function PaywallScreen({
     </SafeAreaView>
   );
 }
+
+const HEADLINE_BY_SOURCE: Record<string, string> = {
+  audio: "listen",
+  reader_listen: "listen",
+  book_quiz: "quiz",
+  quiz_level_passed: "quiz",
+  word_quota: "words",
+  word_quota_badge: "words",
+  sentence_quota: "sentences",
+  smart_practice: "practice",
+};
 
 /**
  * Yerleşim. Sayısal ölçüler `paywallMetrics` ve `paywallType` içinde --
@@ -499,9 +533,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  sky: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+  },
   crown: {
-    width: paywallMetrics.crownSize,
-    height: paywallMetrics.crownSize,
     alignSelf: "center",
   },
   content: {
@@ -536,7 +574,7 @@ const styles = StyleSheet.create({
   cta: {
     height: paywallMetrics.ctaHeight,
     // Ölçüm: köşe içe çekilmesi 18 pt -- tam hap (25) değil.
-    borderRadius: 18,
+    borderRadius: paywallMetrics.ctaHeight / 2,
     alignItems: "center",
     justifyContent: "center",
   },

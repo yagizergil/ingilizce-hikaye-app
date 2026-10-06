@@ -5,10 +5,9 @@ import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from "@gorhom/
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { monoType, readingType, spacing } from "@/theme";
-import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
+import { detailColors, detailMetrics, detailType, spacing } from "@/theme";
+import { useTheme } from "@/theme/useTheme";
 import { useSentenceTranslationQuery } from "@/features/reader/api/useSentenceTranslationQuery";
-import { UpperText } from "@/components/ui/UpperText";
 
 export interface SentenceSheetSentence {
   text: string;
@@ -34,7 +33,7 @@ interface SentenceSheetProps {
 export const SentenceSheet = forwardRef<BottomSheetModal, SentenceSheetProps>(
   function SentenceSheet({ sentence, onDismiss, onQuotaExhausted }, ref) {
     const { t } = useTranslation();
-    const readerColors = useReaderThemeColors();
+    const { theme } = useTheme();
     const insets = useSafeAreaInsets();
     const translation = useSentenceTranslationQuery(sentence?.text ?? null);
     const { isFetched, refetch } = translation;
@@ -70,35 +69,40 @@ export const SentenceSheet = forwardRef<BottomSheetModal, SentenceSheetProps>(
         enableDynamicSizing
         onDismiss={onDismiss}
         backdropComponent={renderBackdrop}
-        backgroundStyle={{ backgroundColor: readerColors.background }}
-        handleIndicatorStyle={{ backgroundColor: readerColors.textMuted }}
+        // Kelime kartıyla (WordSheet) aynı kart dili: yuvarlak üst köşeler,
+        // yüzey zemini, aynı yazı ölçeği (2026-10-06; eskiden okuma
+        // yüzeyinin rengini ve eski mono etiketleri kullanıyordu).
+        backgroundStyle={[styles.sheet, { backgroundColor: theme.bg.surface }]}
+        handleIndicatorStyle={styles.handle}
       >
         <BottomSheetView style={containerStyle}>
           {sentence ? (
             <>
-              <Text style={[readingType.gloss, { color: readerColors.text }]}>{sentence.text}</Text>
+              <Text style={[detailType.sheetBody, { color: detailColors.title }]}>
+                {sentence.text}
+              </Text>
 
-              <UpperText style={[monoType.label, { color: readerColors.textMuted }]}>
+              <Text style={[detailType.sheetMore, { color: detailColors.amberDeep }]}>
                 {t("reader.sentenceSheet.translationLabel")}
-              </UpperText>
+              </Text>
 
               {translation.isFetching ? (
-                <Text style={[readingType.gloss, { color: readerColors.textMuted }]}>
+                <Text style={[detailType.sheetBody, { color: detailColors.body }]}>
                   {t("reader.sentenceTranslation.loading")}
                 </Text>
               ) : translation.data?.translation ? (
-                <Text style={[readingType.gloss, { color: readerColors.text }]}>
+                <Text style={[detailType.sheetTitle, { color: detailColors.title }]}>
                   {translation.data.translation}
                 </Text>
               ) : quotaExhausted ? (
                 <Pressable onPress={onQuotaExhausted} accessibilityRole="button">
-                  <Text style={[readingType.gloss, { color: readerColors.accent }]}>
+                  <Text style={[detailType.sheetBody, { color: detailColors.amberDeep }]}>
                     {t("reader.sentenceTranslation.quotaExhausted")}
                   </Text>
                 </Pressable>
               ) : translation.isError ? (
                 <Pressable onPress={() => void refetch()} accessibilityRole="button">
-                  <Text style={[readingType.gloss, { color: readerColors.textMuted }]}>
+                  <Text style={[detailType.sheetBody, { color: detailColors.body }]}>
                     {t("reader.sentenceTranslation.failed")}
                   </Text>
                 </Pressable>
@@ -112,6 +116,15 @@ export const SentenceSheet = forwardRef<BottomSheetModal, SentenceSheetProps>(
 );
 
 const styles = StyleSheet.create({
+  sheet: {
+    borderTopLeftRadius: detailMetrics.sheetRadius,
+    borderTopRightRadius: detailMetrics.sheetRadius,
+  },
+  handle: {
+    width: detailMetrics.handleWidth,
+    height: detailMetrics.handleHeight,
+    backgroundColor: detailColors.chipBorder,
+  },
   container: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,

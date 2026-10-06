@@ -35,6 +35,21 @@ const EXPECTED_TRIGGERS: { source: string; where: string; why: string }[] = [
     why: "Günlük AI cümle çevirisi hakkı bitti.",
   },
   {
+    source: "reader_listen",
+    where: "src/features/reader/components/ReaderScreen.tsx",
+    why: "Okuyucudaki kilitli 'dinle' yuvarlağı (ürün sahibi kararı 2026-10-06). Kullanıcı kendisi basıyor; kendiliğinden açılan bir teklif değil.",
+  },
+  {
+    source: "quiz_level_passed",
+    where: "src/features/quiz/components/QuizQuestionScreen.tsx",
+    why: "Ücretsiz kullanıcı 1. basamağı geçti: 2. basamak kartı, kullanıcı dokunursa paywall.",
+  },
+  {
+    source: "book_quiz",
+    where: "src/features/quiz/components/BookQuizScreen.tsx",
+    why: "Premium quiz basamağı (2. ve 3.).",
+  },
+  {
     source: "audio",
     where: "app/book/[id].tsx",
     why: "Kilitli kitapta 'Dinle' -- teklif okuma akışının DIŞINDA (Ürün İlkesi #1).",
@@ -102,6 +117,8 @@ const BENEFITS_WITH_SERVER_GATE: Record<string, string> = {
   secondLanguagePair: "set_language_pair() -> premium_required (migration 033/037)",
   smartPractice: "consume_smart_practice() (migration 049)",
   wordPacks: "level_word_pack() (migration 050)",
+  bookQuizzes:
+    "book_quiz_questions RLS + submit_book_quiz() -> has_active_premium() (migration 052)",
 };
 
 describe("paywall vaatleri", () => {

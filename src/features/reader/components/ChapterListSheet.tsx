@@ -10,7 +10,16 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { radius, spacing, monoType, type } from "@/theme";
+import {
+  detailColors,
+  detailMetrics,
+  detailType,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+  spacing,
+} from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { useBookDetailQuery } from "@/features/library";
@@ -120,6 +129,9 @@ function ChapterListContent({
   return (
     <>
       <View style={styles.header}>
+        <Text style={[detailType.sheetTitle, styles.headerTitle, { color: readerColors.text }]}>
+          {title}
+        </Text>
         <Pressable
           onPress={() => dismiss()}
           accessibilityRole="button"
@@ -127,12 +139,8 @@ function ChapterListContent({
           style={styles.closeButton}
           hitSlop={spacing.sm}
         >
-          <Ionicons name="close" size={24} color={readerColors.text} />
+          <Ionicons name="close" size={20} color={detailColors.muted} />
         </Pressable>
-        <Text style={[type.screenTitle, styles.headerTitle, { color: readerColors.text }]}>
-          {title}
-        </Text>
-        <View style={styles.headerSpacer} />
       </View>
 
       <BottomSheetFlatList
@@ -153,24 +161,18 @@ function ChapterListContent({
               },
             ]}
           >
-            <Text
+            <View
               style={[
-                monoType.rowText,
                 styles.rowNumber,
-                {
-                  color:
-                    item.id === currentChapterId ? readerColors.accent : readerColors.textMuted,
-                },
+                item.id === currentChapterId ? styles.rowNumberActive : null,
               ]}
             >
-              {index + 1}
-            </Text>
+              <Text style={[homeType.statLabel, { color: detailColors.amberInk }]}>
+                {index + 1}
+              </Text>
+            </View>
             <Text
-              style={[
-                monoType.rowText,
-                styles.rowText,
-                { color: item.id === currentChapterId ? readerColors.accent : readerColors.text },
-              ]}
+              style={[detailType.statLabel, styles.rowText, { color: readerColors.text }]}
               numberOfLines={2}
             >
               {item.title}
@@ -182,56 +184,60 @@ function ChapterListContent({
   );
 }
 
+const NUMBER_SIZE = 32;
+
 const styles = StyleSheet.create({
   sheetBackground: {
-    borderTopLeftRadius: radius.cover,
-    borderTopRightRadius: radius.cover,
+    borderTopLeftRadius: homeMetrics.cardRadius,
+    borderTopRightRadius: homeMetrics.cardRadius,
   },
-  // Kapatma düğmesi başlıkla aynı satırda ve dikey ortalı -- bkz.
-  // ReaderSettingsSheet'teki aynı düzeltme.
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xs,
-    paddingHorizontal: spacing.lg,
+    gap: homeSpace.md,
+    paddingTop: homeSpace.xl,
+    paddingBottom: homeSpace.md,
+    paddingHorizontal: homeMetrics.gutter,
   },
   headerTitle: {
     flex: 1,
-    textAlign: "center",
-  },
-  headerSpacer: {
-    width: 32,
   },
   closeButton: {
-    width: 32,
-    height: 32,
-    // Dil ayarlarındaki X ile aynı: arka plansız, düz ikon.
-    alignItems: "flex-start",
+    width: detailMetrics.menuButton,
+    height: detailMetrics.menuButton,
+    borderRadius: detailMetrics.menuButton / 2,
+    backgroundColor: detailColors.circle,
+    alignItems: "center",
     justifyContent: "center",
   },
   list: {
-    marginTop: spacing.sm,
+    marginTop: homeSpace.sm,
   },
   listContent: {
-    marginHorizontal: spacing.lg,
-    borderRadius: radius.cover,
+    marginHorizontal: homeMetrics.gutter,
+    borderRadius: homeMetrics.cardRadius,
     overflow: "hidden",
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: homeSpace.lg,
   },
   row: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    gap: spacing.sm,
-    paddingVertical: spacing.md,
+    alignItems: "center",
+    gap: homeSpace.md,
+    paddingVertical: homeSpace.md,
   },
   // Bölüm numarası (kullanıcı bulgusu: listede kaçıncı bölüm olduğu yazmıyordu).
   rowNumber: {
-    minWidth: 24,
-    fontVariant: ["tabular-nums"],
+    width: NUMBER_SIZE,
+    height: NUMBER_SIZE,
+    borderRadius: NUMBER_SIZE / 2,
+    backgroundColor: homeColors.peach,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  rowNumberActive: {
+    backgroundColor: detailColors.amber,
   },
   rowText: {
     flex: 1,
-    fontWeight: "600",
   },
 });

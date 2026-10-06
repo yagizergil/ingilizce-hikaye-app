@@ -39,7 +39,10 @@ function renderFooter(onLastPage: boolean, bottomInset: number) {
         }}
       >
         <ReaderFooter
-          progress={0.5}
+          page={1}
+          totalPages={24}
+          onPrevPage={() => {}}
+          onNextPage={() => {}}
           onLastPage={onLastPage}
           hasNextChapter
           onFinishChapter={() => {}}

@@ -1,32 +1,10 @@
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-
-import { monoType, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import { MascotLoading } from "@/components/ui/MascotLoading";
 
 interface LoadingStateProps {
   message?: string;
 }
 
-/** Token fix: `type.bodySmall` no longer exists — `monoType.rowText` is the
- * closest equivalent small body text in the new mono-carries-all-UI-text
- * system (see typography.ts header comment). */
+/** Liste içi yükleme: sayfa çeviren maskot (kompakt). Mesaj verilirse başlık yerine geçer. */
 export function LoadingState({ message }: LoadingStateProps) {
-  const { theme } = useTheme();
-
-  return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" color={theme.accent} />
-      {message ? <Text style={[monoType.rowText, { color: theme.text.secondary }]}>{message}</Text> : null}
-    </View>
-  );
+  return <MascotLoading compact title={message} />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.sm,
-    paddingVertical: spacing.xl,
-  },
-});

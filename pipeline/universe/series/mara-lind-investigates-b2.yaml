@@ -1,0 +1,49 @@
+id: mara-lind-investigates-b2
+character: mara
+level: B2
+season: 1
+continues: null
+genres: [mystery, thriller]
+themes: [truth, power, courage]
+format: >
+  Episodes of 4000-5500 words, 4-6 chapters. One lead per episode inside
+  the season-long "Harbour Lights" investigation; each episode resolves its
+  own question and ends with a new piece of the larger puzzle.
+titles:
+  tr: "Mara Lind Araştırıyor"
+  en: "Mara Lind Investigates"
+  de: "Mara Lind ermittelt"
+  fr: "Mara Lind enquête"
+  it: "Mara Lind indaga"
+  es: "Mara Lind investiga"
+  ru: "Расследования Мары Линд"
+  ar: "مارا ليند تحقّق"
+  zh: "玛拉·林德调查"
+  ja: "マラ・リンドの調査"
+descriptions:
+  tr: "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+  en: "The harbour project is swallowing the old fishing quarter. Journalist Mara Lind asks the question nobody else will."
+  de: "Das Hafenprojekt verschluckt das alte Fischerviertel. Journalistin Mara Lind stellt die unbequeme Frage."
+  fr: "Le projet du port avale le vieux quartier des pêcheurs. La journaliste Mara Lind pose la question qui dérange."
+  it: "Il progetto del porto sta inghiottendo il vecchio quartiere dei pescatori. La giornalista Mara Lind fa la domanda scomoda."
+  es: "El proyecto del puerto se traga el viejo barrio de pescadores. La periodista Mara Lind hace la pregunta incómoda."
+  ru: "Портовый проект поглощает старый рыбацкий квартал. Журналистка Мара Линд задаёт неудобный вопрос."
+  ar: "مشروع الميناء يبتلع حيّ الصيادين القديم. الصحفية مارا ليند تطرح السؤال الذي لا يجرؤ عليه أحد."
+  zh: "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+  ja: "港の再開発が古い漁師町をのみ込んでいく。記者マラ・リンドは誰も聞かない質問をする。"
+next_hooks:
+  - The fisherman who sold first was paid twice the market price - by whom?
+  - Sofi finds that three companies behind the project share one address.
+episodes:
+  - index: 1
+    slug: mara-lind-investigates-b2-e01
+    title: The Last Fisherman
+    premise: >
+      The last fisherman who refuses to sell his house in the old quarter
+      asks Mara to meet him at dawn. When she arrives, he has signed the
+      contract overnight and will not explain why.
+    status: published
+  - index: 2
+    slug: mara-lind-investigates-b2-e02
+    premise: Three companies behind Harbour Lights share one small office above a laundry.
+    status: planned

@@ -22,7 +22,10 @@ interface EntitlementRow {
  * default — not an error state.
  */
 export async function fetchSubscriptionTier(): Promise<SubscriptionTier> {
-  const { data, error } = await supabase.from("user_entitlements").select("tier").maybeSingle<EntitlementRow>();
+  const { data, error } = await supabase
+    .from("user_entitlements")
+    .select("tier")
+    .maybeSingle<EntitlementRow>();
 
   if (error) {
     throw error;

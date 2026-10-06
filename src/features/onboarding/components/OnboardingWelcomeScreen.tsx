@@ -10,7 +10,6 @@ import { useTheme } from "@/theme/useTheme";
 import { welcomeIconXml } from "@/features/onboarding/welcomeIconXml";
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
 
-
 /**
  * "Başla" ekranı: uygulamayı üç maddede anlatır.
  *

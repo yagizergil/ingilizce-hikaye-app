@@ -1,18 +1,19 @@
 import { useCallback, useMemo } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
-import { spacing } from "@/theme";
+import { spacing, mascotSize } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { ErrorState, LoadingState, ScreenHeader, SectionHeader } from "@/components/ui";
+import { ErrorState, LoadingState, MascotAnim, SectionHeader, SkyHeader } from "@/components/ui";
 import { useVocabularyQuery } from "@/features/vocabulary";
 
 import { formatReadingTime } from "@/features/profile/api/formatReadingTime";
 import { useProfileStatsQuery } from "@/features/profile/api/useProfileStatsQuery";
 import { ProfileStatsGrid } from "@/features/profile/components/ProfileStatsGrid";
 import { StreakCard } from "@/features/profile/components/StreakCard";
+import { LevelCard } from "@/features/profile/components/LevelCard";
+import { useXpQuery } from "@/features/profile/api/useXpQuery";
 import { WeeklyMinutesChart } from "@/features/profile/components/WeeklyMinutesChart";
 
 interface StatisticsScreenProps {
@@ -39,6 +40,7 @@ export function StatisticsScreen({ onClose }: StatisticsScreenProps) {
 
   const statsQuery = useProfileStatsQuery();
   const vocabularyQuery = useVocabularyQuery();
+  const xpQuery = useXpQuery();
 
   const stats = statsQuery.data;
   const savedWordCount = vocabularyQuery.data?.summary.totalCount ?? 0;
@@ -46,7 +48,8 @@ export function StatisticsScreen({ onClose }: StatisticsScreenProps) {
   const handleRetry = useCallback(() => {
     void statsQuery.refetch();
     void vocabularyQuery.refetch();
-  }, [statsQuery, vocabularyQuery]);
+    void xpQuery.refetch();
+  }, [statsQuery, vocabularyQuery, xpQuery]);
 
   const statItems = useMemo(
     () => [
@@ -78,8 +81,13 @@ export function StatisticsScreen({ onClose }: StatisticsScreenProps) {
   const isError = statsQuery.isError || vocabularyQuery.isError;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <ScreenHeader title={t("profile.stats.screenTitle")} onBack={onClose} />
+    <View style={[styles.container, { backgroundColor: theme.bg.surface }]}>
+      <SkyHeader
+        title={t("profile.stats.screenTitle")}
+        subtitle={t("profile.stats.subtitle")}
+        onBack={onClose}
+        art={<MascotAnim name="profile" width={mascotSize.header} />}
+      />
 
       {isLoading ? (
         <LoadingState message={t("profile.loading")} />
@@ -91,6 +99,7 @@ export function StatisticsScreen({ onClose }: StatisticsScreenProps) {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.stack}>
+            {xpQuery.data ? <LevelCard xp={xpQuery.data} /> : null}
             <StreakCard
               currentStreak={stats.currentStreak}
               longestStreak={stats.longestStreak}
@@ -108,7 +117,7 @@ export function StatisticsScreen({ onClose }: StatisticsScreenProps) {
           <ProfileStatsGrid items={statItems} />
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -1,0 +1,49 @@
+id: nora-night-train-a2
+character: nora
+level: A2
+season: 1
+continues: null
+genres: [mystery, drama]
+themes: [travel, kindness, strangers]
+format: >
+  Episodes of 700-1200 words, 3 chapters. Each night one passenger has a
+  small secret or problem; Nora notices a detail and helps. A slow larger
+  thread: clues about why her father left the city.
+titles:
+  tr: "Nora ile Gece Treni"
+  en: "Night Train with Nora"
+  de: "Nachtzug mit Nora"
+  fr: "Train de nuit avec Nora"
+  it: "Treno notturno con Nora"
+  es: "Tren nocturno con Nora"
+  ru: "Ночной поезд с Норой"
+  ar: "قطار الليل مع نورا"
+  zh: "与诺拉同乘夜车"
+  ja: "ノラと夜行列車"
+descriptions:
+  tr: "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+  en: "One passenger, one secret, every night. Conductor Nora sees the small details nobody else sees."
+  de: "Jede Nacht ein Fahrgast, ein Geheimnis. Schaffnerin Nora sieht die kleinen Details."
+  fr: "Chaque nuit, un passager et un secret. La contrôleuse Nora remarque les petits détails."
+  it: "Ogni notte un passeggero, un segreto. La capotreno Nora vede i piccoli dettagli."
+  es: "Cada noche, un pasajero y un secreto. La revisora Nora ve los pequeños detalles."
+  ru: "Каждую ночь — пассажир и его тайна. Проводница Нора замечает мелочи."
+  ar: "كل ليلة راكب وسرّ. المراقبة نورا ترى التفاصيل الصغيرة."
+  zh: "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+  ja: "毎晩ひとりの乗客と、ひとつの秘密。車掌ノラは小さな手がかりを見逃さない。"
+next_hooks:
+  - A passenger has a ticket from twenty years ago with Nora's father's signature on it.
+  - The train stops in the snow for three hours; nobody knows why.
+episodes:
+  - index: 1
+    slug: nora-night-train-a2-e01
+    title: The Ticket to Nowhere
+    premise: >
+      An old man gets on the 22:40 train with a ticket to a station that
+      closed thirty years ago. He says someone is waiting for him there.
+      Nora must decide what to do before the morning.
+    status: published
+  - index: 2
+    slug: nora-night-train-a2-e02
+    premise: A young woman travels with a suitcase she never opens and never leaves alone.
+    status: planned

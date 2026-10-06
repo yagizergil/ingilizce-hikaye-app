@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { BottomSheetModal, BottomSheetBackdrop, BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
 
-import { radius, spacing, type } from "@/theme";
+import { detailType, homeMetrics, homeType, spacing } from "@/theme";
 import { SegmentedControl, type SegmentOption } from "@/components/ui";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { useBookSavedWordsQuery } from "@/features/reader/api/useBookSavedWordsQuery";
@@ -97,7 +97,7 @@ function BookWordsContent({ bookId }: { bookId: string | null }) {
         Ayarlar) X duruyor, bu değişiklik yalnızca bu ekrana özel.
       */}
       <View style={styles.header}>
-        <Text style={[type.screenTitle, styles.headerTitle, { color: readerColors.text }]}>
+        <Text style={[detailType.sheetTitle, styles.headerTitle, { color: readerColors.text }]}>
           {t("reader.bookWords.title")}
         </Text>
       </View>
@@ -108,7 +108,7 @@ function BookWordsContent({ bookId }: { bookId: string | null }) {
 
       {words.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={[type.bookTitleMd, styles.emptyText, { color: readerColors.textMuted }]}>
+          <Text style={[homeType.cardSub, styles.emptyText, { color: readerColors.textMuted }]}>
             {t(
               tab === "favorites"
                 ? "reader.bookWords.emptyFavorites"
@@ -132,8 +132,8 @@ function BookWordsContent({ bookId }: { bookId: string | null }) {
 
 const styles = StyleSheet.create({
   sheetBackground: {
-    borderTopLeftRadius: radius.cover,
-    borderTopRightRadius: radius.cover,
+    borderTopLeftRadius: homeMetrics.cardRadius,
+    borderTopRightRadius: homeMetrics.cardRadius,
   },
   header: {
     alignItems: "center",

@@ -5,7 +5,7 @@ import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 import { create } from "zustand";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { monoType, radius, spacing } from "@/theme";
+import { detailType, homeColors, homeMetrics, homeSpace, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
 const TOAST_DURATION_MS = 2500;
@@ -70,10 +70,15 @@ export function ToastHost() {
       pointerEvents="none"
       style={[
         styles.container,
-        { bottom: insets.bottom + spacing.xl, backgroundColor: theme.text.primary },
+        {
+          bottom: insets.bottom + homeMetrics.tabBarHeight + spacing.lg,
+          backgroundColor: theme.text.primary,
+        },
       ]}
     >
-      <Text style={[monoType.rowText, { color: theme.text.inverse }]}>{message}</Text>
+      <Text style={[detailType.statLabel, styles.text, { color: theme.text.inverse }]}>
+        {message}
+      </Text>
     </Animated.View>
   );
 }
@@ -84,9 +89,17 @@ const styles = StyleSheet.create({
     left: spacing.lg,
     right: spacing.lg,
     alignSelf: "center",
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.sm,
+    paddingVertical: homeSpace.md,
+    paddingHorizontal: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
     alignItems: "center",
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 18,
+    elevation: 8,
+  },
+  text: {
+    textAlign: "center",
   },
 });

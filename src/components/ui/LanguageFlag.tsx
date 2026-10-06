@@ -36,10 +36,7 @@ export function LanguageFlag({ code, size = 32 }: LanguageFlagProps) {
 
   return (
     <View
-      style={[
-        styles.wrap,
-        { width: size, height: size, backgroundColor: theme.bg.primary },
-      ]}
+      style={[styles.wrap, { width: size, height: size, backgroundColor: theme.bg.primary }]}
       accessibilityLabel={language.nameEn}
     >
       <Text style={[styles.fallback, { fontSize: size * 0.78, lineHeight: size }]}>

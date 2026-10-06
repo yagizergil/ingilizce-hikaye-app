@@ -1,0 +1,58 @@
+# Ortak dünya kartı -- bütün karakterli seriler bu şehirde geçer.
+# Ortak dünya; seriler arası küçük geçişlere (crossover) izin verir ve
+# tekrar eden mekânlar okurun bağlam yükünü düşürür (narrow reading).
+id: port-lumen
+name: Port Lumen
+summary: >
+  A mid-sized harbour city on a cold northern coast. It has an old market
+  quarter with narrow streets, a busy central train station, a fishing
+  harbour that is slowly turning into expensive apartments, a hill with a
+  lighthouse, and a night train (the Lumen Express) that runs north into
+  the mountains. It is not a real place and it has no real country: names,
+  food and customs are mixed and international so that readers from every
+  language feel equally at home.
+
+recurring_places:
+  - id: station
+    name: Port Lumen Central Station
+    note: Big, old, glass roof. Leo's café is across the street. The Lumen Express leaves from platform 9 at 22:40.
+  - id: old-market
+    name: the Old Market
+    note: Narrow streets, food stalls, small shops. Kai's repair shop is here.
+  - id: harbour
+    name: the harbour
+    note: Fishing boats, warehouses, a big building project that many people do not like.
+  - id: lighthouse-hill
+    name: Lighthouse Hill
+    note: A park with a view of the whole city.
+  - id: herald
+    name: the Port Lumen Herald
+    note: The city newspaper, now mostly online. Mara works here.
+
+tone:
+  - Warm, human, grounded in everyday life. Small stakes feel big.
+  - Adult protagonists and adult problems (work, money, family, love, ethics). NOT children's stories.
+  - Light humour is welcome; cynicism and cruelty are not.
+  - Each episode is complete in itself (a reader can start anywhere) but moves the character's larger story one step forward.
+
+content_rules:
+  - No graphic violence, sex, drugs or self-harm. Crime may happen off-page in B1/B2 only.
+  - No real brands, real celebrities or real political events.
+  - Culturally neutral: no religion-specific holidays as plot points; food and names are international.
+  - Every episode must be original; never copy or paraphrase existing books, films or series.
+
+# SABİT ANA KADRO (ürün sahibi kararı, 2026-10-05). Yeni seriler YALNIZCA
+# bu dört karakter için yazılır ("Kai için yeni seri" = kai'ye yeni seri
+# kartı). Yeni bir ana karakter eklemek ürün sahibinin açık kararıdır;
+# bölümlere giren diğer kişiler yalnızca yardımcı oyuncudur (karakter
+# kartları recurring_cast'te durur, kendi serileri olmaz).
+main_characters: [leo, nora, kai, mara]
+
+naming_criteria: >
+  Main character names were chosen to be (1) short, one or two syllables;
+  (2) easy to pronounce and spell in all ten app languages (tr, en, de, fr,
+  it, es, ru, ar, zh, ja), avoiding sounds that are hard for many of them
+  (English "th", "w", consonant clusters); (3) international and not tied
+  to one culture; (4) not the name of a famous existing fictional
+  character; (5) different first letters and sound shapes, so the four
+  heroes are never confused on a small book card.

@@ -2,10 +2,17 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
-import { monoType, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import {
+  detailColors,
+  detailMetrics,
+  detailType,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+} from "@/theme";
+import { UiIcon } from "@/components/ui";
 import { useBookAudioAccessQuery } from "@/features/library/api/useBookAudioAccess";
-import { UpperText } from "@/components/ui/UpperText";
 
 interface BookAudioCardProps {
   bookId: string;
@@ -29,7 +36,6 @@ interface BookAudioCardProps {
  */
 export function BookAudioCard({ bookId, hasAudio }: BookAudioCardProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
 
   const accessQuery = useBookAudioAccessQuery(bookId, hasAudio);
 
@@ -42,28 +48,40 @@ export function BookAudioCard({ bookId, hasAudio }: BookAudioCardProps) {
   if (!access) return null;
 
   return (
-    <View style={[styles.container, { borderTopColor: theme.border.hairline }]}>
-      <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
-        {t("bookDetail.audio.label")}
-      </UpperText>
-      <Text style={[monoType.meta, styles.body, { color: theme.text.primary }]}>
-        {access.canPlay ? t("bookDetail.audio.unlocked") : t("bookDetail.audio.locked")}
-      </Text>
+    <View style={styles.container}>
+      <UiIcon name="headphones" size={homeMetrics.rowIcon} />
+      <View style={styles.texts}>
+        <Text style={[detailType.sectionTitle, { color: detailColors.title }]}>
+          {t("bookDetail.audio.label")}
+        </Text>
+        <Text style={[homeType.cardSub, { color: detailColors.muted }]}>
+          {access.canPlay ? t("bookDetail.audio.unlocked") : t("bookDetail.audio.locked")}
+        </Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // Kutu YOK. Tasarım dili boyunca tek ayırıcı hairline; buraya kart
-  // koymak bu ekranda başka hiçbir yerde olmayan bir yüzey yaratırdı.
   container: {
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.lg,
-    paddingTop: spacing.ml,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    gap: spacing.xxs,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: homeSpace.md,
+    marginHorizontal: detailMetrics.gutter,
+    marginTop: homeSpace.xl,
+    padding: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    // Beyaz kart: hemen altındaki "Dinle" düğmesi şeftali; ikisi aynı tonda
+    // üst üste tek bir blok gibi görünüyordu.
+    backgroundColor: homeColors.card,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
-  body: {
-    marginTop: spacing.xxs,
+  texts: {
+    flex: 1,
+    gap: homeSpace.xs,
   },
 });

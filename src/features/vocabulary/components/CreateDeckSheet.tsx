@@ -10,10 +10,18 @@ import {
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { DECK_COLOR_OPTIONS, monoType, radius, spacing, type } from "@/theme";
+import {
+  DECK_COLOR_OPTIONS,
+  detailType,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+  radius,
+  spacing,
+} from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
 
 import type { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 
@@ -109,7 +117,7 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Text style={[type.sectionHeading, { color: theme.text.primary }]}>
+          <Text style={[detailType.sheetTitle, { color: theme.text.primary }]}>
             {initial ? t("vocabulary.decks.editTitle") : t("vocabulary.decks.createTitle")}
           </Text>
 
@@ -121,18 +129,18 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
             maxLength={MAX_NAME_LENGTH}
             style={[
               styles.input,
-              type.chapterRowTitle,
+              detailType.statLabel,
               {
                 color: theme.text.primary,
-                borderColor: theme.border.hairline,
+                borderColor: homeColors.peach,
                 backgroundColor: theme.bg.primary,
               },
             ]}
           />
 
-          <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+          <Text style={[homeType.statLabel, { color: theme.text.secondary }]}>
             {t("vocabulary.decks.colorLabel")}
-          </UpperText>
+          </Text>
           <View style={styles.colorRow}>
             {DECK_COLOR_OPTIONS.map((option) => {
               const selected = option.key === colorKey;
@@ -168,14 +176,15 @@ export const CreateDeckSheet = forwardRef<BottomSheetModal, CreateDeckSheetProps
 
 const styles = StyleSheet.create({
   content: {
-    gap: spacing.md,
-    padding: spacing.md,
+    gap: homeSpace.md,
+    paddingHorizontal: homeMetrics.gutter,
+    paddingTop: homeSpace.lg,
   },
   input: {
-    minHeight: 48,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.md,
+    minHeight: homeMetrics.continueButton + homeSpace.lg,
+    borderWidth: 2,
+    borderRadius: homeSpace.lg,
+    paddingHorizontal: homeSpace.lg,
   },
   colorRow: {
     flexDirection: "row",

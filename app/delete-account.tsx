@@ -3,9 +3,6 @@ import { DeleteAccountScreen } from "@/features/onboarding";
 
 export default function DeleteAccountRoute() {
   return (
-    <DeleteAccountScreen
-      onDeleted={() => router.replace("/")}
-      onCancel={() => router.back()}
-    />
+    <DeleteAccountScreen onDeleted={() => router.replace("/")} onCancel={() => router.back()} />
   );
 }

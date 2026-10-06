@@ -83,7 +83,9 @@ export function OnboardingOptionCard({
       ) : null}
 
       <View style={styles.textBlock}>
-        <Text style={[type.bookTitleMd, { color: theme.text.primary }]}>{title}</Text>
+        {/* Arapça gibi sağdan sola yazılan adlar da satırda solda dursun:
+            hizasız bir satır listede hata gibi görünüyordu. */}
+        <Text style={[type.bookTitleMd, styles.title, { color: theme.text.primary }]}>{title}</Text>
         {subtitle ? (
           <Text style={[monoType.rowText, styles.subtitle, { color: theme.text.secondary }]}>
             {subtitle}
@@ -127,6 +129,10 @@ const styles = StyleSheet.create({
   textBlock: {
     flex: 1,
     gap: spacing.xxs,
+  },
+  title: {
+    textAlign: "left",
+    writingDirection: "ltr",
   },
   subtitle: {
     // Alt başlık iki satıra taşabilir -- kart yüksekliği ona göre büyür.

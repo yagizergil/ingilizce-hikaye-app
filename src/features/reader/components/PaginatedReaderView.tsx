@@ -88,6 +88,8 @@ export interface PaginatedReaderHandle {
   getCurrentPageSpeech: () => SpeechSegment[];
   /** Bir sonraki sayfaya geçer. Son sayfadaysa `false` döner. */
   advancePage: () => boolean;
+  /** Bir önceki sayfaya döner. İlk sayfadaysa `false` döner. */
+  retreatPage: () => boolean;
   /**
    * Verilen paragraf/karakter konumunu içeren sayfaya geçer (gerekiyorsa,
    * geri de). Konum zaten görünen sayfadaysa hiçbir şey yapmaz. Sayfa
@@ -605,6 +607,18 @@ export const PaginatedReaderView = forwardRef<PaginatedReaderHandle, PaginatedRe
           const current = currentPageRef.current;
           if (current >= pages.length - 1) return false;
           const target = current + 1;
+          currentPageRef.current = target;
+          setAnchorFromPage(target, pages);
+          listRef.current?.scrollToIndex({ index: target, animated: true });
+          onPageChange({ page: target, totalPages: pages.length });
+          reportPositionForPage(target, pages);
+          return true;
+        },
+        retreatPage: () => {
+          if (!pages || pages.length === 0) return false;
+          const current = currentPageRef.current;
+          if (current <= 0) return false;
+          const target = current - 1;
           currentPageRef.current = target;
           setAnchorFromPage(target, pages);
           listRef.current?.scrollToIndex({ index: target, animated: true });

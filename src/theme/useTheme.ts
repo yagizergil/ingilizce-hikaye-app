@@ -29,6 +29,9 @@ interface ThemePreferenceState {
 }
 
 const useThemePreferenceStore = create<ThemePreferenceState>((set) => ({
+  // Tercih yalnızca OKUMA YÜZEYİNİ boyuyor (bkz. `useTheme` / `useReadingTheme`);
+  // "system" varsayılanı gece karanlık modda okumayı koyu yapar, arayüzü
+  // etkilemez.
   preference: "system",
   hydrated: false,
   setPreference: (preference) => {
@@ -65,24 +68,40 @@ export interface UseThemeResult {
 }
 
 /**
- * Resolves the active theme: explicit sepia/light/dark preference wins,
- * otherwise follows the OS color scheme via useColorScheme(). Full
- * settings UI for switching preference is future work — this hook is the
- * functional core it will call into.
+ * UYGULAMA ARAYÜZÜNÜN teması -- HER ZAMAN açık.
+ *
+ * 2026-10-05: yeni tasarım dili (Funfluent referansı) açık zemin için çizildi
+ * ve ekranların çoğu sabit açık renkler kullanıyor. Kullanıcının tema tercihi
+ * (açık/sepya/koyu/sistem) artık YALNIZCA okuma yüzeyini boyuyor
+ * (`useReadingTheme`); önceden bütün arayüze uygulanıyordu ve koyu seçen
+ * kullanıcı sekme çubuğu koyu, kartlar açık, yarım kalmış bir uygulama
+ * görüyordu.
+ *
+ * `preference`/`setPreference` burada da dönüyor: ayarlar sheet'i ve profil
+ * satırı tercihi okuyup yazıyor.
  */
 export function useTheme(): UseThemeResult {
-  const systemScheme = useColorScheme();
   const preference = useThemePreferenceStore((state) => state.preference);
   const setPreference = useThemePreferenceStore((state) => state.setPreference);
   const hydrated = useThemePreferenceStore((state) => state.hydrated);
 
-  const themeName: ThemeName = preference === "system" ? (systemScheme === "dark" ? "dark" : "light") : preference;
-
   return {
-    themeName,
-    theme: colors[themeName],
+    themeName: "light",
+    theme: colors.light,
     preference,
     setPreference,
     hydrated,
   };
+}
+
+/**
+ * OKUMA YÜZEYİNİN teması: açık/sepya/koyu tercihi, "system" ise cihazın
+ * açık/koyu ayarı.
+ */
+export function useReadingTheme(): { themeName: ThemeName; theme: ThemeColors } {
+  const systemScheme = useColorScheme();
+  const preference = useThemePreferenceStore((state) => state.preference);
+  const themeName: ThemeName =
+    preference === "system" ? (systemScheme === "dark" ? "dark" : "light") : preference;
+  return { themeName, theme: colors[themeName] };
 }

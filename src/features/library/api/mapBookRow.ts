@@ -98,5 +98,6 @@ export function mapBookRow(row: RawBookRow): Book {
     sourceUrl: row.source_url ?? "",
     chapters: [],
     createdAt: row.created_at,
+    publishedAt: row.published_at,
   };
 }

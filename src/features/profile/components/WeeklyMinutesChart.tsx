@@ -2,10 +2,9 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
-import { Card } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
+import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
+import { UiIcon } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 
 import type { ProfileDailyMinutes } from "@/features/profile/types";
 
@@ -37,18 +36,19 @@ const EMPTY_BAR_HEIGHT = 3;
  */
 export function WeeklyMinutesChart({ weekDays, totalMinutesThisWeek }: WeeklyMinutesChartProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const palette = useHomePalette();
 
   const peak = Math.max(...weekDays.map((day) => day.minutes), 1);
   const todayKey = todayDateKey();
 
   return (
-    <Card style={styles.card}>
+    <View style={[styles.card, { backgroundColor: palette.card }]}>
       <View style={styles.header}>
-        <UpperText style={[monoType.statLabel, { color: theme.text.secondary }]}>
+        <UiIcon name="chart" size={homeMetrics.rowIcon} />
+        <Text style={[detailType.sectionTitle, styles.title, { color: palette.ink }]}>
           {t("profile.week.title")}
-        </UpperText>
-        <Text style={[monoType.statValue, styles.total, { color: theme.text.primary }]}>
+        </Text>
+        <Text style={[detailType.sectionTitle, styles.total, { color: detailColors.amberDeep }]}>
           {t("profile.week.totalMinutes", { count: totalMinutesThisWeek })}
         </Text>
       </View>
@@ -57,9 +57,7 @@ export function WeeklyMinutesChart({ weekDays, totalMinutesThisWeek }: WeeklyMin
         // Bu hafta hiç okunmadıysa 96 piksellik boş bir ızgara göstermek
         // grafiğin bozuk olduğu izlenimi veriyor. Bunun yerine tek satır
         // bir açıklama: ekran neden boş olduğunu kendisi söylüyor.
-        <Text style={[monoType.meta, { color: theme.text.secondary }]}>
-          {t("profile.week.empty")}
-        </Text>
+        <Text style={[homeType.cardSub, { color: palette.muted }]}>{t("profile.week.empty")}</Text>
       ) : (
         <View style={styles.chart}>
           {weekDays.map((day, index) => {
@@ -87,20 +85,15 @@ export function WeeklyMinutesChart({ weekDays, totalMinutesThisWeek }: WeeklyMin
                         height,
                         backgroundColor:
                           day.minutes === 0
-                            ? theme.border.hairline
+                            ? homeColors.peach
                             : isToday
-                              ? theme.accent
-                              : theme.highlight,
+                              ? detailColors.amber
+                              : detailColors.wordHighlight,
                       },
                     ]}
                   />
                 </View>
-                <Text
-                  style={[
-                    monoType.metaTight,
-                    { color: isToday ? theme.text.primary : theme.text.secondary },
-                  ]}
-                >
+                <Text style={[homeType.cardSub, { color: isToday ? palette.ink : palette.muted }]}>
                   {t(`profile.streak.days.${DAY_KEYS[index]}`)}
                 </Text>
               </View>
@@ -108,7 +101,7 @@ export function WeeklyMinutesChart({ weekDays, totalMinutesThisWeek }: WeeklyMin
           })}
         </View>
       )}
-    </Card>
+    </View>
   );
 }
 
@@ -122,14 +115,23 @@ function todayDateKey(): string {
 
 const styles = StyleSheet.create({
   card: {
-    marginHorizontal: spacing.lg,
-    padding: spacing.md,
-    gap: spacing.md,
+    marginHorizontal: homeMetrics.gutter,
+    padding: homeSpace.lg,
+    gap: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
   header: {
     flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between",
+    alignItems: "center",
+    gap: homeSpace.md,
+  },
+  title: {
+    flex: 1,
   },
   total: {
     fontVariant: ["tabular-nums"],
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
     alignItems: "center",
-    gap: spacing.xs,
+    gap: homeSpace.xs,
   },
   barTrack: {
     // Çubuklar ortak bir tabandan yükselsin: iz her zaman tam yükseklikte,
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   bar: {
-    width: 22,
-    borderRadius: radius.sm,
+    width: homeSpace.xl,
+    borderRadius: homeSpace.sm,
   },
 });

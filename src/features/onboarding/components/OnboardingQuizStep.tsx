@@ -162,7 +162,9 @@ export function OnboardingQuizStep({
                     },
                   ]}
                 >
-                  <Text style={[type.bookTitleMd, styles.optionText, { color: theme.text.primary }]}>
+                  <Text
+                    style={[type.bookTitleMd, styles.optionText, { color: theme.text.primary }]}
+                  >
                     {gloss}
                   </Text>
                   {chosen && correct ? (

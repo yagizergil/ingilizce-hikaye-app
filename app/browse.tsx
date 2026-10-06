@@ -2,16 +2,27 @@ import { useCallback, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 
-import { spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import { detailColors, homeMetrics, homeSpace, mascotSize } from "@/theme";
 import { trackEvent } from "@/lib/analytics";
-import { LoadingState, ErrorState, EmptyState, ScreenHeader, useToast } from "@/components/ui";
-import { useFavoritedBookIdsQuery, useToggleFavoriteMutation } from "@/features/home";
-import { BookListRow, useLibraryBooksQuery, useLocalBookFilter } from "@/features/library";
+import {
+  LoadingState,
+  ErrorState,
+  EmptyState,
+  MascotAnim,
+  SkyHeader,
+  useToast,
+} from "@/components/ui";
+import {
+  HomeBookCard,
+  useFavoritedBookIdsQuery,
+  useFinishedBookIdsQuery,
+  useToggleFavoriteMutation,
+} from "@/features/home";
+import { useLibraryBooksQuery, useLocalBookFilter, prefetchBookDetail } from "@/features/library";
+import { useRefetchOnFocusIfStale } from "@/hooks/useRefetchOnFocusIfStale";
 
 import type { Book, LevelGroup } from "@/features/library";
 
@@ -25,14 +36,9 @@ import type { Book, LevelGroup } from "@/features/library";
  * filtered after visiting a tag. This screen keeps its filter criteria
  * entirely in the route params (see useLocalBookFilter).
  */
-function RowGap() {
-  return <View style={{ height: spacing.sm }} />;
-}
-
 export default function BrowseScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { theme } = useTheme();
   const params = useLocalSearchParams<{
     title?: string;
     levelGroup?: string;
@@ -43,7 +49,7 @@ export default function BrowseScreen() {
     maxMinutes?: string;
     level?: string;
   }>();
-  const { data, isLoading, isError, refetch } = useLibraryBooksQuery();
+  const { data, isLoading, isError, refetch, dataUpdatedAt } = useLibraryBooksQuery();
   const books = useLocalBookFilter(data, {
     query: params.q,
     levelGroup: params.levelGroup as LevelGroup | undefined,
@@ -54,6 +60,7 @@ export default function BrowseScreen() {
     hasAudio: params.hasAudio === "true",
   });
   const { data: favoritedBookIds } = useFavoritedBookIdsQuery();
+  const { data: finishedBookIds } = useFinishedBookIdsQuery();
   const toggleFavoriteMutation = useToggleFavoriteMutation();
   const { show: showToast } = useToast();
 
@@ -67,15 +74,12 @@ export default function BrowseScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.levelGroup, params.genre, params.q]);
 
-  useFocusEffect(
-    useCallback(() => {
-      void refetch();
-    }, [refetch]),
-  );
+  useRefetchOnFocusIfStale([{ dataUpdatedAt, refetch }]);
 
   const handleOpenBook = useCallback(
     (book: Book) => {
       trackEvent("browse_book_opened", { bookId: book.id });
+      prefetchBookDetail(book.id);
       router.push(`/book/${book.id}`);
     },
     [router],
@@ -106,46 +110,77 @@ export default function BrowseScreen() {
 
   const renderBook: ListRenderItem<Book> = useCallback(
     ({ item }) => (
-      <BookListRow book={item} onPress={handleOpenBook} onLongPress={handleToggleFavorite} />
+      <View style={styles.cell}>
+        <HomeBookCard
+          book={item}
+          finished={finishedBookIds?.has(item.id) ?? false}
+          onPress={handleOpenBook}
+          onLongPress={handleToggleFavorite}
+          fluid
+        />
+      </View>
     ),
-    [handleOpenBook, handleToggleFavorite],
+    [finishedBookIds, handleOpenBook, handleToggleFavorite],
   );
 
   const fallbackTitle = params.levelGroup
     ? t(`browse.fallbackTitle.${params.levelGroup}`)
-    : t("tabs.library");
+    : t("tabs.search");
   const title = params.title ?? fallbackTitle;
 
-  return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.bg.primary }]} edges={["top"]}>
-      <ScreenHeader title={title} onBack={() => router.back()} />
+  const header = (
+    <SkyHeader
+      title={title}
+      subtitle={t("categoriesScreen.count", { count: books.length })}
+      onBack={() => router.back()}
+      art={<MascotAnim name="search" width={mascotSize.header} />}
+    />
+  );
 
+  return (
+    <View style={styles.container}>
       {isLoading ? (
-        <LoadingState message={t("browse.loading")} />
+        <>
+          {header}
+          <LoadingState message={t("browse.loading")} />
+        </>
       ) : isError ? (
-        <ErrorState message={t("browse.error")} onRetry={() => void refetch()} />
+        <>
+          {header}
+          <ErrorState message={t("browse.error")} onRetry={() => void refetch()} />
+        </>
       ) : books.length === 0 ? (
-        <EmptyState title={t("browse.empty.title")} description={t("browse.empty.description")} />
+        <>
+          {header}
+          <EmptyState title={t("browse.empty.title")} description={t("browse.empty.description")} />
+        </>
       ) : (
         <FlashList
           data={books}
+          numColumns={2}
           keyExtractor={(item) => item.id}
           renderItem={renderBook}
+          ListHeaderComponent={header}
           contentContainerStyle={styles.listContent}
-          ItemSeparatorComponent={RowGap}
           showsVerticalScrollIndicator={false}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: detailColors.circle,
   },
   listContent: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.section,
+    paddingHorizontal: homeMetrics.gutter - homeSpace.sm,
+    paddingBottom: homeSpace.xl * 3,
+  },
+  cell: {
+    flex: 1,
+    paddingHorizontal: homeSpace.sm,
+    paddingBottom: homeSpace.xl,
   },
 });

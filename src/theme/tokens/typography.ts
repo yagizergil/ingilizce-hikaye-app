@@ -31,11 +31,18 @@
  */
 
 export const fontFamily = {
-  nunitoRegular: "Nunito_400Regular",
-  nunitoMedium: "Nunito_500Medium",
-  nunitoSemiBold: "Nunito_600SemiBold",
-  nunitoBold: "Nunito_700Bold",
-  nunitoExtraBold: "Nunito_800ExtraBold",
+  // 2026-10-04: UI yazı tipi Gabarito. `nunito*` adları KALDI (yüzlerce kullanım)
+  // ama değerleri artık Gabarito; yeniden adlandırma ayrı, mekanik bir iş.
+  nunitoRegular: "Gabarito_400Regular",
+  nunitoMedium: "Gabarito_500Medium",
+  nunitoSemiBold: "Gabarito_600SemiBold",
+  nunitoBold: "Gabarito_700Bold",
+  nunitoExtraBold: "Gabarito_800ExtraBold",
+  gabaritoRegular: "Gabarito_400Regular",
+  gabaritoMedium: "Gabarito_500Medium",
+  gabaritoSemiBold: "Gabarito_600SemiBold",
+  gabaritoBold: "Gabarito_700Bold",
+  gabaritoExtraBold: "Gabarito_800ExtraBold",
   literataRegular: "Literata_400Regular",
   literataRegularItalic: "Literata_400Regular_Italic",
 } as const;
@@ -194,52 +201,55 @@ export const readingType = {
  * taşındı. `textTransform`/`letterSpacing` değerleri Faz 0'dan aynen
  * korundu (bu fazın kapsamı yalnızca font ailesi/ağırlığı).
  */
+/**
+ * 2026-10-05: YENİ TASARIM DİLİ (Funfluent referansı). Bu grup eskiden
+ * 9-11 pt, büyük harfli ve geniş harf aralıklı "mono" etiketlerdi; referansta
+ * hiçbir etiket büyük harf değil. Büyük harf ve harf aralığı kaldırıldı, en
+ * küçük ölçü 12 pt'ye çıktı. Token adları korunuyor (60+ çağrı yeri), görünüm
+ * yeni dile geçti; `UpperText` artık bu token'larla metni değiştirmiyor.
+ */
 export const monoType = {
   eyebrow: {
     fontFamily: fontFamily.nunitoBold,
-    fontSize: 11,
-    lineHeight: 14,
+    fontSize: 12.5,
+    lineHeight: 16,
     fontWeight: "700",
-    letterSpacing: 1.54, // .14em @ 11px
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   label: {
     fontFamily: fontFamily.nunitoBold,
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "700",
-    letterSpacing: 1.2, // .12em @ 10px
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   meta: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "500",
-    letterSpacing: 0.3, // .03em @ 10px
+    letterSpacing: 0,
   },
   metaTight: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "500",
     letterSpacing: 0,
   },
   locationLabel: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "500",
-    letterSpacing: 0.5, // .05em @ 10px
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   badge: {
     fontFamily: fontFamily.nunitoBold,
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "700",
-    letterSpacing: 0.5,
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   /**
    * Kapak üstündeki seviye rozeti (A1..C2).
@@ -270,24 +280,24 @@ export const monoType = {
   },
   percent: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 11,
-    lineHeight: 14,
+    fontSize: 12.5,
+    lineHeight: 16,
     fontWeight: "500",
     letterSpacing: 0,
   },
   moreLink: {
     fontFamily: fontFamily.nunitoSemiBold,
-    fontSize: 10,
-    lineHeight: 13,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "600",
-    letterSpacing: 0.5,
+    letterSpacing: 0,
   },
   author: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 11,
-    lineHeight: 15,
+    fontSize: 12.5,
+    lineHeight: 17,
     fontWeight: "500",
-    letterSpacing: 0.22,
+    letterSpacing: 0,
   },
   authorLg: {
     fontFamily: fontFamily.nunitoMedium,
@@ -319,42 +329,38 @@ export const monoType = {
   },
   statLabel: {
     fontFamily: fontFamily.nunitoSemiBold,
-    fontSize: 9,
-    lineHeight: 12,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "600",
-    letterSpacing: 0.54, // .06em @ 9px
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   dueLabel: {
     fontFamily: fontFamily.nunitoSemiBold,
-    fontSize: 9,
-    lineHeight: 12,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "600",
-    letterSpacing: 0.45, // .05em @ 9px
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   sourceLabel: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 9,
-    lineHeight: 12,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "500",
     letterSpacing: 0,
   },
   tag: {
     fontFamily: fontFamily.nunitoSemiBold,
-    fontSize: 9,
-    lineHeight: 12,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "600",
-    letterSpacing: 0.36, // .04em @ 9px
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   posLabel: {
     fontFamily: fontFamily.nunitoSemiBold,
-    fontSize: 9,
-    lineHeight: 12,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: "600",
-    letterSpacing: 0.54,
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   wordGlossMono: {
     fontFamily: fontFamily.nunitoMedium,
@@ -368,13 +374,12 @@ export const monoType = {
     fontSize: 12,
     lineHeight: 15,
     fontWeight: "700",
-    letterSpacing: 0.96, // .08em @ 12px
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   chapterIndex: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 11,
-    lineHeight: 14,
+    fontSize: 12.5,
+    lineHeight: 16,
     fontWeight: "500",
     letterSpacing: 0,
   },
@@ -387,17 +392,17 @@ export const monoType = {
   },
   footerNote: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 10,
-    lineHeight: 16,
+    fontSize: 12,
+    lineHeight: 19,
     fontWeight: "500",
     letterSpacing: 0,
   },
   summary: {
     fontFamily: fontFamily.nunitoMedium,
-    fontSize: 11,
-    lineHeight: 15,
+    fontSize: 12.5,
+    lineHeight: 17,
     fontWeight: "500",
-    letterSpacing: 0.22,
+    letterSpacing: 0,
   },
 } as const satisfies Record<string, TypeStyle>;
 
@@ -509,13 +514,14 @@ export const paywallType = {
     fontWeight: "600",
     letterSpacing: 0,
   },
+  // 2026-10-05: büyük harf + harf aralığı eski tasarımdandı; referanstaki
+  // bölüm başlıkları cümle düzeninde, kalın.
   sectionLabel: {
     fontFamily: fontFamily.nunitoBold,
-    fontSize: 13,
-    lineHeight: 17,
+    fontSize: 17,
+    lineHeight: 22,
     fontWeight: "700",
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
+    letterSpacing: 0,
   },
   planTitle: {
     fontFamily: fontFamily.nunitoBold,
@@ -560,10 +566,10 @@ export const paywallType = {
     letterSpacing: 0,
   },
   cta: {
-    fontFamily: fontFamily.nunitoExtraBold,
-    fontSize: 20,
-    lineHeight: 26,
-    fontWeight: "800",
+    fontFamily: fontFamily.nunitoBold,
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: "700",
     letterSpacing: 0,
   },
   legal: {

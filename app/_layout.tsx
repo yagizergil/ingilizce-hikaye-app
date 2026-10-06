@@ -9,12 +9,12 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useFonts } from "expo-font";
 import {
-  Nunito_400Regular,
-  Nunito_500Medium,
-  Nunito_600SemiBold,
-  Nunito_700Bold,
-  Nunito_800ExtraBold,
-} from "@expo-google-fonts/nunito";
+  Gabarito_400Regular,
+  Gabarito_500Medium,
+  Gabarito_600SemiBold,
+  Gabarito_700Bold,
+  Gabarito_800ExtraBold,
+} from "@expo-google-fonts/gabarito";
 import { Literata_400Regular, Literata_400Regular_Italic } from "@expo-google-fonts/literata";
 
 import { queryClient } from "@/lib/queryClient";
@@ -41,11 +41,11 @@ export default function RootLayout() {
    * hiç açılmamak ise App Store incelemesinde doğrudan red.
    */
   const [fontsLoaded, fontError] = useFonts({
-    Nunito_400Regular,
-    Nunito_500Medium,
-    Nunito_600SemiBold,
-    Nunito_700Bold,
-    Nunito_800ExtraBold,
+    Gabarito_400Regular,
+    Gabarito_500Medium,
+    Gabarito_600SemiBold,
+    Gabarito_700Bold,
+    Gabarito_800ExtraBold,
     Literata_400Regular,
     Literata_400Regular_Italic,
   });
@@ -93,12 +93,41 @@ export default function RootLayout() {
             <ErrorBoundary source="root">
               <AuthGate>
                 <OnboardingGate>
-                  <Stack screenOptions={{ headerShown: false }}>
+                  {/*
+                    GEÇİŞLER (2026-10-05, Apple HIG / Material Motion):
+                    - Hiyerarşide derine inen sayfa sağdan kayar ve ekranın
+                      HER YERİNDEN kaydırılarak geri dönülür (yalnızca sol
+                      kenardan değil) -- iOS uygulamalarının alışılmış hissi.
+                    - Odaklı oturumlar (tekrar, pratik, quiz, paywall) aşağıdan
+                      açılır: "bir göreve girdin, bitince aşağı kaydırıp çık".
+                    - Okuyucu ve kitap bitti ekranı solarak gelir: okumaya
+                      geçiş bir sayfa değil, bir ortam değişikliği.
+                  */}
+                  <Stack
+                    screenOptions={{
+                      headerShown: false,
+                      animation: "slide_from_right",
+                      gestureEnabled: true,
+                      fullScreenGestureEnabled: true,
+                      animationMatchesGesture: true,
+                    }}
+                  >
                     <Stack.Screen name="delete-account" options={{ presentation: "modal" }} />
                     <Stack.Screen name="favorites" />
                     <Stack.Screen name="browse" />
-                    <Stack.Screen name="review" />
-                    <Stack.Screen name="practice" />
+                    <Stack.Screen name="categories" />
+                    <Stack.Screen
+                      name="quiz-question"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
+                    <Stack.Screen
+                      name="review"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
+                    <Stack.Screen
+                      name="practice"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
                     <Stack.Screen name="pack/[level]" />
                     {/*
                       Paywall MODAL DEĞİL, tam sayfa. Modal olarak
@@ -109,14 +138,25 @@ export default function RootLayout() {
                       olan "alttaki yasal blok görünmüyor" durumunu geri
                       getirme riski taşıyordu. Kapatma, ekranın kendi X
                       düğmesiyle. */}
-                    <Stack.Screen name="paywall" />
+                    <Stack.Screen
+                      name="paywall"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
                     <Stack.Screen name="language-settings" options={{ presentation: "modal" }} />
                     {/*
                       Kitap bitirme kutlaması. Modal DEĞİL: reader'dan
                       `replace` ile geliniyor, yani bu ekran okuma akışının
                       yerini alıyor — üstüne açılan bir kart değil.
                     */}
-                    <Stack.Screen name="book-finished" />
+                    <Stack.Screen name="book-finished" options={{ animation: "fade" }} />
+                    {/* Okuyucuda sayfalar yatay kaydırılıyor: tam ekran geri hareketi
+                        sayfa çevirmeyi çalardı, geri dönüş yalnızca kenardan. */}
+                    <Stack.Screen
+                      name="reader/[chapterId]"
+                      options={{ animation: "fade", fullScreenGestureEnabled: false }}
+                    />
+                    <Stack.Screen name="dev-splash" options={{ animation: "fade" }} />
+                    <Stack.Screen name="dev-onboarding" options={{ animation: "fade" }} />
                   </Stack>
                   <ToastHost />
                   {/*

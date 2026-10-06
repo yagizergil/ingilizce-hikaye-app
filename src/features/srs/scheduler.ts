@@ -102,11 +102,7 @@ function addDays(from: Date, days: number): Date {
  * @param rating Kullanıcının cevabı.
  * @param now Şu anki zaman (test edilebilirlik için dışarıdan verilir).
  */
-export function scheduleCard(
-  card: SrsCardState,
-  rating: SrsRating,
-  now: Date,
-): SrsScheduleResult {
+export function scheduleCard(card: SrsCardState, rating: SrsRating, now: Date): SrsScheduleResult {
   const score = RATING_SCORE[rating];
 
   // SM-2 kolaylık güncellemesi. Formül orijinaliyle aynı; `easy` (5) ease'i
@@ -134,10 +130,7 @@ export function scheduleCard(
   } else if (repetitions === 2) {
     intervalDays = rating === "hard" ? SECOND_INTERVAL_DAYS_HARD : SECOND_INTERVAL_DAYS;
   } else if (rating === "hard") {
-    intervalDays = Math.max(
-      FIRST_INTERVAL_DAYS,
-      card.intervalDays * HARD_INTERVAL_MULTIPLIER,
-    );
+    intervalDays = Math.max(FIRST_INTERVAL_DAYS, card.intervalDays * HARD_INTERVAL_MULTIPLIER);
   } else {
     intervalDays = card.intervalDays * nextEase;
   }

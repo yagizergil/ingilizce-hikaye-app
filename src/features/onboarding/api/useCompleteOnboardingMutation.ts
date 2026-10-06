@@ -57,16 +57,14 @@ async function completeOnboarding({
   if (profileError) throw profileError;
 
   if (estimate) {
-    const { error: estimateError } = await supabase
-      .from("user_vocabulary_estimate")
-      .insert({
-        user_id: userId,
-        estimated_size: estimate.size,
-        cefr_level: estimate.level,
-        // Yöntem etiketi: ileride puanlama değişirse eski ölçümler ayırt
-        // edilebilsin. Bkz. levelEstimate.ts başlığı.
-        method: adjusted ? "yes_no_v1_adjusted" : "yes_no_v1",
-      });
+    const { error: estimateError } = await supabase.from("user_vocabulary_estimate").insert({
+      user_id: userId,
+      estimated_size: estimate.size,
+      cefr_level: estimate.level,
+      // Yöntem etiketi: ileride puanlama değişirse eski ölçümler ayırt
+      // edilebilsin. Bkz. levelEstimate.ts başlığı.
+      method: adjusted ? "yes_no_v1_adjusted" : "yes_no_v1",
+    });
     if (estimateError) throw estimateError;
   }
 }

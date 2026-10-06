@@ -1,11 +1,18 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing, type } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
-import { UpperText } from "@/components/ui/UpperText";
+import {
+  categoryTints,
+  detailColors,
+  detailType,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+} from "@/theme";
+import { UiIcon } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 
 export const PACK_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
 
@@ -17,19 +24,22 @@ interface ExploreStripProps {
  * "Keşfet" -- seviye başına hazır kelime paketleri (1.0.6, premium).
  * Paketler katalogdaki gerçek kitaplardan çıkarılıyor: o seviyenin rafında
  * en çok kitapta geçen kelimeler. Karar ve önizleme sınırı sunucuda.
+ *
+ * Kartlar kategori ekranıyla aynı pastel tonlarda (sırayla), ikon
+ * Higgsfield kart destesi.
  */
 export function ExploreStrip({ onOpenPack }: ExploreStripProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const palette = useHomePalette();
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+        <Text style={[homeType.sectionTitle, { color: palette.ink }]}>
           {t("vocabulary.packs.sectionTitle")}
-        </UpperText>
-        <View style={[styles.badge, { backgroundColor: theme.accent }]}>
-          <Text style={[monoType.metaTight, { color: theme.text.onAccent }]}>
+        </Text>
+        <View style={styles.badge}>
+          <Text style={[homeType.statLabel, { color: detailColors.amberInk }]}>
             {t("vocabulary.hub.premiumBadge")}
           </Text>
         </View>
@@ -39,7 +49,7 @@ export function ExploreStrip({ onOpenPack }: ExploreStripProps) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.row}
       >
-        {PACK_LEVELS.map((level) => (
+        {PACK_LEVELS.map((level, index) => (
           <Pressable
             key={level}
             onPress={() => onOpenPack(level)}
@@ -48,17 +58,16 @@ export function ExploreStrip({ onOpenPack }: ExploreStripProps) {
             style={({ pressed }) => [
               styles.card,
               {
-                backgroundColor: theme.bg.surface,
-                borderColor: theme.border.hairline,
-                opacity: pressed ? 0.8 : 1,
+                backgroundColor: categoryTints[index % categoryTints.length],
+                opacity: pressed ? 0.85 : 1,
               },
             ]}
           >
-            <Ionicons name="albums-outline" size={20} color={theme.accent} />
-            <Text style={[type.chapterRowTitle, { color: theme.text.primary }]}>
+            <UiIcon name="cards" size={homeMetrics.rowIcon} />
+            <Text style={[detailType.sectionTitle, { color: detailColors.title }]}>
               {t("vocabulary.packs.cardTitle", { level })}
             </Text>
-            <Text style={[monoType.metaTight, { color: theme.text.secondary }]} numberOfLines={2}>
+            <Text style={[homeType.cardSub, { color: detailColors.muted }]} numberOfLines={2}>
               {t("vocabulary.packs.cardBody")}
             </Text>
           </Pressable>
@@ -68,29 +77,39 @@ export function ExploreStrip({ onOpenPack }: ExploreStripProps) {
   );
 }
 
+const CARD_WIDTH = 156;
+
 const styles = StyleSheet.create({
   container: {
-    gap: spacing.sm,
-    paddingBottom: spacing.md,
+    gap: homeSpace.md,
+    paddingBottom: homeSpace.lg,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xs,
+    gap: homeSpace.sm,
   },
   badge: {
-    borderRadius: radius.full,
-    paddingHorizontal: spacing.xs,
-    paddingVertical: spacing.xxs,
+    paddingHorizontal: homeSpace.md,
+    height: homeMetrics.continueButton - homeSpace.sm,
+    borderRadius: homeMetrics.continueButton / 2,
+    backgroundColor: detailColors.amber,
+    alignItems: "center",
+    justifyContent: "center",
   },
   row: {
-    gap: spacing.sm,
+    gap: homeSpace.md,
+    paddingRight: homeSpace.md,
   },
   card: {
-    width: 148,
-    borderRadius: radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: spacing.md,
-    gap: spacing.xxs,
+    width: CARD_WIDTH,
+    borderRadius: homeMetrics.cardRadius,
+    padding: homeSpace.lg,
+    gap: homeSpace.xs,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
 });

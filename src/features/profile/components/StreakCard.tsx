@@ -3,10 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
-import { Card } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
+import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
+import { UiIcon } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 
 import type { ProfileDailyMinutes } from "@/features/profile/types";
 
@@ -21,49 +20,33 @@ interface StreakCardProps {
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 
 /**
- * Okuma serisi kartı — büyük seri sayısı, haftanın yedi günü için
- * dolu/boş işaretler ve en uzun seri.
- *
- * NEDEN (2026-09-07): profil ekranındaki istatistikler hem çalışmıyordu
- * (yazan taraf hiç yoktu, bkz. migration 026) hem de yalnızca dört ölü
- * sayıdan ibaretti. Seri, bu kategorideki her rakibin (Duolingo başta)
- * elde tutma mekaniğinin merkezinde — çünkü tek bir sayıyla "bugün de
- * oku" diyor. Burada da öyle konumlandı: kart, bugün okunmamışsa
- * kullanıcıyı hatırlatan bir satır gösteriyor.
+ * Okuma serisi kartı — alev ikonu ve büyük seri sayısı, en uzun seri hapı,
+ * haftanın yedi günü için dolu/boş daireler ve bugün okunmadıysa bir
+ * hatırlatma satırı.
  *
  * Bu bir paywall promosyonu DEĞİL ve okuma ekranında da değil — ürün
  * ilkesi #1 korunuyor.
  */
 export function StreakCard({ currentStreak, longestStreak, readToday, weekDays }: StreakCardProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const palette = useHomePalette();
 
   return (
-    <Card style={styles.card}>
+    <View style={[styles.card, { backgroundColor: palette.card }]}>
       <View style={styles.top}>
+        <UiIcon name="flame" size={homeMetrics.statTileIcon} />
         <View style={styles.streakBlock}>
-          <View style={styles.streakValueRow}>
-            <Ionicons
-              name="flame"
-              size={26}
-              color={currentStreak > 0 ? theme.accent : theme.text.tertiary}
-            />
-            <Text style={[monoType.statValueXl, styles.streakValue, { color: theme.text.primary }]}>
-              {currentStreak}
-            </Text>
-          </View>
-          <UpperText style={[monoType.statLabel, { color: theme.text.secondary }]}>
-            {t("profile.streak.currentLabel")}
-          </UpperText>
-        </View>
-
-        <View style={styles.longestBlock}>
-          <Text style={[monoType.statValue, styles.longestValue, { color: theme.text.primary }]}>
-            {longestStreak}
+          <Text style={[detailType.heroTitle, styles.number, { color: palette.ink }]}>
+            {currentStreak}
           </Text>
-          <UpperText style={[monoType.statLabel, { color: theme.text.secondary }]}>
-            {t("profile.streak.longestLabel")}
-          </UpperText>
+          <Text style={[homeType.statLabel, { color: palette.muted }]}>
+            {t("profile.streak.currentLabel")}
+          </Text>
+        </View>
+        <View style={styles.longestPill}>
+          <Text style={[homeType.statLabel, { color: detailColors.amberInk }]}>
+            {t("profile.streak.longestLabel")} · {longestStreak}
+          </Text>
         </View>
       </View>
 
@@ -78,19 +61,12 @@ export function StreakCard({ currentStreak, longestStreak, readToday, weekDays }
           const active = day.minutes > 0;
           return (
             <View key={day.date} style={styles.dayColumn}>
-              <View
-                style={[
-                  styles.dayDot,
-                  active
-                    ? { backgroundColor: theme.accent }
-                    : { borderColor: theme.border.hairline, borderWidth: 1 },
-                ]}
-              >
+              <View style={[styles.dayDot, active ? styles.dayDotActive : styles.dayDotIdle]}>
                 {active ? (
-                  <Ionicons name="checkmark" size={13} color={theme.text.onAccent} />
+                  <Ionicons name="checkmark" size={14} color={detailColors.amberInk} />
                 ) : null}
               </View>
-              <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
+              <Text style={[homeType.cardSub, { color: palette.muted }]}>
                 {t(`profile.streak.days.${DAY_KEYS[index]}`)}
               </Text>
             </View>
@@ -99,46 +75,50 @@ export function StreakCard({ currentStreak, longestStreak, readToday, weekDays }
       </View>
 
       {!readToday ? (
-        <Text style={[monoType.meta, styles.hint, { color: theme.text.secondary }]}>
-          {currentStreak > 0
-            ? t("profile.streak.keepGoing", { count: currentStreak })
-            : t("profile.streak.startToday")}
-        </Text>
+        <View style={styles.hint}>
+          <Text style={[homeType.cardSub, { color: detailColors.amberInk }]}>
+            {currentStreak > 0
+              ? t("profile.streak.keepGoing", { count: currentStreak })
+              : t("profile.streak.startToday")}
+          </Text>
+        </View>
       ) : null}
-    </Card>
+    </View>
   );
 }
 
-const DOT_SIZE = 30;
+const DOT_SIZE = 34;
 
 const styles = StyleSheet.create({
   card: {
-    marginHorizontal: spacing.lg,
-    padding: spacing.md,
-    gap: spacing.md,
+    marginHorizontal: homeMetrics.gutter,
+    padding: homeSpace.lg,
+    gap: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
   top: {
     flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
+    alignItems: "center",
+    gap: homeSpace.md,
   },
   streakBlock: {
-    gap: spacing.xxs,
+    flex: 1,
   },
-  streakValueRow: {
-    flexDirection: "row",
+  number: {
+    fontVariant: ["tabular-nums"],
+  },
+  longestPill: {
+    paddingHorizontal: homeSpace.md,
+    height: homeMetrics.continueButton - homeSpace.xs,
+    borderRadius: homeMetrics.continueButton / 2,
+    backgroundColor: homeColors.peach,
     alignItems: "center",
-    gap: spacing.xs,
-  },
-  streakValue: {
-    fontVariant: ["tabular-nums"],
-  },
-  longestBlock: {
-    alignItems: "flex-end",
-    gap: spacing.xxs,
-  },
-  longestValue: {
-    fontVariant: ["tabular-nums"],
+    justifyContent: "center",
   },
   week: {
     flexDirection: "row",
@@ -146,7 +126,7 @@ const styles = StyleSheet.create({
   },
   dayColumn: {
     alignItems: "center",
-    gap: spacing.xxs,
+    gap: homeSpace.xs,
   },
   dayDot: {
     width: DOT_SIZE,
@@ -155,8 +135,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  dayDotActive: {
+    backgroundColor: detailColors.amber,
+  },
+  dayDotIdle: {
+    backgroundColor: homeColors.peach,
+  },
   hint: {
-    // Kart içinde ayrı bir blok gibi dursun.
-    borderRadius: radius.sm,
+    padding: homeSpace.md,
+    borderRadius: homeSpace.md,
+    backgroundColor: homeColors.peach,
   },
 });

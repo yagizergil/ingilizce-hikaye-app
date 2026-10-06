@@ -6,12 +6,18 @@ import { useTranslation } from "react-i18next";
 import { monoType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
+interface ProfileFooterProps {
+  /** Sürüm yazısına her dokunuşta çağrılır (geliştirici araçlarının gizli
+   * açılışı için, bkz. `useDevToolsUnlock`). */
+  onPress?: () => void;
+}
+
 /**
  * profile.html `.footer-note` — small mono app name + version string.
  * Sourced from `app.config.ts` (name/version) via `expo-constants` at
  * runtime rather than hardcoded, so it never drifts from the real build.
  */
-export function ProfileFooter() {
+export function ProfileFooter({ onPress }: ProfileFooterProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -19,7 +25,10 @@ export function ProfileFooter() {
   const version = Constants.expoConfig?.version ?? "";
 
   return (
-    <Text style={[monoType.footerNote, styles.text, { color: theme.text.secondary }]}>
+    <Text
+      style={[monoType.footerNote, styles.text, { color: theme.text.secondary }]}
+      onPress={onPress}
+    >
       {t("profile.footer", { name, version })}
     </Text>
   );

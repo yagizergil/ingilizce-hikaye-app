@@ -13,7 +13,7 @@ const config: ExpoConfig = {
   scheme: "ingilizcehikaye",
   // App Store Connect'te 1.0 olarak açıldı; ikisi ayrışırsa yüklenen
   // derleme "Prepare for Submission" sürümüne bağlanmaz.
-  version: "1.0.8",
+  version: "1.0.9",
   orientation: "portrait",
   userInterfaceStyle: "automatic",
   description:
@@ -56,7 +56,7 @@ const config: ExpoConfig = {
     package: "com.ingilizcehikaye.app",
     adaptiveIcon: {
       foregroundImage: "./assets/adaptive-icon.png",
-      backgroundColor: "#FAF8F4",
+      backgroundColor: "#FDF5E3",
     },
   },
   plugins: [
@@ -123,10 +123,12 @@ const config: ExpoConfig = {
       {
         image: "./assets/splash.png",
         resizeMode: "contain",
-        backgroundColor: "#FAF8F4",
+        // Logo (L-i-n-g + papağan "o") krem zeminde; koyu temada da aynı
+        // zemin -- lacivert "g" koyu zeminde kayboluyordu.
+        backgroundColor: "#FDF5E3",
         dark: {
           image: "./assets/splash-dark.png",
-          backgroundColor: "#1C1712",
+          backgroundColor: "#FDF5E3",
         },
       },
     ],

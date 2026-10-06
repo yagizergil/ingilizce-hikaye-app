@@ -12,7 +12,6 @@ import { OnboardingFooterButton } from "@/features/onboarding/components/Onboard
 import { OnboardingOptionCard } from "@/features/onboarding/components/OnboardingOptionCard";
 import { OnboardingScaffold } from "@/features/onboarding/components/OnboardingScaffold";
 
-
 /**
  * Günlük hedef (referans: `bookvo-10-gunluk-hedef.jpeg`).
  *
@@ -69,7 +68,9 @@ export function OnboardingDailyGoalStep({
         {OPTIONS.map((option) => (
           <OnboardingOptionCard
             key={option.minutes}
-            badge={<SvgXml xml={goalIconXml[`m${option.minutes}`] as string} width={26} height={26} />}
+            badge={
+              <SvgXml xml={goalIconXml[`m${option.minutes}`] as string} width={26} height={26} />
+            }
             badgeColor={theme.bg.primary}
             title={t("onboarding.goal.minutes", { count: option.minutes })}
             subtitle={t(`onboarding.goal.options.${option.minutes}`)}

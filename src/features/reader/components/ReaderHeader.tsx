@@ -1,229 +1,90 @@
-import { ActivityIndicator, StyleSheet, View, Pressable } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Ionicons } from "@expo/vector-icons";
-
-import { monoType, onLevelAccent, radius, spacing } from "@/theme";
+import { detailColors, detailMetrics } from "@/theme";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
-import { UpperText } from "@/components/ui/UpperText";
+import { useReaderModeStore } from "@/features/reader/hooks/useReaderModeStore";
 
 interface ReaderHeaderProps {
-  onOpenChapterList: () => void;
-  onOpenSettings: () => void;
-  onOpenBookWords: () => void;
-  /** Sesli okumayı başlatır/duraklatır. */
-  onToggleSpeech: () => void;
-  /** Şu an konuşuluyor mu — düğmenin ikonu buna göre. */
-  isSpeaking: boolean;
-  /**
-   * Seslendirme bu bölümde ve bu kullanıcı için çalışabilir mi.
-   *
-   * NEDEN GİZLİYOR, KİLİTLEMİYOR: basıldığında hiçbir şey yapmayan bir
-   * düğme arıza gibi görünür, kilit ikonlu bir düğme ise okuma ekranına
-   * premium promosyonu sokar (Ürün İlkesi #1). İkisi de istenmiyor —
-   * düğme sadece yok.
-   */
-  canPlaySpeech: boolean;
-  /** "Dinle" ile gelindi, ses hazırlanıyor — düğme yerine göstergeç. */
-  isPreparingSpeech: boolean;
-  /**
-   * Bugün kalan KELİME ÇEVİRİSİ hakkı (migration 038).
-   *
-   * `null` iken rozet hiç gösterilmiyor. İki ayrı durum için de doğru:
-   * henüz yüklenmedi (sayıyı bilmiyoruz, "0" ile karıştırılmamalı) ve
-   * premium (sınır yok -- olmayan bir sınırı ima eden sayaç göstermek
-   * yanlış olurdu).
-   */
-  wordQuotaRemaining: number | null;
-  /** Rozete dokunulduğunda -- paywall'ı açıyor. */
-  onPressQuota: () => void;
-  /** Reader'ı kapatıp geri döner. */
+  /** Üç nokta menüsünü (içerikler, ayarlar, kitap kelimeleri) açar. */
+  onOpenMenu: () => void;
+  /** Okuyucuyu kapatıp geri döner. */
   onClose: () => void;
 }
 
 /**
- * FAZ 6 (2026-09-14, referans uygulama eşleştirmesi): üst çubuk baştan
- * yazıldı. Eskiden geri oku + ortalanmış bölüm başlığı + 2 ikondu (sesli
- * okuma, "Aa" ayarlar). Referansta başlık YOK -- yalnızca 6 eşit aralıklı
- * ikon: içerikler (bölüm listesi), ayarlar, kitap (kitap detayına git),
- * kulaklık (sesli okuma), mavi "kalan çeviri hakkı" rozeti, kapat (X).
- *
- * Başlığın kaldırılması bilinçli bir kayıp DEĞİL -- kullanıcı bölüm adını
- * artık "İçerikler" sheet'inde (mevcut bölüm vurgulanmış olarak) görüyor;
- * referans da bunu aynı şekilde çözüyor.
+ * Okuyucunun üst çubuğu (referans): solda geri oku, sağda üç nokta.
+ * İkisi de 41 pt yuvarlak düğme; okuma modunda neredeyse görünmez (açık
+ * gri çerçeve), dinleme modunda kahverengi zeminde beyaz dolgulu.
+ * Eski ikon sırası (içerikler, ayarlar, kitap, kulaklık, kota, kapat)
+ * üç nokta menüsüne taşındı -- bkz. `ReaderMenuSheet`.
  */
-export function ReaderHeader({
-  onOpenChapterList,
-  onOpenSettings,
-  onOpenBookWords,
-  onToggleSpeech,
-  isSpeaking,
-  canPlaySpeech,
-  isPreparingSpeech,
-  wordQuotaRemaining,
-  onPressQuota,
-  onClose,
-}: ReaderHeaderProps) {
+export function ReaderHeader({ onOpenMenu, onClose }: ReaderHeaderProps) {
   const { t } = useTranslation();
   const readerColors = useReaderThemeColors();
   const insets = useSafeAreaInsets();
+  const listening = useReaderModeStore((state) => state.mode === "listen");
+
+  const circle = listening ? styles.circleOnDark : styles.circle;
 
   return (
     <View
       style={[
         styles.container,
-        { paddingTop: insets.top, backgroundColor: readerColors.background },
+        {
+          paddingTop: insets.top + detailMetrics.headerTop,
+          backgroundColor: readerColors.background,
+        },
       ]}
     >
-      <View style={styles.row}>
-        {/*
-          FAZ 7 DÜZELTMESİ (2026-09-14): ikonlar `space-between` ile TÜM
-          genişliğe yayılıyordu -- referansta ilk 4 ikon (içerikler, ayarlar,
-          kitap, kulaklık) sıkı bir küme, yalnızca kota rozeti + kapat sağa
-          yaslı. İki grup + aradaki esnek boşluk bunu üretiyor.
-        */}
-        <View style={styles.leftGroup}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("reader.header.chapterList")}
-            onPress={onOpenChapterList}
-            style={styles.iconButton}
-            hitSlop={8}
-          >
-            <Ionicons name="list-outline" size={22} color={readerColors.text} />
-          </Pressable>
-
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("reader.header.settings")}
-            onPress={onOpenSettings}
-            style={styles.iconButton}
-            hitSlop={8}
-          >
-            <Ionicons name="settings-outline" size={22} color={readerColors.text} />
-          </Pressable>
-
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("reader.header.bookWords")}
-            onPress={onOpenBookWords}
-            style={styles.iconButton}
-            hitSlop={8}
-          >
-            <Ionicons name="book-outline" size={22} color={readerColors.text} />
-          </Pressable>
-
-          {/*
-            Sesli okuma düğmesi. Okuma yüzeyinin bir KONTROLÜ — ürün ilkesi #1
-            reader içinde promosyonu yasaklıyor, okuma araçlarını değil.
-          */}
-          {canPlaySpeech ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ selected: isSpeaking }}
-              accessibilityLabel={t(
-                isSpeaking ? "reader.header.pauseSpeech" : "reader.header.playSpeech",
-              )}
-              onPress={onToggleSpeech}
-              style={styles.iconButton}
-              hitSlop={8}
-            >
-              {isPreparingSpeech ? (
-                <ActivityIndicator size="small" color={readerColors.text} />
-              ) : (
-                <Ionicons
-                  name={isSpeaking ? "pause" : "headset-outline"}
-                  size={22}
-                  color={readerColors.text}
-                />
-              )}
-            </Pressable>
-          ) : null}
-        </View>
-
-        <View style={styles.rightGroup}>
-          {/* Kalan kelime çevirisi hakkı. Renk vurgu rengi (turuncu):
-              referansta da sayaç ekranın tek turuncu öğesi ve "bu bir
-              sınır" demek. Dokunulabilir -- sınırı merak eden kullanıcıyı
-              anlatan tek ekrana götürüyor. */}
-          {wordQuotaRemaining !== null ? (
-            <Pressable
-              onPress={onPressQuota}
-              accessibilityRole="button"
-              accessibilityLabel={t("reader.header.quotaRemaining", {
-                count: wordQuotaRemaining,
-              })}
-              style={[styles.quotaBadge, { backgroundColor: readerColors.accent }]}
-              hitSlop={8}
-            >
-              <UpperText style={[monoType.badge, styles.quotaText, { color: onLevelAccent }]}>
-                {wordQuotaRemaining}
-              </UpperText>
-            </Pressable>
-          ) : null}
-
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("common.close")}
-            onPress={onClose}
-            style={[
-              styles.iconButton,
-              styles.closeButton,
-              { backgroundColor: readerColors.highlight },
-            ]}
-            hitSlop={8}
-          >
-            <Ionicons name="close" size={18} color={readerColors.text} />
-          </Pressable>
-        </View>
-      </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("common.close")}
+        onPress={onClose}
+        style={circle}
+        hitSlop={8}
+      >
+        <Ionicons name="arrow-back-outline" size={22} color={detailColors.muted} />
+      </Pressable>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("reader.header.menu")}
+        onPress={onOpenMenu}
+        style={circle}
+        hitSlop={8}
+      >
+        <Ionicons name="ellipsis-horizontal" size={22} color={detailColors.muted} />
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.sm,
-    paddingBottom: spacing.xs,
-  },
-  row: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: detailMetrics.gutter,
+    paddingBottom: detailMetrics.headerGap,
   },
-  leftGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  rightGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-  },
-  iconButton: {
-    minWidth: 40,
-    minHeight: 40,
+  circle: {
+    width: detailMetrics.menuButton,
+    height: detailMetrics.menuButton,
+    borderRadius: detailMetrics.menuButton / 2,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: StyleSheet.hairlineWidth * 2,
+    borderColor: detailColors.circleBorder,
   },
-  closeButton: {
-    width: 32,
-    height: 32,
-    minWidth: 32,
-    minHeight: 32,
-    borderRadius: radius.full,
-  },
-  quotaBadge: {
-    minWidth: 28,
-    height: 28,
-    borderRadius: radius.full,
+  circleOnDark: {
+    width: detailMetrics.menuButton,
+    height: detailMetrics.menuButton,
+    borderRadius: detailMetrics.menuButton / 2,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: spacing.xxs,
-  },
-  quotaText: {
-    fontWeight: "700",
+    backgroundColor: detailColors.circle,
   },
 });

@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 
-import { spacing, monoType, type } from "@/theme";
+import { homeColors, homeType, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 
 interface SectionHeaderProps {
@@ -27,7 +27,12 @@ export function SectionHeader({ title, moreLabel, onPressMore, style }: SectionH
 
   return (
     <View style={[styles.row, style]}>
-      <Text style={[type.sectionHeading, { color: theme.text.primary }]}>{title}</Text>
+      <Text
+        style={[homeType.sectionTitle, { color: theme.text.primary }]}
+        accessibilityRole="header"
+      >
+        {title}
+      </Text>
       {moreLabel ? (
         <Pressable
           accessibilityRole="link"
@@ -35,7 +40,9 @@ export function SectionHeader({ title, moreLabel, onPressMore, style }: SectionH
           onPress={onPressMore}
           hitSlop={{ top: spacing.sm, bottom: spacing.sm, left: spacing.sm, right: spacing.sm }}
         >
-          <Text style={[monoType.moreLink, { color: theme.text.secondary }]}>{moreLabel}</Text>
+          <Text style={[homeType.seeAll, styles.more, { color: homeColors.orange }]}>
+            {moreLabel}
+          </Text>
         </Pressable>
       ) : null}
     </View>
@@ -47,5 +54,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "baseline",
+  },
+  more: {
+    textDecorationLine: "underline",
   },
 });

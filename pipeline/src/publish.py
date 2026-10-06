@@ -200,6 +200,7 @@ def publish_book(
     validation: ValidationResult,
     cover_url: str | None,
     force: bool = False,
+    content_ok: bool = True,
 ) -> PublishResult:
     """force=True: lemma tr_gloss kapsam önkoşulunu atlar (geliştirme
     içindir) — validation.passed hâlâ status'u belirler, sadece kapsam
@@ -209,7 +210,11 @@ def publish_book(
             conn, metrics
         )
         gloss_ok = force or lemma_gloss_coverage >= LEMMA_GLOSS_COVERAGE_THRESHOLD
-        status = "published" if (validation.passed and gloss_ok) else "needs_review"
+        # İçerik uygunluk kontrolü (content_check.py) geçmeyen kitap asla
+        # 'published' yazılmaz -- force bunu ATLATMAZ.
+        status = (
+            "published" if (validation.passed and gloss_ok and content_ok) else "needs_review"
+        )
 
         book_id, status = _upsert_book(conn, book.meta, metrics, status, cover_url)
         delete_book_content(conn, book_id)

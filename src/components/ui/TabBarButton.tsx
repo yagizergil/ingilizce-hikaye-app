@@ -1,95 +1,81 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import * as Haptics from "expo-haptics";
 
-import { tabBarIconSize } from "@/theme/tokens/layout";
-import { radius, spacing } from "@/theme/tokens/spacing";
-import { fontFamily, monoType } from "@/theme/tokens/typography";
-import { useTheme } from "@/theme/useTheme";
+import { homeColors, homeMetrics, homeType } from "@/theme";
 
-import type { ComponentProps } from "react";
-import type { AccessibilityState, GestureResponderEvent, StyleProp, ViewStyle } from "react-native";
-
-type IoniconName = ComponentProps<typeof Ionicons>["name"];
+import type { AccessibilityState, GestureResponderEvent } from "react-native";
 
 /**
- * Expo Router 57 (SDK 57) React Navigation'i kendi icine aldi; artik
- * `@react-navigation/bottom-tabs` diye ayri bir paket kurulmuyor, dolayisiyla
- * `BottomTabBarButtonProps` disaridan import edilemiyor. Bu component
- * `tabBarButton` prop'undan gelen alanlarin yalnizca bu ucunu kullaniyor;
- * geri kalani spread ile gelip yok sayiliyor.
+ * Expo Router 57 React Navigation'ı kendi içine aldı; `BottomTabBarButtonProps`
+ * dışarıdan import edilemiyor. `tabBarButton` prop'undan yalnızca bu uçlar
+ * kullanılıyor, geri kalanı spread ile gelip yok sayılıyor.
  */
 interface TabBarButtonProps {
   accessibilityState?: AccessibilityState;
-  /** Expo Router 57 seçili sekmeyi BU alanla bildiriyor, `accessibilityState` ile değil. */
+  /** Expo Router 57 seçili sekmeyi BU alanla bildiriyor. */
   "aria-selected"?: boolean;
   onPress?: (event: GestureResponderEvent) => void;
-  style?: StyleProp<ViewStyle>;
+  onLongPress?: ((event: GestureResponderEvent) => void) | null;
   label: string;
-  /** Icon shown when this tab is NOT active — always the `-outline` variant. */
-  iconOutline: IoniconName;
-  /** Icon shown when this tab IS active — always the solid/filled variant. */
-  iconActive: IoniconName;
+  /** Pasif ve aktif ikon görselleri (`assets/home/tab-*.png`, `require` sonucu). */
+  icon: number;
+  iconActive: number;
 }
 
 /**
- * FAZ 2 (2026-09-14, referans uygulama eşleştirmesi — "dicto"): önceki
- * versiyon mono, BÜYÜK HARF etiket + aktif öğede 2px altçizgi kullanıyordu.
- * Referans çubukta ne büyük harf ne de altçizgi var — aktif/inaktif ayrımı
- * yalnızca RENK (beyaz vs. gri) ve etiket KALINLIĞI (bold vs. regular) ile
- * yapılıyor, ikon da outline->dolu değişiyor (bu ikinci sinyal referansta
- * da var, aynı kalıp korundu). Etiket artık normal büyük/küçük harf
- * (`label.toUpperCase()` çağrısı `app/(tabs)/_layout.tsx`'ten kaldırıldı).
+ * Alt gezinti çubuğunun tek sekmesi (Funfluent referansı).
+ *
+ * Ikonlar referanstan üretilmiş görseller. Pasif sekme yalnızca gri çizgi ikon; aktif sekme büyük soluk-sarı bir
+ * dairenin içinde turuncu dolu ikon olarak çıkıyor. Referansta etiket yok;
+ * erişilebilirlik adı (`label`) her zaman duruyor.
+ *
+ * Expo Router 57 aktif durumu `aria-selected` ile geçiriyor;
+ * `accessibilityState.selected` eski yol (ikisi de okunuyor).
  */
 export function TabBarButton({
-  label,
-  iconOutline,
-  iconActive,
+  onPress,
+  onLongPress,
   accessibilityState,
   "aria-selected": ariaSelected,
-  onPress,
-  style,
+  icon,
+  iconActive,
+  label,
 }: TabBarButtonProps) {
-  const { theme } = useTheme();
-  // Kullanıcı bulgusu (iki kez): aktif sekme hiç belli olmuyordu. Sebep
-  // yalnızca `accessibilityState.selected`i okumaktı; Expo Router 57 onu
-  // göndermiyor, `aria-selected` gönderiyor. isActive DAİMA false'tu.
-  const isActive = ariaSelected ?? accessibilityState?.selected ?? false;
-  // Kullanıcı bulgusu (2026-09-24): outline/dolu ikon farkı ve metin
-  // kalınlığı tek başına "hangi sekmedeyim" sorusunu cevaplamıyordu. Aktif
-  // sekme artık accent rengi ve ikonun arkasında accent tonlu bir hap alıyor.
-  const tintColor = isActive ? theme.accent : theme.text.secondary;
+  const focused = ariaSelected ?? accessibilityState?.selected ?? false;
 
   return (
     <Pressable
-      onPress={onPress}
-      style={[styles.button, style]}
+      onPress={(event) => {
+        if (!focused) void Haptics.selectionAsync();
+        onPress?.(event);
+      }}
+      onLongPress={onLongPress ?? undefined}
       accessibilityRole="tab"
-      accessibilityState={{ ...accessibilityState, selected: isActive }}
       accessibilityLabel={label}
-      hitSlop={spacing.sm}
+      accessibilityState={{ selected: focused }}
+      style={styles.button}
     >
-      <View style={[styles.iconPill, isActive ? { backgroundColor: theme.accentMuted } : null]}>
-        <Ionicons
-          name={isActive ? iconActive : iconOutline}
-          size={tabBarIconSize}
-          color={tintColor}
+      <View style={[styles.circle, focused && styles.circleActive]}>
+        <Image
+          source={focused ? iconActive : icon}
+          style={styles.icon}
+          contentFit="contain"
+          transition={0}
+          accessibilityIgnoresInvertColors
         />
+        <Text
+          style={[
+            focused ? homeType.tabLabelActive : homeType.tabLabel,
+            styles.label,
+            { color: focused ? homeColors.tabActiveIcon : homeColors.tabIcon },
+          ]}
+          numberOfLines={1}
+        >
+          {label}
+        </Text>
       </View>
-      <Text
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.8}
-        style={[
-          styles.label,
-          {
-            color: tintColor,
-            fontFamily: isActive ? fontFamily.nunitoBold : fontFamily.nunitoSemiBold,
-          },
-        ]}
-      >
-        {label}
-      </Text>
     </Pressable>
   );
 }
@@ -99,15 +85,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: spacing.xxs,
+    height: "100%",
   },
-  iconPill: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xxs,
-    borderRadius: radius.full,
+  circle: {
+    width: homeMetrics.tabCircle,
+    height: homeMetrics.tabCircle,
+    borderRadius: homeMetrics.tabCircle / 2,
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: {
-    fontSize: monoType.buttonLabel.fontSize,
-    lineHeight: monoType.buttonLabel.lineHeight,
+    marginTop: homeMetrics.tabLabelGap,
+    maxWidth: homeMetrics.tabCircle,
+  },
+  icon: {
+    width: homeMetrics.tabIconSize,
+    height: homeMetrics.tabIconSize,
+  },
+  circleActive: {
+    backgroundColor: homeColors.tabActiveBg,
   },
 });

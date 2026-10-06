@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 import { fetchLemmaGlossesBatch } from "@/lib/lemmaGlossBatch";
-import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { gateOnLanguagePair, useActiveLanguagePairQuery } from "@/features/languagePair";
 
 import { vocabularyQueryKeys } from "@/features/vocabulary/api/queryKeys";
 
@@ -48,7 +48,7 @@ export function useWordPackQuery(level: string) {
   const target = pair.data?.targetLanguage ?? "en";
   const native = pair.data?.nativeLanguage ?? "tr";
 
-  return useQuery({
+  const query = useQuery({
     queryKey: vocabularyQueryKeys.wordPack(target, native, level),
     enabled: Boolean(pair.data),
     queryFn: async (): Promise<WordPack> => {
@@ -71,4 +71,7 @@ export function useWordPackQuery(level: string) {
       };
     },
   });
+  // Dil çifti gelene kadar sorgu kapalı; v5 bunu isLoading:false döndürüyor
+  // ve ekran açılışta bir an "hata" gösteriyordu (bkz. 1.0.5 notu).
+  return gateOnLanguagePair(query, pair);
 }

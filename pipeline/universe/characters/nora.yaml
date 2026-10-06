@@ -1,0 +1,22 @@
+id: nora
+name: Nora Vale
+names: { tr: Nora, en: Nora, de: Nora, fr: Nora, it: Nora, es: Nora, ru: Нора, ar: نورا, zh: 诺拉, ja: ノラ }
+age: 32
+role: Conductor on the Lumen Express, the night train from Port Lumen north into the mountains.
+home: A rented room near the station; she sleeps in the day.
+personality:
+  - calm, observant, notices small details
+  - keeps a small blue notebook about her passengers
+  - kind but private; does not talk about herself
+wants: to understand why her father, also a train worker, left the city years ago
+flaw: helps strangers but keeps her own friends at a distance
+voice: quiet, precise, asks good questions; never in a hurry
+recurring_cast:
+  - Bruno, 60, the train driver, loves old songs
+  - Leo Marin (see leo.yaml), who gives her coffee before every shift
+setting: station
+visual:
+  appearance: early thirties, straight black hair in a low ponytail, grey-green eyes, tall
+  clothes: dark navy conductor uniform with a small silver train badge
+  props: blue notebook, ticket machine, torch
+  palette: night blues, silver, warm lamp yellow

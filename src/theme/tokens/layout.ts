@@ -150,5 +150,6 @@ export const paywallMetrics = {
   radioSize: 24,
   badgeHeight: 16,
   planRowHeight: 52,
-  benefitIcon: 28,
+  benefitIcon: 40,
+  cardRadius: 22,
 } as const;

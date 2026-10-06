@@ -3,8 +3,10 @@ import { Alert, Linking, StyleSheet, Switch, Text, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
-import { monoType, spacing } from "@/theme";
+import { detailType, homeSpace, homeType } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
+import { UiIcon } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 import { trackEvent } from "@/lib/analytics";
 import { getNotificationPermission, requestNotificationPermission } from "@/lib/notifications";
 
@@ -25,6 +27,7 @@ import { useRemindersStore } from "@/features/reminders/hooks/useRemindersStore"
 export function ReminderSettingsRow() {
   const { t } = useTranslation();
   const { theme } = useTheme();
+  const palette = useHomePalette();
   const enabled = useRemindersStore((state) => state.enabled);
   const setEnabled = useRemindersStore((state) => state.setEnabled);
   const [busy, setBusy] = useState(false);
@@ -74,11 +77,12 @@ export function ReminderSettingsRow() {
 
   return (
     <View style={styles.row}>
+      <UiIcon name="bell" size={40} />
       <View style={styles.labels}>
-        <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+        <Text style={[detailType.statLabel, { color: palette.ink }]}>
           {t("reminders.settingsLabel")}
         </Text>
-        <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>
+        <Text style={[homeType.cardSub, { color: palette.muted }]}>
           {t("reminders.settingsHint")}
         </Text>
       </View>
@@ -98,12 +102,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: spacing.md,
-    paddingVertical: spacing.sm,
-    minHeight: 44,
+    gap: homeSpace.md,
+    paddingVertical: homeSpace.sm,
+    minHeight: 60,
   },
   labels: {
     flex: 1,
-    gap: spacing.xxs,
+    gap: homeSpace.xs,
   },
 });

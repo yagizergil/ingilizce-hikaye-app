@@ -1,5 +1,8 @@
 export { PaywallScreen } from "@/features/paywall/components/PaywallScreen";
-export { useSubscriptionQuery, subscriptionQueryKeys } from "@/features/paywall/api/useSubscriptionQuery";
+export {
+  useSubscriptionQuery,
+  subscriptionQueryKeys,
+} from "@/features/paywall/api/useSubscriptionQuery";
 export { useOfferingsQuery } from "@/features/paywall/api/useOfferingsQuery";
 export { useTrialDays } from "@/features/paywall/hooks/useTrialDays";
 export type { SubscriptionStatus } from "@/features/paywall/api/useSubscriptionQuery";

@@ -48,6 +48,7 @@ from src.profiler import (
     load_cefr_vocabulary,
     load_spacy_model,
 )
+from src.content_check import check_book
 from src.publish import LEMMA_GLOSS_COVERAGE_THRESHOLD, publish_book
 from src.settings import (
     AUTHOR_OVERRIDES_PATH,
@@ -600,9 +601,25 @@ def publish(
             )
         _print_timing("Kapak yükleme", time.monotonic() - t0, timing)
 
+        # İçerik uygunluk kontrolü (2026-10-06): özgün hikâyeler bizim
+        # metnimiz, kontrol klasikler ve dış kaynaklı içerik için.
+        content_ok = True
+        if not getattr(extracted.meta, "is_original", False):
+            paragraphs = [
+                p.text for s in extracted.sections if not s.is_frontmatter for p in s.paragraphs
+            ]
+            decision = check_book(extracted.meta.title, extracted.meta.author, paragraphs)
+            content_ok = decision.suitable
+            typer.echo(
+                f"İçerik kontrolü: {'uygun' if decision.suitable else 'UYGUN DEĞİL'} "
+                f"({decision.category}) {'; '.join(decision.reasons)}"
+            )
+
         t0 = time.monotonic()
         with db.connect(settings.database_url) as conn:
-            result = publish_book(conn, extracted, metrics, validation, cover_url, force=force)
+            result = publish_book(
+                conn, extracted, metrics, validation, cover_url, force=force, content_ok=content_ok
+            )
         _print_timing("DB yazma (COPY)", time.monotonic() - t0, timing)
 
     typer.echo(

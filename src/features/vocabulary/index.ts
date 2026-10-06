@@ -41,3 +41,4 @@ export {
 } from "@/features/vocabulary/api/useSmartPractice";
 export type { SmartPracticeQuota } from "@/features/vocabulary/api/useSmartPractice";
 export { VocabularyHub } from "@/features/vocabulary/components/VocabularyHub";
+export { MIN_PRACTICE_WORDS } from "@/features/vocabulary/practice/buildPracticeSession";

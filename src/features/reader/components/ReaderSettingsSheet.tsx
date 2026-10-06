@@ -10,43 +10,49 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { spacing, radius, monoType, type, fontFamily as fontFamilyTokens } from "@/theme";
+import {
+  detailColors,
+  detailMetrics,
+  detailType,
+  fontFamily as fontFamilyTokens,
+  getReadingTypeScale,
+  homeMetrics,
+  homeSpace,
+  homeType,
+  type,
+} from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { colors as themeColors } from "@/theme/colors";
 import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColors";
 import { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
-import { UpperText } from "@/components/ui/UpperText";
+import { UiIcon } from "@/components/ui/UiIcon";
 
 import type { ThemePreference } from "@/theme/useTheme";
 import type { ThemeName } from "@/theme/colors";
 import type { ReaderFontFamily } from "@/features/reader/types";
 
 /**
- * FAZ 8 (2026-09-14, referans uygulama eşleştirmesi — üçüncü ve son
- * düzeltme): kullanıcı üç kez aynı şeyi söyledi -- referansın "Ayarlar"
- * ekranı YALNIZCA "Tema" ve "Yazı tipi boyutu" gösteriyor, başka hiçbir şey
- * yok. Önceki iki turda diğer ayarları (yazı tipi ailesi, kenar boşluğu,
- * ses, konuşma hızı, vurgular) SİLMEDEN aynı kart desenine taşımıştım --
- * bu "referansa görsel olarak yaklaşmak" ile "referansla birebir aynı
- * olmak" arasındaki farkı gözden kaçırdı. Bu sürüm gerçekten yalnızca 2
- * satır gösteriyor.
+ * Okuma ayarları sheet'i (tema, yazı tipi, yazı boyutu). Hem okuma
+ * ekranından hem Profil > Okuma satırlarından açılıyor; tek bileşen, ikinci
+ * bir kopya yok.
  *
- * FAZ 9 (2026-09-18, kullanıcı isteği -- FAZ 8'İN KARARINI TERSİNE
- * ÇEVİRİYOR): kullanıcı artık açıkça "okuma fontu ve tema kartları
- * ayarlanabilir olsun" istedi. FAZ 8'in "yalnızca 2 satır" kararı bir
- * referans-uygulama eşleştirmesiydi, bu ürünün kendi ihtiyacı değil --
- * kullanıcının şimdiki talebi bunun önüne geçiyor. Tema artık tek bir
- * döngü satırı değil, GERÇEK renk önizlemesi taşıyan 4 seçilebilir kart
- * (açık/sepya/koyu/sistem — üçü de zaten `theme/colors.ts`'te tam
- * tanımlıydı, yalnızca bu ekrandan erişilemiyordu). Yazı tipi ailesi
- * (serif/sans) de -- `useReaderSettings.fontFamily` state'i ve
- * `getReadingTypeScale`'in okuduğu değer zaten vardı, hiç UI'ı yoktu --
- * aynı kart deseniyle, her kart kendi fontunda gerçek bir "Aa" örneği
- * gösteriyor. i18n anahtarları (`fontFamilyOptions`, `themeOptions.sepia`/
- * `.system`) FAZ 8'de SİLİNMEMİŞTİ, 10 dilin hepsinde zaten hazır duruyordu.
+ * 2026-10-05 yeniden tasarım: uygulamanın yeni dili (yuvarlak kartlar,
+ * amber seçim, Higgsfield ikonu) ve CANLI ÖNİZLEME kartı -- seçilen tema,
+ * yazı tipi ve boyut hemen üstteki örnek metinde görünüyor, ayar körlemesine
+ * yapılmıyor. Tema kartları gerçek renk önizlemesi taşıyor ("system" kendi
+ * rengi olmadığı için ikon gösteriyor).
  */
-export const ReaderSettingsSheet = forwardRef<BottomSheetModal>(
-  function ReaderSettingsSheet(_props, ref) {
+interface ReaderSettingsSheetProps {
+  /**
+   * Tema seçimi gösterilsin mi. Profilden açılınca GİZLİ (2026-10-05, ürün
+   * kararı): tema yalnızca okuma yüzeyini boyuyor, bu yüzden okuyucunun
+   * içinden değiştiriliyor; profilde yalnızca yazı tipi ve boyutu var.
+   */
+  showTheme?: boolean;
+}
+
+export const ReaderSettingsSheet = forwardRef<BottomSheetModal, ReaderSettingsSheetProps>(
+  function ReaderSettingsSheet({ showTheme = true }, ref) {
     const readerColors = useReaderThemeColors();
     const snapPoints = useMemo(() => ["88%"], []);
 
@@ -72,24 +78,22 @@ export const ReaderSettingsSheet = forwardRef<BottomSheetModal>(
         backgroundStyle={[styles.sheetBackground, { backgroundColor: readerColors.background }]}
         handleComponent={null}
       >
-        <ReaderSettingsContent />
+        <ReaderSettingsContent showTheme={showTheme} />
       </BottomSheetModal>
     );
   },
 );
 
-/** Sheet İÇERİĞİ ayrı bir bileşende: `useBottomSheetModal()` yalnızca
- * `BottomSheetModal`'ın çocuk ağacında çağrılabiliyor. */
-/** Kart önizlemesinde kullanılacak gerçek renkler -- "system" tercihi
- * kendi rengine sahip değil (cihazın anlık temasını takip ediyor), o
- * yüzden `null` dönüp çağıran taraf onun için bir ikon gösteriyor. */
+/** Kart önizlemesinde kullanılacak gerçek renkler; "system" için null. */
 function previewColorsFor(preference: ThemePreference): { bg: string; text: string } | null {
   if (preference === "system") return null;
   const themeName = preference as ThemeName;
   return { bg: themeColors[themeName].bg.primary, text: themeColors[themeName].text.primary };
 }
 
-function ReaderSettingsContent() {
+/** Sheet İÇERİĞİ ayrı bileşende: `useBottomSheetModal()` yalnızca
+ * `BottomSheetModal`'ın çocuk ağacında çağrılabiliyor. */
+function ReaderSettingsContent({ showTheme }: { showTheme: boolean }) {
   const { t } = useTranslation();
   const readerColors = useReaderThemeColors();
   const { preference, setPreference } = useTheme();
@@ -103,70 +107,86 @@ function ReaderSettingsContent() {
 
   const themeOptions: ThemePreference[] = ["light", "sepia", "dark", "system"];
   const fontFamilyOptions: ReaderFontFamily[] = ["serif", "sans"];
+  const preview = getReadingTypeScale(fontScale, undefined, fontFamily).paragraph;
 
   return (
     <BottomSheetView style={styles.container}>
       <View style={styles.header}>
+        <UiIcon name="textsize" size={homeMetrics.rowIcon} />
+        <Text style={[detailType.sheetTitle, styles.headerTitle, { color: readerColors.text }]}>
+          {t("reader.settings.title")}
+        </Text>
         <Pressable
           onPress={() => dismiss()}
           accessibilityRole="button"
           accessibilityLabel={t("common.close")}
           style={styles.closeButton}
-          hitSlop={spacing.sm}
+          hitSlop={homeSpace.sm}
         >
-          <Ionicons name="close" size={24} color={readerColors.text} />
+          <Ionicons name="close" size={20} color={detailColors.muted} />
         </Pressable>
-        <Text style={[type.screenTitle, styles.headerTitle, { color: readerColors.text }]}>
-          {t("reader.settings.title")}
+      </View>
+
+      <View style={[styles.previewCard, { backgroundColor: readerColors.highlight }]}>
+        <Text style={[preview, { color: readerColors.text }]}>
+          {t("reader.settings.previewText")}
         </Text>
-        {/* Başlığın gerçekten ortada kalması için düğmenin genişliğinde boşluk. */}
-        <View style={styles.headerSpacer} />
       </View>
 
-      <UpperText style={[monoType.eyebrow, styles.sectionLabel, { color: readerColors.textMuted }]}>
-        {t("reader.settings.theme")}
-      </UpperText>
-      <View style={styles.cardRow}>
-        {themeOptions.map((option) => {
-          const preview = previewColorsFor(option);
-          const selected = preference === option;
-          return (
-            <Pressable
-              key={option}
-              onPress={() => setPreference(option)}
-              accessibilityRole="button"
-              accessibilityState={{ selected }}
-              accessibilityLabel={t(`reader.settings.themeOptions.${option}`)}
-              style={[
-                styles.themeCard,
-                {
-                  backgroundColor: preview?.bg ?? readerColors.highlight,
-                  borderColor: selected ? readerColors.accent : "transparent",
-                },
-              ]}
-            >
-              {preview ? (
-                <Text style={[type.wordLemma, { color: preview.text }]}>Aa</Text>
-              ) : (
-                <Ionicons name="contrast" size={20} color={readerColors.text} />
-              )}
-              <Text
-                style={[
-                  monoType.metaTight,
-                  styles.themeCardLabel,
-                  { color: preview ? preview.text : readerColors.text },
-                ]}
-              >
-                {t(`reader.settings.themeOptions.${option}`)}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      {showTheme ? (
+        <>
+          <Text style={[homeType.sectionTitle, styles.sectionLabel, { color: readerColors.text }]}>
+            {t("reader.settings.theme")}
+          </Text>
+          <View style={styles.cardRow}>
+            {themeOptions.map((option) => {
+              const colorsPreview = previewColorsFor(option);
+              const selected = preference === option;
+              return (
+                <Pressable
+                  key={option}
+                  onPress={() => setPreference(option)}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected }}
+                  accessibilityLabel={t(`reader.settings.themeOptions.${option}`)}
+                  style={[
+                    styles.optionCard,
+                    {
+                      backgroundColor: colorsPreview?.bg ?? readerColors.highlight,
+                      borderColor: selected ? detailColors.amber : readerColors.highlight,
+                    },
+                  ]}
+                >
+                  {colorsPreview ? (
+                    <Text style={[type.wordLemma, { color: colorsPreview.text }]}>Aa</Text>
+                  ) : (
+                    <Ionicons name="contrast" size={20} color={readerColors.text} />
+                  )}
+                  <Text
+                    style={[
+                      homeType.statLabel,
+                      styles.optionLabel,
+                      { color: colorsPreview ? colorsPreview.text : readerColors.text },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {t(`reader.settings.themeOptions.${option}`)}
+                  </Text>
+                  {selected ? (
+                    <View style={styles.check}>
+                      <Ionicons name="checkmark" size={12} color={detailColors.amberInk} />
+                    </View>
+                  ) : null}
+                </Pressable>
+              );
+            })}
+          </View>
+        </>
+      ) : null}
 
-      <UpperText style={[monoType.eyebrow, styles.sectionLabel, { color: readerColors.textMuted }]}>
+      <Text style={[homeType.sectionTitle, styles.sectionLabel, { color: readerColors.text }]}>
         {t("reader.settings.fontFamily")}
-      </UpperText>
+      </Text>
       <View style={styles.cardRow}>
         {fontFamilyOptions.map((option) => {
           const selected = fontFamily === option;
@@ -178,10 +198,10 @@ function ReaderSettingsContent() {
               accessibilityState={{ selected }}
               accessibilityLabel={t(`reader.settings.fontFamilyOptions.${option}`)}
               style={[
-                styles.fontCard,
+                styles.optionCard,
                 {
                   backgroundColor: readerColors.highlight,
-                  borderColor: selected ? readerColors.accent : "transparent",
+                  borderColor: selected ? detailColors.amber : readerColors.highlight,
                 },
               ]}
             >
@@ -197,40 +217,44 @@ function ReaderSettingsContent() {
                 Aa
               </Text>
               <Text
-                style={[monoType.metaTight, styles.fontCardLabel, { color: readerColors.text }]}
+                style={[homeType.statLabel, styles.optionLabel, { color: readerColors.text }]}
+                numberOfLines={1}
               >
                 {t(`reader.settings.fontFamilyOptions.${option}`)}
               </Text>
+              {selected ? (
+                <View style={styles.check}>
+                  <Ionicons name="checkmark" size={12} color={detailColors.amberInk} />
+                </View>
+              ) : null}
             </Pressable>
           );
         })}
       </View>
 
-      <View style={[styles.row, { backgroundColor: readerColors.highlight }]}>
-        <Text style={[monoType.rowText, styles.rowLabel, { color: readerColors.text }]}>
+      <View style={[styles.sizeRow, { backgroundColor: readerColors.highlight }]}>
+        <Text style={[detailType.statLabel, styles.sizeLabel, { color: readerColors.text }]}>
           {t("reader.settings.fontSize")}
         </Text>
-        <View style={styles.stepper}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("reader.settings.decreaseFontSize")}
-            onPress={decreaseFontScale}
-            style={[styles.stepperButton, { backgroundColor: readerColors.background }]}
-          >
-            <Ionicons name="remove" size={16} color={readerColors.text} />
-          </Pressable>
-          <Text style={[monoType.rowText, styles.stepperValue, { color: readerColors.text }]}>
-            {Math.round(fontScale * 100)}%
-          </Text>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("reader.settings.increaseFontSize")}
-            onPress={increaseFontScale}
-            style={[styles.stepperButton, { backgroundColor: readerColors.background }]}
-          >
-            <Ionicons name="add" size={16} color={readerColors.text} />
-          </Pressable>
-        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("reader.settings.decreaseFontSize")}
+          onPress={decreaseFontScale}
+          style={styles.stepperButton}
+        >
+          <Ionicons name="remove" size={20} color={detailColors.amberInk} />
+        </Pressable>
+        <Text style={[detailType.statLabel, styles.stepperValue, { color: readerColors.text }]}>
+          {Math.round(fontScale * 100)}%
+        </Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("reader.settings.increaseFontSize")}
+          onPress={increaseFontScale}
+          style={styles.stepperButton}
+        >
+          <Ionicons name="add" size={20} color={detailColors.amberInk} />
+        </Pressable>
       </View>
     </BottomSheetView>
   );
@@ -238,101 +262,88 @@ function ReaderSettingsContent() {
 
 const styles = StyleSheet.create({
   sheetBackground: {
-    borderTopLeftRadius: radius.cover,
-    borderTopRightRadius: radius.cover,
+    borderTopLeftRadius: homeMetrics.cardRadius,
+    borderTopRightRadius: homeMetrics.cardRadius,
   },
   container: {
     flex: 1,
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.lg,
+    paddingHorizontal: homeMetrics.gutter,
+    paddingBottom: homeSpace.xl,
   },
-  // Kullanıcı bulgusu (2026-09-24): kapatma düğmesi `position:absolute;
-  // top:0` ile sheet'in en üst kenarına yapışıktı, başlık ise altında
-  // duruyordu. Artık üçü aynı satırda, dikey olarak ortalı.
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
+    gap: homeSpace.md,
+    paddingTop: homeSpace.xl,
+    paddingBottom: homeSpace.lg,
   },
   headerTitle: {
     flex: 1,
-    textAlign: "center",
-  },
-  headerSpacer: {
-    width: 32,
   },
   closeButton: {
-    width: 32,
-    height: 32,
-    // Dil ayarlarındaki X ile aynı: arka plansız, düz ikon.
-    alignItems: "flex-start",
+    width: detailMetrics.menuButton,
+    height: detailMetrics.menuButton,
+    borderRadius: detailMetrics.menuButton / 2,
+    backgroundColor: detailColors.circle,
+    alignItems: "center",
     justifyContent: "center",
   },
-  row: {
+  previewCard: {
+    padding: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    marginBottom: homeSpace.lg,
+  },
+  sectionLabel: {
+    marginBottom: homeSpace.sm,
+  },
+  cardRow: {
+    flexDirection: "row",
+    gap: homeSpace.sm,
+    marginBottom: homeSpace.lg,
+  },
+  optionCard: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: homeSpace.xs,
+    paddingVertical: homeSpace.md,
+    borderRadius: homeMetrics.cardRadius,
+    borderWidth: 2,
+  },
+  optionLabel: {
+    textAlign: "center",
+  },
+  check: {
+    position: "absolute",
+    top: homeSpace.xs,
+    right: homeSpace.xs,
+    width: homeSpace.lg,
+    height: homeSpace.lg,
+    borderRadius: homeSpace.lg / 2,
+    backgroundColor: detailColors.amber,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sizeRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    minHeight: 56,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.cover,
-    marginBottom: spacing.sm,
+    gap: homeSpace.md,
+    padding: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
   },
-  rowLabel: {
-    fontWeight: "700",
-  },
-  cycleControl: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.xs,
-  },
-  stepper: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
+  sizeLabel: {
+    flex: 1,
   },
   stepperButton: {
-    width: 32,
-    height: 32,
-    borderRadius: radius.sm,
+    width: homeMetrics.rowIcon,
+    height: homeMetrics.rowIcon,
+    borderRadius: homeMetrics.rowIcon / 2,
+    backgroundColor: detailColors.amber,
     alignItems: "center",
     justifyContent: "center",
   },
   stepperValue: {
-    minWidth: 44,
-    textAlign: "center",
-  },
-  sectionLabel: {
-    marginBottom: spacing.sm,
-    marginTop: spacing.xs,
-  },
-  cardRow: {
-    flexDirection: "row",
-    gap: spacing.sm,
-    marginBottom: spacing.lg,
-  },
-  themeCard: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.xs,
-    paddingVertical: spacing.md,
-    borderRadius: radius.cover,
-    borderWidth: 2,
-  },
-  themeCardLabel: {
-    textAlign: "center",
-  },
-  fontCard: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: spacing.xs,
-    paddingVertical: spacing.md,
-    borderRadius: radius.cover,
-    borderWidth: 2,
-  },
-  fontCardLabel: {
+    minWidth: homeMetrics.rowIcon + homeSpace.sm,
     textAlign: "center",
   },
 });

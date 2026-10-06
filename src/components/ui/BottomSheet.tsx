@@ -1,7 +1,11 @@
 import { forwardRef, useMemo } from "react";
 import { StyleSheet } from "react-native";
 
-import GorhomBottomSheet, { BottomSheetBackdrop, BottomSheetView, type BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
+import GorhomBottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+  type BottomSheetBackdropProps,
+} from "@gorhom/bottom-sheet";
 
 import { radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";

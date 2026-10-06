@@ -14,7 +14,9 @@ export default function NotFoundScreen() {
     <>
       <Stack.Screen options={{ title: t("notFound.title") }} />
       <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
-        <Text style={[monoType.rowText, { color: theme.text.primary }]}>{t("notFound.message")}</Text>
+        <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+          {t("notFound.message")}
+        </Text>
         <Link href="/">
           <Text style={[monoType.rowText, { color: theme.accent }]}>{t("notFound.goHome")}</Text>
         </Link>

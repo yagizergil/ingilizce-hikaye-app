@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { StyleSheet, type DimensionValue } from "react-native";
 
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 
 import { motion } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
@@ -33,7 +38,11 @@ export function Skeleton({ width, height, borderRadius = 0 }: SkeletonProps) {
     <Animated.View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      style={[styles.base, { width, height, borderRadius, backgroundColor: theme.border.hairline }, animatedStyle]}
+      style={[
+        styles.base,
+        { width, height, borderRadius, backgroundColor: theme.border.hairline },
+        animatedStyle,
+      ]}
     />
   );
 }

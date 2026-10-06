@@ -68,9 +68,14 @@ jest.mock("@/components/ui", () => {
     Button: ({ label }: { label: string }) => <Text>{label}</Text>,
     LoadingState: () => <Text>loading</Text>,
     LanguageFlag: () => null,
-    ScreenHeader: ({ title }: { title: string }) => <Text>{title}</Text>,
+    SkyHeader: ({ title }: { title: string }) => <Text>{title}</Text>,
+    MascotAnim: () => null,
   };
 });
+
+jest.mock("@/features/home/useHomePalette", () => ({
+  useHomePalette: () => ({ page: "white", card: "white", ink: "black", muted: "gray" }),
+}));
 
 jest.mock("@/i18n", () => ({
   __esModule: true,

@@ -1,0 +1,24 @@
+id: leo
+name: Leo Marin
+names: { tr: Leo, en: Leo, de: Leo, fr: Léo, it: Leo, es: Leo, ru: Лео, ar: ليو, zh: 里奥, ja: レオ }
+age: 27
+role: Runs a very small café ("Leo's") across the street from Port Lumen Central Station.
+home: A small flat above the café.
+personality:
+  - warm, a little clumsy, talks to everyone
+  - remembers every regular customer's order and name
+  - bad with money, good with people
+wants: to keep the café open; the rent goes up every year
+flaw: says yes to everything and then has too little time
+voice: short, friendly sentences; makes small jokes; often says "One more coffee?"
+recurring_cast:
+  - Ada, 70, a retired piano teacher who comes every morning at 7:15 and always sits by the window
+  - Tomas, the bread delivery man, always late, always has news
+  - Nora Vale (see nora.yaml), a train conductor who buys a coffee before her night shift
+setting: station
+visual:
+  # Kapak üretimi için tutarlı karakter kartı (henüz kullanılmıyor).
+  appearance: late twenties, curly dark brown hair, short beard, warm brown eyes, slim
+  clothes: green apron over a cream shirt, sleeves rolled up
+  props: coffee cup, small chalkboard menu
+  palette: warm greens, cream, coffee browns

@@ -37,12 +37,12 @@
  * inline hex literals repeated three times.
  */
 const mockupLight = {
-  bg: "#FAF8F4",
-  ink: "#1E1C19",
-  inkReading: "#241F19", // reader.html only — see discrepancy note above
-  inkSoft: "#8A8378",
-  hairline: "#E7E2D8",
-  accent: "#A6572E",
+  bg: "#FFFFFF",
+  ink: "#1A1A1A",
+  inkReading: "#2B2B2B", // okuyucu gövde metni
+  inkSoft: "#A5A5A5",
+  hairline: "#EFEFEF",
+  accent: "#F29A1F",
   surfaceRaised: "#FFFFFF", // reader.html .sheet-hint background
 } as const;
 
@@ -169,12 +169,12 @@ const light: ThemeColors = {
   },
   text: {
     primary: mockupLight.ink,
-    // inkSoft (#8A8378) açık zeminde 3.54:1 idi; 4.5:1 için koyulaştırıldı (5.1:1).
-    secondary: "#6F695F",
+    // inkSoft (#A5A5A5) beyazda 2.4:1; ikincil metin 4.6:1 için #757575.
+    secondary: "#757575",
     tertiary: mockupLight.inkSoft,
     reading: mockupLight.inkReading,
     inverse: mockupLight.bg,
-    onAccent: "#FFFFFF",
+    onAccent: "#4E251F",
   },
   border: {
     hairline: mockupLight.hairline,
@@ -183,9 +183,9 @@ const light: ThemeColors = {
   accent: mockupLight.accent,
   deep: "#1F3A5F",
   onDeep: "#FAF8F4",
-  highlight: "#F1E4C9",
-  accentMuted: "rgba(166, 87, 46, 0.16)",
-  secondaryMuted: "rgba(138, 131, 120, 0.16)", // inkSoft (#8A8378) @ 16%
+  highlight: "#FFF1D6",
+  accentMuted: "rgba(242, 154, 31, 0.16)",
+  secondaryMuted: "rgba(117, 117, 117, 0.12)",
   spokenHighlight: "rgba(245, 197, 66, 0.38)", // krem zemin (#FAF8F4) üzerinde okunur sarı
   danger: semantic.danger,
   success: "#2F8F68",
@@ -228,7 +228,7 @@ const sepia: ThemeColors = {
     tertiary: "#8A7355",
     reading: "#302517",
     inverse: "#F1E4C9",
-    onAccent: "#FFFFFF",
+    onAccent: "#4E251F",
   },
   border: {
     hairline: "#E0CFA5",
@@ -238,7 +238,7 @@ const sepia: ThemeColors = {
   deep: "#1F3A5F",
   onDeep: "#FAF8F4",
   highlight: "#F1E4C9",
-  accentMuted: "rgba(166, 87, 46, 0.18)",
+  accentMuted: "rgba(242, 154, 31, 0.18)",
   secondaryMuted: "rgba(138, 115, 85, 0.18)", // sepia text.secondary (#8A7355) @ 18%
   spokenHighlight: "rgba(240, 186, 52, 0.34)", // sepia zaten sıcak; alfa biraz düşük
   danger: semantic.danger,
@@ -284,11 +284,11 @@ const dark: ThemeColors = {
     hairline: "#2A2E3A",
     strong: "#F5F6F8",
   },
-  accent: "#C77B4A",
+  accent: "#F5B531",
   deep: "#8FB4DE",
   onDeep: "#141C26",
   highlight: "#3A3020",
-  accentMuted: "rgba(199, 123, 74, 0.2)",
+  accentMuted: "rgba(245, 181, 49, 0.2)",
   secondaryMuted: "rgba(139, 144, 160, 0.2)", // dark text.secondary (#8B90A0) @ 20% -- Faz 1 renk revizyonuyla güncellendi
   spokenHighlight: "rgba(247, 208, 96, 0.26)", // koyu zeminde açık metin okunur kalsın
   danger: "#D98A7E",

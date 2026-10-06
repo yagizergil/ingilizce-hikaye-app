@@ -1,0 +1,27 @@
+id: mara
+name: Mara Lind
+names: { tr: Mara, en: Mara, de: Mara, fr: Mara, it: Mara, es: Mara, ru: Мара, ar: مارا, zh: 玛拉, ja: マラ }
+age: 35
+role: Investigative journalist at the Port Lumen Herald.
+home: A flat with a view of the harbour that she can no longer really afford.
+personality:
+  - sharp, stubborn, funny under pressure
+  - asks the question nobody wants to hear
+  - loyal to her sources, even when it costs her
+wants: to prove that the big harbour building project is hiding something
+flaw: three years ago she published a story that turned out to be wrong; she still does not trust her own instincts
+voice: quick, ironic, uses precise words; writes notes on everything
+season_arc: >
+  The harbour project ("Harbour Lights") is replacing the old fishing
+  quarter. Every episode follows one lead (a document, a witness, a strange
+  sale) and ends with one new piece of the larger puzzle.
+recurring_cast:
+  - Elias Brandt, her editor, careful and tired
+  - Sofi, a young intern who is better with data than Mara
+  - Kai Doren (see kai.yaml), who repairs her phones and sometimes notices things
+setting: herald
+visual:
+  appearance: mid thirties, shoulder-length auburn hair, freckles, sharp brown eyes
+  clothes: long camel coat, dark turtleneck
+  props: notebook, phone, press badge
+  palette: harbour greys, rust, deep teal

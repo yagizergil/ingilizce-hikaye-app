@@ -3,10 +3,13 @@
     "name": "Lingo"
   },
   "tabs": {
-    "home": "Kitaplar",
+    "home": "Ana Sayfa",
     "library": "Kütüphane",
     "vocabulary": "Kelimeler",
-    "profile": "Ayarlar"
+    "profile": "Profil",
+    "search": "Ara",
+    "myBooks": "Kitabım",
+    "quiz": "Quiz"
   },
   "placeholder": {
     "comingSoon": "Yakında burada"
@@ -44,14 +47,14 @@
     },
     "books": {
       "title": "Kitaplar",
-      "more": "TÜMÜ →"
+      "more": "Tümü →"
     },
     "book": {
       "words": "{{value}} kelime",
       "chapters": "{{value}} bölüm"
     },
     "shelves": {
-      "more": "TÜMÜ →",
+      "more": "Tümü →",
       "forYou": "Sana uygun",
       "shortReads": "Kısa okumalar",
       "byGenre": "Türlere göre",
@@ -116,8 +119,8 @@
       "accessibilityLabel": "{{favoritesCount}} favori, {{readCount}} okunan kitap"
     },
     "hero": {
-      "levelEyebrow": "SEVİYEN · {{level}}",
-      "welcomeEyebrow": "HOŞ GELDİN",
+      "levelEyebrow": "Seviyen · {{level}}",
+      "welcomeEyebrow": "Hoş geldin",
       "title": "Bugün ne okuyalım?",
       "continueBody": "%{{percent}} tamamlandı. Kaldığın yerden devam et.",
       "startBody": "Seviyene uygun kısa hikâyelerle başla; her biri bir oturumda biter.",
@@ -138,12 +141,218 @@
       "myLevel": "Seviyene göre",
       "favorites": "Favorilerim",
       "review": "Kelime tekrarı"
+    },
+    "header": {
+      "welcome": "Hoş geldin",
+      "welcomeBackLead": "Tekrar hoş geldin,",
+      "level": "Seviye {{level}}",
+      "levelAccessibility": "Seviye {{level}}, bir sonraki seviyenin %{{percent}} kadarı tamam",
+      "streakAccessibility": "{{count}} günlük seri",
+      "languageAccessibility": "Dil çiftini değiştir"
+    },
+    "stats": {
+      "weekValue": "{{done}} / {{total}}",
+      "weekLabel": "Gün meydan okuması",
+      "more": "Ayrıntılı istatistikler",
+      "today": "Bugüne kadar",
+      "booksRead": "Okunan kitap",
+      "readingTime": "Öğrenme süresi",
+      "minutesValue": "{{count}} dk"
+    },
+    "seeAll": "Tümünü gör",
+    "categoryGrid": {
+      "title": "Kitap kategorileri"
+    },
+    "yourBooks": "Kitapların",
+    "popularBooks": "Popüler kitaplar",
+    "continue": {
+      "title": "Kaldığın yer",
+      "cta": "Devam et",
+      "percent": "%{{percent}}",
+      "accessibility": "{{title}}, %{{percent}} okundu, devam et"
+    },
+    "week": {
+      "title": "Bu hafta",
+      "count": "{{count}}/7 gün",
+      "dayAccessibility": "{{day}}: {{count}} dk"
+    },
+    "start": {
+      "title": "Hemen başla",
+      "description": "İlk hikâyeni seç, okurken kelimelere dokun.",
+      "cta": "Kitap keşfet"
+    },
+    "recommended": {
+      "eyebrow": "Senin için",
+      "meta": "{{level}} · ~{{minutes}} dk",
+      "cta": "Okumaya başla",
+      "browse": "Diğer kitaplara göz at",
+      "accessibility": "{{title}}, okumaya başla"
     }
   },
   "collections": {
     "ozSeries": {
       "title": "Oz Serisi",
       "description": "L. Frank Baum'un Oz dünyasını anlatan klasik roman dizisi."
+    },
+    "kai-repair-files-b1": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-tr": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-de": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-fr": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-it": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-es": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-ru": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-ar": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-zh": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "kai-repair-files-b1-ja": {
+      "title": "Tamirci Kai'nin Dosyaları",
+      "description": "Eski Çarşı'daki küçük tamir dükkânına gelen her bozuk telefon bir hayatın kapısını aralıyor."
+    },
+    "leo-little-cafe-a1": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-tr": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-de": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-fr": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-it": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-es": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-ru": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-ar": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-zh": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "leo-little-cafe-a1-ja": {
+      "title": "Leo'nun Küçük Kafesi",
+      "description": "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+    },
+    "mara-lind-investigates-b2": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-tr": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-de": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-fr": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-it": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-es": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-ru": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-ar": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-zh": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "mara-lind-investigates-b2-ja": {
+      "title": "Mara Lind Araştırıyor",
+      "description": "Liman projesi eski balıkçı mahallesini yutuyor. Gazeteci Mara Lind kimsenin sormadığı soruyu soruyor."
+    },
+    "nora-night-train-a2": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-tr": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-de": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-fr": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-it": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-es": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-ru": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-ar": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-zh": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
+    },
+    "nora-night-train-a2-ja": {
+      "title": "Nora ile Gece Treni",
+      "description": "Her gece bir yolcu, bir sır. Kondüktör Nora küçük ayrıntıları kimseden iyi görür."
     }
   },
   "library": {
@@ -164,7 +373,9 @@
       "finishedTag": "okundu"
     },
     "search": {
-      "placeholder": "Başlık, yazar veya tür ara"
+      "title": "Ara",
+      "subtitle": "Hangi kitabı okumak istersin?",
+      "placeholder": "Kitap ara"
     },
     "sort": {
       "recommended": "Önerilen",
@@ -198,7 +409,22 @@
     "card": {
       "minutes": "{{count}} dk",
       "audio": "Sesli"
-    }
+    },
+    "levelChips": {
+      "all": "Tümü",
+      "beginner": "A1–A2",
+      "intermediate": "B1–B2",
+      "advanced": "C1–C2"
+    },
+    "shelves": {
+      "forLevel": "Seviyene uygun",
+      "short": "Kısa hikâyeler",
+      "new": "Yeni eklenenler",
+      "audio": "Sesli kitaplar",
+      "suggested": "Bunlara göz at"
+    },
+    "clearSearch": "Aramayı temizle",
+    "resultsLimited": "İlk {{count}} sonuç gösteriliyor; aramayı daraltabilirsin."
   },
   "bookDetail": {
     "back": "← Kitaplık",
@@ -211,7 +437,8 @@
       "listen": "Dinle",
       "listenAccessibilityLabel": "Bu kitabı dinle",
       "listenLockedAccessibilityLabel": "Dinle — premium özellik",
-      "reread": "Baştan oku"
+      "reread": "Baştan oku",
+      "premiumTag": "Premium"
     },
     "stats": {
       "words": "Kelime",
@@ -241,12 +468,17 @@
       "lastBook": "Bu serinin son kitabı"
     },
     "audio": {
-      "label": "SESLENDİRME",
+      "label": "Seslendirme",
       "unlocked": "Bu hikâye stüdyo sesiyle, kelime kelime takip edilerek okunuyor.",
       "locked": "Stüdyo seslendirmesi premium'a dahil. Bu hikâyeyi doğal bir sesle, okuduğun kelime vurgulanarak dinleyebilirsin."
     },
     "about": "Kitap hakkında",
-    "wordOverlap": "Kelime defterindeki {{count}} kelime bu kitapta geçiyor"
+    "wordOverlap": "Kelime defterindeki {{count}} kelime bu kitapta geçiyor",
+    "byAuthor": "{{author}} tarafından",
+    "statChapters": "{{count}} bölüm",
+    "statMinutes": "{{count}} dk",
+    "synopsis": "Özet",
+    "share": "Paylaş"
   },
   "reader": {
     "header": {
@@ -256,7 +488,8 @@
       "pauseSpeech": "Sesli okumayı duraklat",
       "chapterList": "İçerikler",
       "quotaRemaining": "Bugün {{count}} çeviri hakkın kaldı",
-      "bookWords": "Kitaptan Kelimeler"
+      "bookWords": "Kitaptan Kelimeler",
+      "menu": "Menü"
     },
     "wordSheet": {
       "pronounce": "Telaffuz et",
@@ -280,7 +513,10 @@
         "interjection": "(ünlem)",
         "other": ""
       },
-      "moreDetail": "Ayrıntıları göster"
+      "moreDetail": "Ayrıntıları göster",
+      "definitions": "Tanımlar",
+      "meaning": "Anlam",
+      "moreDefinitions": "Daha fazla tanım"
     },
     "sentenceTranslation": {
       "toggle": "Cümle çevirisini göster",
@@ -324,15 +560,16 @@
         "enhanced": "gelişmiş"
       },
       "voiceUpgradeHint": "Sözlükteki kelimeleri okuyan cihaz sesi. Daha doğal duyulması için: Ayarlar > Erişilebilirlik > Sözlü İçerik > Sesler > İngilizce'den bir ses indir. Ücretsiz ve bir kerelik. (Bölüm seslendirmesi bundan bağımsız — o stüdyo kaydıyla yapılıyor.)",
-      "title": "Ayarlar"
+      "title": "Ayarlar",
+      "previewText": "Küçük kitapçının kapısındaki zil çaldı ve içeri soğuk bir rüzgâr girdi."
     },
     "chapterComplete": {
       "title": "Bölüm tamamlandı",
       "nextChapter": "Sonraki bölüm",
       "bookFinished": "Kitabı bitirdin. Tebrikler!",
-      "eyebrow": "BÖLÜM {{number}}",
-      "wordsLabel": "KELİME",
-      "minutesLabel": "DAKİKA",
+      "eyebrow": "Bölüm {{number}}",
+      "wordsLabel": "Kelime",
+      "minutesLabel": "Dakika",
       "minutesValue": "{{count}} dk",
       "backToBook": "Kitaba dön",
       "finishBook": "Kitabı tamamla"
@@ -350,8 +587,11 @@
     },
     "wordAlreadySaved": "Bu kelime zaten kayıtlı.",
     "footer": {
-      "nextChapter": "SONRAKİ BÖLÜM",
-      "finishBook": "KİTABI BİTİR"
+      "nextChapter": "Sonraki bölüm",
+      "finishBook": "Kitabı bitir",
+      "of": "/",
+      "prevPage": "Önceki sayfa",
+      "nextPage": "Sonraki sayfa"
     },
     "chapterList": {
       "title": "İçerikler"
@@ -368,6 +608,19 @@
       "pause": "Seslendirmeyi duraklat",
       "previousWord": "Bir kelime geri",
       "nextWord": "Bir kelime ileri"
+    },
+    "loading": {
+      "title": "Yükleniyor...",
+      "subtitle": "Kitabı senin için getirirken biraz bekle!"
+    },
+    "mode": {
+      "read": "Oku",
+      "listen": "Dinle",
+      "listenLocked": "Dinle (Premium)"
+    },
+    "listen": {
+      "back10": "10 saniye geri",
+      "forward10": "10 saniye ileri"
     }
   },
   "profile": {
@@ -382,8 +635,8 @@
       "nameSaveError": "İsim kaydedilemedi. Tekrar dene."
     },
     "streak": {
-      "currentLabel": "GÜNLÜK SERİ",
-      "longestLabel": "EN UZUN SERİ",
+      "currentLabel": "Günlük seri",
+      "longestLabel": "En uzun seri",
       "weekAccessibilityLabel": "Bu hafta {{count}} gün okudun",
       "keepGoing": "{{count}} günlük serini sürdürmek için bugün de biraz oku.",
       "startToday": "Bugün birkaç sayfa oku, serin başlasın.",
@@ -398,7 +651,7 @@
       }
     },
     "week": {
-      "title": "BU HAFTA",
+      "title": "Bu hafta",
       "totalMinutes": "{{count}} dk",
       "dayAccessibilityLabel": "{{day}}: {{count}} dakika",
       "empty": "Bu hafta henüz okumadın."
@@ -416,7 +669,8 @@
       "totalTimeLabel": "Toplam Okuma",
       "totalActiveDaysLabel": "Okunan Gün",
       "screenTitle": "İstatistiklerim",
-      "rowValue": "{{minutes}} dk · {{streak}} gün seri"
+      "rowValue": "{{minutes}} dk · {{streak}} gün seri",
+      "subtitle": "Okuma serin ve haftalık ilerlemen"
     },
     "account": {
       "sectionTitle": "Hesap",
@@ -431,9 +685,52 @@
       "languageEn": "İngilizce",
       "rateUs": "Bizi Değerlendir",
       "deleteAccount": "Hesabımı sil",
-      "devReplayOnboarding": "Hesabı sıfırla ve onboarding'i baştan oynat (geliştirici)"
+      "devReplayOnboarding": "Hesabı sıfırla ve onboarding'i baştan oynat (geliştirici)",
+      "devSplashPreview": "Splash ekranını önizle (geliştirici)",
+      "devUnlocked": "Geliştirici araçları açıldı",
+      "devOnboardingPreview": "Onboarding ekranını önizle (geliştirici)"
     },
-    "footer": "{{name}} — sürüm {{version}}"
+    "footer": "{{name}} — sürüm {{version}}",
+    "subtitle": "Hesabın ve ayarların",
+    "premium": {
+      "title": "Premium'a geç",
+      "description": "Stüdyo seslendirmesi, sınırsız çeviri ve Akıllı Tekrar.",
+      "cta": "Premium'u gör",
+      "activeTitle": "Premium üyesin",
+      "activeDescription": "Tüm özellikler açık. İyi okumalar!"
+    },
+    "sections": {
+      "learning": "Öğrenme",
+      "reading": "Okuma ve dil"
+    },
+    "sfx": {
+      "label": "Ses efektleri",
+      "hint": "Quiz ve tekrarda doğru/yanlış sesleri"
+    },
+    "level": {
+      "levelLabel": "Seviye {{level}}",
+      "today": "Bugün +{{xp}} XP",
+      "progress": "{{current}} / {{needed}} XP",
+      "toNext": "Seviye {{level}} için {{xp}} XP",
+      "xp": "{{xp}} XP",
+      "sources": {
+        "reading": "Okuma",
+        "words": "Kaydedilen kelimeler",
+        "reviews": "Kelime tekrarı",
+        "quiz": "Quiz doğruları",
+        "books": "Bitirilen kitaplar"
+      },
+      "howTo": "Okudukça XP kazanırsın: dakika başına 2, kaydettiğin her kelimeye 3, her tekrara 2, quizdeki her doğruya 5, bitirdiğin her kitaba 100 XP.",
+      "ranks": {
+        "newcomer": "Yeni Okur",
+        "curious": "Meraklı Okur",
+        "bookworm": "Kitap Kurdu",
+        "storyHunter": "Hikâye Avcısı",
+        "explorer": "Dil Kâşifi",
+        "master": "Usta Okur",
+        "legend": "Efsane Okur"
+      }
+    }
   },
   "vocabulary": {
     "title": "Defter",
@@ -641,7 +938,8 @@
       "emptyBoth": {
         "title": "Burası henüz boş",
         "description": "Favorilediğin ve okumaya başladığın kitaplar burada listelenecek."
-      }
+      },
+      "subtitle": "Favorilerin ve okuduklarının burada"
     }
   },
   "account": {
@@ -662,9 +960,9 @@
     "loadError": "Tekrar kartları yüklenemedi.",
     "revealHint": "Anlamı görmek için dokun",
     "noGloss": "Karşılık bulunamadı",
-    "ratingAgain": "BİLMEDİM",
-    "ratingHard": "ZOR",
-    "ratingEasy": "KOLAY",
+    "ratingAgain": "Bilmedim",
+    "ratingHard": "Zor",
+    "ratingEasy": "Kolay",
     "doneTitle": "Bugünlük bitti",
     "doneMessage": "{{count}} kelime tekrar ettin.",
     "emptyTitle": "Tekrar edilecek kelime yok",
@@ -678,19 +976,19 @@
   "onboarding": {
     "introTitle": "Seviyeni bulalım",
     "introBody": "Sana birkaç İngilizce kelime göstereceğiz. Her biri için bildiğini, emin olmadığını ya da bilmediğini söyle. Buna göre sana uygun kitapları öne çıkaralım.",
-    "introDuration": "YAKLAŞIK 1 DAKİKA",
+    "introDuration": "Yaklaşık 1 dakika",
     "start": "Başlayalım",
     "skip": "Şimdi değil",
     "answerKnown": "Biliyorum",
     "answerUnsure": "Emin değilim",
     "answerUnknown": "Bilmiyorum",
-    "resultEyebrow": "OKUMAYA BURADAN BAŞLA",
+    "resultEyebrow": "Okumaya buradan başla",
     "resultSize": "Yaklaşık {{count}} kelime biliyorsun.",
-    "adjustHint": "DOĞRU GELMEDİYSE DEĞİŞTİR",
+    "adjustHint": "Doğru gelmediyse değiştir",
     "finish": "Kitaplara geç",
     "loadError": "Test kelimeleri yüklenemedi.",
     "splash": {
-      "tagline": "HİKÂYELERLE DİL ÖĞREN"
+      "tagline": "Hikâyelerle dil öğren"
     },
     "welcome": {
       "title": "Hikâye oku, dil öğren",
@@ -866,13 +1164,38 @@
       "bodyPremium": "Her şey hazır. Premium açık, okumaya başlayabilirsin.",
       "bodyFree": "Her şey hazır. Bütün kitaplar ücretsiz, okumaya başlayabilirsin.",
       "cta": "Okumaya başla"
+    },
+    "adventure": {
+      "title": "Macerayla dil öğren",
+      "subtitle": "Okuyarak dil becerilerini derinleştir."
+    },
+    "intro": {
+      "adventure": {
+        "title": "Dil öğrenmenin eğlenceli macerası",
+        "body": "Okuyarak dil becerini derinleştir."
+      },
+      "skills": {
+        "title": "Dil becerini geliştir",
+        "body": "Kelimede ve anlamada ustalaş."
+      },
+      "stories": {
+        "title": "Hikâyelerle dolu bir dünyaya gir",
+        "body": "Sevdiğin kitabı seç ve okumaya başla."
+      },
+      "next": "Devam",
+      "start": "Başla"
+    },
+    "mascot": {
+      "title": "Merhaba, ben Lumi!",
+      "body": "Eğlenceli bir maceraya hazır mısın?",
+      "cta": "Devam et"
     }
   },
   "paywall": {
     "title": "Okuduğun kelimeler aklında kalsın",
     "subtitle": "Hikâyeler her zaman ücretsiz. Premium, öğrendiğini kalıcı kılar.",
-    "socialProof_one": "{{count}} HİKÂYE · A1'DEN C2'YE",
-    "socialProof_other": "{{count}} HİKÂYE · A1'DEN C2'YE",
+    "socialProof_one": "{{count}} hikâye · A1'den C2'ye",
+    "socialProof_other": "{{count}} hikâye · A1'den C2'ye",
     "benefits": {
       "studioAudio": {
         "title": "Dinlediğini anlama",
@@ -910,12 +1233,16 @@
       "wordPacks": {
         "title": "Keşfet paketleri",
         "body": "Her seviyenin kitaplarında en sık geçen kelimeler, tek dokunuşla kendi desten olsun."
+      },
+      "bookQuizzes": {
+        "title": "Kitap quizleri",
+        "body": "Her kitapta Anlama ve Derin okuma basamakları"
       }
     },
     "plan": {
       "annual": "Yıllık",
       "monthly": "Aylık",
-      "savings": "%{{percent}} TASARRUF",
+      "savings": "%{{percent}} tasarruf",
       "perMonth": "ayda {{price}}",
       "trialDays_one": "{{count}} gün ücretsiz",
       "trialDays_other": "{{count}} gün ücretsiz",
@@ -936,7 +1263,7 @@
       "privacy": "Gizlilik Politikası",
       "privacyMissing": "Gizlilik politikası bağlantısı yapılandırılmadı"
     },
-    "freeAlwaysNote": "TÜM KİTAPLAR HER ZAMAN ÜCRETSİZ KALIR",
+    "freeAlwaysNote": "Tüm kitaplar her zaman ücretsiz kalır",
     "restore": "Satın alımları geri yükle",
     "purchaseError": "Satın alma tamamlanamadı. Lütfen tekrar dene.",
     "notEntitledTitle": "Abonelik henüz görünmüyor",
@@ -951,13 +1278,13 @@
     "restoreErrorBody": "Satın alımların şu anda kontrol edilemedi. Bağlantını denetleyip tekrar dene.",
     "noPackages": "Abonelik seçenekleri yüklenemedi.",
     "retryPackages": "Tekrar dene",
-    "unavailableInExpoGo": "SATIN ALMA YALNIZCA DERLENMİŞ UYGULAMADA ÇALIŞIR",
+    "unavailableInExpoGo": "Satın alma yalnızca derlenmiş uygulamada çalışır",
     "upgradeRow": "Premium",
     "wordListFull": "Kelime defterin {{count}}/{{limit}} dolu",
-    "benefitsSectionTitle": "ABONELİK AVANTAJLARI",
-    "introOffer": "SANA ÖZEL: YILLIKTA %{{percent}} TASARRUF",
+    "benefitsSectionTitle": "Abonelik avantajları",
+    "introOffer": "Yıllık planda %{{percent}} tasarruf",
     "activity": {
-      "heading": "SON 7 GÜNÜN",
+      "heading": "Son 7 günün",
       "daysRead_one": "gün okudun",
       "daysRead_other": "gün okudun",
       "wordsLookedUp_one": "kelime çevirdin",
@@ -965,7 +1292,30 @@
       "wordsSaved_one": "kelime kaydettin",
       "wordsSaved_other": "kelime kaydettin",
       "blockedWord": "“{{word}}” seni bekliyor."
-    }
+    },
+    "headlines": {
+      "listen": {
+        "title": "Hikâyeleri dinleyerek öğren",
+        "subtitle": "Stüdyo seslendirmesi, okunan kelime vurgulanarak."
+      },
+      "quiz": {
+        "title": "Kitabını gerçekten anladın mı?",
+        "subtitle": "Anlama ve derin okuma quizleriyle kendini sına."
+      },
+      "words": {
+        "title": "Takıldığın kelimede durma",
+        "subtitle": "Sınırsız kelime çevirisiyle okumaya kesintisiz devam et."
+      },
+      "sentences": {
+        "title": "Zor cümleler artık sorun değil",
+        "subtitle": "Takıldığın her cümlenin anlamını anında gör."
+      },
+      "practice": {
+        "title": "Kelimeler kalıcı olsun",
+        "subtitle": "Akıllı Tekrar ile her gün sınırsız çalış."
+      }
+    },
+    "cancelAnytime": "İstediğin zaman iptal edebilirsin."
   },
   "reminders": {
     "settingsLabel": "Hatırlatmalar",
@@ -991,8 +1341,8 @@
     }
   },
   "completion": {
-    "eyebrow_one": "{{count}}. KİTABINI BİTİRDİN",
-    "eyebrow_other": "{{count}}. KİTABINI BİTİRDİN",
+    "eyebrow_one": "{{count}}. kitabını bitirdin",
+    "eyebrow_other": "{{count}}. kitabını bitirdin",
     "wordsLabel": "kaydedilen kelime",
     "minutesValue_one": "{{count}} dk",
     "minutesValue_other": "{{count}} dk",
@@ -1008,7 +1358,7 @@
     "nativeBody": "Uygulama arayüzü ve kelime karşılıkları bu dilde gösterilecek.",
     "targetTitle": "Hangi dili okumak istiyorsun?",
     "targetBody": "Hikayeler bu dilde olacak. İlk seçimin ücretsiz.",
-    "comingSoonLabel": "YAKINDA",
+    "comingSoonLabel": "Yakında",
     "comingSoonBadge": "Yakında",
     "saveError": "Dil çifti kaydedilemedi. Lütfen tekrar dene.",
     "unexpectedPremiumRequired": "Bu seçim için premium gerekiyor gibi görünüyor. Lütfen tekrar dene.",
@@ -1016,15 +1366,133 @@
     "restartBody": "Arapça için ekran yönü sağdan sola değişiyor. Bunun uygulanması için uygulamayı yeniden açman gerekiyor.",
     "restartCta": "Yeniden başlat",
     "manageTitle": "Dil çiftlerin",
-    "yourPairs": "OKUDUĞUN ÇİFTLER",
-    "addPair": "YENİ ÇİFT EKLE",
+    "yourPairs": "Okuduğun çiftler",
+    "addPair": "Yeni çift ekle",
     "activeBadge": "Aktif",
-    "interfaceLanguageSection": "ARAYÜZ DİLİ",
+    "interfaceLanguageSection": "Arayüz dili",
     "pairArrow": "{{from}} → {{to}}",
-    "historyPairs": "GEÇMİŞ SEÇİMLER",
+    "historyPairs": "Geçmiş seçimler",
     "loadError": "Dil çiftlerin yüklenemedi.",
     "noPairTitle": "Henüz bir dil çiftin yok",
     "noPairBody": "Hangi dili konuştuğunu ve hangi dilde okumak istediğini seç. İlk çiftin ücretsiz.",
     "choosePairCta": "Dil çifti seç"
+  },
+  "splash": {
+    "replay": "Tekrar oynat"
+  },
+  "categoriesScreen": {
+    "subtitle": "{{count}} kategori",
+    "count": "{{count}} kitap"
+  },
+  "quiz": {
+    "next": "Sonraki soru",
+    "finish": "Bitir",
+    "progress": "{{current}}/{{total}}",
+    "progressAccessibility": "Soru {{current}} / {{total}}",
+    "result": {
+      "title": "{{total}} sorudan {{correct}} doğru",
+      "perfect": "Harikasın, hepsini bildin!",
+      "keepGoing": "Okumaya devam et, bir dahaki sefere daha iyisini yaparsın.",
+      "retry": "Tekrar dene",
+      "close": "Kapat",
+      "nextLevelTitle": "2. basamak açıldı: Anlama",
+      "nextLevelBody": "Premium ile kitabı ne kadar anladığını sına."
+    },
+    "home": {
+      "title": "Quiz",
+      "subtitle": "Okuduklarını sına",
+      "bookQuiz": {
+        "title": "Kitap quizi",
+        "description": "Okuduğun kitaba özel sorular",
+        "cta": "Başla"
+      },
+      "words": {
+        "title": "Kelime tekrarı",
+        "description": "Kaydettiğin kelimeler ve desteler"
+      },
+      "tip": {
+        "title": "Günde 5 dakika",
+        "description": "Kısa ve sık çalışmak uzun seanslardan daha etkili."
+      },
+      "hero": {
+        "due": {
+          "title": "Tekrar zamanı: {{count}} kelime",
+          "description": "Unutmadan önce birkaç dakikada tekrar et.",
+          "cta": "Tekrara başla"
+        },
+        "practice": {
+          "title": "Kaydettiğin {{count}} kelimeyle pratik yap",
+          "description": "Boşluk doldurma, anlam ve dinleme soruları.",
+          "cta": "Pratiğe başla"
+        },
+        "empty": {
+          "title": "İlk kelimeni kaydet",
+          "description": "Okurken bilmediğin kelimeye dokun ve kaydet; burada tekrar edersin.",
+          "cta": "Okumaya başla"
+        }
+      },
+      "stats": {
+        "due": "Tekrar bekleyen",
+        "saved": "Kaydedilen",
+        "known": "Öğrenilen"
+      },
+      "moreTitle": "Çalışma yolları",
+      "smartLocked": "Akıllı Tekrar için en az {{count}} kelime kaydet.",
+      "books": {
+        "title": "Kitap quizleri",
+        "subtitle": "Okuduğun kitaplardan, kolaydan zora",
+        "error": "Kitap quizleri yüklenemedi. Tekrar denemek için dokun."
+      }
+    },
+    "check": "Kontrol et",
+    "feedback": {
+      "right": "Doğru!",
+      "wrong": "Yanlış cevap"
+    },
+    "kind": {
+      "vocabulary": "Kelime",
+      "fact": "Bilgi",
+      "inference": "Çıkarım",
+      "sequence": "Olay sırası",
+      "motive": "Karakter niyeti"
+    },
+    "levels": {
+      "1": {
+        "title": "Kelime",
+        "description": "Kitaptaki kelimeler bağlamında"
+      },
+      "2": {
+        "title": "Anlama",
+        "description": "Kim, ne, nerede, ne oldu"
+      },
+      "3": {
+        "title": "Derin okuma",
+        "description": "Neden, çıkarım ve olay sırası"
+      },
+      "status": {
+        "done": "Tamamlandı · {{correct}}/{{total}}",
+        "premium": "Premium ile aç",
+        "locked": "Önceki basamaktan %60 al",
+        "retry": "Tekrar dene · en iyi {{correct}}/{{total}}",
+        "open": "{{n}} soru · Başla"
+      },
+      "screenTitle": "Kitap quizi",
+      "subtitle": "Kolaydan zora üç basamak",
+      "note": "Bir basamak, öncekinden %60 alınca açılır.",
+      "empty": {
+        "title": "Bu kitabın quizi hazırlanıyor",
+        "description": "Yakında burada olacak."
+      }
+    },
+    "entry": {
+      "title": "Kitap quizi",
+      "progress": "{{passed}}/{{total}} basamak tamamlandı"
+    },
+    "error": "Quiz yüklenemedi.",
+    "emptyTitle": "Bu quizde henüz soru yok.",
+    "saveError": "Sonucun kaydedilemedi. Bağlantını kontrol edip tekrar dene.",
+    "leaveTitle": "Quizden çıkılsın mı?",
+    "leaveBody": "İlerlemen kaydedilmeyecek.",
+    "leaveConfirm": "Çık"
   }
 }

@@ -1,12 +1,13 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing, type } from "@/theme";
+import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { UpperText } from "@/components/ui/UpperText";
+import { UiIcon } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 
+import type { UiIconName } from "@/components/ui";
 import type { SmartPracticeQuota } from "@/features/vocabulary/api/useSmartPractice";
 
 interface VocabularyHubProps {
@@ -38,6 +39,7 @@ export function VocabularyHub({
 }: VocabularyHubProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
+  const palette = useHomePalette();
   const knownRatio = total > 0 ? known / total : 0;
 
   const practiceSubtitle = quota?.isPremium
@@ -48,21 +50,20 @@ export function VocabularyHub({
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.progress,
-          { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
-        ]}
-      >
-        <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+      <View style={[styles.progress, { backgroundColor: palette.card }]}>
+        <Text style={[homeType.sectionTitle, { color: palette.ink }]}>
           {t("vocabulary.hub.progressTitle")}
-        </UpperText>
+        </Text>
         <View style={styles.stats}>
-          <Stat value={learning} label={t("vocabulary.hub.learning")} color={theme.accent} />
+          <Stat
+            value={learning}
+            label={t("vocabulary.hub.learning")}
+            color={detailColors.amberDeep}
+          />
           <Stat value={known} label={t("vocabulary.hub.known")} color={theme.success} />
-          <Stat value={total} label={t("vocabulary.hub.total")} color={theme.text.primary} />
+          <Stat value={total} label={t("vocabulary.hub.total")} color={palette.ink} />
         </View>
-        <View style={[styles.bar, { backgroundColor: theme.border.hairline }]}>
+        <View style={styles.bar}>
           <View
             style={[
               styles.barFill,
@@ -74,7 +75,7 @@ export function VocabularyHub({
 
       <View style={styles.tiles}>
         <Tile
-          icon="repeat"
+          icon="cards"
           title={t("vocabulary.hub.reviewTitle")}
           subtitle={
             dueCount > 0
@@ -85,7 +86,7 @@ export function VocabularyHub({
           disabled={dueCount === 0}
         />
         <Tile
-          icon="school"
+          icon="bulb"
           title={t("vocabulary.hub.practiceTitle")}
           subtitle={practiceSubtitle}
           badge={t("vocabulary.hub.premiumBadge")}
@@ -98,17 +99,17 @@ export function VocabularyHub({
 }
 
 function Stat({ value, label, color }: { value: number; label: string; color: string }) {
-  const { theme } = useTheme();
+  const palette = useHomePalette();
   return (
     <View style={styles.stat}>
-      <Text style={[type.bookTitleLg, styles.statValue, { color }]}>{value}</Text>
-      <Text style={[monoType.metaTight, { color: theme.text.secondary }]}>{label}</Text>
+      <Text style={[detailType.heroTitle, styles.statValue, { color }]}>{value}</Text>
+      <Text style={[homeType.cardSub, { color: palette.muted }]}>{label}</Text>
     </View>
   );
 }
 
 interface TileProps {
-  icon: "repeat" | "school";
+  icon: UiIconName;
   title: string;
   subtitle: string;
   badge?: string;
@@ -118,7 +119,7 @@ interface TileProps {
 }
 
 function Tile({ icon, title, subtitle, badge, onPress, disabled, highlight }: TileProps) {
-  const { theme } = useTheme();
+  const palette = useHomePalette();
   return (
     <Pressable
       onPress={onPress}
@@ -128,41 +129,52 @@ function Tile({ icon, title, subtitle, badge, onPress, disabled, highlight }: Ti
       style={({ pressed }) => [
         styles.tile,
         {
-          backgroundColor: highlight ? theme.accentMuted : theme.bg.surface,
-          borderColor: highlight ? theme.accent : theme.border.hairline,
-          opacity: disabled ? 0.55 : pressed ? 0.8 : 1,
+          backgroundColor: highlight ? homeColors.peach : palette.card,
+          opacity: disabled ? 0.55 : pressed ? 0.85 : 1,
         },
       ]}
     >
       <View style={styles.tileHead}>
-        <Ionicons name={icon} size={22} color={highlight ? theme.accent : theme.text.primary} />
+        <UiIcon name={icon} size={homeMetrics.rowIcon} />
         {badge ? (
-          <View style={[styles.badge, { backgroundColor: theme.accent }]}>
-            <Text style={[monoType.metaTight, { color: theme.text.onAccent }]}>{badge}</Text>
+          <View style={styles.badge}>
+            <Text style={[homeType.cardSub, { color: detailColors.amberInk }]}>{badge}</Text>
           </View>
         ) : null}
       </View>
-      <Text style={[type.chapterRowTitle, { color: theme.text.primary }]} numberOfLines={1}>
+      <Text
+        style={[detailType.sectionTitle, { color: highlight ? detailColors.title : palette.ink }]}
+        numberOfLines={1}
+      >
         {title}
       </Text>
-      <Text style={[monoType.metaTight, { color: theme.text.secondary }]} numberOfLines={2}>
+      <Text
+        style={[homeType.cardSub, { color: highlight ? detailColors.muted : palette.muted }]}
+        numberOfLines={2}
+      >
         {subtitle}
       </Text>
     </Pressable>
   );
 }
 
+const BAR_HEIGHT = 8;
+
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.md,
-    gap: spacing.sm,
+    paddingHorizontal: homeMetrics.gutter,
+    paddingBottom: homeSpace.md,
+    gap: homeSpace.md,
   },
   progress: {
-    borderRadius: radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: spacing.md,
-    gap: spacing.sm,
+    borderRadius: homeMetrics.cardRadius,
+    padding: homeSpace.lg,
+    gap: homeSpace.md,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
   stats: {
     flexDirection: "row",
@@ -175,33 +187,42 @@ const styles = StyleSheet.create({
     fontVariant: ["tabular-nums"],
   },
   bar: {
-    height: 6,
-    borderRadius: radius.full,
+    height: BAR_HEIGHT,
+    borderRadius: BAR_HEIGHT / 2,
+    backgroundColor: homeColors.peach,
     overflow: "hidden",
   },
   barFill: {
     height: "100%",
-    borderRadius: radius.full,
+    borderRadius: BAR_HEIGHT / 2,
   },
   tiles: {
     flexDirection: "row",
-    gap: spacing.sm,
+    gap: homeSpace.md,
   },
   tile: {
     flex: 1,
-    borderRadius: radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: spacing.md,
-    gap: spacing.xxs,
+    borderRadius: homeMetrics.cardRadius,
+    padding: homeSpace.lg,
+    gap: homeSpace.xs,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
   tileHead: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: homeSpace.xs,
   },
   badge: {
-    borderRadius: radius.full,
-    paddingHorizontal: spacing.xs,
-    paddingVertical: spacing.xxs,
+    paddingHorizontal: homeSpace.sm,
+    height: homeMetrics.continueButton - homeSpace.md,
+    borderRadius: homeMetrics.continueButton / 2,
+    backgroundColor: detailColors.amber,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

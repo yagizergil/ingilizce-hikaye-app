@@ -1,6 +1,6 @@
 import { act, create } from "react-test-renderer";
 
-import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 
 import { TabBarButton } from "@/components/ui/TabBarButton";
 
@@ -9,27 +9,22 @@ import { TabBarButton } from "@/components/ui/TabBarButton";
  * `accessibilityState.selected`i okuyordu, Expo Router 57 ise seçili sekmeyi
  * `aria-selected` ile bildiriyor. Bu test gerçek prop şekliyle render ediyor.
  */
-function iconName(selected: boolean): string {
+function iconSource(selected: boolean): number {
   let tree!: ReturnType<typeof create>;
   act(() => {
     tree = create(
-      <TabBarButton
-        aria-selected={selected}
-        label="Ana sayfa"
-        iconOutline="library-outline"
-        iconActive="library"
-      />,
+      <TabBarButton aria-selected={selected} label="Ana sayfa" icon={1} iconActive={2} />,
     );
   });
-  return tree.root.findByType(Ionicons).props.name as string;
+  return tree.root.findByType(Image).props.source as number;
 }
 
 describe("TabBarButton", () => {
   it("aria-selected true iken dolu ikon gösteriyor", () => {
-    expect(iconName(true)).toBe("library");
+    expect(iconSource(true)).toBe(2);
   });
 
   it("seçili değilken outline ikon gösteriyor", () => {
-    expect(iconName(false)).toBe("library-outline");
+    expect(iconSource(false)).toBe(1);
   });
 });

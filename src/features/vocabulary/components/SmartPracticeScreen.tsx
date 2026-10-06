@@ -1,17 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import * as Haptics from "expo-haptics";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 
-import { monoType, spacing, type } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
 import { trackError, trackEvent } from "@/lib/analytics";
-import { Button, EmptyState, ErrorState, LoadingState } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
+import { Button, EmptyState, ErrorState, LoadingState, MascotAnim } from "@/components/ui";
+import { useHomePalette } from "@/features/home/useHomePalette";
 import { ReviewProgress } from "@/features/srs/components/ReviewProgress";
 import { useActiveLanguagePairQuery, useTargetTtsLocale } from "@/features/languagePair";
 
@@ -26,6 +34,7 @@ import {
 } from "@/features/vocabulary/practice/buildPracticeSession";
 
 import type { PracticeExercise } from "@/features/vocabulary/practice/buildPracticeSession";
+import { playSfx } from "@/lib/sfx";
 
 type Phase = "preparing" | "empty" | "running" | "done" | "error";
 
@@ -41,7 +50,8 @@ interface SmartPracticeScreenProps {
  */
 export function SmartPracticeScreen({ onClose }: SmartPracticeScreenProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const palette = useHomePalette();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const vocabulary = useVocabularyQuery();
   const pair = useActiveLanguagePairQuery();
@@ -90,6 +100,7 @@ export function SmartPracticeScreen({ onClose }: SmartPracticeScreenProps) {
   const handleAnswered = useCallback(
     (correct: boolean) => {
       if (!exercise) return;
+      playSfx(correct ? "correct" : "wrong");
       void (
         correct
           ? Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
@@ -116,34 +127,42 @@ export function SmartPracticeScreen({ onClose }: SmartPracticeScreenProps) {
     setPosition((value) => value + 1);
   }, [position, session.length, correctCount, queryClient]);
 
-  const background = { backgroundColor: theme.bg.primary };
+  const background = { backgroundColor: palette.page, paddingTop: insets.top };
 
   if (vocabulary.isError || phase === "error") {
     return (
-      <SafeAreaView style={[styles.fill, background]}>
+      <View style={[styles.fill, background]}>
         <ErrorState
           message={t("vocabulary.practice.error")}
           onRetry={() => {
-            startedRef.current = false;
             setPhase("preparing");
-            void vocabulary.refetch();
+            // Kelimeler zaten yüklüyse doğrudan yeniden dene: refetch aynı
+            // veriyi döndürünce (yapısal paylaşım) efekt tetiklenmiyor ve
+            // ekran sonsuza dek "hazırlanıyor"da kalıyordu.
+            if (vocabulary.data && !vocabulary.isError) void start();
+            else {
+              startedRef.current = false;
+              void vocabulary.refetch();
+            }
           }}
         />
-      </SafeAreaView>
+        <CloseButton onPress={onClose} top={insets.top} />
+      </View>
     );
   }
 
   if (phase === "preparing") {
     return (
-      <SafeAreaView style={[styles.fill, background]}>
+      <View style={[styles.fill, background]}>
         <LoadingState />
-      </SafeAreaView>
+        <CloseButton onPress={onClose} top={insets.top} />
+      </View>
     );
   }
 
   if (phase === "empty") {
     return (
-      <SafeAreaView style={[styles.fill, background]}>
+      <View style={[styles.fill, background]}>
         <EmptyState
           title={t("vocabulary.practice.emptyTitle")}
           description={t("vocabulary.practice.emptyBody", { count: MIN_PRACTICE_WORDS })}
@@ -151,44 +170,51 @@ export function SmartPracticeScreen({ onClose }: SmartPracticeScreenProps) {
         <View style={styles.footer}>
           <Button label={t("common.close")} onPress={onClose} fullWidth />
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (phase === "done") {
     return (
-      <SafeAreaView style={[styles.fill, background]}>
+      <View style={[styles.fill, background]}>
         <ScrollView contentContainerStyle={styles.summary}>
-          <Text style={[type.screenTitle, styles.center, { color: theme.text.primary }]}>
+          <MascotAnim
+            name={missed.length === 0 ? "party" : "profile"}
+            width={homeMetrics.startMascot * 2}
+            style={styles.mascot}
+          />
+          <Text style={[detailType.heroTitle, styles.center, { color: palette.ink }]}>
             {t("vocabulary.practice.doneTitle")}
           </Text>
-          <Text style={[type.bookTitleLg, styles.center, { color: theme.accent }]}>
-            {t("vocabulary.practice.score", { correct: correctCount, total: session.length })}
-          </Text>
+          <View style={styles.scoreChip}>
+            <Text style={[detailType.sheetTitle, { color: detailColors.amberInk }]}>
+              {t("vocabulary.practice.score", { correct: correctCount, total: session.length })}
+            </Text>
+          </View>
           {missed.length > 0 ? (
-            <View style={styles.missed}>
-              <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
+            <View style={[styles.missed, { backgroundColor: palette.card }]}>
+              <Text style={[homeType.sectionTitle, { color: palette.ink }]}>
                 {t("vocabulary.practice.missedTitle")}
-              </UpperText>
+              </Text>
               {missed.map((item) => (
-                <Text key={item.wordId} style={[monoType.rowText, { color: theme.text.primary }]}>
+                <Text key={item.wordId} style={[homeType.cardSub, { color: palette.muted }]}>
                   {t("vocabulary.practice.answerLine", { lemma: item.lemma, gloss: item.gloss })}
                 </Text>
               ))}
             </View>
           ) : (
-            <Text style={[monoType.rowText, styles.center, { color: theme.text.secondary }]}>
+            <Text style={[homeType.cardSub, styles.center, { color: palette.muted }]}>
               {t("vocabulary.practice.perfect")}
             </Text>
           )}
           <Button label={t("common.close")} onPress={onClose} fullWidth />
         </ScrollView>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={[styles.fill, background]}>
+    <View style={[styles.fill, background]}>
       <ReviewProgress current={position + 1} total={session.length} onClose={onClose} />
       <KeyboardAvoidingView
         style={styles.fill}
@@ -207,28 +233,72 @@ export function SmartPracticeScreen({ onClose }: SmartPracticeScreenProps) {
           ) : null}
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
+  );
+}
+
+/** Hazırlık ve hata ekranlarında da çıkış yolu olsun (eskiden yoktu). */
+function CloseButton({ onPress, top }: { onPress: () => void; top: number }) {
+  const { t } = useTranslation();
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={t("common.close")}
+      hitSlop={12}
+      style={[styles.closeButton, { top: top + homeSpace.sm }]}
+    >
+      <Ionicons name="close" size={26} color={homeColors.ink} />
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  closeButton: {
+    position: "absolute",
+    right: homeMetrics.gutter,
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   fill: {
     flex: 1,
   },
   body: {
-    padding: spacing.lg,
+    padding: homeMetrics.gutter,
   },
   footer: {
-    padding: spacing.lg,
+    padding: homeMetrics.gutter,
   },
   summary: {
-    padding: spacing.lg,
-    gap: spacing.lg,
+    padding: homeMetrics.gutter,
+    gap: homeSpace.lg,
+    alignItems: "stretch",
+  },
+  mascot: {
+    alignSelf: "center",
+  },
+  scoreChip: {
+    alignSelf: "center",
+    paddingHorizontal: homeSpace.xl,
+    height: homeMetrics.continueButton + homeSpace.md,
+    borderRadius: (homeMetrics.continueButton + homeSpace.md) / 2,
+    backgroundColor: homeColors.peach,
+    alignItems: "center",
+    justifyContent: "center",
   },
   center: {
     textAlign: "center",
   },
   missed: {
-    gap: spacing.xs,
+    gap: homeSpace.sm,
+    padding: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
 });

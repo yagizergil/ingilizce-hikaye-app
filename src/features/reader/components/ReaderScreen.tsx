@@ -3,10 +3,12 @@ import { Alert, StyleSheet, View } from "react-native";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
+import { StatusBar } from "expo-status-bar";
 import { useTranslation } from "react-i18next";
 
 import { spacing } from "@/theme";
-import { ErrorState, LoadingState } from "@/components/ui";
+import { useReadingTheme } from "@/theme/useTheme";
+import { ErrorState, MascotLoading } from "@/components/ui";
 import { router } from "expo-router";
 
 import { trackEvent, trackError } from "@/lib/analytics";
@@ -34,13 +36,18 @@ import { useReaderThemeColors } from "@/features/reader/hooks/useReaderThemeColo
 import { ReaderHeader } from "@/features/reader/components/ReaderHeader";
 import { useChapterAudio } from "@/features/reader/tts/useChapterAudio";
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
-import { ReaderAudioBar } from "@/features/reader/components/ReaderAudioBar";
 import { ReaderFooter } from "@/features/reader/components/ReaderFooter";
 import { PaginatedReaderView } from "@/features/reader/components/PaginatedReaderView";
 import { WordSheet } from "@/features/reader/components/WordSheet";
 import { SentenceSheet } from "@/features/reader/components/SentenceSheet";
 import { ReaderSettingsSheet } from "@/features/reader/components/ReaderSettingsSheet";
 import { ChapterListSheet } from "@/features/reader/components/ChapterListSheet";
+import { ReaderMenuSheet } from "@/features/reader/components/ReaderMenuSheet";
+import { ReaderModePill } from "@/features/reader/components/ReaderModePill";
+import { ReaderListenPanel } from "@/features/reader/components/ReaderListenPanel";
+import { useReaderModeStore } from "@/features/reader/hooks/useReaderModeStore";
+import { useSubscriptionQuery } from "@/features/paywall";
+import { useActiveWordStore } from "@/features/reader/hooks/useActiveWordStore";
 import { BookWordsSheet } from "@/features/reader/components/BookWordsSheet";
 import { ChapterCompleteCard } from "@/features/reader/components/ChapterCompleteCard";
 import {
@@ -218,6 +225,43 @@ export function ReaderScreen({
   });
 
   const canPlayAudio = tts.available;
+
+  // Okuma / dinleme modu (referans: kahverengi dinleme ekranı). Dinleme
+  // yalnızca erişim açıkken mümkün; "Dinle" ile gelindiyse dinleme modunda
+  // açılıyor.
+  const storedMode = useReaderModeStore((state) => state.mode);
+  const setMode = useReaderModeStore((state) => state.setMode);
+  const listening = storedMode === "listen" && canPlayAudio;
+  // Kitapta stüdyo sesi var ama kullanıcı premium değil: hap kilitli görünür.
+  // Hap satırı bölüm verisinden (eşzamanlı) karar veriyor, imzalı bağlantı
+  // gelince DEĞİL: sonradan belirmesi okuma alanını kısaltıp sayfaları
+  // yeniden dizdiriyordu.
+  const subscription = useSubscriptionQuery();
+  const audioLocked = hasStudioAudio && subscription.data?.isPremium === false;
+  // Uygulamanın geri kalanı hep açık temada; okuma yüzeyi koyu temada ya da
+  // dinleme modunda (kahverengi) ise durum çubuğu ikonları açık renk olmalı.
+  const { themeName: readingThemeName } = useReadingTheme();
+  const statusBarStyle = listening || readingThemeName === "dark" ? "light" : "dark";
+  const [menuVisible, setMenuVisible] = useState(false);
+  const setActiveWordKey = useActiveWordStore((state) => state.setKey);
+
+  useEffect(() => {
+    setMode(autoStartSpeech ? "listen" : "read");
+    return () => setMode("read");
+  }, [autoStartSpeech, setMode]);
+
+  const handleChangeMode = useCallback(
+    (next: "read" | "listen") => {
+      if (next === storedMode) return;
+      setMode(next);
+      if (next === "listen") {
+        if (useTtsStore.getState().status !== "speaking") tts.toggle();
+      } else {
+        tts.pause();
+      }
+    },
+    [setMode, storedMode, tts],
+  );
 
   // Üst çubuktaki turuncu "kalan kelime çevirisi hakkı" rozeti için.
   //
@@ -398,6 +442,7 @@ export function ReaderScreen({
       );
       resumeAfterSheetRef.current = useTtsStore.getState().status === "speaking";
       pauseSpeech();
+      setActiveWordKey(payload.wordKey ?? null);
 
       const openSheet = () =>
         setActiveWord({
@@ -449,7 +494,7 @@ export function ReaderScreen({
           openSheet();
         });
     },
-    [pauseSpeech, consumeWordLookupAsync],
+    [pauseSpeech, consumeWordLookupAsync, setActiveWordKey],
   );
 
   /**
@@ -638,11 +683,7 @@ export function ReaderScreen({
   }, [buildWordActionInput, unmarkKnownMutation]);
 
   if (isLoading) {
-    return (
-      <View style={[styles.centered, { backgroundColor: readerColors.background }]}>
-        <LoadingState />
-      </View>
-    );
+    return <MascotLoading />;
   }
 
   if (isError || !chapter) {
@@ -693,39 +734,26 @@ export function ReaderScreen({
         hasLemmaDictionary: !!lemmaDictionary,
       });
     }
-    return (
-      <View style={[styles.centered, { backgroundColor: readerColors.background }]}>
-        <LoadingState />
-      </View>
-    );
+    return <MascotLoading />;
   }
   // Ustteki guard ile ayni amac.
   // eslint-disable-next-line react-hooks/refs
   hasReachedReaderRef.current = true;
 
-  const progress =
-    pageProgress.totalPages > 0 ? (pageProgress.page + 1) / pageProgress.totalPages : 0;
-
   return (
     <View style={[styles.container, { backgroundColor: readerColors.background }]}>
+      <StatusBar style={statusBarStyle} />
       {/* Şeritler her zaman görünür. Orta bölgeye dokunarak gizleme
           hareketi kaldırıldı — gerekçe PaginatedReaderView'daki
           `handleZonePress` yorumunda. */}
-      <ReaderHeader
-        onOpenChapterList={() => chapterListSheetRef.current?.present()}
-        onOpenSettings={() => settingsSheetRef.current?.present()}
-        onOpenBookWords={() => bookWordsSheetRef.current?.present()}
-        onToggleSpeech={tts.toggle}
-        isSpeaking={isSpeaking}
-        canPlaySpeech={canPlayAudio}
-        isPreparingSpeech={tts.isPreparing}
-        wordQuotaRemaining={wordQuotaRemaining}
-        onPressQuota={handleOpenPaywallFromQuota}
-        onClose={onBack}
-      />
+      <ReaderHeader onOpenMenu={() => setMenuVisible(true)} onClose={onBack} />
 
       <View style={styles.readerWrap}>
         <PaginatedReaderView
+          // Mod değişince YENİDEN KURULMAZ: eskiden `key` mod başına
+          // değişiyordu; okuyucu sıfırdan kurulup kullanıcının o an okuduğu
+          // sayfa yerine sunucudaki eski kayıtlı konuma dönüyordu ("ekran
+          // bir ileri bir geri", 2026-10-06). İki mod artık aynı düzende.
           ref={readerRef}
           chapter={chapter}
           settings={{
@@ -765,24 +793,61 @@ export function ReaderScreen({
         ) : null}
       </View>
 
-      {/* Ses kontrol çubuğu YALNIZCA seslendirmesi olan ve erişimi açık
-          kitaplarda. Kilitli bir çubuk göstermek okuma ekranına premium
-          promosyonu sokmak olurdu (Ürün İlkesi #1, ADR-012). */}
-      {canPlayAudio ? (
-        <ReaderAudioBar
-          isSpeaking={isSpeaking}
-          isPreparing={tts.isPreparing}
-          onToggle={tts.toggle}
-          onSkipWord={tts.skipWord}
-        />
-      ) : null}
-
-      <ReaderFooter
-        progress={progress}
-        onLastPage={pageProgress.totalPages > 0 && pageProgress.page >= pageProgress.totalPages - 1}
-        hasNextChapter={chapter.nextChapterId !== null}
-        onFinishChapter={handleChapterEnd}
-      />
+      {listening ? (
+        <>
+          {/* Dinlerken metnin TAMAMI görünür kalır (eskiden metin 200 pt'lik
+              bir şeride sıkışıyor, kalan alanı maskot animasyonu
+              kaplıyordu: kullanıcı yalnızca tek cümle görüyordu). Hap
+              akışın içinde, metnin altında: hiçbir satırın üstüne binmez. */}
+          <View style={styles.pillRow}>
+            <ReaderModePill mode="listen" onChangeMode={handleChangeMode} />
+          </View>
+          <ReaderListenPanel
+            isSpeaking={isSpeaking}
+            isPreparing={tts.isPreparing}
+            positionSec={tts.positionSec}
+            durationSec={tts.durationSec}
+            page={pageProgress.page}
+            totalPages={pageProgress.totalPages}
+            onToggle={tts.toggle}
+            onSeekBy={tts.seekBy}
+            onExpand={() => handleChangeMode("read")}
+          />
+        </>
+      ) : (
+        <>
+          {/* Mod hapı YALNIZCA seslendirmesi olan ve erişimi açık kitaplarda.
+              Kilitli bir hap okuma ekranına premium promosyonu sokmak olurdu
+              (Ürün İlkesi #1, ADR-012). */}
+          {hasStudioAudio ? (
+            // Akışın içinde (absolute değil): eskiden son satırların
+            // üstüne biniyordu. Okuma alanı hap kadar kısalıyor ve
+            // sayfalama bunu ölçüyor.
+            <View style={styles.pillRow}>
+              <ReaderModePill
+                mode="read"
+                onChangeMode={handleChangeMode}
+                locked={audioLocked}
+                onLockedPress={() => {
+                  trackEvent("paywall_opened", { source: "reader_listen" });
+                  router.push("/paywall?source=reader_listen");
+                }}
+              />
+            </View>
+          ) : null}
+          <ReaderFooter
+            page={pageProgress.page}
+            totalPages={pageProgress.totalPages}
+            onPrevPage={() => readerRef.current?.retreatPage()}
+            onNextPage={() => readerRef.current?.advancePage()}
+            onLastPage={
+              pageProgress.totalPages > 0 && pageProgress.page >= pageProgress.totalPages - 1
+            }
+            hasNextChapter={chapter.nextChapterId !== null}
+            onFinishChapter={handleChapterEnd}
+          />
+        </>
+      )}
 
       <WordSheet
         word={activeWord}
@@ -793,11 +858,17 @@ export function ReaderScreen({
         onMarkKnown={handleMarkKnown}
         onUnmarkKnown={handleUnmarkKnown}
         onSentenceQuotaExhausted={() => {
+          // Kartı push'tan ÖNCE kapat: BottomSheetModalProvider tüm yığını
+          // sardığı için açık kart paywall'ın üstünde kalıp düğmesini
+          // ve yasal bloğu kapatıyordu (SentenceSheet yolu zaten böyle).
+          setActiveWord(null);
+          setActiveWordKey(null);
           trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
           router.push("/paywall?source=sentence_quota");
         }}
         onDismiss={() => {
           setActiveWord(null);
+          setActiveWordKey(null);
           if (!resumeAfterSheetRef.current) return;
           resumeAfterSheetRef.current = false;
           // `toggle` duraklamışken devam ettirir; konumu `resumePosition.ts`
@@ -814,6 +885,15 @@ export function ReaderScreen({
           trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
           router.push("/paywall?source=sentence_quota");
         }}
+      />
+      <ReaderMenuSheet
+        visible={menuVisible}
+        onClose={() => setMenuVisible(false)}
+        onOpenChapterList={() => chapterListSheetRef.current?.present()}
+        onOpenSettings={() => settingsSheetRef.current?.present()}
+        onOpenBookWords={() => bookWordsSheetRef.current?.present()}
+        wordQuotaRemaining={wordQuotaRemaining}
+        onPressQuota={handleOpenPaywallFromQuota}
       />
       <ReaderSettingsSheet ref={settingsSheetRef} />
       <ChapterListSheet
@@ -838,6 +918,10 @@ const styles = StyleSheet.create({
   },
   readerWrap: {
     flex: 1,
+  },
+  pillRow: {
+    alignItems: "center",
+    paddingVertical: spacing.sm,
   },
   chapterCompleteOverlay: {
     ...StyleSheet.absoluteFill,

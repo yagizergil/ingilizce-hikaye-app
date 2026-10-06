@@ -226,6 +226,7 @@ function ReaderPageComponent({
                   sentenceCharOffset: wordSentenceCharOffset,
                   tapMs: Date.now(),
                   anchorY: event.nativeEvent.pageY,
+                  wordKey: wordKey(paragraph.id, segment.charStart, token.start),
                 })
               }
               onLongPress={() =>
@@ -254,6 +255,7 @@ function ReaderPageComponent({
               styles.paragraphBase,
               resolveDynamicTextStyle(textStyle),
               { color: readerColors.text },
+              styles.justified,
             ]}
           >
             {children}
@@ -335,6 +337,9 @@ function resolveDynamicTextStyle(textStyle: TypeStyle): {
 export const ReaderPage = memo(ReaderPageComponent);
 
 const styles = StyleSheet.create({
+  justified: {
+    textAlign: "justify",
+  },
   pageContainer: {
     flex: 1,
   },

@@ -45,7 +45,9 @@ interface LanguagePairRow {
  * yazılmadan bir kelimeye dokunduğunda TÜRKÇE karşılık alıyordu.
  */
 const FALLBACK_PAIR: LanguagePair = {
-  nativeLanguage: (UI_LANGUAGE_CODES as readonly string[]).includes(getLocales()[0]?.languageCode ?? "")
+  nativeLanguage: (UI_LANGUAGE_CODES as readonly string[]).includes(
+    getLocales()[0]?.languageCode ?? "",
+  )
     ? (getLocales()[0]?.languageCode as string)
     : "en",
   targetLanguage: "en",

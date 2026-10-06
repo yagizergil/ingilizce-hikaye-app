@@ -1,11 +1,16 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
-import { UpperText } from "@/components/ui/UpperText";
+import {
+  detailColors,
+  detailMetrics,
+  detailType,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+} from "@/theme";
 
 interface ReviewProgressProps {
   current: number;
@@ -13,10 +18,9 @@ interface ReviewProgressProps {
   onClose: () => void;
 }
 
-/** Tekrar oturumunun üst şeridi: kaçıncı karttayız ve çıkış. */
+/** Tekrar oturumunun üst şeridi: çıkış düğmesi, "n / m" hapı ve ilerleme çubuğu. */
 export function ReviewProgress({ current, total, onClose }: ReviewProgressProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
   const ratio = total > 0 ? Math.min(1, (current - 1) / total) : 0;
 
   return (
@@ -24,20 +28,23 @@ export function ReviewProgress({ current, total, onClose }: ReviewProgressProps)
       <View style={styles.row}>
         <Pressable
           onPress={onClose}
-          hitSlop={spacing.sm}
+          hitSlop={homeSpace.sm}
           accessibilityRole="button"
           accessibilityLabel={t("common.back")}
+          style={styles.close}
         >
-          <Ionicons name="close" size={24} color={theme.text.secondary} />
+          <Ionicons name="close" size={20} color={detailColors.muted} />
         </Pressable>
 
-        <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
-          {current} / {total}
-        </UpperText>
+        <View style={styles.counter}>
+          <Text style={[detailType.statLabel, styles.counterText]}>
+            {current} / {total}
+          </Text>
+        </View>
       </View>
 
-      <View style={[styles.track, { backgroundColor: theme.border.hairline }]}>
-        <View style={[styles.bar, { backgroundColor: theme.accent, width: `${ratio * 100}%` }]} />
+      <View style={styles.track}>
+        <View style={[styles.bar, { width: `${ratio * 100}%` }]} />
       </View>
     </View>
   );
@@ -45,21 +52,46 @@ export function ReviewProgress({ current, total, onClose }: ReviewProgressProps)
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    gap: spacing.sm,
+    paddingHorizontal: homeMetrics.gutter,
+    paddingTop: homeSpace.sm,
+    gap: homeSpace.md,
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
+  close: {
+    width: detailMetrics.menuButton,
+    height: detailMetrics.menuButton,
+    borderRadius: detailMetrics.menuButton / 2,
+    backgroundColor: detailColors.circle,
+    borderWidth: 1,
+    borderColor: detailColors.circleBorder,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  counter: {
+    paddingHorizontal: homeSpace.lg,
+    height: homeMetrics.continueButton,
+    borderRadius: homeMetrics.continueButton / 2,
+    backgroundColor: homeColors.peach,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  counterText: {
+    color: detailColors.amberInk,
+    fontVariant: ["tabular-nums"],
+  },
   track: {
-    height: 3,
-    borderRadius: 2,
+    height: homeSpace.sm,
+    borderRadius: homeSpace.sm / 2,
+    backgroundColor: homeColors.peach,
     overflow: "hidden",
   },
   bar: {
     height: "100%",
+    borderRadius: homeSpace.sm / 2,
+    backgroundColor: detailColors.amber,
   },
 });

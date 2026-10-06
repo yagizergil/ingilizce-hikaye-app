@@ -72,6 +72,11 @@ export interface ChapterAudioController extends ReaderTtsController {
    * olmadı" oluyor — arıza ile bekleme ayırt edilemiyor.
    */
   isPreparing: boolean;
+  /** Oynatma konumu ve toplam süre (sn) -- dinleme modunun ilerleme çubuğu. */
+  positionSec: number;
+  durationSec: number;
+  /** Ses konumunu saniye cinsinden kaydırır (±10 sn düğmeleri). */
+  seekBy: (deltaSec: number) => void;
 }
 
 interface SignedAudio {
@@ -222,6 +227,22 @@ export function useChapterAudio({
    */
   const lastSkipTimeRef = useRef<number | null>(null);
 
+  /**
+   * Bekleyen konumlanma. `seekTo` asenkron: çağrıldıktan sonra birkaç tick
+   * boyunca `currentTime` hâlâ ESKİ değeri veriyor. Sayfa sesi izlediği
+   * için (bkz. `tick`) bu arada eski zamana göre sayfa değişiyor, konumlanma
+   * bitince geri dönüyordu: kullanıcının gördüğü "ekran bir ileri bir geri"
+   * (2026-10-06 bulgusu). Bekleyen hedef varken tick onu kullanıyor.
+   */
+  const pendingSeekRef = useRef<{ target: number; at: number } | null>(null);
+  const seekTo = useCallback(
+    (target: number) => {
+      pendingSeekRef.current = { target, at: Date.now() };
+      void player.seekTo(target);
+    },
+    [player],
+  );
+
   const paragraphIndexById = useRef<Map<string, number>>(new Map());
   useEffect(() => {
     paragraphIndexById.current = new Map(
@@ -271,8 +292,58 @@ export function useChapterAudio({
     setStatus("idle");
   }, [clearTick, player, setStatus]);
 
+  const idByParagraphIndex = useRef<Map<number, string>>(new Map());
+  useEffect(() => {
+    idByParagraphIndex.current = new Map(
+      (chapter?.paragraphs ?? []).map((p) => [p.paragraphIndex, p.id]),
+    );
+  }, [chapter?.paragraphs]);
+
   const tick = useCallback(() => {
-    const time = player.currentTime;
+    let time = player.currentTime;
+    const pending = pendingSeekRef.current;
+    if (pending) {
+      const settled = Math.abs(time - pending.target) < 0.5 || Date.now() - pending.at > 1500;
+      if (settled) pendingSeekRef.current = null;
+      else time = pending.target;
+    }
+
+    // SAYFA SESİ İZLER (kullanıcı bulgusu 2026-10-06: "sayfa otomatik
+    // akmıyor"). Eskiden sayfa yalnızca hesaplanmış bir eşikte çevriliyordu;
+    // eşik, oynatma başladığında sayfa ölçümü henüz hazır değilse (dinleme
+    // moduna geçişte okuyucu yeniden kuruluyor) hiç oluşmuyor ve sayfa
+    // donup kalıyordu. 10 sn ileri/geri ve elle kaydırma da eşiği
+    // bozuyordu. Artık her tick'te sesin o an okuduğu kelime bölümün
+    // TAMAMINDA bulunuyor ve o kelime görünen sayfada değilse sayfa ona
+    // götürülüyor. Bu tek kural her durumu (başlangıç, atlama, kaydırma)
+    // kendiliğinden düzeltiyor.
+    const timings = timingsQuery.data?.words ?? [];
+    let lo = 0;
+    let hi = timings.length - 1;
+    let globalIndex = -1;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      if (timings[mid]!.t <= time) {
+        globalIndex = mid;
+        lo = mid + 1;
+      } else hi = mid - 1;
+    }
+    const current = globalIndex >= 0 ? timings[globalIndex] : undefined;
+    if (current) {
+      const pageWords = pageWordsRef.current;
+      const first = pageWords[0];
+      const turnAt = pageTurnAtRef.current;
+      const offPage =
+        pageWords.length === 0 ||
+        (first !== undefined && time < first.time) ||
+        (turnAt !== null && time >= turnAt);
+      if (offPage) {
+        const paragraphId = idByParagraphIndex.current.get(current.p);
+        if (paragraphId) readerRef.current?.showPosition(paragraphId, current.s);
+        recomputePageWords();
+      }
+    }
+
     const words = pageWordsRef.current;
 
     const index = findWordIndexAtTime(words, time);
@@ -288,24 +359,13 @@ export function useChapterAudio({
     // bölümün tamamını kesintisiz çalıyor; ekranın ona yetişmesi gerekiyor.
     // Eşik `pageTurnTimeAfter` ile hesaplanıyor — sabit bir gecikme değil,
     // o kelimenin gerçek başlangıç zamanı.
-    const turnAt = pageTurnAtRef.current;
-    if (turnAt !== null && time >= turnAt) {
-      const advanced = readerRef.current?.advancePage() ?? false;
-      if (advanced) {
-        recomputePageWords();
-      } else {
-        // Son sayfadayız; bir daha denemeyelim.
-        pageTurnAtRef.current = null;
-      }
-    }
-
     // Ses bitti.
     if (!player.playing && player.currentTime > 0 && player.duration > 0) {
       if (player.currentTime >= player.duration - 0.25) {
         hardStop();
       }
     }
-  }, [hardStop, player, readerRef, recomputePageWords, setSpokenKey]);
+  }, [hardStop, player, readerRef, recomputePageWords, setSpokenKey, timingsQuery.data]);
 
   /**
    * Kelime kelime atlama.
@@ -318,12 +378,6 @@ export function useChapterAudio({
    * Çalmıyorken de çalışıyor: duraklatıp okuduğu yeri geri almak isteyen
    * kullanıcı için ok tuşları, oynat düğmesine basmayı gerektirmemeli.
    */
-  const idByParagraphIndex = useRef<Map<number, string>>(new Map());
-  useEffect(() => {
-    idByParagraphIndex.current = new Map(
-      (chapter?.paragraphs ?? []).map((p) => [p.paragraphIndex, p.id]),
-    );
-  }, [chapter?.paragraphs]);
 
   const skipWord = useCallback(
     (delta: number) => {
@@ -346,7 +400,7 @@ export function useChapterAudio({
       if (target === undefined) return;
 
       try {
-        void player.seekTo(target.t);
+        seekTo(target.t);
       } catch (error) {
         trackError("chapterAudio.skipWord", error);
         return;
@@ -373,7 +427,7 @@ export function useChapterAudio({
       }
       trackEvent("reader_audio_word_skipped", { delta });
     },
-    [player, readerRef, recomputePageWords, setSpokenKey, timingsQuery.data],
+    [player, readerRef, recomputePageWords, seekTo, setSpokenKey, timingsQuery.data],
   );
 
   const toggle = useCallback(() => {
@@ -397,7 +451,7 @@ export function useChapterAudio({
         pageStartTime: first.time,
         pageEndTime: pageTurnAtRef.current,
       });
-      if (target !== null) void player.seekTo(target);
+      if (target !== null) seekTo(target);
     }
 
     try {
@@ -412,7 +466,18 @@ export function useChapterAudio({
     setStatus("speaking");
     clearTick();
     tickRef.current = setInterval(tick, TICK_MS);
-  }, [available, clearTick, pause, player, rate, recomputePageWords, setStatus, status, tick]);
+  }, [
+    available,
+    clearTick,
+    pause,
+    player,
+    rate,
+    recomputePageWords,
+    seekTo,
+    setStatus,
+    status,
+    tick,
+  ]);
 
   // Bölüm değişince ya da ekrandan çıkınca sesi kesinlikle durdur.
   useEffect(() => {
@@ -471,5 +536,24 @@ export function useChapterAudio({
   // Bekleme göstergesi: istendi ama makine henüz hazır değil.
   const isPreparing = isAwaitingAutoStart(readiness);
 
-  return { toggle, pause, stop: hardStop, skipWord, available, isPreparing };
+  const positionSec = playerStatus.currentTime;
+  const durationSec = playerStatus.duration;
+
+  const seekBy = (deltaSec: number) => {
+    if (!(durationSec > 0)) return;
+    const target = Math.min(Math.max(player.currentTime + deltaSec, 0), durationSec);
+    seekTo(target);
+  };
+
+  return {
+    toggle,
+    pause,
+    stop: hardStop,
+    skipWord,
+    available,
+    isPreparing,
+    positionSec,
+    durationSec,
+    seekBy,
+  };
 }

@@ -2,6 +2,8 @@ import { Text } from "react-native";
 
 import { useTtsStore } from "@/features/reader/tts/useTtsStore";
 import { useIsWordSaved } from "@/features/reader/hooks/useSavedLemmasStore";
+import { useActiveWordStore } from "@/features/reader/hooks/useActiveWordStore";
+import { detailColors } from "@/theme";
 
 import type { GestureResponderEvent } from "react-native";
 
@@ -59,6 +61,7 @@ export function ReaderWord({
 }: ReaderWordProps) {
   const isSpoken = useTtsStore((state) => state.spokenKey === wordKey);
   const isSaved = useIsWordSaved(lemma);
+  const isActive = useActiveWordStore((state) => state.key === wordKey);
 
   return (
     <Text
@@ -69,6 +72,9 @@ export function ReaderWord({
           ? { textDecorationLine: "underline" as const, textDecorationColor: savedUnderlineColor }
           : null,
         isSpoken ? { backgroundColor: spokenBackground } : null,
+        isActive
+          ? { backgroundColor: detailColors.wordHighlight, color: detailColors.title }
+          : null,
       ]}
       suppressHighlighting
       onPress={onPress}

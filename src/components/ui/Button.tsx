@@ -2,13 +2,13 @@ import {
   ActivityIndicator,
   Pressable,
   StyleSheet,
+  Text,
   View,
   type GestureResponderEvent,
 } from "react-native";
 
-import { monoType, motion, radius, spacing } from "@/theme";
+import { detailColors, detailType, homeColors, motion, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { UpperText } from "@/components/ui/UpperText";
 
 /**
  * `primary` 2026-09-07 tasarım revizyonunda mürekkep siyahından accent
@@ -65,18 +65,18 @@ export function Button({
   const backgroundColor = {
     primary: theme.accent,
     neutral: theme.text.primary,
-    secondary: theme.bg.surface,
+    secondary: homeColors.peach,
     ghost: "transparent",
     destructive: theme.danger,
   }[variant];
 
-  const borderColor = variant === "secondary" ? theme.border.strong : "transparent";
+  const borderColor = "transparent";
 
   const textColor = {
     primary: theme.text.onAccent,
     neutral: theme.text.inverse,
-    secondary: theme.text.primary,
-    ghost: theme.text.primary,
+    secondary: detailColors.amberInk,
+    ghost: homeColors.orange,
     destructive: theme.text.onAccent,
   }[variant];
 
@@ -94,7 +94,7 @@ export function Button({
         {
           backgroundColor,
           borderColor,
-          borderWidth: variant === "secondary" ? StyleSheet.hairlineWidth : 0,
+          borderWidth: 0,
           opacity: isDisabled ? 0.5 : pressed ? motion.pressed.opacity : 1,
         },
       ]}
@@ -104,9 +104,7 @@ export function Button({
       ) : (
         <View style={styles.content}>
           {icon}
-          <UpperText style={[monoType.buttonLabel, styles.label, { color: textColor }]}>
-            {label}
-          </UpperText>
+          <Text style={[detailType.cta, styles.label, { color: textColor }]}>{label}</Text>
         </View>
       )}
     </Pressable>

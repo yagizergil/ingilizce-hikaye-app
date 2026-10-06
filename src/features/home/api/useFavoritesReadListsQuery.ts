@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 import { fetchBooks } from "@/features/library/api/useBooksQuery";
@@ -78,6 +78,8 @@ export function useFavoritesReadListsQuery() {
     queryKey: homeQueryKeys.favoritesReadLists(targetLanguage ?? ""),
     queryFn: () => fetchFavoritesReadLists(targetLanguage as string),
     enabled: targetLanguage !== null,
+    // Dil değişince bile eski liste yenisi gelene kadar görünsün.
+    placeholderData: keepPreviousData,
   });
   return gateOnLanguagePair(query, pairQuery);
 }

@@ -5,10 +5,10 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Speech from "expo-speech";
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, readingType, spacing, type } from "@/theme";
+import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { Button } from "@/components/ui";
-import { UpperText } from "@/components/ui/UpperText";
+import { useHomePalette } from "@/features/home/useHomePalette";
 import { isTypedAnswerCorrect } from "@/features/vocabulary/practice/buildPracticeSession";
 
 import type { PracticeExercise } from "@/features/vocabulary/practice/buildPracticeSession";
@@ -33,6 +33,7 @@ export function PracticeQuestion({
 }: PracticeQuestionProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
+  const palette = useHomePalette();
   const [picked, setPicked] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
   const answered = picked !== null;
@@ -70,25 +71,27 @@ export function PracticeQuestion({
 
   return (
     <View style={styles.container}>
-      <UpperText style={[monoType.label, { color: theme.text.secondary }]}>
-        {t(`vocabulary.practice.kinds.${exercise.kind}`)}
-      </UpperText>
+      <View style={styles.kindChip}>
+        <Text style={[homeType.statLabel, { color: detailColors.amberInk }]}>
+          {t(`vocabulary.practice.kinds.${exercise.kind}`)}
+        </Text>
+      </View>
 
       {isListening ? (
         <Pressable
           onPress={speak}
           accessibilityRole="button"
           accessibilityLabel={t("vocabulary.practice.playAgain")}
-          style={[styles.speaker, { backgroundColor: theme.accentMuted }]}
+          style={styles.speaker}
         >
-          <Ionicons name="volume-high" size={40} color={theme.accent} />
+          <Ionicons name="volume-high" size={40} color={detailColors.amberInk} />
         </Pressable>
       ) : (
         <Text
           style={[
-            isCloze ? readingType.gloss : type.screenTitle,
+            isCloze ? detailType.sheetTitle : detailType.sheetWord,
             styles.prompt,
-            { color: theme.text.primary },
+            { color: palette.ink },
           ]}
           adjustsFontSizeToFit={!isCloze}
           numberOfLines={isCloze ? undefined : 2}
@@ -109,12 +112,8 @@ export function PracticeQuestion({
             returnKeyType="done"
             onSubmitEditing={() => typed.trim() && submit(typed)}
             placeholder={t("vocabulary.practice.typingPlaceholder", { hint: exercise.hint })}
-            placeholderTextColor={theme.text.secondary}
-            style={[
-              type.chapterRowTitle,
-              styles.input,
-              { color: theme.text.primary, borderColor: theme.border.strong },
-            ]}
+            placeholderTextColor={homeColors.muted}
+            style={[detailType.statLabel, styles.input, { color: palette.ink }]}
           />
           {!answered ? (
             <Button
@@ -131,14 +130,13 @@ export function PracticeQuestion({
             const isAnswer = option === exercise.answer;
             const isPicked = option === picked;
             const background = !answered
-              ? theme.bg.surface
+              ? palette.card
               : isAnswer
                 ? theme.success
                 : isPicked
                   ? theme.danger
-                  : theme.bg.surface;
-            const color =
-              answered && (isAnswer || isPicked) ? theme.text.onAccent : theme.text.primary;
+                  : palette.card;
+            const color = answered && (isAnswer || isPicked) ? detailColors.circle : palette.ink;
             return (
               <Pressable
                 key={option}
@@ -146,12 +144,9 @@ export function PracticeQuestion({
                 disabled={answered}
                 accessibilityRole="button"
                 accessibilityState={{ selected: isPicked }}
-                style={[
-                  styles.option,
-                  { backgroundColor: background, borderColor: theme.border.hairline },
-                ]}
+                style={[styles.option, { backgroundColor: background }]}
               >
-                <Text style={[type.chapterRowTitle, { color }]}>{option}</Text>
+                <Text style={[detailType.statLabel, { color }]}>{option}</Text>
               </Pressable>
             );
           })}
@@ -160,10 +155,10 @@ export function PracticeQuestion({
 
       {answered ? (
         <View style={styles.feedback}>
-          <Text style={[type.bookTitleLg, { color: correct ? theme.success : theme.danger }]}>
+          <Text style={[detailType.heroTitle, { color: correct ? theme.success : theme.danger }]}>
             {correct ? t("vocabulary.practice.correct") : t("vocabulary.practice.wrong")}
           </Text>
-          <Text style={[monoType.rowText, { color: theme.text.secondary }]}>
+          <Text style={[homeType.cardSub, { color: palette.muted }]}>
             {t("vocabulary.practice.answerLine", { lemma: exercise.lemma, gloss: exercise.gloss })}
           </Text>
           <Button label={t("vocabulary.practice.next")} onPress={onNext} fullWidth />
@@ -175,40 +170,55 @@ export function PracticeQuestion({
 
 const styles = StyleSheet.create({
   container: {
-    gap: spacing.md,
+    gap: homeSpace.lg,
+  },
+  kindChip: {
+    alignSelf: "center",
+    paddingHorizontal: homeSpace.lg,
+    height: homeMetrics.continueButton,
+    borderRadius: homeMetrics.continueButton / 2,
+    backgroundColor: homeColors.peach,
+    alignItems: "center",
+    justifyContent: "center",
   },
   prompt: {
     textAlign: "center",
   },
   options: {
-    gap: spacing.sm,
+    gap: homeSpace.md,
   },
   speaker: {
     alignSelf: "center",
-    width: 96,
-    height: 96,
-    borderRadius: radius.full,
+    width: homeMetrics.statTileIcon * 2,
+    height: homeMetrics.statTileIcon * 2,
+    borderRadius: homeMetrics.statTileIcon,
+    backgroundColor: homeColors.peach,
     alignItems: "center",
     justifyContent: "center",
   },
   option: {
-    minHeight: 52,
-    borderRadius: radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: spacing.md,
+    minHeight: homeMetrics.continueButton + homeSpace.xl,
+    borderRadius: homeMetrics.cardRadius,
+    paddingHorizontal: homeSpace.lg,
     justifyContent: "center",
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   typing: {
-    gap: spacing.sm,
+    gap: homeSpace.md,
   },
   input: {
-    minHeight: 52,
-    borderRadius: radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: spacing.md,
+    minHeight: homeMetrics.continueButton + homeSpace.xl,
+    borderRadius: homeMetrics.cardRadius,
+    borderWidth: 2,
+    borderColor: homeColors.peach,
+    paddingHorizontal: homeSpace.lg,
   },
   feedback: {
-    gap: spacing.sm,
+    gap: homeSpace.md,
     alignItems: "stretch",
   },
 });

@@ -63,6 +63,8 @@ export interface Book {
   sourceUrl: string;
   chapters: Chapter[];
   createdAt: string;
+  /** Yayın zamanı (ISO); "Yeni eklenenler" bununla en yeniden eskiye sıralanır. */
+  publishedAt: string | null;
 }
 
 export interface LibraryFilters {

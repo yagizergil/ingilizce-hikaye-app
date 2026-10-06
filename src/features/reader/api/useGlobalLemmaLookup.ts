@@ -71,7 +71,9 @@ async function fetchGlobalLemma(
 
   const { data, error } = await supabase
     .from("lemma_canonical")
-    .select("lemma, pos, cefr_level, tr_gloss, ipa, audio_url, is_phrasal, false_friend_note_tr, senses")
+    .select(
+      "lemma, pos, cefr_level, tr_gloss, ipa, audio_url, is_phrasal, false_friend_note_tr, senses",
+    )
     .in("lemma", candidates);
   if (error) throw error;
 

@@ -66,6 +66,8 @@ export interface ReaderWordTapPayload {
   paragraphId: string | null;
   sentenceText: string;
   tapMs: number;
+  /** Dokunulan kelimenin `ttsPlan.wordKey`i (sözlük açıkken metinde vurgulanır). */
+  wordKey?: string;
   /**
    * Dokunulan kelimenin `sentenceText` içindeki karakter konumu. Tüketici
    * tarafın `surface`'i cümlede arayarak yanlış eşleşme bulmasını önler

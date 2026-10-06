@@ -3,10 +3,13 @@
     "name": "Lingo"
   },
   "tabs": {
-    "home": "图书",
+    "home": "首页",
     "library": "书库",
     "vocabulary": "单词",
-    "profile": "设置"
+    "profile": "我的",
+    "search": "搜索",
+    "myBooks": "我的书",
+    "quiz": "测验"
   },
   "placeholder": {
     "comingSoon": "敬请期待"
@@ -138,12 +141,218 @@
       "myLevel": "适合你的等级",
       "favorites": "收藏",
       "review": "单词复习"
+    },
+    "header": {
+      "welcome": "欢迎",
+      "welcomeBackLead": "欢迎回来，",
+      "level": "等级 {{level}}",
+      "levelAccessibility": "等级 {{level}}，已完成下一级的 {{percent}}%",
+      "streakAccessibility": "连续 {{count}} 天",
+      "languageAccessibility": "切换语言组合"
+    },
+    "stats": {
+      "weekValue": "{{done}} / {{total}}",
+      "weekLabel": "天数挑战",
+      "more": "详细统计",
+      "today": "今日进度",
+      "booksRead": "已读书籍",
+      "readingTime": "学习时长",
+      "minutesValue": "{{count}} 分钟"
+    },
+    "seeAll": "查看全部",
+    "categoryGrid": {
+      "title": "图书分类"
+    },
+    "yourBooks": "你的书",
+    "popularBooks": "热门图书",
+    "continue": {
+      "title": "继续阅读",
+      "cta": "继续",
+      "percent": "%{{percent}}",
+      "accessibility": "{{title}}，已读 {{percent}}%，继续"
+    },
+    "week": {
+      "title": "本周",
+      "count": "{{count}}/7 天",
+      "dayAccessibility": "{{day}}：{{count}} 分钟"
+    },
+    "start": {
+      "title": "立即开始",
+      "description": "选择你的第一个故事，边读边点单词。",
+      "cta": "发现好书"
+    },
+    "recommended": {
+      "eyebrow": "为你推荐",
+      "meta": "{{level}} · 约 {{minutes}} 分钟",
+      "cta": "开始阅读",
+      "browse": "浏览其他书",
+      "accessibility": "{{title}}，开始阅读"
     }
   },
   "collections": {
     "ozSeries": {
       "title": "绿野仙踪系列",
       "description": "L. Frank Baum 以奥兹国为舞台的经典小说系列。"
+    },
+    "kai-repair-files-b1": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-tr": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-de": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-fr": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-it": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-es": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-ru": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-ar": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-zh": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "kai-repair-files-b1-ja": {
+      "title": "凯的维修铺档案",
+      "description": "每一部送进凯的小店的坏手机，都打开了一扇通往别人生活的门。"
+    },
+    "leo-little-cafe-a1": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-tr": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-de": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-fr": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-it": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-es": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-ru": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-ar": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-zh": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "leo-little-cafe-a1-ja": {
+      "title": "里奥的小咖啡馆",
+      "description": "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+    },
+    "mara-lind-investigates-b2": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-tr": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-de": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-fr": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-it": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-es": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-ru": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-ar": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-zh": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "mara-lind-investigates-b2-ja": {
+      "title": "玛拉·林德调查",
+      "description": "港口工程正在吞没老渔民区。记者玛拉·林德问出了没人敢问的问题。"
+    },
+    "nora-night-train-a2": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-tr": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-de": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-fr": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-it": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-es": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-ru": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-ar": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-zh": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
+    },
+    "nora-night-train-a2-ja": {
+      "title": "与诺拉同乘夜车",
+      "description": "每晚一位乘客，一个秘密。列车员诺拉总能看到别人忽略的细节。"
     }
   },
   "library": {
@@ -164,7 +373,9 @@
       "finishedTag": "已读"
     },
     "search": {
-      "placeholder": "搜索书名、作者或类型"
+      "title": "搜索",
+      "subtitle": "你想读哪本书？",
+      "placeholder": "搜索图书"
     },
     "sort": {
       "recommended": "推荐",
@@ -198,7 +409,22 @@
     "card": {
       "minutes": "{{count}} 分钟",
       "audio": "有声"
-    }
+    },
+    "levelChips": {
+      "all": "全部",
+      "beginner": "A1–A2",
+      "intermediate": "B1–B2",
+      "advanced": "C1–C2"
+    },
+    "shelves": {
+      "forLevel": "适合你的水平",
+      "short": "短篇故事",
+      "new": "新上架",
+      "audio": "有声书",
+      "suggested": "你可能喜欢"
+    },
+    "clearSearch": "清除搜索",
+    "resultsLimited": "仅显示前 {{count}} 条结果，可缩小搜索范围。"
   },
   "bookDetail": {
     "back": "← 书库",
@@ -211,7 +437,8 @@
       "listen": "收听",
       "listenAccessibilityLabel": "收听这本书",
       "listenLockedAccessibilityLabel": "收听 — 高级功能",
-      "reread": "重新阅读"
+      "reread": "重新阅读",
+      "premiumTag": "Premium"
     },
     "stats": {
       "words": "词数",
@@ -246,7 +473,12 @@
       "locked": "录音棚朗读属于会员功能。用自然的人声听这个故事，读到哪个词就高亮哪个词。"
     },
     "about": "关于本书",
-    "wordOverlap": "你的生词本中有 {{count}} 个词出现在这本书里"
+    "wordOverlap": "你的生词本中有 {{count}} 个词出现在这本书里",
+    "byAuthor": "作者：{{author}}",
+    "statChapters": "{{count}} 章",
+    "statMinutes": "{{count}} 分钟",
+    "synopsis": "简介",
+    "share": "分享"
   },
   "reader": {
     "header": {
@@ -256,7 +488,8 @@
       "pauseSpeech": "暂停朗读",
       "chapterList": "目录",
       "quotaRemaining": "今天还剩 {{count}} 次翻译",
-      "bookWords": "来自本书的单词"
+      "bookWords": "来自本书的单词",
+      "menu": "菜单"
     },
     "wordSheet": {
       "pronounce": "发音",
@@ -280,7 +513,10 @@
         "interjection": "（叹）",
         "other": ""
       },
-      "moreDetail": "显示详情"
+      "moreDetail": "显示详情",
+      "definitions": "释义",
+      "meaning": "含义",
+      "moreDefinitions": "更多释义"
     },
     "sentenceTranslation": {
       "toggle": "显示整句翻译",
@@ -324,7 +560,8 @@
         "enhanced": "增强版"
       },
       "voiceUpgradeHint": "朗读词典单词用的是设备自带语音。想听得更自然：设置 > 辅助功能 > 朗读内容 > 声音 > 英语，下载一个语音包即可，免费且只需一次。（章节朗读是另一回事，用的是录音棚配音。）",
-      "title": "设置"
+      "title": "设置",
+      "previewText": "书店门上的小铃铛响了，一阵冷风钻了进来。"
     },
     "chapterComplete": {
       "title": "本章读完了",
@@ -351,7 +588,10 @@
     "wordAlreadySaved": "这个词已经收藏过了。",
     "footer": {
       "nextChapter": "下一章",
-      "finishBook": "读完本书"
+      "finishBook": "读完本书",
+      "of": "/",
+      "prevPage": "上一页",
+      "nextPage": "下一页"
     },
     "chapterList": {
       "title": "目录"
@@ -368,6 +608,19 @@
       "pause": "暂停朗读",
       "previousWord": "上一个词",
       "nextWord": "下一个词"
+    },
+    "loading": {
+      "title": "加载中...",
+      "subtitle": "请稍等，我正在为你取书！"
+    },
+    "mode": {
+      "read": "阅读",
+      "listen": "收听",
+      "listenLocked": "收听（Premium）"
+    },
+    "listen": {
+      "back10": "后退 10 秒",
+      "forward10": "快进 10 秒"
     }
   },
   "profile": {
@@ -416,7 +669,8 @@
       "totalTimeLabel": "总阅读时长",
       "totalActiveDaysLabel": "阅读天数",
       "screenTitle": "我的统计",
-      "rowValue": "{{minutes}} 分钟 · 连续 {{streak}} 天"
+      "rowValue": "{{minutes}} 分钟 · 连续 {{streak}} 天",
+      "subtitle": "你的连续阅读和每周进度"
     },
     "account": {
       "sectionTitle": "账号",
@@ -431,9 +685,52 @@
       "languageEn": "英语",
       "rateUs": "给我们评分",
       "deleteAccount": "删除我的账号",
-      "devReplayOnboarding": "重置账号并重新开始引导（开发者）"
+      "devReplayOnboarding": "重置账号并重新开始引导（开发者）",
+      "devSplashPreview": "预览启动画面（开发者）",
+      "devUnlocked": "已开启开发者工具",
+      "devOnboardingPreview": "预览引导页（开发者）"
     },
-    "footer": "{{name}} — 版本 {{version}}"
+    "footer": "{{name}} — 版本 {{version}}",
+    "subtitle": "你的账户和设置",
+    "premium": {
+      "title": "升级 Premium",
+      "description": "录音室朗读、无限翻译和智能复习。",
+      "cta": "查看 Premium",
+      "activeTitle": "你已是 Premium",
+      "activeDescription": "全部功能已解锁，阅读愉快！"
+    },
+    "sections": {
+      "learning": "学习",
+      "reading": "阅读与语言"
+    },
+    "sfx": {
+      "label": "音效",
+      "hint": "测验和复习中的对错提示音"
+    },
+    "level": {
+      "levelLabel": "等级 {{level}}",
+      "today": "今日 +{{xp}} XP",
+      "progress": "{{current}} / {{needed}} XP",
+      "toNext": "距离等级 {{level}} 还需 {{xp}} XP",
+      "xp": "{{xp}} XP",
+      "sources": {
+        "reading": "阅读",
+        "words": "收藏单词",
+        "reviews": "单词复习",
+        "quiz": "测验答对",
+        "books": "读完的书"
+      },
+      "howTo": "阅读即可获得 XP：每分钟 2，每收藏一个词 3，每次复习 2，测验每答对一题 5，每读完一本书 100。",
+      "ranks": {
+        "newcomer": "新读者",
+        "curious": "好奇读者",
+        "bookworm": "书虫",
+        "storyHunter": "故事猎人",
+        "explorer": "语言探险家",
+        "master": "阅读大师",
+        "legend": "传奇读者"
+      }
+    }
   },
   "vocabulary": {
     "title": "生词本",
@@ -641,7 +938,8 @@
       "emptyBoth": {
         "title": "这里还是空的",
         "description": "你收藏的和开始阅读的书都会列在这里。"
-      }
+      },
+      "subtitle": "你的收藏和已读书籍"
     }
   },
   "account": {
@@ -866,6 +1164,31 @@
       "bodyPremium": "一切就绪。Premium 已开启，开始阅读吧。",
       "bodyFree": "一切就绪。所有书籍免费，开始阅读吧。",
       "cta": "开始阅读"
+    },
+    "adventure": {
+      "title": "在冒险中学语言",
+      "subtitle": "通过阅读提升你的语言能力。"
+    },
+    "intro": {
+      "adventure": {
+        "title": "学语言的有趣冒险",
+        "body": "通过阅读提升语言能力。"
+      },
+      "skills": {
+        "title": "提升你的语言能力",
+        "body": "掌握词汇与理解。"
+      },
+      "stories": {
+        "title": "走进充满故事的世界",
+        "body": "选一本喜欢的书，开始阅读吧。"
+      },
+      "next": "下一步",
+      "start": "开始"
+    },
+    "mascot": {
+      "title": "你好，我是 Lumi！",
+      "body": "准备好开启有趣的冒险了吗？",
+      "cta": "继续"
     }
   },
   "paywall": {
@@ -910,6 +1233,10 @@
       "wordPacks": {
         "title": "探索词包",
         "body": "每个级别书中最常见的词，一键变成你自己的卡组。"
+      },
+      "bookQuizzes": {
+        "title": "图书测验",
+        "body": "每本书的「理解」和「深度阅读」等级"
       }
     },
     "plan": {
@@ -954,8 +1281,8 @@
     "unavailableInExpoGo": "购买功能仅在编译版本中可用",
     "upgradeRow": "会员",
     "wordListFull": "生词本已用 {{count}}/{{limit}}",
-    "benefitsSectionTitle": "PREMIUM 带来什么",
-    "introOffer": "专属优惠：年付省 {{percent}}%",
+    "benefitsSectionTitle": "Premium 带来什么",
+    "introOffer": "年度方案节省 {{percent}}%",
     "activity": {
       "heading": "你的最近 7 天",
       "daysRead_one": "天阅读",
@@ -965,7 +1292,30 @@
       "wordsSaved_one": "个单词收藏",
       "wordsSaved_other": "个单词收藏",
       "blockedWord": "“{{word}}”正在等你。"
-    }
+    },
+    "headlines": {
+      "listen": {
+        "title": "边听故事边学习",
+        "subtitle": "录音棚朗读，同步高亮正在读的词。"
+      },
+      "quiz": {
+        "title": "你真的读懂这本书了吗？",
+        "subtitle": "用理解和深度阅读测验检验自己。"
+      },
+      "words": {
+        "title": "别被生词卡住",
+        "subtitle": "无限单词翻译，阅读不中断。"
+      },
+      "sentences": {
+        "title": "难句不再是问题",
+        "subtitle": "立即看到任何句子的意思。"
+      },
+      "practice": {
+        "title": "让单词真正记住",
+        "subtitle": "用智能复习每天无限练习。"
+      }
+    },
+    "cancelAnytime": "可随时取消。"
   },
   "reminders": {
     "settingsLabel": "提醒",
@@ -1026,5 +1376,123 @@
     "noPairTitle": "你还没有语言对",
     "noPairBody": "选择你使用的语言和想要阅读的语言。第一个语言对免费。",
     "choosePairCta": "选择语言对"
+  },
+  "splash": {
+    "replay": "重新播放"
+  },
+  "categoriesScreen": {
+    "subtitle": "{{count}} 个分类",
+    "count": "{{count}} 本书"
+  },
+  "quiz": {
+    "next": "下一题",
+    "finish": "完成",
+    "progress": "{{current}}/{{total}}",
+    "progressAccessibility": "第 {{current}} 题，共 {{total}} 题",
+    "result": {
+      "title": "答对 {{correct}}/{{total}} 题",
+      "perfect": "太棒了，全部答对！",
+      "keepGoing": "继续阅读，下次会更好。",
+      "retry": "再试一次",
+      "close": "关闭",
+      "nextLevelTitle": "已解锁第 2 级：理解",
+      "nextLevelBody": "开通 Premium，检验你对这本书的理解。"
+    },
+    "home": {
+      "title": "测验",
+      "subtitle": "检验你读过的内容",
+      "bookQuiz": {
+        "title": "图书测验",
+        "description": "关于你读过的书的问题",
+        "cta": "开始"
+      },
+      "words": {
+        "title": "单词复习",
+        "description": "你收藏的单词和单词集"
+      },
+      "tip": {
+        "title": "每天 5 分钟",
+        "description": "短而频繁的练习胜过长时间学习。"
+      },
+      "hero": {
+        "due": {
+          "title": "该复习了：{{count}} 个单词",
+          "description": "趁还没忘，用几分钟复习一下。",
+          "cta": "开始复习"
+        },
+        "practice": {
+          "title": "用你保存的 {{count}} 个单词练习",
+          "description": "填空、词义和听力题。",
+          "cta": "开始练习"
+        },
+        "empty": {
+          "title": "保存你的第一个单词",
+          "description": "阅读时点一下不认识的词并保存，就能在这里复习。",
+          "cta": "开始阅读"
+        }
+      },
+      "stats": {
+        "due": "待复习",
+        "saved": "已保存",
+        "known": "已掌握"
+      },
+      "moreTitle": "练习方式",
+      "smartLocked": "至少保存 {{count}} 个单词即可开启智能复习。",
+      "books": {
+        "title": "图书测验",
+        "subtitle": "来自你读过的书，由易到难",
+        "error": "无法加载书籍测验。点按重试。"
+      }
+    },
+    "check": "检查",
+    "feedback": {
+      "right": "答对了！",
+      "wrong": "不太对"
+    },
+    "kind": {
+      "vocabulary": "词汇",
+      "fact": "事实",
+      "inference": "推断",
+      "sequence": "顺序",
+      "motive": "动机"
+    },
+    "levels": {
+      "1": {
+        "title": "词语",
+        "description": "书中词语的语境含义"
+      },
+      "2": {
+        "title": "理解",
+        "description": "谁、什么、哪里、发生了什么"
+      },
+      "3": {
+        "title": "深度阅读",
+        "description": "为什么、推断和事件顺序"
+      },
+      "status": {
+        "done": "已完成 · {{correct}}/{{total}}",
+        "premium": "开通 Premium 解锁",
+        "locked": "上一级达到 60%",
+        "retry": "再试一次 · 最佳 {{correct}}/{{total}}",
+        "open": "{{n}} 道题 · 开始"
+      },
+      "screenTitle": "图书测验",
+      "subtitle": "三个等级，由易到难",
+      "note": "上一级达到 60% 后解锁下一级。",
+      "empty": {
+        "title": "本书的测验正在准备中",
+        "description": "很快就会上线。"
+      }
+    },
+    "entry": {
+      "title": "图书测验",
+      "progress": "已完成 {{passed}}/{{total}} 级"
+    },
+    "error": "测验加载失败。",
+    "emptyTitle": "这个测验还没有题目。",
+    "saveError": "无法保存结果。请检查网络后重试。",
+    "leaveTitle": "退出测验？",
+    "leaveBody": "你的进度不会被保存。",
+    "leaveConfirm": "退出"
   }
 }

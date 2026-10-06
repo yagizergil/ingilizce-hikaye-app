@@ -1,10 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
-import { monoType, radius, spacing } from "@/theme";
-import { useTheme } from "@/theme/useTheme";
+import {
+  detailColors,
+  detailMetrics,
+  detailType,
+  homeColors,
+  homeMetrics,
+  homeSpace,
+  homeType,
+} from "@/theme";
+import { UiIcon } from "@/components/ui";
 import { useBookWordOverlapQuery } from "@/features/library/api/useBookWordOverlapQuery";
 
 interface BookWordOverlapProps {
@@ -14,25 +21,19 @@ interface BookWordOverlapProps {
 /** "Kelime defterindeki N kelime bu kitapta geçiyor" -- sıfırsa hiç görünmez. */
 export function BookWordOverlap({ bookId }: BookWordOverlapProps) {
   const { t } = useTranslation();
-  const { theme } = useTheme();
   const { data } = useBookWordOverlapQuery(bookId);
 
   if (!data || data.count === 0) return null;
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.bg.surface, borderColor: theme.border.hairline },
-      ]}
-    >
-      <Ionicons name="bookmark" size={18} color={theme.accent} />
+    <View style={styles.container}>
+      <UiIcon name="bookmark" size={homeMetrics.rowIcon} />
       <View style={styles.text}>
-        <Text style={[monoType.rowText, { color: theme.text.primary }]}>
+        <Text style={[detailType.statLabel, { color: detailColors.title }]}>
           {t("bookDetail.wordOverlap", { count: data.count })}
         </Text>
         {data.sample.length > 0 ? (
-          <Text style={[monoType.metaTight, { color: theme.text.secondary }]} numberOfLines={1}>
+          <Text style={[homeType.cardSub, { color: detailColors.muted }]} numberOfLines={1}>
             {data.sample.join(" · ")}
           </Text>
         ) : null}
@@ -45,15 +46,20 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.sm,
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.md,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
+    gap: homeSpace.md,
+    marginHorizontal: detailMetrics.gutter,
+    marginTop: homeSpace.lg,
+    padding: homeSpace.lg,
+    borderRadius: homeMetrics.cardRadius,
+    backgroundColor: homeColors.card,
+    shadowColor: homeColors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.07,
+    shadowRadius: 18,
+    elevation: 4,
   },
   text: {
     flex: 1,
-    gap: spacing.xxs,
+    gap: homeSpace.xs,
   },
 });

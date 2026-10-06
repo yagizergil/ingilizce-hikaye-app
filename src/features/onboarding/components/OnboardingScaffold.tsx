@@ -2,7 +2,15 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { spacing, type } from "@/theme";
+import {
+  fontFamily,
+  mascotSize,
+  onboardingSkyColors,
+  onboardingSkyType,
+  spacing,
+  type,
+} from "@/theme";
+import { MascotAnim } from "@/components/ui";
 import { useTheme } from "@/theme/useTheme";
 
 import type { ReactNode } from "react";
@@ -57,29 +65,33 @@ export function OnboardingScaffold({
   const clamped = Math.max(0, Math.min(1, progress));
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.bg.primary }]}
-      edges={["top"]}
-    >
-      <View style={styles.progressTrackWrap}>
-        <View style={[styles.progressTrack, { backgroundColor: theme.border.hairline }]}>
-          <View
-            style={[
-              styles.progressFill,
-              { backgroundColor: theme.accent, width: `${clamped * 100}%` },
-            ]}
-          />
+    <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
+      {/* Gökyüzü başlık + köşede Lumi (2026-10-06, referans: Funfluent
+          "Select language"; yalnızca düzen). */}
+      <SafeAreaView edges={["top"]} style={styles.sky}>
+        <View style={styles.progressTrackWrap}>
+          <View style={[styles.progressTrack, { backgroundColor: theme.border.hairline }]}>
+            <View
+              style={[
+                styles.progressFill,
+                { backgroundColor: theme.accent, width: `${clamped * 100}%` },
+              ]}
+            />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.header}>
-        <Text style={[type.display, styles.title, { color: theme.text.primary }]}>{title}</Text>
-        {subtitle ? (
-          <Text style={[type.chapterRowTitle, styles.subtitle, { color: theme.text.secondary }]}>
-            {subtitle}
-          </Text>
-        ) : null}
-      </View>
+        <View style={styles.header}>
+          <View style={styles.headerText}>
+            <Text style={[styles.title, { color: onboardingSkyColors.title }]}>{title}</Text>
+            {subtitle ? (
+              <Text style={[type.chapterRowTitle, { color: onboardingSkyColors.body }]}>
+                {subtitle}
+              </Text>
+            ) : null}
+          </View>
+          <MascotAnim name="search" width={mascotSize.card} />
+        </View>
+      </SafeAreaView>
 
       <View style={styles.body}>{children}</View>
 
@@ -88,7 +100,7 @@ export function OnboardingScaffold({
           {footer}
         </View>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -118,20 +130,31 @@ const styles = StyleSheet.create({
   // Ölçüm: ilerleme çubuğu (y=161 px) ile başlık (y=341 px) arası 180 px
   // = 74.9 pt. Bunun bir kısmı başlığın kendi satır yüksekliği; blok
   // üstü boşluk olarak 40 pt bırakılıyor.
+  sky: {
+    backgroundColor: onboardingSkyColors.sky,
+  },
   header: {
+    flexDirection: "row",
+    alignItems: "flex-end",
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.sectionGap,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
     gap: spacing.sm,
   },
-  title: {
-    textAlign: "center",
+  headerText: {
+    flex: 1,
+    gap: spacing.sm,
+    paddingBottom: spacing.sm,
   },
-  subtitle: {
-    textAlign: "center",
+  // 34 pt maskotun yanında üç satıra kırılıyordu; Lumi ekranıyla aynı ölçek.
+  title: {
+    ...onboardingSkyType.title,
+    fontFamily: fontFamily.gabaritoBold,
+    textAlign: "left",
   },
   body: {
     flex: 1,
-    paddingTop: spacing.xl,
+    paddingTop: spacing.lg,
   },
   footer: {
     paddingHorizontal: spacing.md,

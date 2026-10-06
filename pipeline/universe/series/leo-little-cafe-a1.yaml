@@ -1,0 +1,54 @@
+id: leo-little-cafe-a1
+character: leo
+level: A1
+season: 1
+continues: null
+genres: [slice-of-life, comedy]
+themes: [friendship, community, everyday-life]
+format: >
+  Very short episodes (300-600 words, 2-3 chapters). One small problem in
+  the café each time, solved by kindness or a funny idea. Present simple
+  and simple past only.
+titles:
+  tr: "Leo'nun Küçük Kafesi"
+  en: "Leo's Little Café"
+  de: "Leos kleines Café"
+  fr: "Le petit café de Léo"
+  it: "Il piccolo caffè di Leo"
+  es: "El pequeño café de Leo"
+  ru: "Маленькое кафе Лео"
+  ar: "مقهى ليو الصغير"
+  zh: "里奥的小咖啡馆"
+  ja: "レオの小さなカフェ"
+descriptions:
+  tr: "İstasyonun karşısındaki minik bir kafe, her sabah yeni bir müşteri ve küçük bir sorun."
+  en: "A tiny café across from the station, a new customer every morning and one small problem."
+  de: "Ein winziges Café gegenüber dem Bahnhof, jeden Morgen ein neuer Gast und ein kleines Problem."
+  fr: "Un minuscule café en face de la gare, un nouveau client chaque matin et un petit problème."
+  it: "Un piccolissimo caffè davanti alla stazione, ogni mattina un nuovo cliente e un piccolo problema."
+  es: "Un café diminuto frente a la estación, cada mañana un cliente nuevo y un pequeño problema."
+  ru: "Крошечное кафе напротив вокзала: каждое утро новый гость и маленькая проблема."
+  ar: "مقهى صغير جدًا أمام المحطة، كل صباح زبون جديد ومشكلة صغيرة."
+  zh: "车站对面的小咖啡馆，每天早上一位新客人，一个小麻烦。"
+  ja: "駅前の小さなカフェ。毎朝、新しいお客さんと小さな問題。"
+next_hooks:
+  - The rent letter arrives; Leo needs a new idea to bring more customers.
+  - Ada does not come at 7:15 one morning.
+  - Tomas brings the wrong bread for a whole week.
+episodes:
+  - index: 1
+    slug: leo-little-cafe-a1-e01
+    title: The Empty Chair
+    premise: >
+      Every morning Ada sits in the same window chair at 7:15. Today a
+      tourist sits there first. Leo must make both of them happy without
+      saying anything unkind.
+    status: published
+  - index: 2
+    slug: leo-little-cafe-a1-e02
+    premise: The rent letter comes. Leo has an idea - a "coffee for a story" morning.
+    status: planned
+  - index: 3
+    slug: leo-little-cafe-a1-e03
+    premise: The coffee machine breaks on the busiest morning of the year.
+    status: planned

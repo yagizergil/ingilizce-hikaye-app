@@ -29,7 +29,8 @@ function toStatus(user: User | null | undefined): ProfileAuthStatus {
 
   const metadata = user.user_metadata as Record<string, unknown> | undefined;
   const rawName = metadata?.["full_name"] ?? metadata?.["name"];
-  const displayName = typeof rawName === "string" && rawName.trim().length > 0 ? rawName.trim() : null;
+  const displayName =
+    typeof rawName === "string" && rawName.trim().length > 0 ? rawName.trim() : null;
 
   return {
     isAnonymous: user.is_anonymous ?? true,
