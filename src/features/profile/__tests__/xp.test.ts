@@ -32,5 +32,7 @@ describe("rankForLevel", () => {
 });
 
 it("totalXp sums sources but not today's subtotal", () => {
-  expect(totalXp({ reading: 10, words: 6, reviews: 4, quiz: 5, books: 100, today: 999 })).toBe(125);
+  expect(
+    totalXp({ reading: 10, words: 6, reviews: 4, quiz: 5, books: 100, goals: 20, today: 999 }),
+  ).toBe(145);
 });

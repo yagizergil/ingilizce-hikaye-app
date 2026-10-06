@@ -14,6 +14,8 @@ import { ProfileStatsGrid } from "@/features/profile/components/ProfileStatsGrid
 import { StreakCard } from "@/features/profile/components/StreakCard";
 import { LevelCard } from "@/features/profile/components/LevelCard";
 import { useXpQuery } from "@/features/profile/api/useXpQuery";
+import { useGoalProgressQuery } from "@/features/profile/api/useGoalProgressQuery";
+import { DailyGoalCard } from "@/features/profile/components/DailyGoalCard";
 import { WeeklyMinutesChart } from "@/features/profile/components/WeeklyMinutesChart";
 
 interface StatisticsScreenProps {
@@ -41,6 +43,7 @@ export function StatisticsScreen({ onClose }: StatisticsScreenProps) {
   const statsQuery = useProfileStatsQuery();
   const vocabularyQuery = useVocabularyQuery();
   const xpQuery = useXpQuery();
+  const goalQuery = useGoalProgressQuery();
 
   const stats = statsQuery.data;
   const savedWordCount = vocabularyQuery.data?.summary.totalCount ?? 0;
@@ -100,6 +103,7 @@ export function StatisticsScreen({ onClose }: StatisticsScreenProps) {
         >
           <View style={styles.stack}>
             {xpQuery.data ? <LevelCard xp={xpQuery.data} /> : null}
+            {goalQuery.data ? <DailyGoalCard progress={goalQuery.data} /> : null}
             <StreakCard
               currentStreak={stats.currentStreak}
               longestStreak={stats.longestStreak}

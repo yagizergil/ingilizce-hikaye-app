@@ -195,6 +195,20 @@
       "cta": "ابدأ القراءة",
       "browse": "تصفّح كتبًا أخرى",
       "accessibility": "{{title}}، ابدأ القراءة"
+    },
+    "goal": {
+      "title": "الهدف اليومي",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "أنجزت هدف اليوم! +20 XP",
+      "remaining_one": "بقي {{count}} د",
+      "remaining_other": "بقي {{count}} د",
+      "challenge": "التحدي",
+      "challengeValue": "{{done}} / {{total}} يوم",
+      "allDone": "أنجزت الكل!",
+      "challengeHint": "حقق هدفك {{total}} يومًا واكسب +{{xp}} XP.",
+      "streakValue_one": "{{count}} يوم",
+      "streakValue_other": "{{count}} يوم",
+      "streakLabel": "سلسلة الأهداف"
     }
   },
   "collections": {
@@ -726,7 +740,8 @@
         "words": "الكلمات المحفوظة",
         "reviews": "المراجعات",
         "quiz": "إجابات الاختبار",
-        "books": "الكتب المكتملة"
+        "books": "الكتب المكتملة",
+        "goals": "الهدف اليومي"
       },
       "howTo": "اكسب XP بالقراءة: 2 لكل دقيقة، 3 لكل كلمة محفوظة، 2 لكل مراجعة، 5 لكل إجابة صحيحة، 100 لكل كتاب مكتمل.",
       "ranks": {
@@ -738,6 +753,18 @@
         "master": "قارئ متمرس",
         "legend": "قارئ أسطوري"
       }
+    },
+    "goal": {
+      "title": "الهدف اليومي",
+      "subtitle": "كم تريد أن تقرأ كل يوم؟",
+      "option_one": "{{count}} د",
+      "option_other": "{{count}} د",
+      "saveError": "تعذّر حفظ الهدف.",
+      "goalDays_one": "أيام تحقيق الهدف: {{count}}",
+      "goalDays_other": "أيام تحقيق الهدف: {{count}}",
+      "streak_one": "السلسلة: {{count}} يوم",
+      "streak_other": "السلسلة: {{count}} يوم",
+      "hint": "+20 XP لكل يوم تحقق فيه هدفك. مكافأة +100 عند 7 أيام، +300 عند 30، +1000 عند 120."
     }
   },
   "vocabulary": {

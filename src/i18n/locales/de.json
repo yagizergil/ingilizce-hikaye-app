@@ -187,6 +187,20 @@
       "cta": "Lesen beginnen",
       "browse": "Andere Bücher ansehen",
       "accessibility": "{{title}}, Lesen beginnen"
+    },
+    "goal": {
+      "title": "Tagesziel",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "Tagesziel erreicht! +20 XP",
+      "remaining_one": "Noch {{count}} Min.",
+      "remaining_other": "Noch {{count}} Min.",
+      "challenge": "Challenge",
+      "challengeValue": "{{done}} / {{total}} Tage",
+      "allDone": "Alles geschafft!",
+      "challengeHint": "Erreiche dein Ziel {{total}} Tage lang für +{{xp}} XP.",
+      "streakValue_one": "{{count}} Tag",
+      "streakValue_other": "{{count}} Tage",
+      "streakLabel": "Ziel-Serie"
     }
   },
   "collections": {
@@ -718,7 +732,8 @@
         "words": "Gespeicherte Wörter",
         "reviews": "Wiederholungen",
         "quiz": "Quiz-Antworten",
-        "books": "Beendete Bücher"
+        "books": "Beendete Bücher",
+        "goals": "Tagesziel"
       },
       "howTo": "Sammle XP beim Lesen: 2 pro Minute, 3 pro gespeichertem Wort, 2 pro Wiederholung, 5 pro richtiger Quiz-Antwort, 100 pro beendetem Buch.",
       "ranks": {
@@ -730,6 +745,18 @@
         "master": "Meisterleser",
         "legend": "Legendärer Leser"
       }
+    },
+    "goal": {
+      "title": "Tagesziel",
+      "subtitle": "Wie lange möchtest du täglich lesen?",
+      "option_one": "{{count}} Min.",
+      "option_other": "{{count}} Min.",
+      "saveError": "Ziel konnte nicht gespeichert werden.",
+      "goalDays_one": "Zieltage: {{count}}",
+      "goalDays_other": "Zieltage: {{count}}",
+      "streak_one": "Serie: {{count}} Tag",
+      "streak_other": "Serie: {{count}} Tage",
+      "hint": "+20 XP an jedem Zieltag. Bonus: +100 nach 7, +300 nach 30, +1000 nach 120 Tagen."
     }
   },
   "vocabulary": {

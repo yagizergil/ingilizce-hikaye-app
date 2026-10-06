@@ -187,6 +187,20 @@
       "cta": "Empezar a leer",
       "browse": "Ver otros libros",
       "accessibility": "{{title}}, empezar a leer"
+    },
+    "goal": {
+      "title": "Meta diaria",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "¡Meta de hoy cumplida! +20 XP",
+      "remaining_one": "Faltan {{count}} min",
+      "remaining_other": "Faltan {{count}} min",
+      "challenge": "Reto",
+      "challengeValue": "{{done}} / {{total}} días",
+      "allDone": "¡Todo completado!",
+      "challengeHint": "Cumple tu meta {{total}} días y gana +{{xp}} XP.",
+      "streakValue_one": "{{count}} día",
+      "streakValue_other": "{{count}} días",
+      "streakLabel": "Racha de metas"
     }
   },
   "collections": {
@@ -718,7 +732,8 @@
         "words": "Palabras guardadas",
         "reviews": "Repasos",
         "quiz": "Respuestas correctas",
-        "books": "Libros terminados"
+        "books": "Libros terminados",
+        "goals": "Meta diaria"
       },
       "howTo": "Gana XP leyendo: 2 por minuto, 3 por palabra guardada, 2 por repaso, 5 por respuesta correcta, 100 por libro terminado.",
       "ranks": {
@@ -730,6 +745,18 @@
         "master": "Lector experto",
         "legend": "Lector legendario"
       }
+    },
+    "goal": {
+      "title": "Meta diaria",
+      "subtitle": "¿Cuánto quieres leer cada día?",
+      "option_one": "{{count}} min",
+      "option_other": "{{count}} min",
+      "saveError": "No se pudo guardar la meta.",
+      "goalDays_one": "Días cumplidos: {{count}}",
+      "goalDays_other": "Días cumplidos: {{count}}",
+      "streak_one": "Racha: {{count}} día",
+      "streak_other": "Racha: {{count}} días",
+      "hint": "+20 XP cada día que cumples tu meta. Bonus +100 a los 7 días, +300 a los 30, +1000 a los 120."
     }
   },
   "vocabulary": {

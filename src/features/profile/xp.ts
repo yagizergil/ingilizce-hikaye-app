@@ -58,9 +58,11 @@ export interface XpBreakdown {
   reviews: number;
   quiz: number;
   books: number;
+  /** Günlük hedef ve meydan okuma bonusu (migration 054). */
+  goals: number;
   today: number;
 }
 
 export function totalXp(xp: XpBreakdown): number {
-  return xp.reading + xp.words + xp.reviews + xp.quiz + xp.books;
+  return xp.reading + xp.words + xp.reviews + xp.quiz + xp.books + xp.goals;
 }

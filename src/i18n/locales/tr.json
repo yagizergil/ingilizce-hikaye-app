@@ -187,6 +187,20 @@
       "cta": "Okumaya başla",
       "browse": "Diğer kitaplara göz at",
       "accessibility": "{{title}}, okumaya başla"
+    },
+    "goal": {
+      "title": "Günlük hedef",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "Bugünün hedefi tamam! +20 XP",
+      "remaining_one": "Hedefe {{count}} dk kaldı",
+      "remaining_other": "Hedefe {{count}} dk kaldı",
+      "challenge": "Meydan okuma",
+      "challengeValue": "{{done}} / {{total}} gün",
+      "allDone": "Hepsi tamam!",
+      "challengeHint": "Hedefini {{total}} gün tuttur, +{{xp}} XP kazan.",
+      "streakValue_one": "{{count}} gün",
+      "streakValue_other": "{{count}} gün",
+      "streakLabel": "Hedef serisi"
     }
   },
   "collections": {
@@ -718,7 +732,8 @@
         "words": "Kaydedilen kelimeler",
         "reviews": "Kelime tekrarı",
         "quiz": "Quiz doğruları",
-        "books": "Bitirilen kitaplar"
+        "books": "Bitirilen kitaplar",
+        "goals": "Günlük hedef"
       },
       "howTo": "Okudukça XP kazanırsın: dakika başına 2, kaydettiğin her kelimeye 3, her tekrara 2, quizdeki her doğruya 5, bitirdiğin her kitaba 100 XP.",
       "ranks": {
@@ -730,6 +745,18 @@
         "master": "Usta Okur",
         "legend": "Efsane Okur"
       }
+    },
+    "goal": {
+      "title": "Günlük hedef",
+      "subtitle": "Her gün ne kadar okumak istersin?",
+      "option_one": "{{count}} dk",
+      "option_other": "{{count}} dk",
+      "saveError": "Hedef kaydedilemedi. Tekrar dene.",
+      "goalDays_one": "Hedef tutturulan gün: {{count}}",
+      "goalDays_other": "Hedef tutturulan gün: {{count}}",
+      "streak_one": "Seri: {{count}} gün",
+      "streak_other": "Seri: {{count}} gün",
+      "hint": "Hedefi tutturduğun her gün +20 XP. 7 günde +100, 30 günde +300, 120 günde +1000 XP bonus."
     }
   },
   "vocabulary": {

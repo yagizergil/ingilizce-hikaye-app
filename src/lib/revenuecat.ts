@@ -208,7 +208,21 @@ export async function fetchOfferingPackages(
      */
     const requested = offeringId ? offerings.all[offeringId] : null;
     const chosen: PurchasesOffering | null = requested ?? offerings.current;
-    return chosen?.availablePackages ?? [];
+    const packages = chosen?.availablePackages ?? [];
+
+    // EKSİK PLANLAR VARSAYILANDAN TAMAMLANIYOR (kullanıcı bulgusu,
+    // 2026-10-07): "onboarding" teklifinde yalnızca yıllık paket vardı;
+    // onboarding sonundaki paywall'da aylık hiç görünmüyor, kullanıcı
+    // seçeneksiz yıllığa itiliyordu. Özel teklifin paketleri korunur (ör.
+    // indirimli yıllık), sahip olmadığı plan türleri güncel tekliften gelir.
+    if (requested && offerings.current && requested !== offerings.current) {
+      const types = new Set(packages.map((pkg) => pkg.packageType));
+      const missing = offerings.current.availablePackages.filter(
+        (pkg) => !types.has(pkg.packageType),
+      );
+      return [...packages, ...missing];
+    }
+    return packages;
   } catch (error) {
     trackError("revenuecat.offerings", error);
     throw error;

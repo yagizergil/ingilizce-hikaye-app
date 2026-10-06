@@ -29,8 +29,11 @@ import {
 } from "@/features/home";
 import { useActiveLanguagePairQuery } from "@/features/languagePair";
 import {
+  challengeState,
   levelFromXp,
+  MILESTONE_BONUS,
   totalXp,
+  useGoalProgressQuery,
   useProfileAuthStatus,
   useProfileStatsQuery,
   useXpQuery,
@@ -71,6 +74,8 @@ export default function HomeScreen() {
   useFavoritesReadListsQuery();
   useVocabularyQuery();
   const xpQuery = useXpQuery();
+  const { data: goal } = useGoalProgressQuery();
+  const challenge = challengeState(goal?.goalDays ?? 0);
   const levelProgress = levelFromXp(xpQuery.data ? totalXp(xpQuery.data) : 0);
   const firstName = displayName ? (displayName.split(" ")[0] ?? null) : null;
   const today = localDateKeyDaysAgo(0);
@@ -161,9 +166,16 @@ export default function HomeScreen() {
         </Animated.View>
         {hasHistory ? (
           <HomeStatsCard
-            daysDone={stats?.totalActiveDays ?? 0}
+            goalMinutes={goal?.goal ?? 10}
+            minutesToday={goal?.today ?? minutesToday}
+            goalDays={goal?.goalDays ?? 0}
+            streak={goal?.streak ?? 0}
             booksRead={stats?.completedBookCount ?? 0}
-            minutesToday={minutesToday}
+            milestone={challenge.milestone}
+            milestoneFraction={challenge.fraction}
+            milestoneBonus={MILESTONE_BONUS[challenge.milestone] ?? 0}
+            completedAll={challenge.completedAll}
+            dateKey={today}
             onPressMore={() => router.push("/statistics")}
           />
         ) : null}

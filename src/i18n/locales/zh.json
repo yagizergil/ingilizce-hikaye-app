@@ -187,6 +187,20 @@
       "cta": "开始阅读",
       "browse": "浏览其他书",
       "accessibility": "{{title}}，开始阅读"
+    },
+    "goal": {
+      "title": "每日目标",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "今日目标已完成！+20 XP",
+      "remaining_one": "还差 {{count}} 分钟",
+      "remaining_other": "还差 {{count}} 分钟",
+      "challenge": "挑战",
+      "challengeValue": "{{done}} / {{total}} 天",
+      "allDone": "全部完成！",
+      "challengeHint": "连续 {{total}} 天达成目标，获得 +{{xp}} XP。",
+      "streakValue_one": "{{count}} 天",
+      "streakValue_other": "{{count}} 天",
+      "streakLabel": "目标连胜"
     }
   },
   "collections": {
@@ -718,7 +732,8 @@
         "words": "收藏单词",
         "reviews": "单词复习",
         "quiz": "测验答对",
-        "books": "读完的书"
+        "books": "读完的书",
+        "goals": "每日目标"
       },
       "howTo": "阅读即可获得 XP：每分钟 2，每收藏一个词 3，每次复习 2，测验每答对一题 5，每读完一本书 100。",
       "ranks": {
@@ -730,6 +745,18 @@
         "master": "阅读大师",
         "legend": "传奇读者"
       }
+    },
+    "goal": {
+      "title": "每日目标",
+      "subtitle": "你每天想读多久？",
+      "option_one": "{{count}} 分钟",
+      "option_other": "{{count}} 分钟",
+      "saveError": "无法保存目标。",
+      "goalDays_one": "达成天数：{{count}}",
+      "goalDays_other": "达成天数：{{count}}",
+      "streak_one": "连胜：{{count}} 天",
+      "streak_other": "连胜：{{count}} 天",
+      "hint": "每达成一天目标 +20 XP。7 天奖励 +100，30 天 +300，120 天 +1000。"
     }
   },
   "vocabulary": {

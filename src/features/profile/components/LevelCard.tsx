@@ -21,6 +21,7 @@ const SOURCES: { key: Exclude<keyof XpBreakdown, "today">; icon: UiIconName }[] 
   { key: "reviews", icon: "cards" },
   { key: "quiz", icon: "bulb" },
   { key: "books", icon: "trophy" },
+  { key: "goals", icon: "flame" },
 ];
 
 /**

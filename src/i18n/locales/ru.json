@@ -191,6 +191,20 @@
       "cta": "Начать читать",
       "browse": "Посмотреть другие книги",
       "accessibility": "{{title}}, начать читать"
+    },
+    "goal": {
+      "title": "Цель дня",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "Цель на сегодня выполнена! +20 XP",
+      "remaining_one": "Осталось {{count}} мин",
+      "remaining_other": "Осталось {{count}} мин",
+      "challenge": "Челлендж",
+      "challengeValue": "{{done}} / {{total}} дн.",
+      "allDone": "Всё выполнено!",
+      "challengeHint": "Выполняй цель {{total}} дн. и получи +{{xp}} XP.",
+      "streakValue_one": "{{count}} день",
+      "streakValue_other": "{{count}} дн.",
+      "streakLabel": "Серия целей"
     }
   },
   "collections": {
@@ -722,7 +736,8 @@
         "words": "Сохранённые слова",
         "reviews": "Повторения",
         "quiz": "Ответы в квизах",
-        "books": "Прочитанные книги"
+        "books": "Прочитанные книги",
+        "goals": "Цель дня"
       },
       "howTo": "Получай XP за чтение: 2 за минуту, 3 за сохранённое слово, 2 за повторение, 5 за верный ответ, 100 за прочитанную книгу.",
       "ranks": {
@@ -734,6 +749,18 @@
         "master": "Мастер чтения",
         "legend": "Легендарный читатель"
       }
+    },
+    "goal": {
+      "title": "Цель дня",
+      "subtitle": "Сколько ты хочешь читать каждый день?",
+      "option_one": "{{count}} мин",
+      "option_other": "{{count}} мин",
+      "saveError": "Не удалось сохранить цель.",
+      "goalDays_one": "Дней с целью: {{count}}",
+      "goalDays_other": "Дней с целью: {{count}}",
+      "streak_one": "Серия: {{count}} день",
+      "streak_other": "Серия: {{count}} дн.",
+      "hint": "+20 XP за каждый день с выполненной целью. Бонус +100 за 7 дней, +300 за 30, +1000 за 120."
     }
   },
   "vocabulary": {

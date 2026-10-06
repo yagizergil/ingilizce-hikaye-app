@@ -29,6 +29,7 @@ export function useXpQuery() {
         reviews: toInt(row.reviews),
         quiz: toInt(row.quiz),
         books: toInt(row.books),
+        goals: toInt(row.goals),
         today: toInt(row.today),
       };
     },

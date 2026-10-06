@@ -187,6 +187,20 @@
       "cta": "Inizia a leggere",
       "browse": "Sfoglia altri libri",
       "accessibility": "{{title}}, inizia a leggere"
+    },
+    "goal": {
+      "title": "Obiettivo giornaliero",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "Obiettivo raggiunto! +20 XP",
+      "remaining_one": "Mancano {{count}} min",
+      "remaining_other": "Mancano {{count}} min",
+      "challenge": "Sfida",
+      "challengeValue": "{{done}} / {{total}} giorni",
+      "allDone": "Tutto fatto!",
+      "challengeHint": "Raggiungi l'obiettivo per {{total}} giorni: +{{xp}} XP.",
+      "streakValue_one": "{{count}} giorno",
+      "streakValue_other": "{{count}} giorni",
+      "streakLabel": "Serie obiettivi"
     }
   },
   "collections": {
@@ -718,7 +732,8 @@
         "words": "Parole salvate",
         "reviews": "Ripassi",
         "quiz": "Risposte corrette",
-        "books": "Libri finiti"
+        "books": "Libri finiti",
+        "goals": "Obiettivo giornaliero"
       },
       "howTo": "Guadagni XP leggendo: 2 al minuto, 3 per ogni parola salvata, 2 per ripasso, 5 per risposta corretta, 100 per libro finito.",
       "ranks": {
@@ -730,6 +745,18 @@
         "master": "Lettore esperto",
         "legend": "Lettore leggendario"
       }
+    },
+    "goal": {
+      "title": "Obiettivo giornaliero",
+      "subtitle": "Quanto vuoi leggere ogni giorno?",
+      "option_one": "{{count}} min",
+      "option_other": "{{count}} min",
+      "saveError": "Impossibile salvare l'obiettivo.",
+      "goalDays_one": "Giorni raggiunti: {{count}}",
+      "goalDays_other": "Giorni raggiunti: {{count}}",
+      "streak_one": "Serie: {{count}} giorno",
+      "streak_other": "Serie: {{count}} giorni",
+      "hint": "+20 XP ogni giorno in cui raggiungi l'obiettivo. Bonus +100 a 7 giorni, +300 a 30, +1000 a 120."
     }
   },
   "vocabulary": {

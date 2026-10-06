@@ -187,6 +187,20 @@
       "cta": "Start reading",
       "browse": "Browse other books",
       "accessibility": "{{title}}, start reading"
+    },
+    "goal": {
+      "title": "Daily goal",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "Today's goal done! +20 XP",
+      "remaining_one": "{{count}} min to go",
+      "remaining_other": "{{count}} min to go",
+      "challenge": "Challenge",
+      "challengeValue": "{{done}} / {{total}} days",
+      "allDone": "All done!",
+      "challengeHint": "Hit your goal for {{total}} days to earn +{{xp}} XP.",
+      "streakValue_one": "{{count}} day",
+      "streakValue_other": "{{count}} days",
+      "streakLabel": "Goal streak"
     }
   },
   "collections": {
@@ -718,7 +732,8 @@
         "words": "Saved words",
         "reviews": "Word reviews",
         "quiz": "Quiz answers",
-        "books": "Finished books"
+        "books": "Finished books",
+        "goals": "Daily goal"
       },
       "howTo": "Earn XP as you read: 2 per minute, 3 for each saved word, 2 per review, 5 per correct quiz answer, 100 per finished book.",
       "ranks": {
@@ -730,6 +745,18 @@
         "master": "Master Reader",
         "legend": "Legendary Reader"
       }
+    },
+    "goal": {
+      "title": "Daily goal",
+      "subtitle": "How long do you want to read each day?",
+      "option_one": "{{count}} min",
+      "option_other": "{{count}} min",
+      "saveError": "Couldn't save your goal. Try again.",
+      "goalDays_one": "Goal days: {{count}}",
+      "goalDays_other": "Goal days: {{count}}",
+      "streak_one": "Streak: {{count}} day",
+      "streak_other": "Streak: {{count}} days",
+      "hint": "+20 XP each day you hit your goal. Bonus +100 at 7 days, +300 at 30, +1000 at 120."
     }
   },
   "vocabulary": {

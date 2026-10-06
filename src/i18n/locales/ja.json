@@ -187,6 +187,20 @@
       "cta": "読み始める",
       "browse": "ほかの本を見る",
       "accessibility": "{{title}}、読み始める"
+    },
+    "goal": {
+      "title": "今日の目標",
+      "ringValue": "{{today}}/{{goal}}",
+      "done": "今日の目標達成！+20 XP",
+      "remaining_one": "あと {{count}} 分",
+      "remaining_other": "あと {{count}} 分",
+      "challenge": "チャレンジ",
+      "challengeValue": "{{done}} / {{total}} 日",
+      "allDone": "すべて達成！",
+      "challengeHint": "目標を {{total}} 日達成すると +{{xp}} XP。",
+      "streakValue_one": "{{count}} 日",
+      "streakValue_other": "{{count}} 日",
+      "streakLabel": "目標連続"
     }
   },
   "collections": {
@@ -718,7 +732,8 @@
         "words": "保存した単語",
         "reviews": "単語の復習",
         "quiz": "クイズの正解",
-        "books": "読み終えた本"
+        "books": "読み終えた本",
+        "goals": "今日の目標"
       },
       "howTo": "読むほどXPがたまります：1分ごとに2、単語の保存で3、復習で2、クイズ正解で5、本を読み終えると100。",
       "ranks": {
@@ -730,6 +745,18 @@
         "master": "達人リーダー",
         "legend": "伝説の読者"
       }
+    },
+    "goal": {
+      "title": "今日の目標",
+      "subtitle": "毎日どれくらい読みたいですか？",
+      "option_one": "{{count}} 分",
+      "option_other": "{{count}} 分",
+      "saveError": "目標を保存できませんでした。",
+      "goalDays_one": "達成日数：{{count}}",
+      "goalDays_other": "達成日数：{{count}}",
+      "streak_one": "連続：{{count}} 日",
+      "streak_other": "連続：{{count}} 日",
+      "hint": "目標を達成した日は +20 XP。7日で +100、30日で +300、120日で +1000 のボーナス。"
     }
   },
   "vocabulary": {
