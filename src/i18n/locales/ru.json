@@ -177,8 +177,10 @@
     },
     "week": {
       "title": "На этой неделе",
-      "count": "{{count}}/7 дней",
-      "dayAccessibility": "{{day}}: {{count}} мин"
+      "dayAccessibility": "{{day}}: {{count}} мин",
+      "total": "Всего {{count}} мин",
+      "legendGoal": "Цель ({{count}} мин)",
+      "legendRead": "Чтение"
     },
     "start": {
       "title": "Начать",

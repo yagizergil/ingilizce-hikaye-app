@@ -73,6 +73,9 @@ jest.mock("@/components/ui", () => {
   };
 });
 
+jest.mock("@/features/paywall", () => ({
+  useSubscriptionQuery: () => ({ data: { isPremium: false } }),
+}));
 jest.mock("@/features/home/useHomePalette", () => ({
   useHomePalette: () => ({ page: "white", card: "white", ink: "black", muted: "gray" }),
 }));

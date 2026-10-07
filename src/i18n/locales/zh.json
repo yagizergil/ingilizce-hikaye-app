@@ -173,8 +173,10 @@
     },
     "week": {
       "title": "本周",
-      "count": "{{count}}/7 天",
-      "dayAccessibility": "{{day}}：{{count}} 分钟"
+      "dayAccessibility": "{{day}}：{{count}} 分钟",
+      "total": "共 {{count}} 分钟",
+      "legendGoal": "目标（{{count}} 分钟）",
+      "legendRead": "已读"
     },
     "start": {
       "title": "立即开始",

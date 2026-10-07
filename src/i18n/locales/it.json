@@ -173,8 +173,10 @@
     },
     "week": {
       "title": "Questa settimana",
-      "count": "{{count}}/7 giorni",
-      "dayAccessibility": "{{day}}: {{count}} min"
+      "dayAccessibility": "{{day}}: {{count}} min",
+      "total": "{{count}} min in totale",
+      "legendGoal": "Obiettivo ({{count}} min)",
+      "legendRead": "Letto"
     },
     "start": {
       "title": "Inizia ora",

@@ -173,8 +173,10 @@
     },
     "week": {
       "title": "今週",
-      "count": "{{count}}/7 日",
-      "dayAccessibility": "{{day}}：{{count}} 分"
+      "dayAccessibility": "{{day}}：{{count}} 分",
+      "total": "合計 {{count}} 分",
+      "legendGoal": "目標（{{count}} 分）",
+      "legendRead": "読書"
     },
     "start": {
       "title": "今すぐ始める",

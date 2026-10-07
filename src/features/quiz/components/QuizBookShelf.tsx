@@ -148,8 +148,12 @@ const styles = StyleSheet.create({
     width: COVER_W + homeSpace.sm,
     gap: homeSpace.xs,
   },
+  // Başlık alanı her kartta İKİ SATIR yüksekliğinde (kullanıcı bulgusu,
+  // 2026-10-07): tek satırlık başlıkta noktalar yukarı kayıyor, iki satırlık
+  // komşusuyla hizasız duruyordu. Sabit alan + aynı çizgide noktalar.
   cardTitle: {
     color: detailColors.title,
+    minHeight: homeType.cardSub.lineHeight * 2,
   },
   dots: {
     flexDirection: "row",

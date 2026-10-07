@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -9,6 +9,7 @@ import { useTheme } from "@/theme/useTheme";
 
 import { useOnboardingStatusQuery } from "@/features/onboarding/api/useOnboardingStatusQuery";
 import { OnboardingFlow } from "@/features/onboarding/components/OnboardingFlow";
+import { useLaunchStore } from "@/lib/launchState";
 
 interface OnboardingGateProps {
   children: ReactNode;
@@ -31,6 +32,10 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
   const { theme } = useTheme();
   const queryClient = useQueryClient();
   const { data, isLoading, isError } = useOnboardingStatusQuery();
+  const markReady = useLaunchStore((state) => state.markReady);
+  useEffect(() => {
+    if (!isLoading) markReady("onboarding");
+  }, [isLoading, markReady]);
 
   const [finishing, setFinishing] = useState(false);
   const returnedRef = useRef(false);
@@ -75,12 +80,9 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
     router.replace("/");
   }, [finishing, flowVisible]);
 
+  // Dönen simge YOK: bu sırada açılış splash'i (LaunchOverlay) üstte duruyor.
   if (isLoading) {
-    return (
-      <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
-        <ActivityIndicator color={theme.accent} />
-      </View>
-    );
+    return <View style={[styles.container, { backgroundColor: theme.bg.primary }]} />;
   }
 
   if (flowVisible) {

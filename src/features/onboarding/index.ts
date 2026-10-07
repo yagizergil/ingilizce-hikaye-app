@@ -1,4 +1,5 @@
 export { AuthGate } from "@/features/onboarding/components/AuthGate";
+export { LaunchOverlay } from "@/features/onboarding/components/LaunchOverlay";
 export { DeleteAccountScreen } from "@/features/onboarding/components/DeleteAccountScreen";
 export { LevelTestScreen } from "@/features/onboarding/components/LevelTestScreen";
 export { OnboardingAdventureIntro } from "@/features/onboarding/components/OnboardingAdventureIntro";

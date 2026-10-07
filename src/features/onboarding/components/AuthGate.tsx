@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import type { ReactNode } from "react";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import { useTheme } from "@/theme/useTheme";
+import { useLaunchStore } from "@/lib/launchState";
 import { useAuthBootstrap } from "@/features/onboarding/api/useAuthBootstrap";
 
 interface AuthGateProps {
@@ -17,13 +19,14 @@ interface AuthGateProps {
 export function AuthGate({ children }: AuthGateProps) {
   const status = useAuthBootstrap();
   const { theme } = useTheme();
+  const markReady = useLaunchStore((state) => state.markReady);
+  useEffect(() => {
+    if (status !== "bootstrapping") markReady("auth");
+  }, [status, markReady]);
 
+  // Dönen simge YOK: bu sırada açılış splash'i (LaunchOverlay) üstte duruyor.
   if (status === "bootstrapping") {
-    return (
-      <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
-        <ActivityIndicator color={theme.accent} />
-      </View>
-    );
+    return <View style={[styles.container, { backgroundColor: theme.bg.primary }]} />;
   }
 
   return <>{children}</>;

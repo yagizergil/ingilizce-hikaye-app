@@ -1,0 +1,3 @@
+-- 055: get_goal_progress 'today' yuvarlama (floor -> round). 0,7 dk okuyan
+-- kullanıcı hedef halkasında "0" görüyor ve okuması sayılmadı sanıyordu.
+-- Fonksiyonun geri kalanı 054 ile aynı (canlıya apply_migration ile uygulandı).

@@ -31,6 +31,7 @@ import { applyLayoutDirection, reloadApp } from "@/lib/rtl";
 
 import { useOwnedLanguagePairsQuery } from "@/features/languagePair/api/useActiveLanguagePairQuery";
 import { useSetLanguagePairMutation } from "@/features/languagePair/api/useSetLanguagePairMutation";
+import { useSubscriptionQuery } from "@/features/paywall";
 
 import type { LanguageInfo } from "@/lib/languages";
 import type { OwnedLanguagePair } from "@/features/languagePair/api/useActiveLanguagePairQuery";
@@ -61,6 +62,7 @@ export function ManageLanguagePairsScreen({
   onClose,
   onNeedsPremium,
 }: ManageLanguagePairsScreenProps) {
+  const isPremium = useSubscriptionQuery().data?.isPremium === true;
   const { t } = useTranslation();
   const { theme } = useTheme();
   const palette = useHomePalette();
@@ -408,7 +410,9 @@ export function ManageLanguagePairsScreen({
                       target={language.code}
                       active={false}
                       onPress={() => handleSelectTarget(language.code)}
-                      showPremiumBadge
+                      // Kilit yalnızca premium OLMAYANA (kullanıcı bulgusu,
+                      // 2026-10-07: premium kullanıcıda da görünüyordu).
+                      showPremiumBadge={!isPremium}
                     />
                   ))}
                 </View>

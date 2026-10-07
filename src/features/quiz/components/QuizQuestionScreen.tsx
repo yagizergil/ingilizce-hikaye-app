@@ -71,6 +71,13 @@ export function QuizQuestionScreen() {
   }
 
   const total = questions.length;
+  // Güvenli kapatma (kullanıcı bulgusu: "Kapat'a basınca dondu"): ekran geri
+  // gidilecek bir yığın olmadan açıldıysa `back()` işlenmeyen bir GO_BACK
+  // eylemi olur. O durumda Quiz sekmesine dönülür.
+  const close = () => {
+    if (router.canGoBack()) router.back();
+    else router.replace("/(tabs)/quiz");
+  };
   const restart = () => {
     setIndex(0);
     setSelected(null);
@@ -85,7 +92,7 @@ export function QuizQuestionScreen() {
         correct={correct}
         total={total}
         onRetry={restart}
-        onClose={() => router.back()}
+        onClose={close}
         // 1. basamağı geçen ücretsiz kullanıcı: bir sonraki basamak premium.
         // Kullanıcının en memnun olduğu an; kendisi seçerse paywall'a gider.
         nextLevelUpsell={
@@ -102,14 +109,20 @@ export function QuizQuestionScreen() {
   const isLast = index === total - 1;
   const isRight = selected === question.correctIndex;
 
+  // Şıkka dokunmak = cevap (kullanıcı bulgusu, 2026-10-07): eskiden önce
+  // seçip sonra "Kontrol et"e basmak gerekiyordu. Artık dokununca doğru/yanlış
+  // hemen görünür, yanlışsa doğru şık işaretlenir; "Devam" ile geçilir.
+  const handleSelect = (optionIndex: number) => {
+    if (checked) return;
+    const right = optionIndex === question.correctIndex;
+    setSelected(optionIndex);
+    setChecked(true);
+    playSfx(right ? "correct" : "wrong");
+    if (right) setCorrect((value) => value + 1);
+  };
+
   const handlePrimary = () => {
-    if (selected === null) return;
-    if (!checked) {
-      setChecked(true);
-      playSfx(isRight ? "correct" : "wrong");
-      if (isRight) setCorrect(correct + 1);
-      return;
-    }
+    if (!checked) return;
     if (isLast) {
       if (quizId && !submit.isPending) {
         submit.mutate({ quizId, correct }, { onError: () => showToast(t("quiz.saveError")) });
@@ -147,10 +160,10 @@ export function QuizQuestionScreen() {
       <View style={[styles.top, { top: insets.top + homeMetrics.pillTop }]}>
         <Pressable
           onPress={() => {
-            if (index === 0 && !checked) return router.back();
+            if (index === 0 && !checked) return close();
             Alert.alert(t("quiz.leaveTitle"), t("quiz.leaveBody"), [
               { text: t("common.cancel"), style: "cancel" },
-              { text: t("quiz.leaveConfirm"), style: "destructive", onPress: () => router.back() },
+              { text: t("quiz.leaveConfirm"), style: "destructive", onPress: close },
             ]);
           }}
           accessibilityRole="button"
@@ -188,7 +201,7 @@ export function QuizQuestionScreen() {
                 label={option}
                 state={optionState(optionIndex)}
                 disabled={checked}
-                onPress={() => setSelected(optionIndex)}
+                onPress={() => handleSelect(optionIndex)}
               />
             ))}
           </View>
@@ -222,17 +235,17 @@ export function QuizQuestionScreen() {
           ) : null}
           <Pressable
             onPress={handlePrimary}
-            disabled={selected === null}
+            disabled={!checked}
             accessibilityRole="button"
-            accessibilityState={{ disabled: selected === null }}
+            accessibilityState={{ disabled: !checked }}
             style={({ pressed }) => [
               styles.next,
-              selected === null ? styles.nextDisabled : null,
+              !checked ? styles.nextDisabled : null,
               pressed ? styles.nextPressed : null,
             ]}
           >
             <Text style={[detailType.cta, { color: detailColors.amberInk }]}>
-              {t(!checked ? "quiz.check" : isLast ? "quiz.finish" : "quiz.next")}
+              {t(isLast ? "quiz.finish" : "quiz.next")}
             </Text>
           </Pressable>
         </View>

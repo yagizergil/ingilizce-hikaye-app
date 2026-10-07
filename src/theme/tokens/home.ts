@@ -38,6 +38,8 @@ export const homeColors = {
   coinInk: "#C68A00",
   /** Kategori dairesi ve istatistik ikon zemini (örneklenen #F8D8AE). */
   peach: "#FBE6C8",
+  /** Okunan ama hedefin altında kalan gün (haftalık grafik). */
+  peachStrong: "#F8CF8E",
   green: "#B6CB5A",
   greenDeep: "#6E8B1F",
   ribbonBg: "#F9DEBE",

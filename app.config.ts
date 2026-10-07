@@ -121,14 +121,15 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        image: "./assets/splash.png",
-        resizeMode: "contain",
-        // Logo (L-i-n-g + papağan "o") krem zeminde; koyu temada da aynı
-        // zemin -- lacivert "g" koyu zeminde kayboluyordu.
-        backgroundColor: "#FDF5E3",
+        // Gökyüzü + çayır sahnesi tam ekran: JS açılış katmanı (LaunchOverlay)
+        // aynı sahnenin üstünde logoyu canlandırıyor, geçiş dikişsiz.
+        image: "./assets/splash-bg.png",
+        resizeMode: "cover",
+        // Görselin gökyüzü rengi; koyu temada da aynı sahne.
+        backgroundColor: "#79CEF5",
         dark: {
-          image: "./assets/splash-dark.png",
-          backgroundColor: "#FDF5E3",
+          image: "./assets/splash-bg.png",
+          backgroundColor: "#79CEF5",
         },
       },
     ],

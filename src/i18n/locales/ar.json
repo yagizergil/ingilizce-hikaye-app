@@ -181,8 +181,10 @@
     },
     "week": {
       "title": "هذا الأسبوع",
-      "count": "{{count}}/7 أيام",
-      "dayAccessibility": "{{day}}: {{count}} د"
+      "dayAccessibility": "{{day}}: {{count}} د",
+      "total": "المجموع {{count}} د",
+      "legendGoal": "الهدف ({{count}} د)",
+      "legendRead": "قراءة"
     },
     "start": {
       "title": "ابدأ الآن",

@@ -1,6 +1,6 @@
 import "@/i18n";
 import { useEffect } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { Stack } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -19,7 +19,7 @@ import { Literata_400Regular, Literata_400Regular_Italic } from "@expo-google-fo
 
 import { queryClient } from "@/lib/queryClient";
 import { useTheme } from "@/theme/useTheme";
-import { AuthGate, OnboardingGate } from "@/features/onboarding";
+import { AuthGate, LaunchOverlay, OnboardingGate } from "@/features/onboarding";
 import { ReminderScheduler } from "@/features/reminders";
 import { LanguagePairUiSync } from "@/features/languagePair";
 import { ErrorBoundary, ToastHost } from "@/components/ui";
@@ -175,10 +175,10 @@ export default function RootLayout() {
               </AuthGate>
             </ErrorBoundary>
           ) : (
-            <View style={[styles.loading, { backgroundColor: theme.bg.primary }]}>
-              <ActivityIndicator color={theme.accent} />
-            </View>
+            // Dönen simge YOK: fontlar yüklenirken açılış splash'i üstte.
+            <View style={[styles.loading, { backgroundColor: theme.bg.primary }]} />
           )}
+          <LaunchOverlay fontsReady={fontsLoaded || Boolean(fontError)} />
         </BottomSheetModalProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>

@@ -96,6 +96,10 @@ const styles = StyleSheet.create({
   },
   mascot: {
     marginBottom: homeSpace.xl,
+    // "profile" pozunda kanatlar bir yana açık: görünür ağırlık merkezi
+    // karenin %13 solunda (sprite ilk karesinden ölçüldü). Kutuyu
+    // ortalamak papağanı solda gösteriyordu; o kadar sağa kaydırılıyor.
+    transform: [{ translateX: Math.round(mascotSize.empty * (430 / 464) * 0.129) }],
   },
   title: {
     color: detailColors.title,

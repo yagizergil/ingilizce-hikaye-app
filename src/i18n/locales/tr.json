@@ -173,8 +173,10 @@
     },
     "week": {
       "title": "Bu hafta",
-      "count": "{{count}}/7 gün",
-      "dayAccessibility": "{{day}}: {{count}} dk"
+      "dayAccessibility": "{{day}}: {{count}} dk",
+      "total": "Toplam {{count}} dk",
+      "legendGoal": "Hedef ({{count}} dk)",
+      "legendRead": "Okundu"
     },
     "start": {
       "title": "Hemen başla",

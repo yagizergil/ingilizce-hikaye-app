@@ -55,7 +55,11 @@ export default function TabsLayout() {
         // sekmeye gidip dönene kadar BEMBEYAZ ekran görüyordu.
         tabBarShowLabel: false,
         tabBarStyle: {
-          // Beyaz, üst köşeleri yuvarlak yüzen çubuk (Funfluent referansı).
+          // Beyaz, yuvarlak köşeli, içeriğin ÜSTÜNDE yüzen çubuk (2026-10-07).
+          // Eskiden düzende yer kaplıyordu: kenar boşlukları ekranın gri
+          // zeminini açıkta bırakıyor ve sayfalar çubuk yüksekliği kadar
+          // ayrıca boşluk bıraktığı için en altta iki kat boşluk oluyordu.
+          position: "absolute",
           backgroundColor: theme.bg.surface,
           borderTopWidth: 0,
           borderRadius: homeMetrics.tabBarRadius,
@@ -65,9 +69,9 @@ export default function TabsLayout() {
           paddingTop: 0,
           paddingBottom: 0,
           shadowColor: homeColors.shadow,
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.08,
-          shadowRadius: 14,
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.12,
+          shadowRadius: 18,
           elevation: 12,
         },
       }}

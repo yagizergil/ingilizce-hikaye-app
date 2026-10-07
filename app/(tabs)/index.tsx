@@ -191,7 +191,7 @@ export default function HomeScreen() {
             onPressSeeAll={() => router.push("/categories")}
           />
         )}
-        <WeekStrip days={stats?.weekDays ?? []} today={today} />
+        <WeekStrip days={stats?.weekDays ?? []} today={today} goalMinutes={goal?.goal ?? 10} />
       </ScrollView>
     </SafeAreaView>
   );

@@ -103,7 +103,9 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const deviceLanguage = getLocales()[0]?.languageCode ?? "en";
   const defaultNative = LANGUAGES.some((l) => l.code === deviceLanguage) ? deviceLanguage : "en";
 
-  const [step, setStep] = useState<Step>("splash");
+  // Açılış splash'i her soğuk açılışta LaunchOverlay'de gösteriliyor;
+  // akış kendi splash adımını tekrar göstermez (iki kez splash olurdu).
+  const [step, setStep] = useState<Step>("welcome");
   const [nativeLanguage, setNativeLanguage] = useState<string | null>(defaultNative);
   const [targetLanguage, setTargetLanguage] = useState<string | null>(null);
   const [level, setLevel] = useState<CefrLevel | null>(null);
