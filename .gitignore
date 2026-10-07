@@ -60,3 +60,5 @@ docs/reference/*.png
 assets/brand/candidates/
 *.prev.png
 *.prev.jpg
+marketing/.profile/
+marketing/build/

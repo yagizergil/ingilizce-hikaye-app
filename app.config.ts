@@ -125,6 +125,10 @@ const config: ExpoConfig = {
         // aynı sahnenin üstünde logoyu canlandırıyor, geçiş dikişsiz.
         image: "./assets/splash-bg.png",
         resizeMode: "cover",
+        // iOS'ta bu olmadan görsel 100 pt genişliğinde ortada küçük bir kutu
+        // olarak çiziliyor ve JS splash'i gelmeden önce bir an görünüyordu
+        // (kullanıcı bulgusu, 2026-10-07).
+        enableFullScreenImage_legacy: true,
         // Görselin gökyüzü rengi; koyu temada da aynı sahne.
         backgroundColor: "#79CEF5",
         dark: {

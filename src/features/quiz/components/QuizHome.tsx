@@ -94,7 +94,7 @@ export function QuizHome() {
               <Ionicons name="arrow-forward" size={16} color={detailColors.amberInk} />
             </View>
           </View>
-          <MascotAnim name="quiz" width={mascotSize.header} persist />
+          <MascotAnim name="quiz" width={mascotSize.header} />
         </PressableScale>
 
         {/* İlerleme özeti: kullanıcı neyin beklediğini bir bakışta görür. */}

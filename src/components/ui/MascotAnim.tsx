@@ -92,13 +92,6 @@ interface MascotAnimProps {
   /** Sığdırma kutusu (pt): maskotun UZUN kenarı bu değere eşitlenir. */
   width: number;
   style?: StyleProp<ViewStyle>;
-  /**
-   * Sekme sayfalarının başlık maskotu: görsel odak dışındayken de bağlı ve
-   * bellekte kalır, animasyon durur ve dönüşte kaldığı yerden sürer
-   * (kullanıcı bulgusu, 2026-10-07: her sekme dönüşünde yeniden çiziliyordu).
-   * Yalnızca dört sekmede kullanılmalı -- her sayfa ~40 MB çözülmüş görsel.
-   */
-  persist?: boolean;
 }
 
 /**
@@ -122,7 +115,7 @@ function useScreenFocused(): boolean {
   return focused;
 }
 
-export function MascotAnim({ name, width: box, style, persist = false }: MascotAnimProps) {
+export function MascotAnim({ name, width: box, style }: MascotAnimProps) {
   const entry = ANIMATIONS[name];
   // `width` bir SIĞDIRMA KUTUSU: maskotun uzun kenarı ona eşitlenir. Pozların
   // en-boy oranı farklı (arama/quiz dikey, ana sayfa yatay); yalnızca
@@ -142,15 +135,14 @@ export function MascotAnim({ name, width: box, style, persist = false }: MascotA
       cancelAnimation(progress);
       return undefined;
     }
-    // Kalıcı (sekme) maskotlar kaldıkları kareden devam eder; diğerleri baştan.
-    if (!persist) progress.value = 0;
+    progress.value = 0;
     progress.value = withRepeat(
       withTiming(cycle, { duration: (cycle * 1000) / FPS, easing: Easing.linear }),
       -1,
       false,
     );
     return () => cancelAnimation(progress);
-  }, [focused, reducedMotion, cycle, progress, persist]);
+  }, [focused, reducedMotion, cycle, progress]);
 
   const { frames, cols } = entry;
   const sheetStyle = useAnimatedStyle(() => {
@@ -175,15 +167,17 @@ export function MascotAnim({ name, width: box, style, persist = false }: MascotA
     >
       {/* Görsel yalnızca ekran odaktayken bağlı: sekmeler arka planda bağlı
           kaldığı için aksi hâlde beş ekranın sprite sayfası (her biri ~40 MB
-          çözülmüş) aynı anda bellekte dururdu. */}
-      {focused || persist ? (
+          çözülmüş) aynı anda bellekte dururdu. Sekme maskotlarını bağlı tutmak
+          (2026-10-07 denemesi) tam olarak buna yol açtı: bir süre sonra
+          animasyonlar kasıp donmaya başladı. Geri alındı. */}
+      {focused ? (
         <Animated.View style={[{ width: width * cols, height: height * entry.rows }, sheetStyle]}>
           <Image
             source={entry.source}
             style={styles.fill}
             contentFit="fill"
             transition={0}
-            cachePolicy={persist ? "memory-disk" : "disk"}
+            cachePolicy="disk"
             priority="high"
           />
         </Animated.View>

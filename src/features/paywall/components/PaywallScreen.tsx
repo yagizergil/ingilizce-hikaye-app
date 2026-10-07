@@ -383,12 +383,6 @@ export function PaywallScreen({
           {t(headline ? `paywall.headlines.${headline}.subtitle` : "paywall.subtitle")}
         </Text>
 
-        {/* Kullanıcının kendi rakamları. Geçmişi yoksa `activity` null
-            geliyor ve blok hiç çizilmiyor -- gerekçe o bileşenin içinde. */}
-        {facts?.activity ? (
-          <PaywallActivity activity={facts.activity} blockedWord={blockedWord} />
-        ) : null}
-
         {!isPurchasesAvailable ? (
           <Text style={[paywallType.legal, styles.centered, { color: theme.text.secondary }]}>
             {t("paywall.unavailableInExpoGo")}
@@ -432,6 +426,14 @@ export function PaywallScreen({
             dışına itiyor, onboarding paywall'ı diğerlerinden farklı ve
             yıllığa yönlendirici görünüyordu. */}
         {intro}
+
+        {/* Kullanıcının kendi rakamları. Geçmişi yoksa `activity` null
+            geliyor ve blok hiç çizilmiyor -- gerekçe o bileşenin içinde.
+            Planların ALTINDA (kullanıcı bulgusu, 2026-10-07): üstteyken
+            yıllık ve aylık plan aynı ekranda görünmüyordu. */}
+        {facts?.activity ? (
+          <PaywallActivity activity={facts.activity} blockedWord={blockedWord} />
+        ) : null}
 
         <Text
           style={[paywallType.sectionLabel, styles.sectionLabel, { color: theme.text.secondary }]}

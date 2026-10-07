@@ -84,7 +84,7 @@ export function FavoritesContent({ onBack }: FavoritesContentProps) {
           title={t("tabs.myBooks")}
           subtitle={t("favorites.screen.subtitle")}
           onBack={onBack}
-          art={<MascotAnim name="books" width={mascotSize.header} persist />}
+          art={<MascotAnim name="books" width={mascotSize.header} />}
         />
 
         <View style={styles.segments} accessibilityRole="tablist">

@@ -80,7 +80,6 @@ export function HomeHeader({
         name="home"
         width={homeMetrics.parrotWidth}
         style={[styles.parrot, { marginTop: insets.top }]}
-        persist
       />
     </View>
   );

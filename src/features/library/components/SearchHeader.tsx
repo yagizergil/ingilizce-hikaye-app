@@ -49,7 +49,6 @@ export function SearchHeader({ pills, query, onChangeQuery }: SearchHeaderProps)
         name="search"
         width={searchMetrics.treeWidth}
         style={[styles.branch, { top: top + searchMetrics.treeTop }]}
-        persist
       />
 
       <Text
