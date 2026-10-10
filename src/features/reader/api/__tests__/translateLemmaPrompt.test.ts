@@ -1,8 +1,11 @@
 import {
   buildGlossPrompt,
+  FALLBACK_PROMPT_VERSIONS,
+  glossMatchesNativeScript,
   normalizeSentence,
   normalizeSurface,
   parseGlossResponse,
+  PROMPT_VERSION,
 } from "../../../../../supabase/functions/translate-lemma/prompt";
 
 describe("buildGlossPrompt", () => {
@@ -64,5 +67,52 @@ describe("normalizers", () => {
   it("normalizes surface and sentence", () => {
     expect(normalizeSurface("«Sa,")).toBe("sa");
     expect(normalizeSentence("  Il  va\nau marché ")).toBe("il va au marché");
+  });
+});
+
+describe("prompt v3", () => {
+  const base = {
+    surface: "Deniz",
+    lemma: "deniz",
+    contextSentence: "Deniz dedi ki: geliyorum.",
+    targetLanguage: "tr",
+    nativeLanguage: "it",
+  };
+
+  it("bumps the version and keeps v2 as cache fallback", () => {
+    expect(PROMPT_VERSION).toBe(3);
+    expect(FALLBACK_PROMPT_VERSIONS).toEqual([2]);
+  });
+
+  it("covers role-first, proper nouns and CJK chunks", () => {
+    const prompt = buildGlossPrompt(base);
+    expect(prompt).toContain("ROLE FIRST");
+    expect(prompt).toContain("PROPER NOUNS");
+    expect(prompt).toContain("Japanese/Chinese");
+    expect(prompt).not.toContain("previous answer");
+  });
+
+  it("adds a stricter instruction on retry", () => {
+    expect(buildGlossPrompt({ ...base, strict: true })).toContain(
+      "previous answer was not in Italian",
+    );
+  });
+});
+
+describe("glossMatchesNativeScript", () => {
+  it("requires the native script for non-Latin natives", () => {
+    expect(glossMatchesNativeScript("見る", "ja")).toBe(true);
+    expect(glossMatchesNativeScript("to see", "ja")).toBe(false);
+    expect(glossMatchesNativeScript("смотреть", "ru")).toBe(true);
+    expect(glossMatchesNativeScript("watch", "ar")).toBe(false);
+    expect(glossMatchesNativeScript("看", "zh")).toBe(true);
+  });
+
+  it("rejects foreign-only glosses for Latin natives but allows notes in parentheses", () => {
+    expect(glossMatchesNativeScript("görmek", "tr")).toBe(true);
+    expect(glossMatchesNativeScript("見る", "tr")).toBe(false);
+    expect(glossMatchesNativeScript("смотреть", "de")).toBe(false);
+    expect(glossMatchesNativeScript("bazı (des)", "tr")).toBe(true);
+    expect(glossMatchesNativeScript("-(irgend)jemand (кто-то)", "de")).toBe(true);
   });
 });

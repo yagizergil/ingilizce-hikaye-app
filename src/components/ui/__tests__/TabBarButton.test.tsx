@@ -5,6 +5,24 @@ import { Image } from "expo-image";
 import { TabBarButton } from "@/components/ui/TabBarButton";
 
 /**
+ * Aktif sekme ikonu Reanimated ile büyüyor; gerçek paket test ortamında
+ * `react-native-worklets` yüzünden import anında patlıyor. Testin iddiası
+ * animasyon değil, doğru ikonun seçilmesi -- bu yüzden en küçük taklit yeterli.
+ */
+jest.mock("react-native-reanimated", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { View } = require("react-native");
+  return {
+    __esModule: true,
+    default: { View },
+    useSharedValue: (value: number) => ({ value }),
+    useAnimatedStyle: (factory: () => object) => factory(),
+    useReducedMotion: () => false,
+    withSpring: (value: number) => value,
+  };
+});
+
+/**
  * Aktif sekme iki sürüm boyunca hiç vurgulanmadı: bileşen yalnızca
  * `accessibilityState.selected`i okuyordu, Expo Router 57 ise seçili sekmeyi
  * `aria-selected` ile bildiriyor. Bu test gerçek prop şekliyle render ediyor.

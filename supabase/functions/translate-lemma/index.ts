@@ -36,6 +36,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 import {
   buildGlossPrompt,
+  FALLBACK_PROMPT_VERSIONS,
+  glossMatchesNativeScript,
   LANGUAGE_NAMES,
   normalizeSentence,
   normalizeSurface,
@@ -122,7 +124,7 @@ async function requestLlmGloss(
   nativeLanguage: string,
   targetLanguage: string,
 ): Promise<ParsedGloss | null> {
-  return (
+  const first =
     (await requestLlmGlossWith(ANTHROPIC_MODEL, apiKey, body, nativeLanguage, targetLanguage)) ??
     (await requestLlmGlossWith(
       ANTHROPIC_FALLBACK_MODEL,
@@ -130,8 +132,21 @@ async function requestLlmGloss(
       body,
       nativeLanguage,
       targetLanguage,
-    ))
+    ));
+  if (!first || glossMatchesNativeScript(first.gloss, nativeLanguage)) return first;
+  // Yanlış yazı sisteminde cevap (ör. Japonca okura İngilizce karşılık):
+  // bir kez, daha katı talimatla yeniden dene; yine olmazsa "bulunamadı"
+  // -- yanlış dilde bir karşılık göstermekten iyidir.
+  console.error(`translate-lemma wrong script: native=${nativeLanguage} retrying`);
+  const retry = await requestLlmGlossWith(
+    ANTHROPIC_MODEL,
+    apiKey,
+    body,
+    nativeLanguage,
+    targetLanguage,
+    true,
   );
+  return retry && glossMatchesNativeScript(retry.gloss, nativeLanguage) ? retry : null;
 }
 
 async function requestLlmGlossWith(
@@ -140,8 +155,10 @@ async function requestLlmGlossWith(
   body: RequestBody,
   nativeLanguage: string,
   targetLanguage: string,
+  strict = false,
 ): Promise<ParsedGloss | null> {
   const prompt = buildGlossPrompt({
+    strict,
     surface: body.surface,
     lemma: body.lemma,
     contextSentence: body.contextSentence,
@@ -198,6 +215,7 @@ interface CachedRow {
   pos: string;
   gloss: string;
   alternatives: string[] | null;
+  prompt_version: number;
 }
 
 Deno.serve(async (req: Request) => {
@@ -267,17 +285,24 @@ Deno.serve(async (req: Request) => {
   if (!isEnglishTurkish && surfaceKey.length > 0) {
     const { data: cachedRows, error: cacheError } = await adminClient
       .from("word_context_glosses")
-      .select("context_key, lemma, pos, gloss, alternatives")
+      .select("context_key, lemma, pos, gloss, alternatives, prompt_version")
       .eq("target_language", targetLanguage)
       .eq("native_language", nativeLanguage)
       .eq("surface", surfaceKey)
-      .eq("prompt_version", PROMPT_VERSION)
+      .in("prompt_version", [PROMPT_VERSION, ...FALLBACK_PROMPT_VERSIONS])
       .in("context_key", ["", sentenceKey]);
     if (cacheError) {
       console.error(`translate-lemma cache read failed: ${cacheError.message}`);
     } else {
       const rows = (cachedRows ?? []) as CachedRow[];
-      const hit = rows.find((row) => row.context_key === sentenceKey) ?? rows[0];
+      // Önce güncel sürüm, sonra eski sürüm; her sürümde cümleye özel kayıt önce.
+      const versions = [PROMPT_VERSION, ...FALLBACK_PROMPT_VERSIONS];
+      let hit: CachedRow | undefined;
+      for (const version of versions) {
+        const ofVersion = rows.filter((row) => row.prompt_version === version);
+        hit = ofVersion.find((row) => row.context_key === sentenceKey) ?? ofVersion[0];
+        if (hit) break;
+      }
       if (hit) {
         return jsonResponse(
           {
