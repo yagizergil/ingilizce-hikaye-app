@@ -1,94 +1,149 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+
+import { hasPersistedSession, supabase } from "@/lib/supabase";
 import { trackError } from "@/lib/analytics";
+import {
+  classifyLaunchError,
+  LAUNCH_STEP_TIMEOUT_MS,
+  withTimeout,
+  type LaunchFailureKind,
+} from "@/lib/launchFailure";
+
 import type { AuthStatus } from "@/features/onboarding/types";
+
+export interface AuthBootstrapResult {
+  status: AuthStatus;
+  /** `status === "failed"` iken hatanın türü. */
+  failure: LaunchFailureKind | null;
+}
+
+/**
+ * Oturum gerçekten yoksa ve kurulamadıysa açılış sürdürülemez; ama cihazda
+ * saklı bir oturum varsa (dönen kullanıcı, çevrimdışı) uygulamayı açıyoruz:
+ * indirilmiş bölümler çevrimdışı okunabiliyor (ADR-004) ve sorgular
+ * bağlantı gelince kendiliğinden toparlanıyor.
+ */
+async function fallbackAfterError(error: unknown): Promise<AuthBootstrapResult> {
+  const kind = classifyLaunchError(error);
+  try {
+    if (await withTimeout(hasPersistedSession(), LAUNCH_STEP_TIMEOUT_MS, "persisted")) {
+      return { status: "anonymous", failure: null };
+    }
+  } catch (storageError) {
+    trackError("auth.bootstrap.persistedCheck", storageError);
+  }
+  return { status: "failed", failure: kind };
+}
 
 /**
  * Misafir mod: uygulama açılışında oturum yoksa anonim oturum açar.
  * Kayıt duvarı yok — kullanıcı hiçbir zaman "giriş yapmadan" ekranda
  * kalmaz, ilk açılıştan itibaren gerçek bir auth.uid()'e sahiptir.
+ *
+ * `attempt` değişince (splash'teki "Tekrar dene") kurulum baştan çalışır.
+ *
+ * ÇEVRİMDIŞI AÇILIŞ (2026-10-10, kullanıcı bulgusu): her ağ adımı artık
+ * süre sınırlı. Öncesinde oturum yenileme ya da anonim giriş cevapsız
+ * kalınca durum hiç "bootstrapping"ten çıkmıyor, splash sonsuza dek
+ * kalıyordu.
  */
-export function useAuthBootstrap(): AuthStatus {
-  const [status, setStatus] = useState<AuthStatus>("bootstrapping");
+export function useAuthBootstrap(attempt = 0): AuthBootstrapResult {
+  // Sonuç hangi denemeye ait olduğuyla birlikte tutuluyor: yeni bir deneme
+  // başladığında eski sonuç efekt içinde sıfırlanmadan "bootstrapping" sayılır.
+  const [state, setState] = useState<AuthBootstrapResult & { attempt: number }>({
+    status: "bootstrapping",
+    failure: null,
+    attempt,
+  });
 
   useEffect(() => {
     let mounted = true;
+    const setResult = (next: AuthBootstrapResult) => setState({ ...next, attempt });
 
-    async function bootstrap() {
-      const { data } = await supabase.auth.getSession();
+    async function bootstrap(): Promise<AuthBootstrapResult> {
+      const { data, error: sessionError } = await withTimeout(
+        supabase.auth.getSession(),
+        LAUNCH_STEP_TIMEOUT_MS,
+        "getSession",
+      );
       let needsAnonymousSignIn = !data.session;
 
       if (data.session) {
-        // getSession() only decodes the locally-cached token; it never
-        // confirms the user it points to still exists server-side. A
-        // stale/orphaned session (e.g. that user row was deleted) decodes
-        // fine locally but every authenticated request afterwards 403s
-        // with "User from sub claim in JWT does not exist" -- getUser()
-        // is the one call here that actually round-trips to the server,
-        // so it's used to detect that case and self-heal by signing out
-        // and creating a fresh anonymous session, instead of leaving the
-        // app stuck on a session that looks valid but silently rejects
-        // every authenticated query it makes (this exact symptom broke
-        // chapter loading -- the reader's per-lemma queries need a real
-        // session and have no other way to recover from this).
-        const { error: userCheckError } = await supabase.auth.getUser();
+        // getSession() yalnızca yerel jetonu çözer; kullanıcının sunucuda
+        // hâlâ var olduğunu doğrulamaz. Sahipsiz bir oturum (kullanıcı satırı
+        // silinmiş) her yetkili istekte 403 alır -- getUser() bunu yakalayıp
+        // yeni bir anonim oturumla kendini onarmamızı sağlıyor.
+        const { error: userCheckError } = await withTimeout(
+          supabase.auth.getUser(),
+          LAUNCH_STEP_TIMEOUT_MS,
+          "getUser",
+        ).catch((error: unknown) => ({ error: { status: 0, cause: error } }));
 
-        // YALNIZCA sunucu oturumu REDDETTİYSE sıfırlanıyor (401/403).
-        //
-        // NEDEN AYRIM ŞART: oturum artık Keychain'de yaşıyor ve uygulama
-        // silinip yeniden kurulsa bile duruyor (bkz. src/lib/authStorage.ts).
-        // Her hatada signOut etmek, AĞ hatasını da oturumun geçersizliği
-        // saymak demekti: uçak modunda ya da zayıf bağlantıda açılan
-        // uygulama kullanıcının tek ve kalıcı anonim hesabını siler,
-        // yerine yenisini açardı -- kitapları, kelimeleri ve serisi
-        // erişilemez hâle gelirdi. Ağ hatasında oturuma DOKUNMUYORUZ;
-        // sonraki açılışta ya da bağlantı gelince kendi kendine düzeliyor.
+        // YALNIZCA sunucu oturumu REDDETTİYSE sıfırlanıyor (401/403). Ağ
+        // hatasında oturuma DOKUNMUYORUZ: oturum Keychain'de kalıcı ve
+        // uçak modunda açılan uygulama kullanıcının tek hesabını silmemeli.
         const rejectedByServer =
           userCheckError !== null &&
           (userCheckError.status === 401 || userCheckError.status === 403);
 
-        if (rejectedByServer) {
-          await supabase.auth.signOut();
-          needsAnonymousSignIn = true;
+        if (!rejectedByServer) {
+          // Oturum yerelde var; ağ yoksa bile kullanıcı içeri alınıyor.
+          return {
+            status: data.session.user.is_anonymous ? "anonymous" : "registered",
+            failure: null,
+          };
         }
+        await supabase.auth.signOut();
+        needsAnonymousSignIn = true;
       }
 
       if (needsAnonymousSignIn) {
-        const { error } = await supabase.auth.signInAnonymously();
-        if (error) {
-          if (mounted) setStatus("anonymous");
-          return;
-        }
+        // Oturum okunamadıysa (yenileme ağ hatası) ve cihazda saklı bir
+        // oturum varsa yeni hesap AÇMIYORUZ: aksi hâlde kullanıcının
+        // kitapları ve kelimeleri eski hesapta kalırdı.
+        if (sessionError) return fallbackAfterError(sessionError);
+
+        const { error } = await withTimeout(
+          supabase.auth.signInAnonymously(),
+          LAUNCH_STEP_TIMEOUT_MS,
+          "signInAnonymously",
+        );
+        if (error) return fallbackAfterError(error);
       }
 
-      if (!mounted) return;
-      const { data: userData } = await supabase.auth.getUser();
-      setStatus(userData.user?.is_anonymous ? "anonymous" : "registered");
+      const { data: refreshed } = await supabase.auth.getSession();
+      return {
+        status: refreshed.session?.user.is_anonymous === false ? "registered" : "anonymous",
+        failure: null,
+      };
     }
 
-    /**
-     * DENETİM BULGUSU (2026-09-14): `bootstrap()` içinde hiç try/catch
-     * yoktu. Beklenmedik bir throw (Keychain, ağ katmanı, JSON) `setStatus`
-     * hiç çağrılmadan akışı kesiyor ve `AuthGate` kalıcı olarak dönen bir
-     * spinner gösteriyordu -- kullanıcı için "uygulama açılmıyor", App
-     * Store incelemesinde anında red. Hata yutulmuyor, kaydediliyor ve
-     * kullanıcı en azından anonim akışa düşüyor.
-     */
-    void bootstrap().catch((error) => {
-      trackError("auth.bootstrap", error);
-      if (mounted) setStatus("anonymous");
-    });
+    bootstrap()
+      .then((next) => {
+        if (mounted) setResult(next);
+      })
+      .catch(async (error: unknown) => {
+        trackError("auth.bootstrap", error);
+        const next = await fallbackAfterError(error);
+        if (mounted) setResult(next);
+      });
 
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!mounted) return;
-      setStatus(session?.user?.is_anonymous ? "anonymous" : "registered");
+      // Oturumsuz olaylar (ör. kendini onarırken SIGNED_OUT) durumu
+      // değiştirmiyor; kurulumun sonucu bootstrap'tan geliyor.
+      if (!mounted || !session) return;
+      setResult({
+        status: session.user.is_anonymous ? "anonymous" : "registered",
+        failure: null,
+      });
     });
 
     return () => {
       mounted = false;
       subscription.subscription.unsubscribe();
     };
-  }, []);
+  }, [attempt]);
 
-  return status;
+  if (state.attempt !== attempt) return { status: "bootstrapping", failure: null };
+  return { status: state.status, failure: state.failure };
 }

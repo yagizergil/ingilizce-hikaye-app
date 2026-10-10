@@ -34,52 +34,54 @@
 // "karşılık bulunamadı" durumuna geçer.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
+import {
+  buildGlossPrompt,
+  LANGUAGE_NAMES,
+  normalizeSentence,
+  normalizeSurface,
+  parseGlossResponse,
+  PROMPT_VERSION,
+  type ParsedGloss,
+} from "./prompt.ts";
+
 const DAILY_LIMIT = 30;
+
+/** `lemmas` tablosunun bildiği tür kümesi (yeni prompt daha fazlasını dönebiliyor). */
+const LEGACY_POS = new Set([
+  "noun",
+  "verb",
+  "adjective",
+  "adverb",
+  "preposition",
+  "determiner",
+  "pronoun",
+  "conjunction",
+  "interjection",
+  "other",
+]);
 // Modeli guncellerken: eski `claude-3-5-haiku-20241022` emekliye ayrildi ve
-// Anthropic API'si 3 hafta boyunca sessizce 404 dondurdu. Fonksiyon 404'u
-// "provider_error" olarak yutunca kullanicida yalnizca "ceviri alinamadi"
-// gorunuyordu; sorun 2026-09-07'de `ai_usage`'a birakilan tani koduyla
-// bulundu. Model kimligi bu yuzden tek bir sabitte ve yorumlu duruyor.
-const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001";
+// Anthropic API'si 3 hafta boyunca sessizce 404 dondurdu. Model kimligi bu
+// yuzden tek bir sabitte duruyor.
+//
+// 2026-10-10 ölçümü (28 zor kelime, fr/de/es/it/ru): Sonnet işlev
+// kelimelerinde ve eş yazımlılarda belirgin biçimde daha doğru (fr "le son"
+// -> "ses", es "hace dos años" -> "önce"); Haiku aynı sette 5 hatalı/İngilizce
+// karışık karşılık verdi. Sonuçlar önbelleklendiği için maliyet kelime
+// başına bir kez ödeniyor. Sonnet başarısız olursa Haiku'ya düşülüyor.
+const ANTHROPIC_MODEL = "claude-sonnet-4-5-20250929";
+const ANTHROPIC_FALLBACK_MODEL = "claude-haiku-4-5-20251001";
 
 /** Eski istemcilerle (build 9 ve öncesi) geriye dönük uyumluluk için varsayılanlar. */
 const DEFAULT_NATIVE_LANGUAGE = "tr";
 const DEFAULT_TARGET_LANGUAGE = "en";
-
-/**
- * Prompt'ta okunabilir dil adı için. `languages` tablosunun `name_en`
- * sütunuyla aynı değerler -- burada sabit tutuluyor çünkü bu fonksiyon
- * her çağrıda ekstra bir DB round-trip yapmadan çalışmalı ve liste zaten
- * sabit (yeni dil eklemek zaten bir migration + deploy gerektiriyor).
- */
-const LANGUAGE_NAMES: Record<string, string> = {
-  en: "English",
-  tr: "Turkish",
-  de: "German",
-  fr: "French",
-  ru: "Russian",
-  zh: "Chinese",
-  ja: "Japanese",
-  it: "Italian",
-  uk: "Ukrainian",
-  ar: "Arabic",
-  es: "Spanish",
-};
 
 interface RequestBody {
   surface: string;
   lemma: string;
   contextSentence: string;
   cefrHint?: string;
-  /** Kelimenin çevrileceği dil. Varsayılan "tr" (eski istemci uyumu). */
   nativeLanguage?: string;
-  /** Kelimenin AİT OLDUĞU metnin dili. Varsayılan "en". */
   targetLanguage?: string;
-}
-
-interface LlmGlossResult {
-  gloss: string;
-  pos: string;
 }
 
 function jsonResponse(body: unknown, status: number): Response {
@@ -102,41 +104,50 @@ function isRequestBody(value: unknown): value is RequestBody {
   );
 }
 
-const ALLOWED_POS = new Set([
-  "noun",
-  "verb",
-  "adjective",
-  "adverb",
-  "preposition",
-  "determiner",
-  "pronoun",
-  "conjunction",
-  "interjection",
-  "other",
-]);
+async function sha256Hex(text: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 32);
+}
 
 /**
- * Claude'dan bağlam içinde tek kelimelik bir karşılık ister. Herhangi bir
- * ayrıştırma/API hatasında null döner (asla fırlatmaz) — çağıran "sonuç
- * yok"u tek tip ele alabilsin.
+ * Claude'dan BAĞLAM İÇİNDE kelime anlamı ister (kaynak dil + yüzey biçimi +
+ * lemma + cümle). Herhangi bir hata durumunda null döner (asla fırlatmaz).
  */
 async function requestLlmGloss(
   apiKey: string,
   body: RequestBody,
   nativeLanguage: string,
   targetLanguage: string,
-): Promise<LlmGlossResult | null> {
-  const targetName = LANGUAGE_NAMES[targetLanguage] ?? targetLanguage;
-  const nativeName = LANGUAGE_NAMES[nativeLanguage] ?? nativeLanguage;
+): Promise<ParsedGloss | null> {
+  return (
+    (await requestLlmGlossWith(ANTHROPIC_MODEL, apiKey, body, nativeLanguage, targetLanguage)) ??
+    (await requestLlmGlossWith(
+      ANTHROPIC_FALLBACK_MODEL,
+      apiKey,
+      body,
+      nativeLanguage,
+      targetLanguage,
+    ))
+  );
+}
 
-  const prompt =
-    `${targetName} word: "${body.lemma}" (as it appears: "${body.surface}")\n` +
-    `Sentence: "${body.contextSentence}"\n\n` +
-    `Give the best short ${nativeName} translation (gloss) for this specific ` +
-    `word AS USED in this sentence, and its part of speech. Respond with ` +
-    "ONLY a compact JSON object, no markdown fences, no extra text, in " +
-    'exactly this shape: {"gloss":"...","pos":"noun|verb|adjective|adverb|' +
-    'preposition|determiner|pronoun|conjunction|interjection|other"}';
+async function requestLlmGlossWith(
+  model: string,
+  apiKey: string,
+  body: RequestBody,
+  nativeLanguage: string,
+  targetLanguage: string,
+): Promise<ParsedGloss | null> {
+  const prompt = buildGlossPrompt({
+    surface: body.surface,
+    lemma: body.lemma,
+    contextSentence: body.contextSentence,
+    targetLanguage,
+    nativeLanguage,
+  });
 
   let response: Response;
   try {
@@ -148,8 +159,9 @@ async function requestLlmGloss(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: ANTHROPIC_MODEL,
-        max_tokens: 200,
+        model,
+        max_tokens: 300,
+        temperature: 0,
         messages: [{ role: "user", content: prompt }],
       }),
     });
@@ -159,11 +171,9 @@ async function requestLlmGloss(
   }
 
   if (!response.ok) {
-    // Sessizce null donmek, emekliye ayrilan model yuzunden gelen 404'un
-    // uc hafta fark edilmemesine yol acti; artik gunluge dusuyor.
     const errorBody = await response.text().catch(() => "<no body>");
     console.error(
-      `translate-lemma provider failure: model=${ANTHROPIC_MODEL} status=${response.status} body=${errorBody.slice(0, 200)}`,
+      `translate-lemma provider failure: model=${model} status=${response.status} body=${errorBody.slice(0, 200)}`,
     );
     return null;
   }
@@ -171,35 +181,23 @@ async function requestLlmGloss(
   let payload: unknown;
   try {
     payload = await response.json();
-  } catch {
+  } catch (jsonError) {
+    console.error(`translate-lemma json failure: ${String(jsonError).slice(0, 120)}`);
     return null;
   }
 
   const content = (payload as { content?: { text?: string }[] })?.content;
   const text = content?.[0]?.text;
   if (typeof text !== "string") return null;
+  return parseGlossResponse(text);
+}
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text.trim());
-  } catch {
-    return null;
-  }
-
-  const record = parsed as Record<string, unknown>;
-  // Eski prompt sürümüyle konuşan bir modelin `tr_gloss` döndürme ihtimaline
-  // karşı ikisine de bakılıyor -- prompt'u kontrol eden biziz ama model
-  // çıktısı üzerinde garanti yok.
-  const gloss =
-    typeof record.gloss === "string"
-      ? record.gloss
-      : typeof record.tr_gloss === "string"
-        ? record.tr_gloss
-        : null;
-  if (!gloss || gloss.length === 0) return null;
-  const pos = typeof record.pos === "string" && ALLOWED_POS.has(record.pos) ? record.pos : "other";
-
-  return { gloss, pos };
+interface CachedRow {
+  context_key: string;
+  lemma: string | null;
+  pos: string;
+  gloss: string;
+  alternatives: string[] | null;
 }
 
 Deno.serve(async (req: Request) => {
@@ -232,7 +230,8 @@ Deno.serve(async (req: Request) => {
   let body: unknown;
   try {
     body = await req.json();
-  } catch {
+  } catch (bodyError) {
+    console.error(`translate-lemma invalid body: ${String(bodyError).slice(0, 120)}`);
     return jsonResponse({ status: "unavailable", reason: "invalid_body" }, 400);
   }
 
@@ -255,6 +254,45 @@ Deno.serve(async (req: Request) => {
   }
 
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
+
+  // İngilizce->Türkçe dışındaki HER çift: bağlama duyarlı önbellek
+  // (migration 056, `word_context_glosses`). Anahtar dil çiftini, yüzey
+  // biçimini ve -- anlamı bağlama göre değişen kelimelerde -- cümlenin
+  // özetini taşıyor. Önbellek isabeti LLM'e ve günlük sayaca dokunmuyor.
+  const isEnglishTurkish =
+    targetLanguage === DEFAULT_TARGET_LANGUAGE && nativeLanguage === DEFAULT_NATIVE_LANGUAGE;
+  const surfaceKey = normalizeSurface(body.surface) || body.lemma.trim().toLowerCase();
+  const sentenceKey = await sha256Hex(normalizeSentence(body.contextSentence));
+
+  if (!isEnglishTurkish && surfaceKey.length > 0) {
+    const { data: cachedRows, error: cacheError } = await adminClient
+      .from("word_context_glosses")
+      .select("context_key, lemma, pos, gloss, alternatives")
+      .eq("target_language", targetLanguage)
+      .eq("native_language", nativeLanguage)
+      .eq("surface", surfaceKey)
+      .eq("prompt_version", PROMPT_VERSION)
+      .in("context_key", ["", sentenceKey]);
+    if (cacheError) {
+      console.error(`translate-lemma cache read failed: ${cacheError.message}`);
+    } else {
+      const rows = (cachedRows ?? []) as CachedRow[];
+      const hit = rows.find((row) => row.context_key === sentenceKey) ?? rows[0];
+      if (hit) {
+        return jsonResponse(
+          {
+            status: "ok",
+            gloss: hit.gloss,
+            pos: hit.pos,
+            lemma: hit.lemma,
+            alternatives: hit.alternatives ?? [],
+            cached: true,
+          },
+          200,
+        );
+      }
+    }
+  }
 
   // ÇÖZÜLEN HATA (kullanıcı bulgusu, 2026-09-16): bu limit HER kullanıcıya
   // -- premium dahil -- düz 30/gün uyguluyordu. Türkçe→İngilizce dışındaki
@@ -303,11 +341,8 @@ Deno.serve(async (req: Request) => {
 
   const result = await requestLlmGloss(anthropicApiKey, body, nativeLanguage, targetLanguage);
 
-  // Savunma katmanı (denetim, 2026-09-16): geçerli bir tek kelime/kısa
-  // öbek karşılığı hiçbir zaman uzun olmaz. Bir prompt-injection denemesi
-  // modeli uzun, alakasız bir metin üretmeye ikna ederse bu satır onu
-  // paylaşımlı sözlüğe yazılmadan eler.
-  const rejected = result !== null && result.gloss.length > 120;
+  // Uzun/alakasız çıktı (prompt-injection savunması) parseGlossResponse içinde
+  // 120 karakterde eleniyor; elenen sonuç burada `null` olarak geliyor.
 
   // HIZ İYİLEŞTİRMESİ (kullanıcı bulgusu, 2026-09-16 -- "çevirirse çok
   // uzun sürüyor"): bu iki yazma (kullanım sayacı + paylaşımlı sözlüğe
@@ -327,13 +362,18 @@ Deno.serve(async (req: Request) => {
       cost_usd: 0,
     });
 
-    if (!result || rejected) return;
+    if (!result) return;
 
     // BUGÜNE KADARKİ TEK YOL (en->tr): AYNEN eskisi gibi `lemmas` tablosuna
     // yazılıyor. Şema, sütun adları, onConflict hedefi -- hiçbiri değişmedi.
     if (targetLanguage === DEFAULT_TARGET_LANGUAGE && nativeLanguage === DEFAULT_NATIVE_LANGUAGE) {
       await adminClient.from("lemmas").upsert(
-        { lemma, pos: result.pos, tr_gloss: result.gloss, source: "runtime" },
+        {
+          lemma,
+          pos: LEGACY_POS.has(result.pos) ? result.pos : "other",
+          tr_gloss: result.gloss,
+          source: "runtime",
+        },
         // ÇÖZÜLEN GÜVENLİK BULGUSU (denetim, 2026-09-16): `onConflict` tek
         // başına bir UPDATE'tir -- bu satır var olan bir `lemma,pos`
         // girdisini KOŞULSUZ ÜZERİNE YAZIYORDU. `contextSentence`/`surface`
@@ -349,21 +389,48 @@ Deno.serve(async (req: Request) => {
       return;
     }
 
-    // YENİ YOL (v2): herhangi bir (hedef dil, ana dil) çifti -- migration
-    // 033'teki genel önbelleğe yazılıyor, `lemmas` tablosuna DOKUNULMUYOR.
-    await adminClient.from("lemma_translations").upsert(
+    // Bağlama duyarlı önbellek. Anlamı bağlama göre değişmeyen kelime
+    // (model `context_dependent: false` dedi) cümleden bağımsız ('') yazılıyor,
+    // değişen kelime yalnızca bu cümlenin anahtarıyla.
+    const contextKey = result.contextDependent ? sentenceKey : "";
+    const { error: cacheWriteError } = await adminClient.from("word_context_glosses").upsert(
       {
         target_language: targetLanguage,
-        lemma,
-        pos: result.pos,
         native_language: nativeLanguage,
+        surface: surfaceKey,
+        context_key: contextKey,
+        lemma: result.lemma,
+        pos: result.pos,
         gloss: result.gloss,
-        source: "runtime",
+        alternatives: result.alternatives,
+        context_dependent: result.contextDependent,
+        prompt_version: PROMPT_VERSION,
+        source: "llm",
       },
-      // Yukarıdaki `lemmas` upsert'iyle AYNI gerekçe: var olan bir çeviriyi
-      // ezmek yerine yalnızca eksik olanı dolduruyor.
-      { onConflict: "target_language,lemma,pos,native_language", ignoreDuplicates: true },
+      {
+        onConflict: "target_language,native_language,surface,context_key,prompt_version",
+        ignoreDuplicates: true,
+      },
     );
+    if (cacheWriteError)
+      console.error(`translate-lemma cache write failed: ${cacheWriteError.message}`);
+
+    // Kelime defteri / tekrar listeleri lemma düzeyinde `lemma_translations`
+    // okuyor. Yalnızca bağlamdan bağımsız anlam oraya yazılıyor; var olan
+    // satır ezilmiyor.
+    if (!result.contextDependent && result.lemma) {
+      await adminClient.from("lemma_translations").upsert(
+        {
+          target_language: targetLanguage,
+          lemma: result.lemma,
+          pos: result.pos,
+          native_language: nativeLanguage,
+          gloss: result.gloss,
+          source: "runtime",
+        },
+        { onConflict: "target_language,lemma,pos,native_language", ignoreDuplicates: true },
+      );
+    }
   };
 
   // `EdgeRuntime` yalnızca gerçek Supabase Edge Functions ortamında var
@@ -378,11 +445,19 @@ Deno.serve(async (req: Request) => {
     await persistInBackground();
   }
 
-  if (rejected) {
-    return jsonResponse({ status: "unavailable", reason: "gloss_too_long" }, 200);
-  }
   if (!result) {
     return jsonResponse({ status: "unavailable", reason: "provider_error" }, 200);
   }
-  return jsonResponse({ status: "ok", gloss: result.gloss, pos: result.pos, persisted: true }, 200);
+  return jsonResponse(
+    {
+      status: "ok",
+      gloss: result.gloss,
+      pos: result.pos,
+      lemma: result.lemma,
+      alternatives: result.alternatives,
+      cached: false,
+      persisted: true,
+    },
+    200,
+  );
 });

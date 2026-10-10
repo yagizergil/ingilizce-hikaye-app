@@ -1523,5 +1523,18 @@
     "leaveTitle": "Leave the quiz?",
     "leaveBody": "Your progress won't be saved.",
     "leaveConfirm": "Leave"
+  },
+  "launch": {
+    "offline": {
+      "title": "No internet connection",
+      "body": "Lingo needs an internet connection to start. Check your connection and try again."
+    },
+    "server": {
+      "title": "Something went wrong",
+      "body": "We can't reach our server right now. Please try again in a moment."
+    },
+    "retry": "Try again",
+    "retrying": "Connecting…",
+    "autoRetry": "We'll retry automatically when you're back online."
   }
 }

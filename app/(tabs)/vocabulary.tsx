@@ -3,7 +3,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { useTranslation } from "react-i18next";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 
 import {
   detailColors,
@@ -67,6 +67,26 @@ export default function VocabularyScreen() {
   const filter = useVocabularyFiltersStore((state) => state.filter);
   const setFilter = useVocabularyFiltersStore((state) => state.setFilter);
   const words = useFilteredWords(data?.words, filter);
+
+  // Quiz sekmesindeki istatistik kartları filtreyi rota parametresiyle
+  // gönderiyor (`/vocabulary?filter=known`). Parametre store'a yazılır;
+  // sonradan çip ile değiştirmek her zamanki gibi çalışır.
+  const params = useLocalSearchParams<{ filter?: string }>();
+  // Render sırasında durum düzeltme (React'in "önceki prop'u sakla" deseni):
+  // aynı parametre ikinci kez uygulanmaz, efekt içinde setState yok.
+  const [appliedParam, setAppliedParam] = useState<string | undefined>(undefined);
+  if (params.filter !== appliedParam) {
+    setAppliedParam(params.filter);
+    if (params.filter && (FILTER_TABS as string[]).includes(params.filter)) {
+      setMainTab("words");
+    }
+  }
+  useEffect(() => {
+    const requested = params.filter;
+    if (requested && (FILTER_TABS as string[]).includes(requested)) {
+      setFilter(requested as VocabularyFilter);
+    }
+  }, [params.filter, setFilter]);
 
   useEffect(() => {
     trackEvent("vocabulary_viewed");
@@ -216,12 +236,14 @@ export default function VocabularyScreen() {
 
   const renderWord: ListRenderItem<VocabularyWord> = useCallback(
     ({ item }) => (
-      <VocabularyWordRow
-        word={item}
-        onPress={handlePressWord}
-        onRemove={handleRemoveWord}
-        removing={removingLemma === item.lemma}
-      />
+      <View style={styles.listRow}>
+        <VocabularyWordRow
+          word={item}
+          onPress={handlePressWord}
+          onRemove={handleRemoveWord}
+          removing={removingLemma === item.lemma}
+        />
+      </View>
     ),
     [handlePressWord, handleRemoveWord, removingLemma],
   );
@@ -233,8 +255,8 @@ export default function VocabularyScreen() {
     { value: "decks", label: t("vocabulary.mainTabs.decks") },
   ];
 
-  return (
-    <View style={[styles.container, { backgroundColor: theme.bg.surface }]}>
+  const header = (
+    <>
       <SkyHeader
         title={t("quiz.home.words.title")}
         subtitle={t("quiz.home.words.description")}
@@ -252,71 +274,88 @@ export default function VocabularyScreen() {
           }}
         />
       </View>
+    </>
+  );
 
-      {mainTab === "decks" ? (
+  if (mainTab === "decks") {
+    return (
+      <View style={[styles.container, { backgroundColor: theme.bg.surface }]}>
+        {header}
         <DecksTab />
-      ) : (
-        <>
-          <View style={styles.filters}>
-            <SegmentedControl
-              options={segmentOptions}
-              value={filter}
-              onChange={handleSelectFilter}
-            />
-          </View>
+      </View>
+    );
+  }
 
-          {showWordListStrip && subscription.data ? (
-            <Pressable style={styles.strip} onPress={handleOpenPaywall} accessibilityRole="button">
-              <UiIcon name="crown" size={homeMetrics.rowIcon} />
-              <Text style={[homeType.statLabel, styles.stripText]}>
-                {t("paywall.wordListFull", {
-                  count: subscription.data.savedWordCount,
-                  limit: subscription.data.savedWordLimit,
-                })}
-              </Text>
-            </Pressable>
-          ) : null}
+  /*
+   * TEK KAYDIRMA KABI (2026-10-10): başlık, filtreler, şerit ve Tekrar /
+   * Akıllı Tekrar kartları eskiden sabit duruyor, yalnızca alttaki liste
+   * kayıyordu -- çok kelimede görünen liste alanı birkaç satıra iniyordu.
+   * Artık hepsi FlashList'in ListHeaderComponent'i: yukarı kaydırınca
+   * çekiliyor, liste tüm ekranı kullanıyor. Sanallaştırma korunuyor;
+   * ScrollView içinde liste YOK.
+   */
+  const listHeader = (
+    <View>
+      {header}
+      <View style={styles.filters}>
+        <SegmentedControl options={segmentOptions} value={filter} onChange={handleSelectFilter} />
+      </View>
 
-          {hasAnySavedWord ? (
-            <VocabularyHub
-              total={filterCounts.all}
-              learning={filterCounts.all - filterCounts.known}
-              known={filterCounts.known}
-              dueCount={dueCount}
-              quota={practiceQuota.data}
-              onReview={handleStartReview}
-              onPractice={handleStartPractice}
-            />
-          ) : null}
+      {showWordListStrip && subscription.data ? (
+        <Pressable style={styles.strip} onPress={handleOpenPaywall} accessibilityRole="button">
+          <UiIcon name="crown" size={homeMetrics.rowIcon} />
+          <Text style={[homeType.statLabel, styles.stripText]}>
+            {t("paywall.wordListFull", {
+              count: subscription.data.savedWordCount,
+              limit: subscription.data.savedWordLimit,
+            })}
+          </Text>
+        </Pressable>
+      ) : null}
 
-          {isLoading ? (
-            <LoadingState message={t("vocabulary.loading")} />
-          ) : isError ? (
-            <ErrorState message={t("vocabulary.error")} onRetry={() => void refetch()} />
-          ) : words.length === 0 ? (
-            hasAnySavedWord ? (
-              <EmptyState
-                title={t("vocabulary.empty.noMatch.title")}
-                description={t("vocabulary.empty.noMatch.description")}
-              />
-            ) : (
-              <EmptyState
-                title={t("vocabulary.empty.noWords.title")}
-                description={t("vocabulary.empty.noWords.description")}
-              />
-            )
-          ) : (
-            <FlashList
-              data={words}
-              keyExtractor={(item) => item.id}
-              renderItem={renderWord}
-              contentContainerStyle={styles.listContent}
-              ItemSeparatorComponent={RowGap}
-              showsVerticalScrollIndicator={false}
-            />
-          )}
-        </>
-      )}
+      {hasAnySavedWord ? (
+        <VocabularyHub
+          total={filterCounts.all}
+          learning={filterCounts.all - filterCounts.known}
+          known={filterCounts.known}
+          dueCount={dueCount}
+          quota={practiceQuota.data}
+          onReview={handleStartReview}
+          onPractice={handleStartPractice}
+        />
+      ) : null}
+      <View style={styles.listTopGap} />
+    </View>
+  );
+
+  const listEmpty = isLoading ? (
+    <LoadingState message={t("vocabulary.loading")} />
+  ) : isError ? (
+    <ErrorState message={t("vocabulary.error")} onRetry={() => void refetch()} />
+  ) : hasAnySavedWord ? (
+    <EmptyState
+      title={t("vocabulary.empty.noMatch.title")}
+      description={t("vocabulary.empty.noMatch.description")}
+    />
+  ) : (
+    <EmptyState
+      title={t("vocabulary.empty.noWords.title")}
+      description={t("vocabulary.empty.noWords.description")}
+    />
+  );
+
+  return (
+    <View style={[styles.container, { backgroundColor: theme.bg.surface }]}>
+      <FlashList
+        data={isLoading || isError ? [] : words}
+        keyExtractor={(item) => item.id}
+        renderItem={renderWord}
+        ListHeaderComponent={listHeader}
+        ListEmptyComponent={listEmpty}
+        contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={RowGap}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 }
@@ -330,8 +369,13 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.md,
   },
   listContent: {
-    paddingHorizontal: homeMetrics.gutter,
     paddingBottom: spacing.screenBottom,
+  },
+  listRow: {
+    paddingHorizontal: homeMetrics.gutter,
+  },
+  listTopGap: {
+    height: spacing.md,
   },
   reviewCta: {
     paddingHorizontal: spacing.lg,

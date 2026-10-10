@@ -1,1 +1,1 @@
-export type AuthStatus = "bootstrapping" | "anonymous" | "registered";
+export type AuthStatus = "bootstrapping" | "anonymous" | "registered" | "failed";

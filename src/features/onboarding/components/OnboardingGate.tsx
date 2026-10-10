@@ -31,11 +31,17 @@ interface OnboardingGateProps {
 export function OnboardingGate({ children }: OnboardingGateProps) {
   const { theme } = useTheme();
   const queryClient = useQueryClient();
-  const { data, isLoading, isError } = useOnboardingStatusQuery();
+  const { data, isLoading, isError, refetch } = useOnboardingStatusQuery();
   const markReady = useLaunchStore((state) => state.markReady);
+  const attempt = useLaunchStore((state) => state.attempt);
   useEffect(() => {
     if (!isLoading) markReady("onboarding");
-  }, [isLoading, markReady]);
+  }, [isLoading, markReady, attempt]);
+
+  // Splash'teki "Tekrar dene": durum sorgusu da baştan denensin.
+  useEffect(() => {
+    if (attempt > 0) void refetch();
+  }, [attempt, refetch]);
 
   const [finishing, setFinishing] = useState(false);
   const returnedRef = useRef(false);

@@ -5,15 +5,17 @@ from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent
 A = ROOT.parent / "assets"
-RAW = ROOT / "screenshots" / "raw"
-OUT = ROOT / "screenshots" / "tr"
+from i18n_shots import RAW, OUT, BUILD, LANG, CAPTIONS, FAMILY, DIR, font_link
+OUT.mkdir(parents=True, exist_ok=True)
+BUILD.mkdir(parents=True, exist_ok=True)
+C = CAPTIONS[LANG]
 
 
 def u(p):
     return pathlib.Path(p).resolve().as_uri()
 
 
-FONT = '<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@600;700;800&display=swap" rel="stylesheet">'
+FONT = font_link()
 
 
 def phone(src, h, rot=0, extra=""):
@@ -29,7 +31,7 @@ def phone(src, h, rot=0, extra=""):
 def header(W, H):
     s = H / 1646
     return f"""<!doctype html><html><head><meta charset="utf-8">{FONT}<style>
-*{{margin:0;box-sizing:border-box}}body{{width:{W}px;height:{H}px;overflow:hidden;font-family:Gabarito,sans-serif;position:relative;
+*{{margin:0;box-sizing:border-box}}body{{width:{W}px;height:{H}px;overflow:hidden;font-family:{FAMILY};position:relative;
 background:url('{u(A / "splash" / "lingo-bg.jpg")}') center 62%/cover}}
 .c{{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:{int(90*s)}px}}
 .t{{text-align:left;white-space:nowrap}}
@@ -38,8 +40,8 @@ background:url('{u(A / "splash" / "lingo-bg.jpg")}') center 62%/cover}}
 padding:{int(10*s)}px {int(44*s)}px;border-radius:{int(40*s)}px;box-shadow:0 {int(16*s)}px 0 rgba(20,36,79,.12);letter-spacing:-3px}}
 </style></head><body><div class="c">
 <img src="{u(ROOT / "build" / "lumi-words.png")}" style="width:{int(520*s)}px;filter:drop-shadow(0 30px 40px rgba(20,36,79,.3))">
-<div class="t"><img src="{u(A / "brand" / "lingo-wordmark.png")}" style="width:{int(560*s)}px;display:block;margin-bottom:{int(40*s)}px">
-<div class="l1">Hikâye okuyarak</div><div class="l2">İngilizce öğren</div></div>
+<div class="t"{DIR}><img src="{u(A / "brand" / "lingo-wordmark.png")}" style="width:{int(560*s)}px;display:block;margin-bottom:{int(40*s)}px">
+<div class="l1">{C[0][0]}</div><div class="l2">{C[0][1]}</div></div>
 {phone("reader_tap.png", int(1300*s), 4)}
 </div></body></html>"""
 
@@ -48,7 +50,7 @@ def search(W, H):
     s = H / 1646
     ph = int(H * 0.78)
     def chip(a, b, col):
-        return (f'<div style="text-align:center;margin-bottom:{int(26*s)}px;white-space:nowrap">'
+        return (f'<div{DIR} style="text-align:center;margin-bottom:{int(26*s)}px;white-space:nowrap">'
                 f'<div style="font-weight:700;font-size:{int(70*s)}px;color:#14244F;line-height:1.05">{a}</div>'
                 f'<div style="display:inline-block;font-weight:800;font-size:{int(92*s)}px;color:#14244F;background:{col};'
                 f'border-radius:{int(26*s)}px;padding:{int(2*s)}px {int(30*s)}px;margin-top:{int(8*s)}px;letter-spacing:-2px;'
@@ -58,14 +60,14 @@ def search(W, H):
                 f'{chip(a, b, c)}{phone(src, ph, rot)}</div>')
     lumi = u(ROOT / "build" / "lumi-party.png")
     return f"""<!doctype html><html><head><meta charset="utf-8">{FONT}<style>*{{margin:0;box-sizing:border-box}}
-body{{width:{W}px;height:{H}px;overflow:hidden;font-family:Gabarito,sans-serif;position:relative;
+body{{width:{W}px;height:{H}px;overflow:hidden;font-family:{FAMILY};position:relative;
 background:url('{u(A / "splash" / "lingo-bg.jpg")}') center 70%/cover}}
 .row{{position:absolute;left:50%;top:{int(70*s)}px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:{int(300*s)}px}}
 </style></head><body>
 <div class="row">
-{col("Kelimeye dokun,", "Türkçesi anında", "#FFC94A", "reader_tap.png", -5, 40)}
-{col("Stüdyo sesiyle", "dinle", "#FFFFFF", "reader_listen.png", 0, 0)}
-{col("Seviyene uygun", "500+ kitap", "#8BE0B8", "library.png", 5, 40)}
+{col(*C[1], "#FFC94A", "reader_tap.png", -5, 40)}
+{col(*C[8], "#FFFFFF", "reader_listen.png", 0, 0)}
+{col(*C[3], "#8BE0B8", "library.png", 5, 40)}
 </div>
 <img src="{lumi}" style="position:absolute;left:50%;bottom:{int(-10*s)}px;transform:translateX(-50%) translateX(-{int(560*s)}px);width:{int(380*s)}px;z-index:9;filter:drop-shadow(0 30px 40px rgba(20,36,79,.35))">
 <img src="{u(ROOT / "build" / "lumi-books.png")}" style="position:absolute;left:50%;bottom:{int(-10*s)}px;transform:translateX(-50%) translateX({int(560*s)}px);width:{int(270*s)}px;z-index:9;filter:drop-shadow(0 30px 40px rgba(20,36,79,.35))">
@@ -77,7 +79,7 @@ with sync_playwright() as p:
     for W, H in [(3840, 1646), (5244, 2950)]:
         pg = b.new_page(viewport={"width": W, "height": H})
         for name, fn in [("header", header), ("search", search)]:
-            f = ROOT / "build" / f"{name}-{W}.html"
+            f = BUILD / f"{name}-{W}.html"
             f.write_text(fn(W, H), encoding="utf-8")
             pg.goto(u(f))
             pg.wait_for_timeout(2000)

@@ -17,15 +17,19 @@ interface AuthGateProps {
  * dayatmaz.
  */
 export function AuthGate({ children }: AuthGateProps) {
-  const status = useAuthBootstrap();
+  const attempt = useLaunchStore((state) => state.attempt);
+  const { status, failure } = useAuthBootstrap(attempt);
   const { theme } = useTheme();
   const markReady = useLaunchStore((state) => state.markReady);
+  const fail = useLaunchStore((state) => state.fail);
   useEffect(() => {
-    if (status !== "bootstrapping") markReady("auth");
-  }, [status, markReady]);
+    if (status === "failed") fail(failure ?? "offline");
+    else if (status !== "bootstrapping") markReady("auth");
+  }, [status, failure, markReady, fail]);
 
   // Dönen simge YOK: bu sırada açılış splash'i (LaunchOverlay) üstte duruyor.
-  if (status === "bootstrapping") {
+  // "failed" durumunda da splash hata ekranını ve "Tekrar dene"yi gösteriyor.
+  if (status === "bootstrapping" || status === "failed") {
     return <View style={[styles.container, { backgroundColor: theme.bg.primary }]} />;
   }
 

@@ -29,6 +29,8 @@ import { useActiveLanguagePairQuery } from "@/features/languagePair";
 import { getLanguage } from "@/lib/languages";
 import { useGlobalLemmaLookup } from "@/features/reader/api/useGlobalLemmaLookup";
 import { useLiveWordTranslation } from "@/features/reader/api/useLiveWordTranslation";
+import { useContextualWordGloss } from "@/features/reader/api/useContextualWordGloss";
+import { wordLookupRoute } from "@/features/reader/api/wordLookupRoute";
 import { useSentenceTranslationQuery } from "@/features/reader/api/useSentenceTranslationQuery";
 import { inflectionHint, lemmaCandidates } from "@/features/reader/text/tokenizer";
 
@@ -211,7 +213,12 @@ export function WordSheet({
    * düşüyor) -- kelimenin İngilizce meta verisi (seviye, IPA, ses) değil,
    * SADECE `trGloss` alanı dile özel olduğu için bu ayrım yeterli.
    */
-  const nativeIsTurkish = activePairQuery.data?.nativeLanguage === "tr";
+  // 2026-10-10: yalnızca ana dile bakmak yetmiyordu -- tr->fr çiftinde
+  // Fransızca kelimeler İngilizce sözlükte aranıyordu ("au" -> "altın").
+  // Karar artık tek yerde, iki dile birden bakıyor (bkz. wordLookupRoute).
+  const lookupRoute = wordLookupRoute(activePairQuery.data);
+  const nativeIsTurkish = lookupRoute === "en-tr-dictionary";
+  const isContextual = lookupRoute === "contextual";
 
   // Kitap sözlüğünde ARANACAK ADAYLAR (bkz. tokenizer.js
   // `lemmaCandidates`): cihazdaki kural tabanlı gövdeleyici tek bir kök
@@ -260,9 +267,10 @@ export function WordSheet({
   // dokunuşta buradan geliyor (bkz. usePairLemmaLookup). Yalnızca genel
   // sözlük ıskaladıktan SONRA sorgulanıyor. Ana dil Türkçe değilse genel
   // sözlük hiç denenmediği için buraya hemen (ilk render'da) düşülüyor.
+  // Bağlamsal yolda bu katmanlar (ve eski AI çağrısı) hiç çalışmıyor.
   const globalMissed = nativeIsTurkish
     ? bookMissed && globalLookup.isFetched && !globalEntry
-    : word !== null;
+    : false;
   const pairLookup = usePairLemmaLookup(
     globalMissed && word ? word.lemma : null,
     globalMissed && word ? word.surface : null,
@@ -352,7 +360,30 @@ export function WordSheet({
         }
       : undefined;
 
-  const entry = bookEntry ?? globalEntry ?? pairEntry ?? liveEntry;
+  const contextualLookup = useContextualWordGloss(
+    isContextual && word
+      ? { surface: word.surface || word.lemma, lemma: word.lemma, sentence: word.sentenceText }
+      : null,
+    isContextual ? (activePairQuery.data ?? null) : null,
+  );
+  const contextualData = isContextual ? contextualLookup.data : undefined;
+  const contextualEntry: BookLemmaEntry | undefined = contextualData
+    ? {
+        pos: contextualData.pos,
+        cefrLevel: null,
+        trGloss: contextualData.gloss,
+        ipa: null,
+        audioUrl: null,
+        isPhrasal: false,
+        falseFriendNoteTr: null,
+        senses: [
+          { pos: contextualData.pos, trGloss: contextualData.gloss },
+          ...contextualData.alternatives.map((alt) => ({ pos: null, trGloss: alt })),
+        ],
+      }
+    : undefined;
+
+  const entry = bookEntry ?? globalEntry ?? pairEntry ?? liveEntry ?? contextualEntry;
 
   /**
    * "ARANIYOR" İLE "BULUNAMADI" ARASINDA ZIPLAMA VARDI -- sebebi ve çözümü.
@@ -369,11 +400,13 @@ export function WordSheet({
    * katman ya cevabını verdi (`isFetched`) ya da sıra henüz ona gelmedi.
    * Sıra bitmeden "bulunamadı" yazılmıyor, dolayısıyla arada boşluk yok.
    */
-  const globalSettled = !bookMissed || globalLookup.isFetched;
+  const globalSettled = !nativeIsTurkish || !bookMissed || globalLookup.isFetched;
   const pairSettled = !globalMissed || pairLookup.isFetched;
   // AI adımı yalnızca çağrı BU kelime için başlayıp bittiğinde tamamlanmış
   // sayılıyor; effect çalışmadan önceki kareler de "devam ediyor" sayılsın.
   const liveSettled = !bothMissed || (liveBelongsToWord && !liveTranslation.isPending);
+  const contextualSettled =
+    lookupRoute !== "pending" && (!isContextual || contextualLookup.isFetched);
 
   /**
    * Karşılık geldiğinde yumuşak bir belirme.
@@ -441,7 +474,7 @@ export function WordSheet({
   }, [saveHint, word, reduceMotion, savePulse]);
 
   const isResolvingTranslation =
-    word !== null && !entry && !(globalSettled && pairSettled && liveSettled);
+    word !== null && !entry && !(globalSettled && pairSettled && liveSettled && contextualSettled);
 
   /**
    * Gösterilecek anlam(lar).
@@ -460,7 +493,8 @@ export function WordSheet({
    *     çalışır ve ipucu yanıldığında kullanıcı doğrusunu yine görüyor.
    */
   const senses = entry?.senses ?? [];
-  const hint = word ? inflectionHint(word.surface) : null;
+  // Çekim eki ipucu İngilizceye özgü; bağlamsal yolda anlamı model seçiyor.
+  const hint = word && !isContextual ? inflectionHint(word.surface) : null;
   const primarySense = (hint && senses.find((sense) => sense.pos === hint)) || null;
   const primaryGloss = primarySense?.trGloss ?? entry?.trGloss ?? null;
   const otherSenses = senses.filter((sense) => sense.trGloss && sense.trGloss !== primaryGloss);

@@ -62,3 +62,7 @@ assets/brand/candidates/
 *.prev.jpg
 marketing/.profile/
 marketing/build/
+marketing/social/out/
+marketing/social/telefon-paketi/
+marketing/social/*.zip
+marketing/screenshots/

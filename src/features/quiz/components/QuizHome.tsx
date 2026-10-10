@@ -99,9 +99,24 @@ export function QuizHome() {
 
         {/* İlerleme özeti: kullanıcı neyin beklediğini bir bakışta görür. */}
         <View style={styles.stats}>
-          <Stat icon="cards" value={dueCount} label={t("quiz.home.stats.due")} />
-          <Stat icon="bookmark" value={savedCount} label={t("quiz.home.stats.saved")} />
-          <Stat icon="trophy" value={knownCount} label={t("quiz.home.stats.known")} />
+          <Stat
+            icon="cards"
+            value={dueCount}
+            label={t("quiz.home.stats.due")}
+            onPress={() => router.push(dueCount > 0 ? "/review" : "/vocabulary?filter=due")}
+          />
+          <Stat
+            icon="bookmark"
+            value={savedCount}
+            label={t("quiz.home.stats.saved")}
+            onPress={() => router.push("/vocabulary?filter=all")}
+          />
+          <Stat
+            icon="trophy"
+            value={knownCount}
+            label={t("quiz.home.stats.known")}
+            onPress={() => router.push("/vocabulary?filter=known")}
+          />
         </View>
 
         <QuizBookShelf />
@@ -131,15 +146,27 @@ export function QuizHome() {
   );
 }
 
-function Stat({ icon, value, label }: { icon: UiIconName; value: number; label: string }) {
+interface StatProps {
+  icon: UiIconName;
+  value: number;
+  label: string;
+  onPress: () => void;
+}
+
+function Stat({ icon, value, label, onPress }: StatProps) {
   return (
-    <View style={styles.stat} accessible accessibilityLabel={`${label} ${value}`}>
+    <PressableScale
+      onPress={onPress}
+      style={styles.stat}
+      accessibilityRole="button"
+      accessibilityLabel={`${label} ${value}`}
+    >
       <UiIcon name={icon} size={homeMetrics.rowIcon} />
       <Text style={[detailType.heroTitle, styles.statValue]}>{value}</Text>
       <Text style={[homeType.cardSub, styles.statLabel]} numberOfLines={1}>
         {label}
       </Text>
-    </View>
+    </PressableScale>
   );
 }
 

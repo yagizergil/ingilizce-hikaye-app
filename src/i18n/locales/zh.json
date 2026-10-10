@@ -1523,5 +1523,18 @@
     "leaveTitle": "退出测验？",
     "leaveBody": "你的进度不会被保存。",
     "leaveConfirm": "退出"
+  },
+  "launch": {
+    "offline": {
+      "title": "没有网络连接",
+      "body": "启动 Lingo 需要网络连接。请检查网络后重试。"
+    },
+    "server": {
+      "title": "出了点问题",
+      "body": "暂时无法连接到服务器，请稍后重试。"
+    },
+    "retry": "重试",
+    "retrying": "正在连接…",
+    "autoRetry": "恢复联网后将自动重试。"
   }
 }

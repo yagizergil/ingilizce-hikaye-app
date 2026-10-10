@@ -1523,5 +1523,18 @@
     "leaveTitle": "Quizden çıkılsın mı?",
     "leaveBody": "İlerlemen kaydedilmeyecek.",
     "leaveConfirm": "Çık"
+  },
+  "launch": {
+    "offline": {
+      "title": "İnternet bağlantısı yok",
+      "body": "Lingo'yu açmak için internet bağlantısı gerekiyor. Bağlantını kontrol edip tekrar dene."
+    },
+    "server": {
+      "title": "Bir sorun oluştu",
+      "body": "Sunucumuza şu an ulaşamıyoruz. Birazdan tekrar dene."
+    },
+    "retry": "Tekrar dene",
+    "retrying": "Bağlanılıyor…",
+    "autoRetry": "Bağlantı gelince kendiliğinden yeniden denenecek."
   }
 }
