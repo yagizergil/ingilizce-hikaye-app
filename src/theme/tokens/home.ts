@@ -133,8 +133,11 @@ export const homeMetrics = {
   tabBarHeight: 82,
   tabBarMargin: 28,
   tabBarRadius: 30,
+  /** Sekme öğesinin genişlik sınırı (etiket taşmasın). */
   tabCircle: 65,
   tabIconSize: 22,
+  /** Aktif sekmede ikon büyür (daire yerine; 2026-10-11 ürün sahibi kararı). */
+  tabIconSizeActive: 28,
   tabContentTop: 4,
   tabLabelGap: 7,
 } as const;
@@ -247,10 +250,10 @@ export const homeType = {
     fontWeight: "500",
   },
   tabLabelActive: {
-    fontFamily: fontFamily.gabaritoBold,
-    fontSize: 12,
+    fontFamily: fontFamily.gabaritoExtraBold,
+    fontSize: 12.5,
     lineHeight: 15,
-    fontWeight: "700",
+    fontWeight: "800",
   },
   tabLabel: {
     fontFamily: fontFamily.gabaritoRegular,
