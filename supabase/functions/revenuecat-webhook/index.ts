@@ -24,7 +24,7 @@
 // olayı) da 200 döner — aksi halde RevenueCat aynı olayı günlerce yeniden
 // dener ve panoda kalıcı hata birikir. Yalnızca gerçekten geçici olan
 // hatalar (DB erişilemedi) 5xx döner.
-import { createClient } from "jsr:@supabase/supabase-js@2";
+import { createClient, type SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
 /** Uygulamanın RevenueCat'teki yetki adı — src/lib/revenuecat.ts ile aynı. */
 const PREMIUM_ENTITLEMENT = "premium";
@@ -66,9 +66,101 @@ interface RevenueCatEvent {
   expiration_at_ms?: number | null;
   event_timestamp_ms?: number | null;
   transferred_to?: string[];
+  transferred_from?: string[];
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function uuids(list: string[] | undefined): string[] {
+  return (list ?? [])
+    .filter((v) => typeof v === "string" && UUID_RE.test(v))
+    .map((v) => v.toLowerCase());
+}
+
+type AdminClient = SupabaseClient;
+
+/**
+ * TRANSFER (2026-10-12 denetim bulgusu): RevenueCat satın almayı bir hesaptan
+ * diğerine taşıdığında (geri yükleme, yeniden kurulum, hesap sıfırlama) olayda
+ * ÜRÜN ve BİTİŞ TARİHİ YOK. Genel yol bunu `expires_at = null` ile premium
+ * yazıyordu; `has_active_premium()` null'ı süresiz sayıyor, yani her transfer
+ * ÖMÜR BOYU premium veriyordu ve eski hesabın premium'u da kapanmıyordu.
+ *
+ * Doğrusu: yeni sahip, eski sahibin GERÇEK yetkisini (bitiş, ürün, deneme)
+ * devralır; eski sahip(ler) 'free' olur. Eski satır yoksa ya da süresi dolmuşsa
+ * hiçbir şey verilmez — uygulama açılışta `sync-entitlement` ile gerçek durumu
+ * RevenueCat'ten okur.
+ */
+async function handleTransfer(event: RevenueCatEvent, admin: AdminClient): Promise<Response> {
+  const toIds = uuids(event.transferred_to);
+  const fromIds = uuids(event.transferred_from);
+  const eventId = event.id ?? `transfer:${event.event_timestamp_ms ?? Date.now()}`;
+  const eventMs = typeof event.event_timestamp_ms === "number" ? event.event_timestamp_ms : null;
+
+  const { data: rows, error: readError } = fromIds.length
+    ? await admin
+        .from("user_entitlements")
+        .select("tier, expires_at, product_id, store, is_trial")
+        .in("user_id", fromIds)
+    : { data: [], error: null };
+  if (readError) {
+    console.error(
+      `revenuecat-webhook: transfer read failed code=${readError.code} message=${readError.message}`,
+    );
+    return jsonResponse({ error: "apply_failed" }, 500);
+  }
+
+  const now = Date.now();
+  const source = (rows ?? [])
+    .filter((r) => r.tier === "premium" && r.expires_at !== null && Date.parse(r.expires_at) > now)
+    .sort((a, b) => Date.parse(b.expires_at) - Date.parse(a.expires_at))[0];
+
+  const results: string[] = [];
+  for (const to of toIds) {
+    if (!source) {
+      results.push(`to:${to}:no_active_source`);
+      continue;
+    }
+    const { data, error } = await admin.rpc("apply_entitlement_event", {
+      p_user_id: to,
+      p_tier: "premium",
+      p_expires_at: source.expires_at,
+      p_product_id: source.product_id,
+      p_store: source.store ?? event.store ?? null,
+      p_event_id: `${eventId}:to`,
+      p_event_ms: eventMs,
+      p_is_trial: source.is_trial,
+    });
+    if (error && error.code !== "23503") {
+      console.error(`revenuecat-webhook: transfer apply failed to=${to} code=${error.code}`);
+      return jsonResponse({ error: "apply_failed" }, 500);
+    }
+    results.push(`to:${to}:${error ? "unknown_user" : String(data)}`);
+  }
+  for (const from of fromIds) {
+    if (toIds.includes(from)) continue;
+    const { data, error } = await admin.rpc("apply_entitlement_event", {
+      p_user_id: from,
+      p_tier: "free",
+      p_expires_at: new Date(now).toISOString(),
+      p_product_id: null,
+      p_store: event.store ?? null,
+      p_event_id: `${eventId}:from`,
+      p_event_ms: eventMs,
+      p_is_trial: false,
+    });
+    if (error && error.code !== "23503") {
+      console.error(`revenuecat-webhook: transfer revoke failed from=${from} code=${error.code}`);
+      return jsonResponse({ error: "apply_failed" }, 500);
+    }
+    results.push(`from:${from}:${error ? "unknown_user" : String(data)}`);
+  }
+
+  console.log(
+    `revenuecat-webhook: type=TRANSFER ${results.join(" ")} env=${event.environment ?? "?"}`,
+  );
+  return jsonResponse({ status: "ok", type: "TRANSFER", results }, 200);
+}
 
 function jsonResponse(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
@@ -165,6 +257,14 @@ Deno.serve(async (req: Request) => {
 
   const type = typeof event.type === "string" ? event.type : "UNKNOWN";
 
+  if (type === "TRANSFER") {
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    return await handleTransfer(event, admin);
+  }
+
   if (IGNORED_EVENTS.has(type)) {
     console.log(`revenuecat-webhook: ignored informational event type=${type}`);
     return jsonResponse({ status: "ignored", reason: "informational_event", type }, 200);
@@ -213,6 +313,15 @@ Deno.serve(async (req: Request) => {
   // Süresi geçmiş bir yenileme olayı da yetki vermemeli.
   const expired = expirationMs !== null && expirationMs <= Date.now();
   const tier = isRevoking || expired ? "free" : "premium";
+
+  // Süresiz ürün SATMIYORUZ: bitiş tarihi olmayan bir premium olay, ömür boyu
+  // premium yazılmasın diye işlenmez (has_active_premium null'ı süresiz sayar).
+  if (tier === "premium" && expirationMs === null) {
+    console.error(
+      `revenuecat-webhook: premium without expiration ignored type=${type} product=${event.product_id ?? "?"}`,
+    );
+    return jsonResponse({ status: "ignored", reason: "no_expiration", type }, 200);
+  }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
