@@ -69,21 +69,25 @@ interface PaywallBenefitsProps {
   aiPremiumLimit: number;
   /** Ücretsiz katmanın günlük kelime çevirisi sınırı (migration 038). */
   freeWordLookups: number;
+  /** Yalnızca bu anahtarlar (1.1.0 zaman çizelgeli varyant: 3 madde). */
+  only?: string[];
 }
 
 export function PaywallBenefits({
   aiFreeLimit,
   aiPremiumLimit,
   freeWordLookups,
+  only,
 }: PaywallBenefitsProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
   const hasQuotas = aiFreeLimit > 0 && aiPremiumLimit > 0;
+  const shown = only ? BENEFITS.filter((benefit) => only.includes(benefit.key)) : BENEFITS;
 
   return (
     <View style={[styles.card, { backgroundColor: theme.bg.surface }]}>
-      {BENEFITS.map((benefit, index) => (
+      {shown.map((benefit, index) => (
         <Fragment key={benefit.key}>
           {index > 0 ? (
             <View style={[styles.divider, { backgroundColor: theme.border.hairline }]} />

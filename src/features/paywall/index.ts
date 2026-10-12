@@ -6,3 +6,4 @@ export {
 export { useOfferingsQuery } from "@/features/paywall/api/useOfferingsQuery";
 export { useTrialDays } from "@/features/paywall/hooks/useTrialDays";
 export type { SubscriptionStatus } from "@/features/paywall/api/useSubscriptionQuery";
+export { useTrialOffer } from "@/features/paywall/hooks/useTrialOffer";

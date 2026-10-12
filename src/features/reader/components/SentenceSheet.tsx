@@ -36,15 +36,31 @@ export const SentenceSheet = forwardRef<BottomSheetModal, SentenceSheetProps>(
     const { theme } = useTheme();
     const insets = useSafeAreaInsets();
     const translation = useSentenceTranslationQuery(sentence?.text ?? null);
-    const { isFetched, refetch } = translation;
+    const { isFetched, isError, refetch } = translation;
 
+    // Hata önbellekte kalırsa (ör. dünkü kota reddi, ya da premium alındıktan
+    // sonra) aynı cümle yeniden açıldığında sunucuya tekrar soruluyor.
     useEffect(() => {
-      if (sentence && !isFetched) void refetch();
-    }, [sentence, isFetched, refetch]);
+      if (sentence && (!isFetched || isError)) void refetch();
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- yalnızca yeni bir cümle açıldığında; hata durumu değişince yeniden istemek döngü kurardı.
+    }, [sentence, refetch]);
 
     const errorReason = translation.error instanceof Error ? translation.error.message : null;
-    const quotaExhausted =
-      errorReason === "free_tier_daily_limit" || errorReason === "rate_limited";
+    const freeQuotaExhausted = errorReason === "free_tier_daily_limit";
+    const premiumCapReached = errorReason === "rate_limited";
+
+    /**
+     * ÜCRETSİZ HAK BİTİNCE PAYWALL, KELİME KOTASIYLA AYNI DESEN.
+     *
+     * Cümle ve kelime çevirisi ortak günlük hakkı paylaşıyor (migration
+     * 057). Okuyucu, uzun basmadan önce sayaç sıfırsa zaten doğrudan
+     * paywall'a gidiyor; bu yol, sayacın bayat olduğu durumda sunucunun
+     * reddini aynı şekilde karşılıyor. Kullanıcının KENDİ başlattığı bir
+     * eylemin sonucu -- kendiliğinden açılan bir teklif değil (Ürün İlkesi #1).
+     */
+    useEffect(() => {
+      if (sentence && freeQuotaExhausted) onQuotaExhausted();
+    }, [sentence, freeQuotaExhausted, onQuotaExhausted]);
 
     const containerStyle = useMemo(
       () => [styles.container, { paddingBottom: insets.bottom + spacing.xl }],
@@ -94,12 +110,16 @@ export const SentenceSheet = forwardRef<BottomSheetModal, SentenceSheetProps>(
                 <Text style={[detailType.sheetTitle, { color: detailColors.title }]}>
                   {translation.data.translation}
                 </Text>
-              ) : quotaExhausted ? (
+              ) : freeQuotaExhausted ? (
                 <Pressable onPress={onQuotaExhausted} accessibilityRole="button">
                   <Text style={[detailType.sheetBody, { color: detailColors.amberDeep }]}>
                     {t("reader.sentenceTranslation.quotaExhausted")}
                   </Text>
                 </Pressable>
+              ) : premiumCapReached ? (
+                <Text style={[detailType.sheetBody, { color: detailColors.body }]}>
+                  {t("reader.sentenceTranslation.dailyCapReached")}
+                </Text>
               ) : translation.isError ? (
                 <Pressable onPress={() => void refetch()} accessibilityRole="button">
                   <Text style={[detailType.sheetBody, { color: detailColors.body }]}>

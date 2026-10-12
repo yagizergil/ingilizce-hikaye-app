@@ -5,6 +5,7 @@ import { randomUUID } from "expo-crypto";
 
 import { supabase } from "@/lib/supabase";
 import storage from "@/lib/storage";
+import { describeError } from "@/lib/errorDescription";
 
 /**
  * Ürün telemetrisi.
@@ -202,12 +203,14 @@ export function trackEvent(name: string, params?: AnalyticsParams): void {
  * koyuyor.
  */
 export function trackError(source: string, error: unknown, extra?: AnalyticsParams): void {
-  const message = error instanceof Error ? error.message : String(error);
+  const { message, code, details } = describeError(error);
   const stack = error instanceof Error ? (error.stack ?? "") : "";
   trackEvent("client_error", {
     source,
     message: message.slice(0, 300),
     stack: stack.slice(0, 1200),
+    ...(code ? { code } : {}),
+    ...(details ? { details: details.slice(0, 300) } : {}),
     ...extra,
   });
   // Hata olayları beklemesin — uygulama çökmek üzere olabilir.

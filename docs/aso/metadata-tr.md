@@ -111,7 +111,7 @@ hiçbir zaman kesinti, banner ya da abonelik teklifi görmezsin.
 
 ÜCRETSİZ KATMANDA NE VAR
 - 119 kitabın tamamı, sınırsız okuma
-- Günde 15 kelime çevirisi
+- Günde 10 çeviri (kelime ve cümle ortak)
 - Günde 10 AI cümle çevirisi
 - 100 kelimelik kelime defteri
 - Aralıklı tekrar, sınırsız
@@ -122,7 +122,7 @@ hiçbir zaman kesinti, banner ya da abonelik teklifi görmezsin.
 PREMIUM NE EKLER
 - Stüdyo seslendirmesi: 63 özgün hikâyede, okunan kelime metinde
   işaretlenerek. Klasik kitaplarda seslendirme yok.
-- Sınırsız kelime çevirisi (günlük 15 sınırı kalkar)
+- Sınırsız kelime çevirisi (günlük 10 sınırı kalkar)
 - Sınırsız kelime defteri
 - Günde 200 AI cümle çevirisi
 - İkinci dil çifti (ilk çift her zaman ücretsiz)

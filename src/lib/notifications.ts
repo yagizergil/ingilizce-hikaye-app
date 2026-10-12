@@ -21,6 +21,15 @@ import { trackError } from "@/lib/analytics";
  * Bunların bileşenlere sızmaması için tek kapı burası.
  */
 
+/**
+ * Deneme hatırlatmasının sabit kimliği. Durum hatırlatmalarının "hepsini
+ * sil, yeniden planla" döngüsü ONA DOKUNMAZ: kullanıcı hatırlatmaları
+ * kapatsa bile deneme bitiş uyarısı (paywall'da verdiğimiz söz) kalmalı.
+ */
+export const TRIAL_REMINDER_ID = "trialEnding";
+/** Kullanıcının seçtiği saatte tekrarlayan günlük okuma hatırlatması. */
+export const DAILY_READING_ID = "dailyReading";
+
 /** Uygulamanın kullandığı tek Android bildirim kanalı. */
 const ANDROID_CHANNEL_ID = "reminders";
 
@@ -105,7 +114,7 @@ export async function requestNotificationPermission(): Promise<boolean> {
 export async function replaceScheduledReminders(reminders: ScheduledReminder[]): Promise<number> {
   try {
     await ensureAndroidChannel();
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    await cancelScheduledExcept([TRIAL_REMINDER_ID, DAILY_READING_ID]);
 
     const now = Date.now();
     let scheduled = 0;
@@ -141,11 +150,86 @@ export async function replaceScheduledReminders(reminders: ScheduledReminder[]):
   }
 }
 
-/** Kullanıcı hatırlatmaları kapattığında her şeyi temizler. */
+/**
+ * Planlanmış bildirimleri siler, `keep` içindekiler hariç.
+ *
+ * NEDEN `cancelAllScheduledNotificationsAsync` DEĞİL (1.1.0): o çağrı deneme
+ * hatırlatmasını da siliyordu -- uygulama arka plana her geçtiğinde, yani
+ * paywall'da "bitmeden hatırlatırız" dedikten birkaç dakika sonra.
+ */
+async function cancelScheduledExcept(keep: string[]): Promise<void> {
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  for (const item of scheduled) {
+    if (keep.includes(item.identifier)) continue;
+    await Notifications.cancelScheduledNotificationAsync(item.identifier);
+  }
+}
+
+/** Kullanıcı hatırlatmaları kapattığında temizler (deneme hatırlatması kalır). */
 export async function cancelAllReminders(): Promise<void> {
   try {
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    await cancelScheduledExcept([TRIAL_REMINDER_ID]);
   } catch (error) {
     trackError("notifications.cancelAll", error);
+  }
+}
+
+/** Tek seferlik bildirim planlar; aynı kimlikli eskisinin yerine geçer. */
+export async function scheduleOneOffReminder(reminder: ScheduledReminder): Promise<boolean> {
+  try {
+    const seconds = Math.round((reminder.fireAt.getTime() - Date.now()) / 1000);
+    if (seconds < 60) return false;
+    await ensureAndroidChannel();
+    await Notifications.cancelScheduledNotificationAsync(reminder.id);
+    await Notifications.scheduleNotificationAsync({
+      identifier: reminder.id,
+      content: { title: reminder.title, body: reminder.body, sound: false },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds,
+        channelId: ANDROID_CHANNEL_ID,
+      },
+    });
+    return true;
+  } catch (error) {
+    trackError("notifications.scheduleOneOff", error, { id: reminder.id });
+    return false;
+  }
+}
+
+/** Her gün aynı saatte tekrarlayan bildirim (günlük okuma hatırlatması). */
+export async function scheduleDailyReminder(input: {
+  id: string;
+  title: string;
+  body: string;
+  hour: number;
+  minute: number;
+}): Promise<boolean> {
+  try {
+    await ensureAndroidChannel();
+    await Notifications.cancelScheduledNotificationAsync(input.id);
+    await Notifications.scheduleNotificationAsync({
+      identifier: input.id,
+      content: { title: input.title, body: input.body, sound: false },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DAILY,
+        hour: input.hour,
+        minute: input.minute,
+        channelId: ANDROID_CHANNEL_ID,
+      },
+    });
+    return true;
+  } catch (error) {
+    trackError("notifications.scheduleDaily", error, { id: input.id });
+    return false;
+  }
+}
+
+/** Tek bir planlanmış bildirimi siler. */
+export async function cancelReminder(id: string): Promise<void> {
+  try {
+    await Notifications.cancelScheduledNotificationAsync(id);
+  } catch (error) {
+    trackError("notifications.cancelOne", error, { id });
   }
 }

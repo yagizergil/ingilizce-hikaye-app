@@ -203,6 +203,12 @@
       "streakValue_one": "{{count}} gün",
       "streakValue_other": "{{count}} gün",
       "streakLabel": "Hedef serisi"
+    },
+    "offer": {
+      "title_one": "Premium'u {{count}} gün ücretsiz dene",
+      "title_other": "Premium'u {{count}} gün ücretsiz dene",
+      "body": "Stüdyo seslendirmesi, sınırsız çeviri ve Akıllı Tekrar. İstediğin an iptal et.",
+      "cta": "Planları gör"
     }
   },
   "collections": {
@@ -538,8 +544,9 @@
       "toggle": "Cümle çevirisini göster",
       "loading": "Çevriliyor…",
       "error": "Cümle çevirisi alınamadı, lütfen tekrar dene",
-      "quotaExhausted": "Bugünlük AI çeviri hakkın doldu. Premium'da günlük kota çok daha yüksek.",
-      "failed": "Çeviri şu an alınamadı. Bağlantını kontrol edip tekrar dene."
+      "quotaExhausted": "Bugünlük ücretsiz çeviri hakkın doldu. Premium'da kelime çevirisi sınırsız, cümle kotası çok daha yüksek.",
+      "failed": "Çeviri şu an alınamadı. Bağlantını kontrol edip tekrar dene.",
+      "dailyCapReached": "Bugünlük cümle çevirisi sınırına ulaştın. Yarın yeniden açılır."
     },
     "sentenceSheet": {
       "translationLabel": "Çeviri"
@@ -1123,7 +1130,8 @@
         "20": "Daha hızlı ilerleme",
         "30": "Yoğun"
       },
-      "recommendedNote": "Çoğu kişi için 15 dakika en iyi dengeyi veriyor."
+      "recommendedNote": "Çoğu kişi için 15 dakika en iyi dengeyi veriyor.",
+      "commit": "Hedefime söz veriyorum"
     },
     "path": {
       "title": "Yolun",
@@ -1171,28 +1179,12 @@
         "profile": "Profilin kaydediliyor"
       }
     },
-    "trial": {
-      "heading": "Ücretsiz deneme nasıl işliyor",
-      "rows": {
-        "today": {
-          "title": "Bugün",
-          "body": "Her şey anında açılıyor."
-        },
-        "reminder": {
-          "title": "{{day}}. gün",
-          "body": "Bitmeden önce hatırlatıyoruz."
-        },
-        "charge": {
-          "title": "{{day}}. gün",
-          "body": "Deneme bitiyor, ücret o zaman alınıyor."
-        }
-      }
-    },
     "success": {
       "title": "Harika!",
       "bodyPremium": "Her şey hazır. Premium açık, okumaya başlayabilirsin.",
       "bodyFree": "Her şey hazır. Bütün kitaplar ücretsiz, okumaya başlayabilirsin.",
-      "cta": "Okumaya başla"
+      "cta": "Okumaya başla",
+      "ctaBook": "{{title}} ile başla"
     },
     "adventure": {
       "title": "Macerayla dil öğren",
@@ -1218,6 +1210,12 @@
       "title": "Merhaba, ben Lumi!",
       "body": "Eğlenceli bir maceraya hazır mısın?",
       "cta": "Devam et"
+    },
+    "reminder": {
+      "title": "Her gün kaçta hatırlatalım?",
+      "cta": "Günlük hatırlatmayı aç",
+      "enabled": "Her gün {{time}}'de hatırlatacağız. Profil'den kapatabilirsin.",
+      "denied": "Bildirim izni yok. İstersen Profil > Hatırlatmalar'dan açabilirsin."
     }
   },
   "paywall": {
@@ -1232,11 +1230,11 @@
       },
       "unlimitedLookups": {
         "title": "Sınırsız kelime çevirisi",
-        "body": "Ücretsiz katmanda günde {{count}} kelime; premium'da sınır yok."
+        "body": "Ücretsiz katmanda günde toplam {{count}} çeviri (kelime ve cümle); premium'da kelime çevirisi sınırsız."
       },
       "aiSentences": {
         "title": "Takıldığın cümleyi çöz",
-        "body": "Günde {{premium}} AI cümle çevirisi — ücretsiz katmanda {{free}}.",
+        "body": "Günde {{premium}} AI cümle çevirisi. Ücretsiz katmanda cümleler, kelimelerle ortak günlük {{free}} hakkı kullanır.",
         "bodyGeneric": "Takıldığın cümlede AI çevirisi, çok daha yüksek günlük kotayla."
       },
       "unlimitedWords": {
@@ -1342,9 +1340,56 @@
       "practice": {
         "title": "Kelimeler kalıcı olsun",
         "subtitle": "Akıllı Tekrar ile her gün sınırsız çalış."
+      },
+      "onboarding": {
+        "title": "Okuma planın hazır",
+        "subtitle": "Denemede her şey açık: dinle, sınırsız çevir, kalıcı öğren."
+      },
+      "profile": {
+        "title": "Premium ile daha fazlası",
+        "subtitle": "Stüdyo seslendirmesi, sınırsız çeviri ve Akıllı Tekrar."
+      },
+      "bookFinished": {
+        "title": "Bir kitap bitirdin!",
+        "subtitle": "Sıradakini stüdyo seslendirmesiyle dinleyerek oku."
+      },
+      "notebook": {
+        "title": "Kelime defterin dolmak üzere",
+        "subtitle": "Premium'da kaydettiğin kelimelerde sınır yok."
+      },
+      "languagePair": {
+        "title": "Yeni bir dil çifti aç",
+        "subtitle": "Aynı kitapları başka bir dilde de oku."
+      },
+      "wordPack": {
+        "title": "Paketin tamamını aç",
+        "subtitle": "Seviyendeki en sık kelimeler tek dokunuşla desten olsun."
+      },
+      "homeOffer": {
+        "title": "Premium'u ücretsiz dene",
+        "subtitle": "Dinle, sınırsız çevir, Akıllı Tekrar ile kalıcı öğren."
       }
     },
-    "cancelAnytime": "İstediğin zaman iptal edebilirsin."
+    "cancelAnytime": "İstediğin zaman iptal edebilirsin.",
+    "ctaTrialStart_one": "{{count}} gün ücretsiz başla",
+    "ctaTrialStart_other": "{{count}} gün ücretsiz başla",
+    "noTrialOnPlan": "Aylık planda ücretsiz deneme yok; ödeme hemen alınır. Ücretsiz deneme yıllık planda.",
+    "timeline": {
+      "heading_one": "{{count}} günlük ücretsiz deneme nasıl işliyor",
+      "heading_other": "{{count}} günlük ücretsiz deneme nasıl işliyor",
+      "todayTitle": "Bugün",
+      "todayBody": "Tüm premium özellikler açılır. Bugün ücret alınmaz.",
+      "dayTitle": "{{day}}. gün",
+      "reminderBody": "İzin verirsen bitmeden bildirimle hatırlatırız.",
+      "reminderBodyNoPermission": "Bildirimler kapalı: bitiş tarihini Ayarlar > Abonelikler'den görebilirsin.",
+      "chargeTitle": "{{day}}. gün · {{date}}",
+      "chargeBody": "{{price}}/{{period}} tahsil edilir. Öncesinde istediğin an iptal et."
+    },
+    "onboardingPersonal": {
+      "title": "{{level}} seviyen için planın hazır",
+      "subtitle": "Günde {{minutes}} dk ile 6 ayda {{hours}} saat okuma. Denemede her şey açık.",
+      "subtitleNoGoal": "Denemede her şey açık: dinle, sınırsız çevir, Akıllı Tekrar ile pekiştir."
+    }
   },
   "reminders": {
     "settingsLabel": "Hatırlatmalar",
@@ -1367,6 +1412,20 @@
     "continueReading": {
       "title": "Yarım kalan bir hikâyen var",
       "body": "«{{title}}» seni bekliyor."
+    },
+    "trial": {
+      "title": "Ücretsiz denemen bitmek üzere",
+      "body": "Denemen {{date}} günü bitiyor. Devam etmek istemezsen Ayarlar > Abonelikler'den iptal edebilirsin.",
+      "askTitle": "Deneme bitmeden hatırlatalım mı?",
+      "askBody": "Bitmeden önce bir bildirim göndeririz; böylece sürpriz ücret olmaz.",
+      "askYes": "Evet, hatırlat",
+      "askNo": "Gerek yok",
+      "deniedTitle": "Bildirim izni verilmedi",
+      "deniedBody": "Deneme bitiş tarihini Ayarlar > Abonelikler'den her zaman görebilirsin."
+    },
+    "daily": {
+      "title": "Okuma zamanı",
+      "body": "Bugünkü hikâyen seni bekliyor. Birkaç dakika yeter."
     }
   },
   "completion": {

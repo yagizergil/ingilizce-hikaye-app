@@ -69,3 +69,15 @@ export function useConsumeWordLookupMutation() {
     },
   });
 }
+
+/**
+ * Cümleye uzun basıldığında kart açılmadan paywall'a mı gidilmeli?
+ *
+ * Ücretsiz katmanda kelime ve cümle çevirisi aynı günlük hakkı paylaşıyor
+ * (migration 057). Yalnızca sunucunun BİLDİRDİĞİ sıfırda erken yönlendirme;
+ * kota bilinmiyorsa (yükleniyor/hata) kart açılır ve karar sunucuda verilir.
+ */
+export function shouldOpenSentencePaywall(quota: WordLookupQuota | undefined): boolean {
+  if (!quota || quota.isPremium) return false;
+  return quota.remaining === 0;
+}

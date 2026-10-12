@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { trackEvent } from "@/lib/analytics";
 
 import { fetchActiveLanguagePair } from "@/features/languagePair";
+import { wordQuotaQueryKey } from "@/features/reader/api/useWordLookupQuota";
 
 interface TranslateSentenceResponse {
   status: "ok" | "unavailable";
@@ -55,12 +56,15 @@ export function useSentenceTranslationQuery(sentence: string | null) {
         const reason = data?.reason ?? "sentence_translation_unavailable";
 
         // Kota tavanına çarpmak bir HATA değil, bir ÜRÜN SİNYALİ: ücretsiz
-        // katmanın günlük 10 çevirisi kaç kişiye yetmiyor? Premium'un
+        // katmanın günlük ortak çeviri hakkı kaç kişiye yetmiyor? Premium'un
         // gerçekten çözdüğü bir sıkıntı mı, yoksa kimsenin çarpmadığı bir
         // tavan mı? Bu ölçülmeden paywall metni tahmine dayanır.
         // (Bkz. docs/plans/2026-09-07-buyume-onerileri.md, Ö12.)
         if (reason === "free_tier_daily_limit" || reason === "rate_limited") {
           trackEvent("ai_quota_exhausted", { reason });
+          // Ücretsiz katmanda cümle ve kelime aynı günlük hakkı paylaşıyor
+          // (migration 057); okuyucudaki sayaç sunucunun yeni sayısını göstersin.
+          void queryClient.invalidateQueries({ queryKey: wordQuotaQueryKey });
         }
 
         throw new Error(reason);
@@ -69,6 +73,8 @@ export function useSentenceTranslationQuery(sentence: string | null) {
       // Üst çubuktaki "kalan çeviri hakkı" rozeti bu çeviriden sonra
       // güncel kalsın diye -- bkz. useAiSentenceQuotaQuery.ts.
       void queryClient.invalidateQueries({ queryKey: ["reader", "aiSentenceQuota"] });
+      // Ortak kota (migration 057): bir cümle çevirisi kelime sayacından da düşüyor.
+      void queryClient.invalidateQueries({ queryKey: wordQuotaQueryKey });
 
       return { translation: data.translation };
     },

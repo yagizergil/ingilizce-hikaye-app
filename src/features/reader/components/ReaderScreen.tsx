@@ -11,6 +11,7 @@ import { useReadingTheme } from "@/theme/useTheme";
 import { ErrorState, MascotLoading } from "@/components/ui";
 import { router } from "expo-router";
 
+import { useActivationStore } from "@/hooks/useActivationStore";
 import { trackEvent, trackError } from "@/lib/analytics";
 import { useChapterQuery } from "@/features/reader/api/useChapterQuery";
 import { usePrefetchNextChapter } from "@/features/reader/api/usePrefetchNextChapter";
@@ -52,6 +53,7 @@ import { BookWordsSheet } from "@/features/reader/components/BookWordsSheet";
 import { ChapterCompleteCard } from "@/features/reader/components/ChapterCompleteCard";
 import {
   useConsumeWordLookupMutation,
+  shouldOpenSentencePaywall,
   useWordLookupQuotaQuery,
 } from "@/features/reader/api/useWordLookupQuota";
 
@@ -509,13 +511,35 @@ export function ReaderScreen({
     router.push("/paywall?source=word_quota_badge");
   }, []);
 
+  const sentencePaywallFirst = shouldOpenSentencePaywall(wordQuota.data);
+
+  /**
+   * CÜMLE ÇEVİRİSİ AYNI GÜNLÜK HAKKI KULLANIYOR (migration 057).
+   *
+   * Hak sıfırsa kart hiç açılmıyor, kelime kotasındaki gibi doğrudan
+   * paywall'a gidiliyor -- kartı açıp "hakkın bitti" demek yerine. Karar
+   * yine sunucuda (`consume_sentence_translation`, translate-sentence); bu
+   * yalnızca bilinen sıfırı erkenden uyguluyor. Sayaç bayatsa sunucunun
+   * reddi `SentenceSheet` içinde aynı paywall'a götürüyor.
+   */
   const handleSentenceLongPress = useCallback(
     (payload: { sentenceText: string; paragraphId: string }) => {
+      if (sentencePaywallFirst) {
+        trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
+        router.push("/paywall?source=sentence_quota");
+        return;
+      }
       setActiveSentence({ text: payload.sentenceText });
       sentenceSheetRef.current?.present();
     },
-    [],
+    [sentencePaywallFirst],
   );
+
+  const handleSentenceQuotaExhausted = useCallback(() => {
+    sentenceSheetRef.current?.dismiss();
+    trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
+    router.push("/paywall?source=sentence_quota");
+  }, []);
 
   const handlePageChange = useCallback((payload: PaginatedPageChangePayload) => {
     setPageProgress({ page: payload.page, totalPages: payload.totalPages });
@@ -563,6 +587,9 @@ export function ReaderScreen({
       totalPages: pageProgress.totalPages,
     });
     setChapterEnded(true);
+    // 1.1.0: ana sayfa teklif kartı ancak ilk bölüm bitince açılır (okuyucu
+    // DIŞINDA; burada yalnızca bir yerel işaret yazılıyor).
+    useActivationStore.getState().markChapterFinished(Date.now());
 
     // Persist completion immediately rather than relying on
     // useReaderPosition's 1500ms-debounced save -- if the user backs out to
@@ -880,11 +907,7 @@ export function ReaderScreen({
         ref={sentenceSheetRef}
         sentence={activeSentence}
         onDismiss={() => setActiveSentence(null)}
-        onQuotaExhausted={() => {
-          sentenceSheetRef.current?.dismiss();
-          trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
-          router.push("/paywall?source=sentence_quota");
-        }}
+        onQuotaExhausted={handleSentenceQuotaExhausted}
       />
       <ReaderMenuSheet
         visible={menuVisible}

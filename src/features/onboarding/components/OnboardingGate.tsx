@@ -9,6 +9,9 @@ import { useTheme } from "@/theme/useTheme";
 
 import { useOnboardingStatusQuery } from "@/features/onboarding/api/useOnboardingStatusQuery";
 import { OnboardingFlow } from "@/features/onboarding/components/OnboardingFlow";
+import { trackEvent } from "@/lib/analytics";
+
+import type { FirstBookTarget } from "@/features/onboarding/components/OnboardingFlow";
 import { useLaunchStore } from "@/lib/launchState";
 
 interface OnboardingGateProps {
@@ -46,10 +49,16 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
   const [finishing, setFinishing] = useState(false);
   const returnedRef = useRef(false);
 
-  const handleDone = useCallback(() => {
-    setFinishing(true);
-    void queryClient.invalidateQueries({ queryKey: ["onboarding", "status"] });
-  }, [queryClient]);
+  const firstBookRef = useRef<FirstBookTarget | null>(null);
+
+  const handleDone = useCallback(
+    (firstBook: FirstBookTarget | null) => {
+      firstBookRef.current = firstBook;
+      setFinishing(true);
+      void queryClient.invalidateQueries({ queryKey: ["onboarding", "status"] });
+    },
+    [queryClient],
+  );
 
   const showFlow = !isError && data && !data.completed;
 
@@ -84,6 +93,19 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
     if (!finishing || flowVisible || returnedRef.current) return;
     returnedRef.current = true;
     router.replace("/");
+    // 1.1.0: ana sayfada bırakmak yerine ilk kitaba (geri tuşu ana sayfaya).
+    const firstBook = firstBookRef.current;
+    if (firstBook) {
+      trackEvent("first_book_opened_after_onboarding", {
+        bookId: firstBook.bookId,
+        target: firstBook.chapterId ? "reader" : "book",
+      });
+      router.push(
+        firstBook.chapterId
+          ? `/reader/${firstBook.chapterId}?bookId=${firstBook.bookId}`
+          : `/book/${firstBook.bookId}`,
+      );
+    }
   }, [finishing, flowVisible]);
 
   // Dönen simge YOK: bu sırada açılış splash'i (LaunchOverlay) üstte duruyor.

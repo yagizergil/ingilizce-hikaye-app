@@ -3,7 +3,12 @@ import { AppState } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
-import { replaceScheduledReminders, cancelAllReminders } from "@/lib/notifications";
+import {
+  cancelAllReminders,
+  DAILY_READING_ID,
+  replaceScheduledReminders,
+  scheduleDailyReminder,
+} from "@/lib/notifications";
 import { trackEvent } from "@/lib/analytics";
 
 import { buildReminderPlan } from "@/features/reminders/reminderPlan";
@@ -99,4 +104,19 @@ export function useReminderScheduler(): void {
   useEffect(() => {
     if (!enabled) void cancelAllReminders();
   }, [enabled]);
+
+  // Günlük okuma hatırlatması (1.1.0): kapatılıp yeniden açıldığında ya da
+  // dil değiştiğinde seçilen saatle yeniden kuruluyor (aynı kimlik, eskisinin
+  // yerine geçer).
+  const dailyTime = useRemindersStore((state) => state.dailyTime);
+  useEffect(() => {
+    if (!enabled || !dailyTime) return;
+    void scheduleDailyReminder({
+      id: DAILY_READING_ID,
+      title: t("reminders.daily.title"),
+      body: t("reminders.daily.body"),
+      hour: dailyTime.hour,
+      minute: dailyTime.minute,
+    });
+  }, [enabled, dailyTime, t]);
 }

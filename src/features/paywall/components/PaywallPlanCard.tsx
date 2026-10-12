@@ -34,6 +34,9 @@ export function PaywallPlanCard({ options, selectedId, onSelect, disabled }: Pay
     <View style={styles.card} accessibilityRole="radiogroup">
       {options.map((option) => {
         const selected = option.pkg.identifier === selectedId;
+        // 1.1.0 (rakip analizi): önerilen (yıllık) kart birincil; diğerleri
+        // ikincil -- daha küçük yazı, ama fiyatı tam ve açık, seçilebilir.
+        const secondary = !option.isRecommended;
         const title =
           option.kind === "annual"
             ? t("paywall.plan.annual")
@@ -90,7 +93,12 @@ export function PaywallPlanCard({ options, selectedId, onSelect, disabled }: Pay
 
                 <View style={styles.titleBlock}>
                   <View style={styles.titleLine}>
-                    <Text style={[paywallType.planTitle, { color: theme.text.primary }]}>
+                    <Text
+                      style={[
+                        secondary ? paywallType.planNote : paywallType.planTitle,
+                        { color: theme.text.primary },
+                      ]}
+                    >
                       {title}
                     </Text>
                     {option.savingsPercent != null ? (
@@ -109,7 +117,12 @@ export function PaywallPlanCard({ options, selectedId, onSelect, disabled }: Pay
                   ) : null}
                 </View>
 
-                <Text style={[paywallType.planPrice, { color: theme.text.secondary }]}>
+                <Text
+                  style={[
+                    secondary ? paywallType.planNote : paywallType.planPrice,
+                    { color: secondary ? theme.text.primary : theme.text.secondary },
+                  ]}
+                >
                   {option.kind === "monthly"
                     ? t("paywall.plan.pricePerMonth", { price: option.pkg.product.priceString })
                     : option.pkg.product.priceString}

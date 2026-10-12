@@ -28,6 +28,8 @@ export interface OnboardingBook {
 
 export interface OnboardingPassage {
   bookId: string;
+  /** Pasajın alındığı bölüm -- onboarding sonrası okuyucu doğrudan buradan açılıyor (1.1.0). */
+  chapterId: string;
   bookTitle: string;
   /** Okunacak paragraflar -- kısa tutuluyor, bu bir ders değil bir tadım. */
   paragraphs: string[];
@@ -132,7 +134,12 @@ async function fetchPassage(book: OnboardingBook): Promise<OnboardingPassage | n
       (paragraphRows ?? []).map((row) => (row.text as string | null) ?? ""),
     ).slice(0, PASSAGE_PARAGRAPH_COUNT);
     if (paragraphs.length > 0) {
-      return { bookId: book.id, bookTitle: book.title, paragraphs };
+      return {
+        bookId: book.id,
+        chapterId: section.id as string,
+        bookTitle: book.title,
+        paragraphs,
+      };
     }
   }
   return null;

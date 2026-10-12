@@ -98,7 +98,7 @@ an interruption, a banner or a subscription offer while you are reading.
 
 WHAT THE FREE TIER INCLUDES
 - All 119 books, unlimited reading
-- 15 word translations per day
+- 10 translations per day (words and sentences combined)
 - 10 AI sentence translations per day
 - A 100-word vocabulary notebook
 - Spaced repetition, unlimited
@@ -109,7 +109,7 @@ WHAT THE FREE TIER INCLUDES
 WHAT PREMIUM ADDS
 - Studio narration on 63 original stories, with the spoken word
   highlighted in the text as you listen. The classics have no narration.
-- Unlimited word translations (the daily limit of 15 is removed)
+- Unlimited word translations (the daily limit of 10 is removed)
 - An unlimited vocabulary notebook
 - 200 AI sentence translations per day
 - A second language pair (your first pair is always free)

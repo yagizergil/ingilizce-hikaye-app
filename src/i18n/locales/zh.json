@@ -203,6 +203,12 @@
       "streakValue_one": "{{count}} 天",
       "streakValue_other": "{{count}} 天",
       "streakLabel": "目标连胜"
+    },
+    "offer": {
+      "title_one": "免费试用高级版{{count}}天",
+      "title_other": "免费试用高级版{{count}}天",
+      "body": "录音棚朗读、无限翻译和智能复习。可随时取消。",
+      "cta": "查看方案"
     }
   },
   "collections": {
@@ -538,8 +544,9 @@
       "toggle": "显示整句翻译",
       "loading": "正在翻译…",
       "error": "没能取到整句翻译，请再试一次",
-      "quotaExhausted": "今天的 AI 翻译次数已用完。Premium 的每日额度高得多。",
-      "failed": "翻译获取失败。请检查网络后重试。"
+      "quotaExhausted": "今天的免费翻译次数已用完。Premium 提供不限次数的单词翻译和更高的句子额度。",
+      "failed": "翻译获取失败。请检查网络后重试。",
+      "dailyCapReached": "今天的句子翻译已达上限，明天重置。"
     },
     "sentenceSheet": {
       "translationLabel": "翻译"
@@ -1123,7 +1130,8 @@
         "20": "进步更快",
         "30": "高强度"
       },
-      "recommendedNote": "对大多数人来说，15 分钟最为平衡。"
+      "recommendedNote": "对大多数人来说，15 分钟最为平衡。",
+      "commit": "我承诺完成目标"
     },
     "path": {
       "title": "你的路径",
@@ -1171,28 +1179,12 @@
         "profile": "正在保存你的资料"
       }
     },
-    "trial": {
-      "heading": "免费试用如何运作",
-      "rows": {
-        "today": {
-          "title": "今天",
-          "body": "立即解锁全部内容。"
-        },
-        "reminder": {
-          "title": "第 {{day}} 天",
-          "body": "结束前会提醒你。"
-        },
-        "charge": {
-          "title": "第 {{day}} 天",
-          "body": "试用结束，开始扣费。"
-        }
-      }
-    },
     "success": {
       "title": "太棒了！",
       "bodyPremium": "一切就绪。Premium 已开启，开始阅读吧。",
       "bodyFree": "一切就绪。所有书籍免费，开始阅读吧。",
-      "cta": "开始阅读"
+      "cta": "开始阅读",
+      "ctaBook": "从《{{title}}》开始"
     },
     "adventure": {
       "title": "在冒险中学语言",
@@ -1218,6 +1210,12 @@
       "title": "你好，我是 Lumi！",
       "body": "准备好开启有趣的冒险了吗？",
       "cta": "继续"
+    },
+    "reminder": {
+      "title": "每天几点提醒你？",
+      "cta": "开启每日提醒",
+      "enabled": "我们会每天{{time}}提醒你。可在个人资料中关闭。",
+      "denied": "未允许通知。可在个人资料 > 提醒中开启。"
     }
   },
   "paywall": {
@@ -1232,11 +1230,11 @@
       },
       "unlimitedLookups": {
         "title": "单词翻译无限制",
-        "body": "免费版每天 {{count}} 个词；Premium 无限制。"
+        "body": "免费版：每天共 {{count}} 次翻译（单词和句子）；Premium 单词翻译不限次数。"
       },
       "aiSentences": {
         "title": "读懂卡住的句子",
-        "body": "每天 {{premium}} 次 AI 句子翻译 —— 免费版 {{free}} 次。",
+        "body": "每天 {{premium}} 次 AI 句子翻译。免费版中，句子与单词共用每天 {{free}} 次。",
         "bodyGeneric": "在卡住的句子上使用 AI 翻译，每日额度大幅提高。"
       },
       "unlimitedWords": {
@@ -1342,9 +1340,56 @@
       "practice": {
         "title": "让单词真正记住",
         "subtitle": "用智能复习每天无限练习。"
+      },
+      "onboarding": {
+        "title": "你的阅读计划已就绪",
+        "subtitle": "试用期间全部开放：收听、翻译、记得更多。"
+      },
+      "profile": {
+        "title": "高级版带来更多",
+        "subtitle": "录音棚朗读、无限翻译和智能复习。"
+      },
+      "bookFinished": {
+        "title": "你读完了一本书！",
+        "subtitle": "边听录音棚朗读边读下一本。"
+      },
+      "notebook": {
+        "title": "你的单词本快满了",
+        "subtitle": "高级版不限制保存的单词数量。"
+      },
+      "languagePair": {
+        "title": "开通新的语言组合",
+        "subtitle": "用另一种语言阅读同样的书。"
+      },
+      "wordPack": {
+        "title": "解锁整个词包",
+        "subtitle": "一键把你所在水平最常见的单词做成卡组。"
+      },
+      "homeOffer": {
+        "title": "免费试用高级版",
+        "subtitle": "收听、无限翻译、用智能复习记住。"
       }
     },
-    "cancelAnytime": "可随时取消。"
+    "cancelAnytime": "可随时取消。",
+    "ctaTrialStart_one": "开始{{count}}天免费试用",
+    "ctaTrialStart_other": "开始{{count}}天免费试用",
+    "noTrialOnPlan": "月度方案没有免费试用，会立即扣费。免费试用在年度方案中。",
+    "timeline": {
+      "heading_one": "{{count}}天免费试用如何运作",
+      "heading_other": "{{count}}天免费试用如何运作",
+      "todayTitle": "今天",
+      "todayBody": "所有高级功能立即开放。今天不扣费。",
+      "dayTitle": "第{{day}}天",
+      "reminderBody": "如果允许通知，我们会在结束前提醒你。",
+      "reminderBodyNoPermission": "通知已关闭：可在“设置 > 订阅”中查看结束日期。",
+      "chargeTitle": "第{{day}}天 · {{date}}",
+      "chargeBody": "将扣费{{price}}/{{period}}。在此之前可随时取消。"
+    },
+    "onboardingPersonal": {
+      "title": "你的{{level}}水平计划已就绪",
+      "subtitle": "每天{{minutes}}分钟，6个月共{{hours}}小时阅读。试用期间全部开放。",
+      "subtitleNoGoal": "试用期间全部开放：收听、无限翻译、用智能复习巩固。"
+    }
   },
   "reminders": {
     "settingsLabel": "提醒",
@@ -1367,6 +1412,20 @@
     "continueReading": {
       "title": "你有一个故事还没读完",
       "body": "《{{title}}》在等你。"
+    },
+    "trial": {
+      "title": "你的免费试用即将结束",
+      "body": "试用将于{{date}}结束。如果不想继续，可在“设置 > 订阅”中取消。",
+      "askTitle": "试用结束前提醒你吗？",
+      "askBody": "我们会在结束前发送通知，避免意外扣费。",
+      "askYes": "好，提醒我",
+      "askNo": "不用了",
+      "deniedTitle": "未允许通知",
+      "deniedBody": "你随时可以在“设置 > 订阅”中查看试用结束日期。"
+    },
+    "daily": {
+      "title": "阅读时间到了",
+      "body": "今天的故事在等你。几分钟就够了。"
     }
   },
   "completion": {

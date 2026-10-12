@@ -514,6 +514,22 @@ export const paywallType = {
     fontWeight: "600",
     letterSpacing: 0,
   },
+  /** Kısa ekran (iPhone SE vb.) başlığı -- iki plan ve CTA ilk ekranda kalsın
+   * diye (bkz. features/paywall/paywallLayout.ts). */
+  titleCompact: {
+    fontFamily: fontFamily.nunitoExtraBold,
+    fontSize: 23,
+    lineHeight: 28,
+    fontWeight: "800",
+    letterSpacing: -0.3,
+  },
+  subtitleCompact: {
+    fontFamily: fontFamily.nunitoSemiBold,
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: "600",
+    letterSpacing: 0,
+  },
   // 2026-10-05: büyük harf + harf aralığı eski tasarımdandı; referanstaki
   // bölüm başlıkları cümle düzeninde, kalın.
   sectionLabel: {

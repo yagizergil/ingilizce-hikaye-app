@@ -32,7 +32,7 @@ const EXPECTED_TRIGGERS: { source: string; where: string; why: string }[] = [
   {
     source: "sentence_quota",
     where: "src/features/reader/components/ReaderScreen.tsx",
-    why: "Günlük AI cümle çevirisi hakkı bitti.",
+    why: "Ortak günlük çeviri hakkı (kelime + cümle, migration 057) bittiğinde cümleye uzun basmak: kelime kotasıyla aynı desen, kullanıcının kendi eylemi.",
   },
   {
     source: "reader_listen",
@@ -87,7 +87,12 @@ const EXPECTED_TRIGGERS: { source: string; where: string; why: string }[] = [
   {
     source: "onboarding",
     where: "src/features/onboarding/components/OnboardingFlow.tsx",
-    why: "Akışın sonunda, onboarding'e özel teklifle.",
+    why: "Akışın sonunda, zaman çizelgeli deneme teklifiyle (1.1.0).",
+  },
+  {
+    source: "home_offer",
+    where: "src/features/home/components/HomeOfferCard.tsx",
+    why: "İkinci şans (1.1.0): ücretsiz + denemeye uygun kullanıcıya 2. günden ya da ilk bölüm bitişinden sonra, ana sayfada kapatılabilir kart, en fazla 72 saatte bir. Okuyucunun DIŞINDA (Ürün İlkesi #1).",
   },
 ];
 
@@ -111,8 +116,10 @@ function readFile(relative: string): string {
  */
 const BENEFITS_WITH_SERVER_GATE: Record<string, string> = {
   studioAudio: "can_play_book_audio() + chapter-audio edge function (migration 031/032)",
-  unlimitedLookups: "consume_word_lookup() (migration 038)",
-  aiSentences: "ai_sentence_daily_limit() (migration 029)",
+  unlimitedLookups:
+    "consume_word_lookup() (038/057) + translate-lemma -> authorize_word_gloss() (057)",
+  aiSentences:
+    "translate-sentence -> consume_sentence_translation() (057; ücretsizde kelimeyle ortak hak)",
   unlimitedWords: "free_tier_saved_word_limit() + tetikleyici (migration 024)",
   secondLanguagePair: "set_language_pair() -> premium_required (migration 033/037)",
   smartPractice: "consume_smart_practice() (migration 049)",
@@ -129,6 +136,29 @@ describe("paywall vaatleri", () => {
     expect(keys.length).toBeGreaterThan(0);
     for (const key of keys) {
       expect(Object.keys(BENEFITS_WITH_SERVER_GATE)).toContain(key);
+    }
+  });
+});
+
+describe("paywall başlıkları", () => {
+  it("her tetikleyicinin kaynağa özel başlığı var ve 10 dilde çevrili", () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { HEADLINE_BY_SOURCE } = require("@/features/paywall/paywallHeadlines") as {
+      HEADLINE_BY_SOURCE: Record<string, string>;
+    };
+    const locales = fs.readdirSync(path.join(ROOT, "src/i18n/locales"));
+    expect(locales).toHaveLength(10);
+    for (const trigger of EXPECTED_TRIGGERS) {
+      if (trigger.source === "word_quota_badge") continue;
+      const key = HEADLINE_BY_SOURCE[trigger.source];
+      expect(key).toBeDefined();
+      for (const file of locales) {
+        const json = JSON.parse(readFile(`src/i18n/locales/${file}`)) as {
+          paywall: { headlines: Record<string, { title?: string; subtitle?: string }> };
+        };
+        expect(json.paywall.headlines[key as string]?.title).toBeTruthy();
+        expect(json.paywall.headlines[key as string]?.subtitle).toBeTruthy();
+      }
     }
   });
 });
@@ -151,6 +181,7 @@ describe("paywall tetikleyicileri", () => {
       "app/book-finished.tsx",
       "app/language-settings.tsx",
       "src/features/profile/components/ProfileScreen.tsx",
+      "src/features/home/components/HomeOfferCard.tsx",
     ];
 
     for (const file of files) {
@@ -160,5 +191,40 @@ describe("paywall tetikleyicileri", () => {
         expect(call).toContain("source=");
       }
     }
+  });
+});
+
+describe("ortak günlük çeviri kotası (migration 057)", () => {
+  const migration = readFile("supabase/migrations/20261012000000_057_shared_translation_quota.sql");
+
+  it("ücretsiz günlük sınır 10", () => {
+    expect(migration).toMatch(/when p_tier = 'premium' then null else 10 end/);
+  });
+
+  it("ücretsiz kullanımda kelime ve cümle birlikte sayılıyor", () => {
+    expect(migration).toMatch(/feature in \('word_lookup', 'sentence_translation'\)/);
+  });
+
+  it("translate-sentence LLM'den ÖNCE kotayı tüketiyor", () => {
+    const fn = readFile("supabase/functions/translate-sentence/index.ts");
+    const consumeAt = fn.indexOf('"consume_sentence_translation"');
+    const llmAt = fn.indexOf("await requestLlmSentenceTranslation(");
+    expect(consumeAt).toBeGreaterThan(0);
+    expect(consumeAt).toBeLessThan(llmAt);
+    // Eski build'lerin tanıdığı yanıt şekli korunuyor.
+    expect(fn).toContain('"free_tier_daily_limit"');
+  });
+
+  it("translate-lemma önbellekten ÖNCE kelime anlamını kapılıyor", () => {
+    const fn = readFile("supabase/functions/translate-lemma/index.ts");
+    const gateAt = fn.indexOf('"authorize_word_gloss"');
+    const cacheAt = fn.indexOf('.from("word_context_glosses")');
+    expect(gateAt).toBeGreaterThan(0);
+    expect(gateAt).toBeLessThan(cacheAt);
+  });
+
+  it("sentence_quota kaynağının başlığı var", () => {
+    const headlines = readFile("src/features/paywall/paywallHeadlines.ts");
+    expect(headlines).toMatch(/sentence_quota: "sentences"/);
   });
 });

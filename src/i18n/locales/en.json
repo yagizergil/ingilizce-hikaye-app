@@ -203,6 +203,12 @@
       "streakValue_one": "{{count}} day",
       "streakValue_other": "{{count}} days",
       "streakLabel": "Goal streak"
+    },
+    "offer": {
+      "title_one": "Try Premium free for {{count}} day",
+      "title_other": "Try Premium free for {{count}} days",
+      "body": "Studio narration, unlimited translation and Smart Practice. Cancel any time.",
+      "cta": "See plans"
     }
   },
   "collections": {
@@ -538,8 +544,9 @@
       "toggle": "Show sentence translation",
       "loading": "Translating…",
       "error": "Couldn't get the sentence translation, please try again",
-      "quotaExhausted": "You've used today's AI translations. Premium has a much higher daily quota.",
-      "failed": "Couldn't fetch the translation. Check your connection and try again."
+      "quotaExhausted": "You've used today's free translations. Premium gives unlimited word translations and a much higher sentence quota.",
+      "failed": "Couldn't fetch the translation. Check your connection and try again.",
+      "dailyCapReached": "You've reached today's sentence translation limit. It resets tomorrow."
     },
     "sentenceSheet": {
       "translationLabel": "Translation"
@@ -1123,7 +1130,8 @@
         "20": "Faster progress",
         "30": "Intensive"
       },
-      "recommendedNote": "For most people 15 minutes strikes the best balance."
+      "recommendedNote": "For most people 15 minutes strikes the best balance.",
+      "commit": "I commit to my goal"
     },
     "path": {
       "title": "Your path",
@@ -1171,28 +1179,12 @@
         "profile": "Saving your profile"
       }
     },
-    "trial": {
-      "heading": "How the free trial works",
-      "rows": {
-        "today": {
-          "title": "Today",
-          "body": "Everything unlocks right away."
-        },
-        "reminder": {
-          "title": "Day {{day}}",
-          "body": "We remind you before it ends."
-        },
-        "charge": {
-          "title": "Day {{day}}",
-          "body": "Trial ends and payment starts."
-        }
-      }
-    },
     "success": {
       "title": "You're all set!",
       "bodyPremium": "Everything is ready. Premium is on — start reading.",
       "bodyFree": "Everything is ready. Every book is free — start reading.",
-      "cta": "Start reading"
+      "cta": "Start reading",
+      "ctaBook": "Start with {{title}}"
     },
     "adventure": {
       "title": "Learn languages through adventure",
@@ -1218,6 +1210,12 @@
       "title": "Hi, I'm Lumi!",
       "body": "Ready to go on a fun adventure?",
       "cta": "Continue"
+    },
+    "reminder": {
+      "title": "When should we remind you each day?",
+      "cta": "Turn on daily reminder",
+      "enabled": "We'll remind you every day at {{time}}. You can turn it off in Profile.",
+      "denied": "Notifications aren't allowed. You can turn them on in Profile > Reminders."
     }
   },
   "paywall": {
@@ -1232,11 +1230,11 @@
       },
       "unlimitedLookups": {
         "title": "Unlimited word translations",
-        "body": "{{count}} words a day on the free tier; no limit on premium."
+        "body": "Free plan: {{count}} translations a day in total (words and sentences); unlimited word translations with Premium."
       },
       "aiSentences": {
         "title": "Unstick any sentence",
-        "body": "{{premium}} AI sentence translations a day — {{free}} on the free tier.",
+        "body": "{{premium}} AI sentence translations a day. On the free plan, sentences share the daily {{free}} with words.",
         "bodyGeneric": "AI sentence translation where you get stuck, with a much higher daily quota."
       },
       "unlimitedWords": {
@@ -1342,9 +1340,56 @@
       "practice": {
         "title": "Make words stick",
         "subtitle": "Practice daily with unlimited Smart Review."
+      },
+      "onboarding": {
+        "title": "Your reading plan is ready",
+        "subtitle": "Everything is open in the trial: listen, translate freely, remember more."
+      },
+      "profile": {
+        "title": "Get more with Premium",
+        "subtitle": "Studio narration, unlimited translation and Smart Practice."
+      },
+      "bookFinished": {
+        "title": "You finished a book!",
+        "subtitle": "Read the next one while listening to studio narration."
+      },
+      "notebook": {
+        "title": "Your word notebook is almost full",
+        "subtitle": "Premium removes the limit on saved words."
+      },
+      "languagePair": {
+        "title": "Open a new language pair",
+        "subtitle": "Read the same books in another language too."
+      },
+      "wordPack": {
+        "title": "Unlock the whole pack",
+        "subtitle": "Turn the most frequent words at your level into a deck in one tap."
+      },
+      "homeOffer": {
+        "title": "Try Premium for free",
+        "subtitle": "Listen, translate without limits, remember with Smart Practice."
       }
     },
-    "cancelAnytime": "Cancel anytime."
+    "cancelAnytime": "Cancel anytime.",
+    "ctaTrialStart_one": "Start {{count}} day free",
+    "ctaTrialStart_other": "Start {{count}} days free",
+    "noTrialOnPlan": "The monthly plan has no free trial; you're charged right away. The free trial is on the annual plan.",
+    "timeline": {
+      "heading_one": "How your {{count}}-day free trial works",
+      "heading_other": "How your {{count}}-day free trial works",
+      "todayTitle": "Today",
+      "todayBody": "All premium features unlock. No charge today.",
+      "dayTitle": "Day {{day}}",
+      "reminderBody": "If you allow notifications, we'll remind you before it ends.",
+      "reminderBodyNoPermission": "Notifications are off: you can see the end date in Settings > Subscriptions.",
+      "chargeTitle": "Day {{day}} · {{date}}",
+      "chargeBody": "You're charged {{price}}/{{period}}. Cancel any time before."
+    },
+    "onboardingPersonal": {
+      "title": "Your {{level}} plan is ready",
+      "subtitle": "{{minutes}} min a day is {{hours}} hours of reading in 6 months. Everything is open in the trial.",
+      "subtitleNoGoal": "Everything is open in the trial: listen, translate without limits, practise with Smart Practice."
+    }
   },
   "reminders": {
     "settingsLabel": "Reminders",
@@ -1367,6 +1412,20 @@
     "continueReading": {
       "title": "You have an unfinished story",
       "body": "“{{title}}” is waiting for you."
+    },
+    "trial": {
+      "title": "Your free trial ends soon",
+      "body": "Your trial ends on {{date}}. If you don't want to continue, cancel in Settings > Subscriptions.",
+      "askTitle": "Remind you before the trial ends?",
+      "askBody": "We'll send a notification before it ends, so there are no surprise charges.",
+      "askYes": "Yes, remind me",
+      "askNo": "No thanks",
+      "deniedTitle": "Notifications not allowed",
+      "deniedBody": "You can always see your trial end date in Settings > Subscriptions."
+    },
+    "daily": {
+      "title": "Time to read",
+      "body": "Today's story is waiting. A few minutes is enough."
     }
   },
   "completion": {

@@ -15,6 +15,12 @@ interface RemindersState {
    */
   enabled: boolean;
   setEnabled: (value: boolean) => void;
+  /**
+   * Günlük okuma hatırlatmasının saati (1.1.0). Onboarding sonunda
+   * kullanıcı kendisi seçip açıyor; null = günlük hatırlatma yok.
+   */
+  dailyTime: { hour: number; minute: number } | null;
+  setDailyTime: (value: { hour: number; minute: number } | null) => void;
 }
 
 export const useRemindersStore = create<RemindersState>()(
@@ -22,6 +28,8 @@ export const useRemindersStore = create<RemindersState>()(
     (set) => ({
       enabled: false,
       setEnabled: (enabled) => set({ enabled }),
+      dailyTime: null,
+      setDailyTime: (dailyTime) => set({ dailyTime }),
     }),
     {
       name: "reminders.settings",

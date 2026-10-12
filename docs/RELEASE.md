@@ -196,11 +196,11 @@ Kodda hiçbir fiyat gömülü DEĞİL — hepsi RevenueCat "offerings"ten geliyo
 
 **App Store Connect'te oluşturulacak abonelikler:**
 
-| Ürün   | Fiyat                    | Not                                            |
-| ------ | ------------------------ | ---------------------------------------------- |
-| Aylık  | ₺79,99                   | Pahalı çapa; ana ürün değil                    |
-| Yıllık | ₺399,99                  | Ana ürün, %58 indirim                          |
-| Deneme | 7 gün, yalnızca yıllıkta | Paywall'ın birincil eylemi buna göre değişiyor |
+| Ürün   | Fiyat                       | Not                                            |
+| ------ | --------------------------- | ---------------------------------------------- |
+| Aylık  | ₺99 (güncel; eski ₺79,99)   | Pahalı çapa; ana ürün değil                    |
+| Yıllık | ₺599 (güncel; eski ₺399,99) | Ana ürün, %58 indirim                          |
+| Deneme | 7 gün, yalnızca yıllıkta    | Paywall'ın birincil eylemi buna göre değişiyor |
 
 **RevenueCat panosunda:**
 

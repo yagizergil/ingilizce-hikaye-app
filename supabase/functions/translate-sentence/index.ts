@@ -13,19 +13,11 @@
 // "Türkçe"nin parametreye dönmesi.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-// Gunluk kota artik burada SABIT DEGIL: katmana gore migration 029'daki
-// `ai_sentence_daily_limit()` belirliyor (ucretsiz 10, premium 200) ve
-// `my_ai_sentence_quota()` ile tek cagrida okunuyor.
-//
-// NEDEN: kota daha once herkes icin 30'du, yani paywall'da "AI destekli
-// aciklamalar" premium faydasi olarak satiliyor olmasina ragmen ucretsiz
-// kullanici birebir aynisini aliyordu (denetim bulgusu, 2026-09-07).
-//
-// Bu sabit yalnizca kota okunamadiginda kullanilan emniyet degeridir --
-// saglayici maliyetini korur, kullaniciyi tamamen kesmez.
-const FALLBACK_DAILY_LIMIT = 10;
-
-interface AiQuota {
+// Gunluk kota burada SABIT DEGIL: `consume_sentence_translation()`
+// (migration 057) karar veriyor. Ucretsiz katmanda kelime + cumle ortak
+// gunluk hak (10), premium'da cumle tavani `ai_sentence_daily_limit()`.
+interface ConsumeResult {
+  allowed: boolean;
   isPremium: boolean;
   limit: number;
   used: number;
@@ -174,7 +166,6 @@ Deno.serve(async (req: Request) => {
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const anthropicApiKey = Deno.env.get("ANTHROPIC_API_KEY");
 
   const callerClient = createClient(supabaseUrl, anonKey, {
@@ -217,44 +208,28 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ status: "unavailable", reason: "provider_not_configured" }, 200);
   }
 
-  const adminClient = createClient(supabaseUrl, serviceRoleKey);
+  // KOTA LLM'DEN ONCE TUKETILIYOR (migration 057). Ucretsiz katmanda
+  // kelime ve cumle cevirisi ORTAK gunluk hakki paylasiyor (1 cumle = 1 hak);
+  // premium'da cumle tavani 029'daki premium sinir. Kontrol ve yazma tek
+  // SECURITY DEFINER cagrida, cagiranin KENDI JWT'siyle (auth.uid()).
+  const { data: consumeData, error: consumeError } = await callerClient.rpc(
+    "consume_sentence_translation",
+  );
 
-  // Kota, cagiranin KENDI JWT'siyle okunuyor: `my_ai_sentence_quota()`
-  // katmani ve kullanimi auth.uid() uzerinden cozuyor, yani sinir tek bir
-  // yerde (migration 029) tanimli kaliyor ve burada tekrar yazilmiyor.
-  const { data: quotaData, error: quotaError } = await callerClient.rpc("my_ai_sentence_quota");
-
-  let quota: AiQuota;
-  if (quotaError || quotaData == null) {
-    // Kota okunamadi: ozelligi tamamen kapatmak yerine emniyet sinirina
-    // dus. Hatanin kendisi sessiz kalmasin -- bu fonksiyon bir kez tam
-    // olarak boyle bir sessiz hata yuzunden uc hafta bozuk kaldi.
+  if (consumeError || consumeData == null) {
+    // Kota okunamadi: LLM'i KOTASIZ cagirmak sinirsiz ucretsiz ceviri demek
+    // olurdu. Eski ve yeni istemcilerin zaten anladigi genel hata yolu.
     console.error(
-      `translate-sentence quota lookup failed user_id=${user.id} message=${quotaError?.message ?? "<null>"}`,
+      `translate-sentence quota consume failed user_id=${user.id} message=${consumeError?.message ?? "<null>"}`,
     );
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { count } = await adminClient
-      .from("ai_usage")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("feature", "sentence_translation")
-      .gte("created_at", since);
-    const used = count ?? 0;
-    quota = {
-      isPremium: false,
-      limit: FALLBACK_DAILY_LIMIT,
-      used,
-      remaining: Math.max(FALLBACK_DAILY_LIMIT - used, 0),
-    };
-  } else {
-    quota = quotaData as AiQuota;
+    return jsonResponse({ status: "unavailable", reason: "provider_error" }, 200);
   }
 
-  if (quota.remaining <= 0) {
-    // Istemci bu iki nedeni ayirt ediyor: ucretsiz kullaniciya premium'un
-    // ne cozdugunu anlatan bir mesaj, premium kullaniciya ise gunluk tavana
-    // ulasildigini soyleyen notr bir mesaj gosteriliyor. Paywall READER
-    // ICINDE ACILMIYOR (urun ilkesi #1) -- yalnizca metin degisiyor.
+  const quota = consumeData as ConsumeResult;
+
+  if (!quota.allowed) {
+    // Eski build'ler de bu iki nedeni taniyor (ayni yanit sekli): ucretsiz
+    // kullaniciya kota mesaji/paywall, premium'a notr "gunluk tavan" mesaji.
     return jsonResponse(
       {
         status: "unavailable",
@@ -285,17 +260,9 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  // Log the attempt either way so the daily counter reflects real usage,
-  // including failed calls (a failing provider shouldn't let a user retry
-  // it unboundedly within the same window).
-  await adminClient.from("ai_usage").insert({
-    user_id: user.id,
-    feature: "sentence_translation",
-    tokens_in: 0,
-    tokens_out: 0,
-    cost_usd: 0,
-  });
-
+  // Hak, cagri basarisiz olsa da dusmus kaliyor (consume yukarida yazdi):
+  // bozuk bir saglayici, kullanicinin ayni pencerede sinirsiz yeniden
+  // denemesine yol acmasin.
   if (!translation) {
     return jsonResponse({ status: "unavailable", reason: "provider_error" }, 200);
   }
@@ -306,7 +273,7 @@ Deno.serve(async (req: Request) => {
     {
       status: "ok",
       translation,
-      remaining: Math.max(quota.remaining - 1, 0),
+      remaining: quota.remaining,
       isPremium: quota.isPremium,
     },
     200,

@@ -14,6 +14,8 @@ const RING_SIZE = 120;
 interface OnboardingSuccessStepProps {
   /** Kullanıcı premium'a geçtiyse metin ona göre değişiyor. */
   premium: boolean;
+  /** Bitişte açılacak ilk kitap (1.1.0); CTA onu adıyla söylüyor. */
+  firstBookTitle: string | null;
   onContinue: () => void;
 }
 
@@ -28,7 +30,11 @@ interface OnboardingSuccessStepProps {
  * kullanılabilir olmalı, ürün ilkesi #2), o yüzden vazgeçen kullanıcıya
  * "premium başladı" demek yanlış olurdu; ona kurulumun bittiği söyleniyor.
  */
-export function OnboardingSuccessStep({ premium, onContinue }: OnboardingSuccessStepProps) {
+export function OnboardingSuccessStep({
+  premium,
+  firstBookTitle,
+  onContinue,
+}: OnboardingSuccessStepProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -65,7 +71,14 @@ export function OnboardingSuccessStep({ premium, onContinue }: OnboardingSuccess
       </View>
 
       <View style={styles.footer}>
-        <OnboardingFooterButton label={t("onboarding.success.cta")} onPress={onContinue} />
+        <OnboardingFooterButton
+          label={
+            firstBookTitle
+              ? t("onboarding.success.ctaBook", { title: firstBookTitle })
+              : t("onboarding.success.cta")
+          }
+          onPress={onContinue}
+        />
       </View>
     </View>
   );

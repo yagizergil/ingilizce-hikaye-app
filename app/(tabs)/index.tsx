@@ -18,6 +18,7 @@ import {
   ContinueReadingCard,
   HomeCategoryGrid,
   HomeHeader,
+  HomeOfferCard,
   HomeStatsCard,
   RecommendedBookCard,
   StartReadingCard,
@@ -161,6 +162,9 @@ export default function HomeScreen() {
             <StartReadingCard onPress={() => router.push("/library")} />
           )}
         </Animated.View>
+        {/* 1.1.0: ücretsiz + denemeye uygun kullanıcıya 2. günden itibaren,
+            72 saatte en fazla bir kez, kapatılabilir teklif (okuyucu dışı). */}
+        <HomeOfferCard />
         {/* Her zaman görünür (2026-10-07): hedef halkası yeni kullanıcı
             için de anlamlı ("Hedefe 10 dk kaldı"); eskiden ilk okumaya kadar
             gizliydi ve kart "kayboldu" sanılıyordu. */}

@@ -9,6 +9,7 @@ import { useTheme } from "@/theme/useTheme";
 
 import { goalIconXml } from "@/features/onboarding/goalIconXml";
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
+import { OnboardingReminderOptIn } from "@/features/onboarding/components/OnboardingReminderOptIn";
 import { OnboardingOptionCard } from "@/features/onboarding/components/OnboardingOptionCard";
 import { OnboardingScaffold } from "@/features/onboarding/components/OnboardingScaffold";
 
@@ -57,7 +58,8 @@ export function OnboardingDailyGoalStep({
       subtitle={t("onboarding.goal.subtitle")}
       footer={
         <OnboardingFooterButton
-          label={t("common.continue")}
+          // 1.1.0 (rakip analizi): hedef bir taahhüt olarak, tek dokunuşla.
+          label={t("onboarding.goal.commit")}
           onPress={onContinue}
           disabled={selected === null}
           loading={submitting}
@@ -88,6 +90,10 @@ export function OnboardingDailyGoalStep({
             {t("onboarding.goal.recommendedNote")}
           </Text>
         </View>
+
+        {/* 1.1.0: günlük okuma hatırlatması AYNI ekranda, kullanıcının
+            kendisi açtığı bir düğmeyle (izin yalnızca o an; ADR-010 notu). */}
+        <OnboardingReminderOptIn />
       </ScrollView>
     </OnboardingScaffold>
   );

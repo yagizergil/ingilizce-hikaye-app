@@ -236,6 +236,20 @@ export function hasPremium(info: CustomerInfo | null): boolean {
 }
 
 /**
+ * Premium yetkisi ücretsiz denemedeyse (RevenueCat `periodType` TRIAL)
+ * denemenin bittiği an; değilse null. Yalnızca yerel deneme hatırlatması
+ * için kullanılıyor -- yetki kararı DEĞİL (o sunucuda, ADR-009).
+ */
+export function readTrialEnd(info: CustomerInfo | null): Date | null {
+  const entitlement = info?.entitlements.active[PREMIUM_ENTITLEMENT];
+  if (!entitlement || entitlement.periodType !== "TRIAL" || !entitlement.expirationDate) {
+    return null;
+  }
+  const end = new Date(entitlement.expirationDate);
+  return Number.isNaN(end.getTime()) ? null : end;
+}
+
+/**
  * SUNUCUYA YETKİYİ İSTEMCİ YAZMAZ.
  *
  * Burada bir zamanlar `syncEntitlementToServer()` vardı ve
@@ -255,7 +269,8 @@ export function hasPremium(info: CustomerInfo | null): boolean {
 
 /** Satın alma denemesinin sonucu. */
 export type PurchaseOutcome =
-  | { status: "success" }
+  /** `trialEndsAt`: ücretsiz deneme başladıysa bitiş anı (deneme hatırlatması için). */
+  | { status: "success"; trialEndsAt: Date | null }
   | { status: "cancelled" }
   /** Apple satın almayı aldı ama yetki aktif değil — destek gerektiren nadir durum. */
   | { status: "not_entitled" }
@@ -300,7 +315,7 @@ export async function purchasePackage(
     }
 
     trackEvent("purchase_completed", { package_id: pkg.identifier, ...context });
-    return { status: "success" };
+    return { status: "success", trialEndsAt: readTrialEnd(customerInfo) };
   } catch (error) {
     if (
       typeof error === "object" &&

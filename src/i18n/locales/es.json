@@ -203,6 +203,12 @@
       "streakValue_one": "{{count}} día",
       "streakValue_other": "{{count}} días",
       "streakLabel": "Racha de metas"
+    },
+    "offer": {
+      "title_one": "Prueba Premium {{count}} día gratis",
+      "title_other": "Prueba Premium {{count}} días gratis",
+      "body": "Narración de estudio, traducción ilimitada y Repaso inteligente. Cancela cuando quieras.",
+      "cta": "Ver planes"
     }
   },
   "collections": {
@@ -538,8 +544,9 @@
       "toggle": "Ver la traducción de la frase",
       "loading": "Traduciendo…",
       "error": "No se pudo obtener la traducción de la frase, inténtalo de nuevo",
-      "quotaExhausted": "Has usado tus traducciones con IA de hoy. Premium tiene una cuota diaria mucho mayor.",
-      "failed": "No se pudo traducir. Revisa tu conexión e inténtalo de nuevo."
+      "quotaExhausted": "Has usado tus traducciones gratuitas de hoy. Premium ofrece traducciones de palabras ilimitadas y una cuota de frases mucho mayor.",
+      "failed": "No se pudo traducir. Revisa tu conexión e inténtalo de nuevo.",
+      "dailyCapReached": "Has alcanzado el límite de traducciones de frases de hoy. Se restablece mañana."
     },
     "sentenceSheet": {
       "translationLabel": "Traducción"
@@ -1123,7 +1130,8 @@
         "20": "Progreso más rápido",
         "30": "Intensivo"
       },
-      "recommendedNote": "Para la mayoría, 15 minutos es el mejor equilibrio."
+      "recommendedNote": "Para la mayoría, 15 minutos es el mejor equilibrio.",
+      "commit": "Me comprometo con mi meta"
     },
     "path": {
       "title": "Tu camino",
@@ -1171,28 +1179,12 @@
         "profile": "Guardando tu perfil"
       }
     },
-    "trial": {
-      "heading": "Cómo funciona la prueba gratuita",
-      "rows": {
-        "today": {
-          "title": "Hoy",
-          "body": "Todo se desbloquea al instante."
-        },
-        "reminder": {
-          "title": "Día {{day}}",
-          "body": "Te avisamos antes de que termine."
-        },
-        "charge": {
-          "title": "Día {{day}}",
-          "body": "La prueba termina y empieza el cobro."
-        }
-      }
-    },
     "success": {
       "title": "¡Genial!",
       "bodyPremium": "Todo listo. Premium está activo: empieza a leer.",
       "bodyFree": "Todo listo. Todos los libros son gratis: empieza a leer.",
-      "cta": "Empezar a leer"
+      "cta": "Empezar a leer",
+      "ctaBook": "Empezar con {{title}}"
     },
     "adventure": {
       "title": "Aprende idiomas con una aventura",
@@ -1218,6 +1210,12 @@
       "title": "¡Hola, soy Lumi!",
       "body": "¿Listo para una aventura divertida?",
       "cta": "Continuar"
+    },
+    "reminder": {
+      "title": "¿A qué hora te lo recordamos cada día?",
+      "cta": "Activar recordatorio diario",
+      "enabled": "Te lo recordaremos cada día a las {{time}}. Puedes desactivarlo en Perfil.",
+      "denied": "Las notificaciones no están permitidas. Puedes activarlas en Perfil > Recordatorios."
     }
   },
   "paywall": {
@@ -1232,11 +1230,11 @@
       },
       "unlimitedLookups": {
         "title": "Traducciones de palabras sin límite",
-        "body": "{{count}} palabras al día en el plan gratuito; sin límite con Premium."
+        "body": "Plan gratuito: {{count}} traducciones al día en total (palabras y frases); traducciones de palabras ilimitadas con Premium."
       },
       "aiSentences": {
         "title": "Desatasca cualquier frase",
-        "body": "{{premium}} traducciones de frases con IA al día — {{free}} en el plan gratuito.",
+        "body": "{{premium}} traducciones de frases con IA al día. En el plan gratuito, las frases comparten las {{free}} diarias con las palabras.",
         "bodyGeneric": "Traducción con IA justo donde te atascas, con una cuota diaria mucho mayor."
       },
       "unlimitedWords": {
@@ -1342,9 +1340,56 @@
       "practice": {
         "title": "Que las palabras se queden",
         "subtitle": "Practica a diario sin límites con el Repaso inteligente."
+      },
+      "onboarding": {
+        "title": "Tu plan de lectura está listo",
+        "subtitle": "En la prueba todo está abierto: escucha, traduce, recuerda más."
+      },
+      "profile": {
+        "title": "Más con Premium",
+        "subtitle": "Narración de estudio, traducción ilimitada y Repaso inteligente."
+      },
+      "bookFinished": {
+        "title": "¡Terminaste un libro!",
+        "subtitle": "Lee el siguiente escuchando la narración de estudio."
+      },
+      "notebook": {
+        "title": "Tu cuaderno de palabras está casi lleno",
+        "subtitle": "Premium quita el límite de palabras guardadas."
+      },
+      "languagePair": {
+        "title": "Abre un nuevo par de idiomas",
+        "subtitle": "Lee los mismos libros también en otro idioma."
+      },
+      "wordPack": {
+        "title": "Desbloquea el paquete completo",
+        "subtitle": "Las palabras más frecuentes de tu nivel, en un mazo con un toque."
+      },
+      "homeOffer": {
+        "title": "Prueba Premium gratis",
+        "subtitle": "Escucha, traduce sin límites y recuerda con Repaso inteligente."
       }
     },
-    "cancelAnytime": "Cancela cuando quieras."
+    "cancelAnytime": "Cancela cuando quieras.",
+    "ctaTrialStart_one": "Empieza {{count}} día gratis",
+    "ctaTrialStart_other": "Empieza {{count}} días gratis",
+    "noTrialOnPlan": "El plan mensual no tiene prueba gratis; se cobra al momento. La prueba gratis está en el plan anual.",
+    "timeline": {
+      "heading_one": "Cómo funciona tu prueba gratis de {{count}} días",
+      "heading_other": "Cómo funciona tu prueba gratis de {{count}} días",
+      "todayTitle": "Hoy",
+      "todayBody": "Se desbloquea todo Premium. Hoy no se cobra nada.",
+      "dayTitle": "Día {{day}}",
+      "reminderBody": "Si permites notificaciones, te avisamos antes de que termine.",
+      "reminderBodyNoPermission": "Notificaciones desactivadas: verás la fecha de fin en Ajustes > Suscripciones.",
+      "chargeTitle": "Día {{day}} · {{date}}",
+      "chargeBody": "Se cobra {{price}}/{{period}}. Cancela cuando quieras antes."
+    },
+    "onboardingPersonal": {
+      "title": "Tu plan de nivel {{level}} está listo",
+      "subtitle": "{{minutes}} min al día son {{hours}} horas de lectura en 6 meses. En la prueba todo está abierto.",
+      "subtitleNoGoal": "En la prueba todo está abierto: escucha, traduce sin límites y repasa con Repaso inteligente."
+    }
   },
   "reminders": {
     "settingsLabel": "Recordatorios",
@@ -1367,6 +1412,20 @@
     "continueReading": {
       "title": "Tienes una historia a medias",
       "body": "«{{title}}» te está esperando."
+    },
+    "trial": {
+      "title": "Tu prueba gratis termina pronto",
+      "body": "Tu prueba termina el {{date}}. Si no quieres continuar, cancela en Ajustes > Suscripciones.",
+      "askTitle": "¿Te avisamos antes de que termine la prueba?",
+      "askBody": "Enviaremos una notificación antes del final, sin cobros sorpresa.",
+      "askYes": "Sí, avísame",
+      "askNo": "No, gracias",
+      "deniedTitle": "Notificaciones no permitidas",
+      "deniedBody": "Siempre puedes ver el final de la prueba en Ajustes > Suscripciones."
+    },
+    "daily": {
+      "title": "Hora de leer",
+      "body": "La historia de hoy te espera. Bastan unos minutos."
     }
   },
   "completion": {

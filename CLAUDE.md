@@ -12,8 +12,9 @@ klasikler public domain, seviyeli hikâyeler kendi ürettiğimiz özgün
 metinler. Gelir premium abonelikten geliyor.
 
 **Premium bugün ne sunuyor** (paywall'da yalnızca bunlar yazılabilir):
-**stüdyo seslendirmesi**, sınırsız kelime çevirisi (ücretsizde günde 15 --
-migration 038), sınırsız kelime defteri, yüksek AI cümle çevirisi kotası,
+**stüdyo seslendirmesi**, sınırsız kelime çevirisi (ücretsizde kelime + cümle
+çevirisi ORTAK günde 10, 1 cümle = 1 hak -- migration 057; kelime anlamını
+sunucu da `authorize_word_gloss()` ile kapılıyor), sınırsız kelime defteri, yüksek AI cümle çevirisi kotası,
 ikinci dil çifti, **Akıllı Tekrar** (1.0.6; ücretsizde 24 saatte 1 deneme,
 kapısı `consume_smart_practice()` -- migration 049; tasarım
 `docs/plans/2026-09-24-kelimelerim-premium-design.md`), **kitap quizlerinin 2. ve 3. basamağı** (1. basamak ücretsiz; kapısı RLS + `has_active_premium()`
@@ -293,6 +294,17 @@ beklemek gerekmiyor.
 açılışta DEĞİL. iOS izin diyaloğu kullanıcı başına bir kez gösterilebilir;
 uygulamayı ilk açan kullanıcıya sormak o tek şansı harcamaktır. Varsayılan
 kapalı.
+
+**1.1.0 eki (2026-10-12):** izin iki yeni yerde daha isteniyor, ikisi de
+kullanıcının KENDİ eylemiyle ve sebebi söylenerek (açılışta hâlâ yok):
+(1) onboarding günlük hedef ekranında kullanıcı saat seçip "Günlük
+hatırlatmayı aç"a bastığında (`OnboardingReminderOptIn`, tekrarlayan
+`dailyReading` bildirimi); (2) ücretsiz deneme başladıktan hemen sonra
+"Deneme bitmeden hatırlatalım mı?" sorusuna evet dendiğinde (`trialEnding`,
+<=3 gün denemede bitişten 24 saat, daha uzunda 2 gün önce;
+`features/reminders/trialReminder.ts`). Durum hatırlatmalarının "hepsini
+sil" döngüsü artık bu iki kimliğe dokunmuyor (`lib/notifications.ts`).
+Paywall çizelgesi izin reddedilmişse "hatırlatırız" demiyor.
 
 ### ADR-011: Cihaz üstü bölüm seslendirmesi (İPTAL EDİLDİ)
 
@@ -1336,7 +1348,7 @@ Ayrıntılar ve komutlar `docs/RELEASE.md` içinde. Özet:
 4. **Gizlilik politikasını barındır** ve `EXPO_PUBLIC_PRIVACY_URL`'e yaz —
    paywall'daki yasal bağlantı buradan geliyor, boşsa gönderim yapılmamalı.
 5. `eas init` + development build (satın alma Expo Go'da test edilemiyor).
-6. RevenueCat/App Store Connect ürün tanımları (aylık ₺79,99 / yıllık
+6. RevenueCat/App Store Connect ürün tanımları (GÜNCEL 2026-10-12: aylık ₺99 / yıllık ₺599; eski taslak: aylık ₺79,99 / yıllık
    ₺399,99, paket kimlikleri `$rc_annual`/`$rc_monthly`, entitlement adı tam
    olarak `premium`).
 7. Ekran görüntüleri (hiç yok).

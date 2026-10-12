@@ -85,9 +85,22 @@ function progressOf(step: Step): number {
   return index < 0 ? 0 : (index + 1) / PROGRESS_STEPS.length;
 }
 
+/** Onboarding'in bittiği yerde açılacak ilk kitap (1.1.0). */
+export interface FirstBookTarget {
+  bookId: string;
+  /** Biliniyorsa doğrudan okuyucu; yoksa kitap detayı. */
+  chapterId: string | null;
+  title: string;
+}
+
 interface OnboardingFlowProps {
   /** Akış tamamlandığında çağrılır (profil güncellendikten sonra). */
-  onDone: () => void;
+  onDone: (firstBook: FirstBookTarget | null) => void;
+}
+
+/** Projeksiyon ekranıyla AYNI aritmetik: günlük hedef x 180 gün. */
+function projectedHours(dailyGoalMinutes: number | null): number | null {
+  return dailyGoalMinutes ? Math.round((dailyGoalMinutes * 180) / 60) : null;
 }
 
 export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
@@ -314,6 +327,35 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   /** Satın alsa da almasa da akış "Harika!" ekranıyla bitiyor. */
   const handlePaywallClosed = useCallback(() => setStep("success"), []);
 
+  /**
+   * İLK KİTAP (1.1.0): kullanıcı tadımını yaptığı pasajın kitabına, o
+   * bölümden giriyor. Veri: onboarding'i bitiren 132 kişiden yalnızca 83'ü
+   * okuyucuyu açtı -- ana sayfada kalan kullanıcı ilk değeri hiç görmüyordu.
+   * Pasaj yoksa beğendiği ya da seviyesine uygun ilk kitabın detayı.
+   */
+  const firstBook = useMemo<FirstBookTarget | null>(() => {
+    const passage = contentQuery.data?.passage;
+    if (passage) {
+      return { bookId: passage.bookId, chapterId: passage.chapterId, title: passage.bookTitle };
+    }
+    const books = contentQuery.data?.books ?? [];
+    const pick = books.find((book) => likedBookIds.includes(book.id)) ?? books[0] ?? null;
+    return pick ? { bookId: pick.id, chapterId: null, title: pick.title } : null;
+  }, [contentQuery.data, likedBookIds]);
+
+  /** Paywall başlığı onboarding cevaplarından -- uydurma sayı yok. */
+  const paywallHeadline = useMemo(() => {
+    if (!level) return null;
+    const hours = projectedHours(dailyGoal);
+    const levelName = t(`onboarding.path.levels.${level}`);
+    return {
+      title: t("paywall.onboardingPersonal.title", { level: levelName }),
+      subtitle: hours
+        ? t("paywall.onboardingPersonal.subtitle", { minutes: dailyGoal, hours })
+        : t("paywall.onboardingPersonal.subtitleNoGoal"),
+    };
+  }, [level, dailyGoal, t]);
+
   if (step === "splash") return <OnboardingSplashScreen onDone={() => setStep("welcome")} />;
   if (step === "welcome") return <OnboardingIntroCarousel onDone={() => setStep("mascot")} />;
   if (step === "mascot") return <OnboardingMeetMascot onContinue={() => setStep("native")} />;
@@ -454,11 +496,22 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
       // Uygulamanın her yerdeki paywall'ının AYNISI (ürün sahibi kararı,
       // 2026-10-07): ayrı teklif, üst rozet ve deneme takvimi planları
       // aşağı itiyor, aylık plan kaydırmadan görünmüyordu.
-      <PaywallScreen source="onboarding" onClose={handlePaywallClosed} />
+      // 1.1.0: zaman çizelgeli varyant (yalnızca deneme uygunsa çizelge
+      // görünüyor) + onboarding cevaplarından kişisel başlık.
+      <PaywallScreen
+        source="onboarding"
+        variant="timeline"
+        headlineOverride={paywallHeadline}
+        onClose={handlePaywallClosed}
+      />
     );
   }
 
   return (
-    <OnboardingSuccessStep premium={subscription.data?.isPremium ?? false} onContinue={onDone} />
+    <OnboardingSuccessStep
+      premium={subscription.data?.isPremium ?? false}
+      firstBookTitle={firstBook?.title ?? null}
+      onContinue={() => onDone(firstBook)}
+    />
   );
 }

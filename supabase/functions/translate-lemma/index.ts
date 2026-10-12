@@ -271,6 +271,23 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ status: "unavailable", reason: "invalid_body" }, 400);
   }
 
+  // ORTAK GÜNLÜK HAK KAPISI (migration 057), ÖNBELLEKTEN ÖNCE. Ücretsiz
+  // kullanıcıya bir anlam (LLM ya da önbellek isabeti) ancak dokunuşta
+  // tüketilmiş bir hakka (`consume_word_lookup`) karşılık veriliyor; hak
+  // burada ikinci kez düşmüyor. Önbellek bu kapıdan önce olsaydı bedava bir
+  // yan yol olurdu. Reddedilen istek eski ve yeni istemcilerin zaten
+  // anladığı `unavailable` şeklinde dönüyor ("karşılık bulunamadı").
+  const { data: glossGate, error: glossGateError } = await callerClient.rpc("authorize_word_gloss");
+  if (glossGateError || glossGate == null) {
+    console.error(
+      `translate-lemma quota gate failed user_id=${user.id} message=${glossGateError?.message ?? "<null>"}`,
+    );
+    return jsonResponse({ status: "unavailable", reason: "rate_limit_check_failed" }, 200);
+  }
+  if ((glossGate as { allowed?: boolean }).allowed !== true) {
+    return jsonResponse({ status: "unavailable", reason: "free_tier_daily_limit" }, 200);
+  }
+
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
   // İngilizce->Türkçe dışındaki HER çift: bağlama duyarlı önbellek
@@ -330,7 +347,7 @@ Deno.serve(async (req: Request) => {
   //
   // Düzeltme: limit yalnızca ÜCRETSİZ katmana uygulanıyor. Zaten ücretsiz
   // kullanıcı bu fonksiyona hiç ulaşmadan önce `consume_word_lookup()`
-  // (migration 038) günde 15 sözlük açılışında duruyor -- yani ücretsiz
+  // (038/057) günde 10 ortak hakta duruyor -- yani ücretsiz
   // kullanıcı pratikte asla 30'a yaklaşamıyor, bu limit onun için sadece
   // bir güvenlik payı. Premium'da tamamen kaldırılıyor.
   const { data: entitlement } = await adminClient

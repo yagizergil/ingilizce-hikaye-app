@@ -9,6 +9,7 @@ import { monoType, motion, radius, spacing } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { LoadingState } from "@/components/ui";
+import { trackError } from "@/lib/analytics";
 import {
   isNumericToken,
   lemmatize,
@@ -17,6 +18,7 @@ import {
 } from "@/features/reader/text/tokenizer";
 import { WordSheet } from "@/features/reader/components/WordSheet";
 import { SentenceSheet } from "@/features/reader/components/SentenceSheet";
+import { useConsumeWordLookupMutation } from "@/features/reader/api/useWordLookupQuota";
 
 import { OnboardingFooterButton } from "@/features/onboarding/components/OnboardingFooterButton";
 import { OnboardingScaffold } from "@/features/onboarding/components/OnboardingScaffold";
@@ -82,6 +84,22 @@ export function OnboardingFirstReadStep({
   const { theme } = useTheme();
 
   const [active, setActive] = useState<WordSheetWord | null>(null);
+  const consumeWordLookupAsync = useConsumeWordLookupMutation().mutateAsync;
+
+  /**
+   * Onboarding'deki kelime de günlük ortak haktan düşüyor (migration 057):
+   * sunucu (`translate-lemma` -> `authorize_word_gloss`) yalnızca tüketilmiş
+   * bir hakka karşılık anlam veriyor. Burada paywall YOK -- yeni kullanıcının
+   * 10 hakkı var; ağ hatasında kart yine açılıyor (okuyucudaki gibi).
+   */
+  const openWord = useCallback(
+    (word: WordSheetWord) => {
+      void consumeWordLookupAsync()
+        .catch((error: unknown) => trackError("onboarding.wordQuota", error))
+        .finally(() => setActive(word));
+    },
+    [consumeWordLookupAsync],
+  );
 
   /**
    * CÜMLE DERSİ (kullanıcı bulgusu, 2026-09-24): cümleye uzun basınca tüm
@@ -322,7 +340,7 @@ export function OnboardingFirstReadStep({
                   const isPulsing =
                     needsGuidance && pulseTokenKey === `${paragraph.key}:${tokenIndex}`;
                   const onPressWord = () =>
-                    setActive({
+                    openWord({
                       surface: token.text,
                       lemma: token.lemma as string,
                       sentenceText: token.sentence,
