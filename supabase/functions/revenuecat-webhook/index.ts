@@ -79,6 +79,61 @@ function uuids(list: string[] | undefined): string[] {
 
 type AdminClient = SupabaseClient;
 
+interface StoreEntitlement {
+  expires_at: string;
+  product_id: string | null;
+  store: string | null;
+  is_trial: boolean;
+}
+
+/**
+ * Kaynak hesap yoksa (silinmiş ya da hiç satırı yok) yetkiyi doğrudan
+ * RevenueCat'ten okur (REVENUECAT_API_KEY, sync-entitlement ile aynı yol).
+ * Aktif ve bitiş tarihli bir premium yoksa null döner — süresiz yazılmaz.
+ */
+async function fetchStoreEntitlement(userId: string): Promise<StoreEntitlement | null> {
+  const apiKey = Deno.env.get("REVENUECAT_API_KEY");
+  if (!apiKey) {
+    console.error("revenuecat-webhook: REVENUECAT_API_KEY is not set (transfer fallback skipped)");
+    return null;
+  }
+  try {
+    const res = await fetch(
+      `https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(userId)}`,
+      {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      },
+    );
+    if (!res.ok) {
+      console.error(`revenuecat-webhook: transfer fallback http=${res.status}`);
+      return null;
+    }
+    const payload = (await res.json()) as {
+      subscriber?: {
+        entitlements?: Record<
+          string,
+          { expires_date?: string | null; product_identifier?: string | null }
+        >;
+        subscriptions?: Record<string, { store?: string | null; period_type?: string | null }>;
+      };
+    };
+    const ent = payload.subscriber?.entitlements?.[PREMIUM_ENTITLEMENT];
+    const exp = ent?.expires_date ?? null;
+    if (!ent || !exp || !(Date.parse(exp) > Date.now())) return null;
+    const productId = ent.product_identifier ?? null;
+    const sub = productId ? payload.subscriber?.subscriptions?.[productId] : undefined;
+    return {
+      expires_at: exp,
+      product_id: productId,
+      store: sub?.store ?? null,
+      is_trial: sub?.period_type === "trial",
+    };
+  } catch (error) {
+    console.error("revenuecat-webhook: transfer fallback fetch failed", error);
+    return null;
+  }
+}
+
 /**
  * TRANSFER (2026-10-12 denetim bulgusu): RevenueCat satın almayı bir hesaptan
  * diğerine taşıdığında (geri yükleme, yeniden kurulum, hesap sıfırlama) olayda
@@ -117,19 +172,21 @@ async function handleTransfer(event: RevenueCatEvent, admin: AdminClient): Promi
 
   const results: string[] = [];
   for (const to of toIds) {
-    if (!source) {
+    // Eski hesap silinmişse ya da satırı yoksa gerçeği RevenueCat söyler.
+    const grant = source ?? (await fetchStoreEntitlement(to));
+    if (!grant) {
       results.push(`to:${to}:no_active_source`);
       continue;
     }
     const { data, error } = await admin.rpc("apply_entitlement_event", {
       p_user_id: to,
       p_tier: "premium",
-      p_expires_at: source.expires_at,
-      p_product_id: source.product_id,
-      p_store: source.store ?? event.store ?? null,
+      p_expires_at: grant.expires_at,
+      p_product_id: grant.product_id,
+      p_store: grant.store ?? event.store ?? null,
       p_event_id: `${eventId}:to`,
       p_event_ms: eventMs,
-      p_is_trial: source.is_trial,
+      p_is_trial: grant.is_trial,
     });
     if (error && error.code !== "23503") {
       console.error(`revenuecat-webhook: transfer apply failed to=${to} code=${error.code}`);
