@@ -29,6 +29,13 @@ import { trackError } from "@/lib/analytics";
 export const TRIAL_REMINDER_ID = "trialEnding";
 /** Kullanıcının seçtiği saatte tekrarlayan günlük okuma hatırlatması. */
 export const DAILY_READING_ID = "dailyReading";
+/**
+ * Sunucu süreli indirimin bitişinden önceki tek seferlik hatırlatma
+ * (rapor §5.3; `features/offers`). Yalnızca izin ZATEN verilmişse planlanır,
+ * bunun için izin istenmez. Durum hatırlatmalarının "hepsini sil" döngüsü
+ * ona dokunmaz; kullanıcı hatırlatmaları kapatınca o da silinir.
+ */
+export const OFFER_REMINDER_ID = "offerEnding";
 
 /** Uygulamanın kullandığı tek Android bildirim kanalı. */
 const ANDROID_CHANNEL_ID = "reminders";
@@ -114,7 +121,7 @@ export async function requestNotificationPermission(): Promise<boolean> {
 export async function replaceScheduledReminders(reminders: ScheduledReminder[]): Promise<number> {
   try {
     await ensureAndroidChannel();
-    await cancelScheduledExcept([TRIAL_REMINDER_ID, DAILY_READING_ID]);
+    await cancelScheduledExcept([TRIAL_REMINDER_ID, DAILY_READING_ID, OFFER_REMINDER_ID]);
 
     const now = Date.now();
     let scheduled = 0;

@@ -1596,5 +1596,29 @@
     "retry": "Try again",
     "retrying": "Connecting…",
     "autoRetry": "We'll retry automatically when you're back online."
+  },
+  "offers": {
+    "sale": {
+      "badge": "{{percent}}% off",
+      "title": "A special price on Premium",
+      "subtitle": "Stories are always free. Unlock Premium for less, right now.",
+      "endsIn": "Offer ends in {{hours}}h {{minutes}}m",
+      "anchorA11y": "Regular price {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "Get the offer",
+      "exitTitle": "Offer ending",
+      "exitBody": "This price ends in {{hours}}h {{minutes}}m.",
+      "exitStay": "Keep the offer",
+      "exitLeave": "Leave",
+      "reminderTitle": "Your discount is ending",
+      "reminderBody": "Your special Premium price ends in about {{hours}} hours."
+    },
+    "downsell": {
+      "title": "Try a month first",
+      "body": "If the yearly plan feels like too much, start monthly. Cancel anytime.",
+      "price": "{{price}} / month",
+      "cta": "Start monthly",
+      "decline": "No, thanks"
+    }
   }
 }

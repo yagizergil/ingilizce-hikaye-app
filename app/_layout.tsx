@@ -143,6 +143,11 @@ export default function RootLayout() {
                       name="paywall"
                       options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
                     />
+                    {/* Kural motorunun indirim ekranı: paywall ile aynı sunum. */}
+                    <Stack.Screen
+                      name="offer"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
                     <Stack.Screen name="language-settings" options={{ presentation: "modal" }} />
                     {/*
                       Kitap bitirme kutlaması. Modal DEĞİL: reader'dan

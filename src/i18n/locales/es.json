@@ -1596,5 +1596,29 @@
     "retry": "Reintentar",
     "retrying": "Conectando…",
     "autoRetry": "Lo reintentaremos automáticamente cuando vuelvas a tener conexión."
+  },
+  "offers": {
+    "sale": {
+      "badge": "-{{percent}} %",
+      "title": "Un precio especial en Premium",
+      "subtitle": "Las historias siempre son gratis. Desbloquea Premium por menos, ahora.",
+      "endsIn": "La oferta termina en {{hours}} h {{minutes}} min",
+      "anchorA11y": "Precio normal {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "Aprovechar la oferta",
+      "exitTitle": "La oferta termina",
+      "exitBody": "Este precio termina en {{hours}} h {{minutes}} min.",
+      "exitStay": "Mantener la oferta",
+      "exitLeave": "Salir",
+      "reminderTitle": "Tu descuento está por terminar",
+      "reminderBody": "Tu precio especial de Premium termina en unas {{hours}} horas."
+    },
+    "downsell": {
+      "title": "Prueba primero un mes",
+      "body": "Si el plan anual te parece demasiado, empieza con el mensual. Cancela cuando quieras.",
+      "price": "{{price}} / mes",
+      "cta": "Empezar mensual",
+      "decline": "No, gracias"
+    }
   }
 }

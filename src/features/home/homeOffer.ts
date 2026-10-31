@@ -7,7 +7,8 @@
  *   - yalnızca ücretsiz VE denemeye uygun kullanıcı (deneme vaadi gerçek),
  *   - yalnızca kullanıcı İLK BÖLÜMÜNÜ bitirdikten sonra (değeri yaşadı;
  *     rakip analizi 2026-10-12) -- uygulama açılışında değil,
- *   - son gösterimden/kapatmadan en az 72 saat sonra.
+ *   - son gösterimden/kapatmadan en az 72 saat sonra (2026-10-31: süre ve
+ *     aç/kapa artık kural tablosunda, `home_offer`; bu sabit yedek).
  */
 
 export const HOME_OFFER_COOLDOWN_MS = 72 * 60 * 60 * 1000;
@@ -21,12 +22,18 @@ export interface HomeOfferInput {
   isPremium: boolean;
   /** Uygun denemenin gün sayısı; yoksa null. */
   trialDays: number | null;
+  /**
+   * Sıklık (ms). Kural tablosundaki `home_offer.cooldown_hours`'tan geliyor
+   * (migration 093); verilmezse eski sabit 72 saat.
+   */
+  cooldownMs?: number;
 }
 
 export function shouldShowHomeOffer(input: HomeOfferInput): boolean {
   if (input.isPremium || input.trialDays === null) return false;
   if (input.firstChapterFinishedAt === null) return false;
-  if (input.lastShownAt !== null && input.now - input.lastShownAt < HOME_OFFER_COOLDOWN_MS) {
+  const cooldownMs = input.cooldownMs ?? HOME_OFFER_COOLDOWN_MS;
+  if (input.lastShownAt !== null && input.now - input.lastShownAt < cooldownMs) {
     return false;
   }
   return true;

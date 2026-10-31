@@ -1596,5 +1596,29 @@
     "retry": "Réessayer",
     "retrying": "Connexion…",
     "autoRetry": "Nouvel essai automatique dès que tu seras en ligne."
+  },
+  "offers": {
+    "sale": {
+      "badge": "-{{percent}} %",
+      "title": "Un prix spécial sur Premium",
+      "subtitle": "Les histoires sont toujours gratuites. Débloque Premium pour moins cher, maintenant.",
+      "endsIn": "L'offre se termine dans {{hours}} h {{minutes}} min",
+      "anchorA11y": "Prix normal {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "Profiter de l'offre",
+      "exitTitle": "L'offre se termine",
+      "exitBody": "Ce prix se termine dans {{hours}} h {{minutes}} min.",
+      "exitStay": "Garder l'offre",
+      "exitLeave": "Quitter",
+      "reminderTitle": "Ta réduction se termine",
+      "reminderBody": "Ton prix spécial Premium se termine dans environ {{hours}} heures."
+    },
+    "downsell": {
+      "title": "Essaie d'abord un mois",
+      "body": "Si l'abonnement annuel te semble trop, commence au mois. Annulable à tout moment.",
+      "price": "{{price}} / mois",
+      "cta": "Commencer au mois",
+      "decline": "Non merci"
+    }
   }
 }
