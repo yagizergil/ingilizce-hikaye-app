@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
@@ -11,7 +10,7 @@ import { useActivationStore } from "@/hooks/useActivationStore";
 import { useHomePalette } from "@/features/home/useHomePalette";
 import { shouldShowHomeOffer } from "@/features/home/homeOffer";
 import { useHomeOfferStore } from "@/features/home/hooks/useHomeOfferStore";
-import { useSubscriptionQuery, useTrialOffer } from "@/features/paywall";
+import { openPaywall, useSubscriptionQuery, useTrialOffer } from "@/features/paywall";
 
 /**
  * Ana sayfadaki "ikinci şans" deneme kartı (1.1.0). Kural ve gerekçe
@@ -52,7 +51,7 @@ export function HomeOfferCard() {
   const open = () => {
     trackEvent("home_offer_tapped", { trial_days: trialDays });
     hide(Date.now());
-    router.push("/paywall?source=home_offer");
+    openPaywall("home_offer");
   };
 
   return (

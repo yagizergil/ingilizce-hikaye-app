@@ -27,7 +27,7 @@ import {
   UiIcon,
 } from "@/components/ui";
 import { useRemoveSavedWordMutation } from "@/features/reader";
-import { useSubscriptionQuery } from "@/features/paywall";
+import { openPaywall, useSubscriptionQuery } from "@/features/paywall";
 import {
   DecksTab,
   VocabularyHub,
@@ -211,7 +211,7 @@ export default function VocabularyScreen() {
 
   const handleOpenPaywall = useCallback(() => {
     trackEvent("paywall_opened", { source: "vocabulary_strip" });
-    router.push("/paywall?source=vocabulary_strip");
+    openPaywall("vocabulary_strip");
   }, []);
 
   const practiceQuota = useSmartPracticeQuotaQuery();

@@ -35,6 +35,8 @@ import { PaywallPlanCard } from "@/features/paywall/components/PaywallPlanCard";
 import { buildPlanOptions } from "@/features/paywall/planModel";
 import { computePaywallLayout } from "@/features/paywall/paywallLayout";
 import { headlineKeyFor } from "@/features/paywall/paywallHeadlines";
+import { placementFor } from "@/features/paywall/paywallSources";
+import { takeTriggerLatencyMs } from "@/features/paywall/openPaywall";
 import { PaywallTrialTimeline } from "@/features/paywall/components/PaywallTrialTimeline";
 import { canOfferReminders, offerTrialReminder } from "@/features/reminders";
 
@@ -118,7 +120,15 @@ export function PaywallScreen({
   const { t } = useTranslation();
   const { theme, themeName } = useTheme();
   const queryClient = useQueryClient();
-  const { data: packages, isLoading, isFetching, refetch } = useOfferingsQuery(offeringId);
+  const {
+    data: packages,
+    isLoading,
+    isFetching,
+    isError: offeringsFailed,
+    refetch,
+  } = useOfferingsQuery(offeringId);
+  /** C15: her paywall olayına eklenen yer türü (kaynaktan türetiliyor). */
+  const placement = placementFor(source);
   const { data: facts } = usePaywallFactsQuery();
   const { data: trialEligible } = useTrialEligibilityQuery(packages);
 
@@ -181,13 +191,40 @@ export function PaywallScreen({
 
   useEffect(() => {
     viewedAtRef.current = Date.now();
-    trackEvent("paywall_viewed", { source, variant });
-  }, [source, variant]);
+    // load_ms: openPaywall() tetiklemesinden ekranın açılmasına (C14). Gömülü
+    // (onboarding) ya da derin bağlantıyla açılışta tetikleme yok, alan yok.
+    const loadMs = takeTriggerLatencyMs(source);
+    trackEvent("paywall_viewed", {
+      source,
+      placement,
+      variant,
+      ...(loadMs !== null ? { load_ms: loadMs } : {}),
+    });
+  }, [source, placement, variant]);
+
+  /**
+   * Paket gelmedi (C14 `paywall_view_failed`): kullanıcı fiyatı hiç görmedi.
+   * Eskiden yalnızca `paywall_dismissed.had_packages=false` ile, ekran
+   * KAPANINCA anlaşılıyordu. Ekran başına bir kez.
+   */
+  const viewFailedTrackedRef = useRef(false);
+  const packagesSettledEmpty =
+    isPurchasesAvailable && !isLoading && !isFetching && options.length === 0;
+  useEffect(() => {
+    if (!packagesSettledEmpty || viewFailedTrackedRef.current) return;
+    viewFailedTrackedRef.current = true;
+    trackEvent("paywall_view_failed", {
+      source,
+      placement,
+      reason: offeringsFailed ? "offerings_error" : "no_packages",
+    });
+  }, [packagesSettledEmpty, offeringsFailed, source, placement]);
 
   const handleDismiss = useCallback(() => {
     if (outcomeRef.current === "pending") {
       trackEvent("paywall_dismissed", {
         source,
+        placement,
         seconds_on_screen: Math.round((Date.now() - viewedAtRef.current) / 1000),
         // Plan seçtiyse niyet vardı ama fiyatta vazgeçti; hiç seçmediyse
         // teklif en baştan tutmadı. İkisi çok farklı sorunlar.
@@ -196,7 +233,7 @@ export function PaywallScreen({
       });
     }
     onClose();
-  }, [onClose, options.length, selected, source]);
+  }, [onClose, options.length, selected, source, placement]);
 
   /**
    * Premium AÇILDIKTAN SONRA HER ŞEYİN yenilenmesi gerekiyor -- yalnızca
@@ -225,8 +262,19 @@ export function PaywallScreen({
   const handlePurchase = useCallback(async () => {
     if (!selected) return;
 
+    trackEvent("paywall_cta_tapped", {
+      source,
+      placement,
+      plan: selected.kind,
+      package_id: selected.pkg.identifier,
+    });
     setBusy({ kind: "purchase", id: selected.pkg.identifier });
-    const outcome = await purchasePackage(selected.pkg, { source, plan: selected.kind });
+    const outcome = await purchasePackage(selected.pkg, {
+      source,
+      plan: selected.kind,
+      placement,
+      offerType: selected.trial ? "intro" : "none",
+    });
 
     if (outcome.status === "cancelled") {
       setBusy(null);
@@ -276,6 +324,7 @@ export function PaywallScreen({
       // denemenin ne zaman başladığı bilinirse ölçülebilir.
       trackEvent("trial_started", {
         source,
+        placement,
         plan: selected.kind,
         trial_days: selected.trial.days,
       });
@@ -302,7 +351,7 @@ export function PaywallScreen({
     Alert.alert(t("paywall.activatingTitle"), t("paywall.activatingBody"), [
       { text: t("common.ok"), onPress: onClose },
     ]);
-  }, [onClose, refreshStatus, selected, source, t]);
+  }, [onClose, refreshStatus, selected, source, placement, t]);
 
   /**
    * GERİ YÜKLEME ÜÇ FARKLI SONUÇ VERİR, ÜÇÜ DE AYRI ANLATILIR.
@@ -374,8 +423,8 @@ export function PaywallScreen({
   useEffect(() => {
     if (!showTimeline || timelineTrackedRef.current) return;
     timelineTrackedRef.current = true;
-    trackEvent("paywall_timeline_shown", { source, can_remind: canRemind });
-  }, [showTimeline, source, canRemind]);
+    trackEvent("paywall_timeline_shown", { source, placement, can_remind: canRemind });
+  }, [showTimeline, source, placement, canRemind]);
 
   const periodLabel =
     selected?.kind === "annual"
@@ -468,7 +517,7 @@ export function PaywallScreen({
               label={t("paywall.retryPackages")}
               variant="secondary"
               onPress={() => {
-                trackEvent("paywall_packages_retry", { source });
+                trackEvent("paywall_packages_retry", { source, placement });
                 void refetch();
               }}
               loading={isFetching}
@@ -485,6 +534,7 @@ export function PaywallScreen({
                 plan: option.kind,
                 package_id: option.pkg.identifier,
                 source,
+                placement,
               });
               setSelectedId(option.pkg.identifier);
             }}

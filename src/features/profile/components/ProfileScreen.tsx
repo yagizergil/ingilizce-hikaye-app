@@ -32,6 +32,7 @@ import { ProfileStatTiles } from "@/features/profile/components/ProfileStatTiles
 import { ProfileAccountRow } from "@/features/profile/components/ProfileAccountRow";
 import { ProfileFooter } from "@/features/profile/components/ProfileFooter";
 import { useDevToolsUnlock } from "@/features/profile/hooks/useDevToolsUnlock";
+import { openPaywall } from "@/features/paywall";
 
 /**
  * Profil ekranı.
@@ -182,7 +183,7 @@ export function ProfileScreen() {
 
   const handleOpenPaywall = useCallback(() => {
     trackEvent("paywall_opened", { source: "profile" });
-    router.push("/paywall?source=profile");
+    openPaywall("profile");
   }, []);
 
   const handleRateUs = useCallback(() => {

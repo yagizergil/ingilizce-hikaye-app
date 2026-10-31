@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import { spacing } from "@/theme";
 import { useReadingTheme } from "@/theme/useTheme";
 import { ErrorState, MascotLoading, useToast } from "@/components/ui";
-import { router } from "expo-router";
 
 import { useActivationStore } from "@/hooks/useActivationStore";
 import { trackEvent, trackError } from "@/lib/analytics";
@@ -51,7 +50,7 @@ import { ReaderMenuSheet } from "@/features/reader/components/ReaderMenuSheet";
 import { ReaderModePill } from "@/features/reader/components/ReaderModePill";
 import { ReaderListenPanel } from "@/features/reader/components/ReaderListenPanel";
 import { useReaderModeStore } from "@/features/reader/hooks/useReaderModeStore";
-import { useSubscriptionQuery } from "@/features/paywall";
+import { openPaywall, useSubscriptionQuery } from "@/features/paywall";
 import { useActiveWordStore } from "@/features/reader/hooks/useActiveWordStore";
 import { BookWordsSheet } from "@/features/reader/components/BookWordsSheet";
 import { ChapterCompleteCard } from "@/features/reader/components/ChapterCompleteCard";
@@ -475,7 +474,7 @@ export function ReaderScreen({
        */
       const openQuotaPaywall = () => {
         trackEvent("paywall_opened", { source: "word_quota_exhausted" });
-        router.push(`/paywall?source=word_quota&word=${encodeURIComponent(payload.surface)}`);
+        openPaywall("word_quota", { word: payload.surface });
       };
 
       /**
@@ -533,7 +532,7 @@ export function ReaderScreen({
    */
   const handleOpenPaywallFromQuota = useCallback(() => {
     trackEvent("paywall_opened", { source: "word_quota_badge" });
-    router.push("/paywall?source=word_quota_badge");
+    openPaywall("word_quota_badge");
   }, []);
 
   const sentencePaywallFirst = shouldOpenSentencePaywall(wordQuota.data);
@@ -551,7 +550,7 @@ export function ReaderScreen({
     (payload: { sentenceText: string; paragraphId: string }) => {
       if (sentencePaywallFirst) {
         trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
-        router.push("/paywall?source=sentence_quota");
+        openPaywall("sentence_quota");
         return;
       }
       setActiveSentence({ text: payload.sentenceText });
@@ -563,7 +562,7 @@ export function ReaderScreen({
   const handleSentenceQuotaExhausted = useCallback(() => {
     sentenceSheetRef.current?.dismiss();
     trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
-    router.push("/paywall?source=sentence_quota");
+    openPaywall("sentence_quota");
   }, []);
 
   const handlePageChange = useCallback((payload: PaginatedPageChangePayload) => {
@@ -882,7 +881,7 @@ export function ReaderScreen({
                 locked={audioLocked}
                 onLockedPress={() => {
                   trackEvent("paywall_opened", { source: "reader_listen" });
-                  router.push("/paywall?source=reader_listen");
+                  openPaywall("reader_listen");
                 }}
               />
             </View>
@@ -916,7 +915,7 @@ export function ReaderScreen({
           setActiveWord(null);
           setActiveWordKey(null);
           trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
-          router.push("/paywall?source=sentence_quota");
+          openPaywall("sentence_quota");
         }}
         onDismiss={() => {
           setActiveWord(null);

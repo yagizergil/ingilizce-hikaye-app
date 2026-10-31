@@ -14,7 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
 
 import { detailColors, detailType, homeColors, homeMetrics, homeSpace, homeType } from "@/theme";
 import { trackError, trackEvent } from "@/lib/analytics";
@@ -35,6 +34,7 @@ import {
 
 import type { PracticeExercise } from "@/features/vocabulary/practice/buildPracticeSession";
 import { playSfx } from "@/lib/sfx";
+import { openPaywall } from "@/features/paywall";
 
 type Phase = "preparing" | "empty" | "running" | "done" | "error";
 
@@ -77,7 +77,7 @@ export function SmartPracticeScreen({ onClose }: SmartPracticeScreenProps) {
       void queryClient.invalidateQueries({ queryKey: vocabularyQueryKeys.smartPracticeQuota() });
       if (!allowed) {
         trackEvent("paywall_opened", { source: "smart_practice" });
-        router.replace("/paywall?source=smart_practice");
+        openPaywall("smart_practice", { replace: true });
         return;
       }
       trackEvent("smart_practice_started", { size: built.length });
