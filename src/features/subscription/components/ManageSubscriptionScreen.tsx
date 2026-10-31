@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text } from "react-native";
 
-import { router } from "expo-router";
+import { router, type Href } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
@@ -26,7 +26,7 @@ interface ManageSubscriptionScreenProps {
   onClose: () => void;
 }
 
-const ACTION_ROUTES: Partial<Record<ManageAction, string>> = {
+const ACTION_ROUTES: Partial<Record<ManageAction, Href>> = {
   fixPayment: "/billing-fix?source=manage",
   cancel: "/cancel-subscription",
   winback: "/winback?source=manage",
