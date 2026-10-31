@@ -29,6 +29,7 @@ import {
   useRecommendedBook,
 } from "@/features/home";
 import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { useAppOpenInterruption } from "@/features/offers";
 import {
   challengeState,
   levelFromXp,
@@ -85,6 +86,10 @@ export default function HomeScreen() {
   useEffect(() => {
     trackEvent("home_viewed");
   }, []);
+
+  // Takvim teklifleri (gün 2 / 3-30 / 30+): oturumun ilk ana sayfa odağında,
+  // kural motoru izin verirse (rapor §5.3). Okuyucudan dönülünce DEĞİL.
+  useAppOpenInterruption();
 
   useRefetchOnFocusIfStale([
     { dataUpdatedAt: extrasUpdatedAt, refetch: refetchExtras },

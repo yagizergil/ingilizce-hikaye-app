@@ -1595,5 +1595,29 @@
     "retry": "Tekrar dene",
     "retrying": "Bağlanılıyor…",
     "autoRetry": "Bağlantı gelince kendiliğinden yeniden denenecek."
+  },
+  "offers": {
+    "sale": {
+      "badge": "%{{percent}} indirim",
+      "title": "Premium'a özel fiyat",
+      "subtitle": "Hikâyeler her zaman ücretsiz. Premium'u şimdi daha az ödeyerek aç.",
+      "endsIn": "Teklif {{hours}} sa {{minutes}} dk içinde bitiyor",
+      "anchorA11y": "Normal fiyat {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "Teklifi al",
+      "exitTitle": "Teklif bitiyor",
+      "exitBody": "Bu fiyat {{hours}} sa {{minutes}} dk sonra sona eriyor.",
+      "exitStay": "Teklifte kal",
+      "exitLeave": "Vazgeç",
+      "reminderTitle": "İndirim bitmek üzere",
+      "reminderBody": "Premium'daki özel fiyatın yaklaşık {{hours}} saat içinde sona eriyor."
+    },
+    "downsell": {
+      "title": "Önce bir ay dene",
+      "body": "Yıllık plan fazla geldiyse aylıkla başla; istediğin zaman iptal edebilirsin.",
+      "price": "{{price}} / ay",
+      "cta": "Aylıkla başla",
+      "decline": "Hayır, teşekkürler"
+    }
   }
 }

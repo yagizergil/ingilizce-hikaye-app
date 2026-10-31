@@ -513,6 +513,24 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 > geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
 > içinde.
 
+### Teklif kural motoru (2026-10-31, branch `paywall/faz2-teklif`, CANLIDA DEĞİL)
+
+Tasarım: `PAYWALL-KARSILASTIRMA-VE-COZUM.md` C6/C7/C8, §5.3; `IZLENECEK-YOL.md` T3/T4/U4.
+`src/features/offers/`: kurallar `paywall_rules` (migration 090/093) + gömülü
+kopya `rules/defaultRules.json` (test ikisini eşit tutuyor); değerlendirme
+istemcide (`rules/engine.ts`, saf ve testli); bağlam `paywall_context()` (092);
+sunucu süreli teklif `offer_grants` + `grant_offer()` (091). Kurallar:
+`onboarding_downsell` (aylık, kova < 50 deney kolu), `sale_d2`, `sale_d3_d30`,
+`sale_d30_plus`, `sale_cascade`, `home_offer` (72 sa artık tablodan).
+Global: ilk gün tam ekran yok, tam ekranlar arası 20 sa, oturumda 1, diyalog
+açıkken yok (`hooks/useDialogGuard`), ödeme sorunu varken indirim yok, %10
+kalıcı holdout (ayrı tuzlu kova) zamanlanmış teklif görmez. **Okuyucu motoru
+çağıramaz** (ESLint yasağı + `readerIsolation.test.ts`; okuyucu kaynaklı
+paywall kapanışı motorda engelli). Ürün kimliği kodda yok: offering adı
+(`sale`, `downsell`) kuraldan; offering yoksa sessizce normal paywall'a
+(kaskadda yalnızca kapanır). Satın alma akışı `paywall/hooks/usePurchaseFlow`
+içinde ortak (paywall, indirim ekranı, çıkış teklifi).
+
 ### 1.0.9 turu (2026-10-06): okuyucu, çok dilli ses, onboarding, maskot Lumi, okur seviyesi
 
 - **Maskotun adı Lumi** (ışık çağrışımı, Port Lumen bağı, 10 dilde kolay).

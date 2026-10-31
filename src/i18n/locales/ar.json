@@ -1663,5 +1663,29 @@
     "retry": "حاول مجددًا",
     "retrying": "جارٍ الاتصال…",
     "autoRetry": "سنعيد المحاولة تلقائيًا عند عودة الاتصال."
+  },
+  "offers": {
+    "sale": {
+      "badge": "خصم {{percent}}٪",
+      "title": "سعر خاص على Premium",
+      "subtitle": "القصص مجانية دائمًا. افتح Premium بسعر أقل الآن.",
+      "endsIn": "ينتهي العرض خلال {{hours}} س {{minutes}} د",
+      "anchorA11y": "السعر العادي {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "احصل على العرض",
+      "exitTitle": "العرض ينتهي",
+      "exitBody": "ينتهي هذا السعر خلال {{hours}} س {{minutes}} د.",
+      "exitStay": "ابقَ على العرض",
+      "exitLeave": "خروج",
+      "reminderTitle": "خصمك على وشك الانتهاء",
+      "reminderBody": "ينتهي سعر Premium الخاص بك خلال {{hours}} ساعة تقريبًا."
+    },
+    "downsell": {
+      "title": "جرّب شهرًا أولًا",
+      "body": "إذا بدت الخطة السنوية كثيرة، فابدأ بالشهرية. يمكنك الإلغاء في أي وقت.",
+      "price": "{{price}} / شهر",
+      "cta": "ابدأ شهريًا",
+      "decline": "لا، شكرًا"
+    }
   }
 }

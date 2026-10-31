@@ -1595,5 +1595,29 @@
     "retry": "再試行",
     "retrying": "接続中…",
     "autoRetry": "オンラインに戻ると自動的に再試行します。"
+  },
+  "offers": {
+    "sale": {
+      "badge": "{{percent}}%オフ",
+      "title": "Premium の特別価格",
+      "subtitle": "物語はいつでも無料。今なら Premium をお得に始められます。",
+      "endsIn": "あと {{hours}} 時間 {{minutes}} 分で終了",
+      "anchorA11y": "通常価格 {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "オファーを受け取る",
+      "exitTitle": "オファー終了間近",
+      "exitBody": "この価格はあと {{hours}} 時間 {{minutes}} 分で終了します。",
+      "exitStay": "オファーを続ける",
+      "exitLeave": "閉じる",
+      "reminderTitle": "割引がまもなく終了",
+      "reminderBody": "Premium の特別価格はあと約 {{hours}} 時間で終了します。"
+    },
+    "downsell": {
+      "title": "まずは1か月",
+      "body": "年間プランが多すぎると感じたら、月額から始めましょう。いつでも解約できます。",
+      "price": "{{price}} / 月",
+      "cta": "月額で始める",
+      "decline": "いいえ、結構です"
+    }
   }
 }

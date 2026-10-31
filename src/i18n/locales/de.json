@@ -1595,5 +1595,29 @@
     "retry": "Erneut versuchen",
     "retrying": "Verbinde…",
     "autoRetry": "Sobald du wieder online bist, versuchen wir es automatisch erneut."
+  },
+  "offers": {
+    "sale": {
+      "badge": "{{percent}} % Rabatt",
+      "title": "Ein Sonderpreis für Premium",
+      "subtitle": "Geschichten sind immer kostenlos. Schalte Premium jetzt günstiger frei.",
+      "endsIn": "Angebot endet in {{hours}} Std. {{minutes}} Min.",
+      "anchorA11y": "Normalpreis {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "Angebot sichern",
+      "exitTitle": "Angebot endet",
+      "exitBody": "Dieser Preis endet in {{hours}} Std. {{minutes}} Min.",
+      "exitStay": "Angebot behalten",
+      "exitLeave": "Verlassen",
+      "reminderTitle": "Dein Rabatt endet bald",
+      "reminderBody": "Dein Premium-Sonderpreis endet in etwa {{hours}} Stunden."
+    },
+    "downsell": {
+      "title": "Erst einen Monat testen",
+      "body": "Ist dir das Jahresabo zu viel? Starte monatlich, jederzeit kündbar.",
+      "price": "{{price}} / Monat",
+      "cta": "Monatlich starten",
+      "decline": "Nein, danke"
+    }
   }
 }

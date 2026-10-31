@@ -1,0 +1,137 @@
+[
+  {
+    "id": "onboarding_downsell",
+    "trigger": "paywall_closed",
+    "presentation": "sheet",
+    "rank": 20,
+    "conditions": [
+      { "field": "source", "op": "=", "value": "onboarding" },
+      { "field": "isPremium", "op": "=", "value": false },
+      { "field": "userBucket", "op": "<", "value": 50 }
+    ],
+    "action": {
+      "kind": "downsell",
+      "offering_id": "downsell",
+      "package_type": "MONTHLY",
+      "placement": "exit",
+      "source": "downsell_onboarding",
+      "experiment": "AB_OnbDownsell_LNG_IOS"
+    },
+    "cooldown_hours": null,
+    "max_shows": 1,
+    "exempt_global_cooldown": true,
+    "min_app_version": null
+  },
+  {
+    "id": "sale_cascade",
+    "trigger": "paywall_closed",
+    "presentation": "fullscreen",
+    "rank": 12,
+    "conditions": [
+      {
+        "field": "source",
+        "op": "in",
+        "value": ["audio", "book_quiz", "quiz_level_passed", "word_pack", "smart_practice"]
+      },
+      { "field": "isPremium", "op": "=", "value": false },
+      { "field": "daysSinceInstall", "op": ">=", "value": 1 },
+      { "field": "hoursSinceLastSale", "op": ">=", "value": 168 },
+      { "field": "hoursToNextCalendarSale", "op": ">=", "value": 24 }
+    ],
+    "action": {
+      "kind": "sale",
+      "offering_id": "sale",
+      "offer_hours": 48,
+      "notify_before_hours": 6,
+      "placement": "exit"
+    },
+    "cooldown_hours": 168,
+    "max_shows": null,
+    "exempt_global_cooldown": false,
+    "min_app_version": null
+  },
+  {
+    "id": "sale_d2",
+    "trigger": "app_open",
+    "presentation": "fullscreen",
+    "rank": 11,
+    "conditions": [
+      { "field": "isPremium", "op": "=", "value": false },
+      { "field": "daysSinceInstall", "op": "=", "value": 2 },
+      { "field": "everSubscribed", "op": "=", "value": false },
+      { "field": "readSessions24h", "op": ">=", "value": 1 }
+    ],
+    "action": {
+      "kind": "sale",
+      "offering_id": "sale",
+      "offer_hours": 48,
+      "notify_before_hours": 6,
+      "placement": "app_open"
+    },
+    "cooldown_hours": null,
+    "max_shows": 1,
+    "exempt_global_cooldown": false,
+    "min_app_version": null
+  },
+  {
+    "id": "sale_d3_d30",
+    "trigger": "app_open",
+    "presentation": "fullscreen",
+    "rank": 10,
+    "conditions": [
+      { "field": "isPremium", "op": "=", "value": false },
+      { "field": "daysSinceInstall", "op": ">=", "value": 3 },
+      { "field": "daysSinceInstall", "op": "<=", "value": 30 },
+      { "field": "hoursSinceLastSale", "op": ">=", "value": 168 }
+    ],
+    "action": {
+      "kind": "sale",
+      "offering_id": "sale",
+      "offer_hours": 48,
+      "notify_before_hours": 6,
+      "placement": "app_open"
+    },
+    "cooldown_hours": 168,
+    "max_shows": null,
+    "exempt_global_cooldown": false,
+    "min_app_version": null
+  },
+  {
+    "id": "sale_d30_plus",
+    "trigger": "app_open",
+    "presentation": "fullscreen",
+    "rank": 9,
+    "conditions": [
+      { "field": "isPremium", "op": "=", "value": false },
+      { "field": "daysSinceInstall", "op": ">", "value": 30 },
+      { "field": "hoursSinceLastSale", "op": ">=", "value": 336 }
+    ],
+    "action": {
+      "kind": "sale",
+      "offering_id": "sale",
+      "offer_hours": 48,
+      "notify_before_hours": 6,
+      "placement": "app_open"
+    },
+    "cooldown_hours": 336,
+    "max_shows": null,
+    "exempt_global_cooldown": false,
+    "min_app_version": null
+  },
+  {
+    "id": "home_offer",
+    "trigger": "home_focus",
+    "presentation": "card",
+    "rank": 5,
+    "conditions": [
+      { "field": "isPremium", "op": "=", "value": false },
+      { "field": "trialEligible", "op": "=", "value": true },
+      { "field": "firstChapterFinished", "op": "=", "value": true }
+    ],
+    "action": { "kind": "trial_card", "placement": "home", "source": "home_offer" },
+    "cooldown_hours": 72,
+    "max_shows": null,
+    "exempt_global_cooldown": true,
+    "min_app_version": null
+  }
+]

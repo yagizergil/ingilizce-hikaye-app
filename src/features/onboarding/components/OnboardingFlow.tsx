@@ -12,6 +12,7 @@ import { trackEvent } from "@/lib/analytics";
 
 import { useSetLanguagePairMutation } from "@/features/languagePair";
 import { PaywallScreen, useSubscriptionQuery } from "@/features/paywall";
+import { DownsellSheet, useInterruptions } from "@/features/offers";
 import { useCompleteOnboardingMutation } from "@/features/onboarding/api/useCompleteOnboardingMutation";
 import { useOnboardingContentQuery } from "@/features/onboarding/api/useOnboardingContentQuery";
 import { useOnboardingGlossesQuery } from "@/features/onboarding/api/useOnboardingGlossesQuery";
@@ -31,6 +32,8 @@ import { OnboardingIntroCarousel } from "@/features/onboarding/components/Onboar
 import { OnboardingMeetMascot } from "@/features/onboarding/components/OnboardingMeetMascot";
 import { OnboardingWordsCelebrationStep } from "@/features/onboarding/components/OnboardingWordsCelebrationStep";
 
+import type { PaywallCloseReason } from "@/features/paywall";
+import type { Rule } from "@/features/offers";
 import type { OnboardingWord } from "@/features/onboarding/components/OnboardingFirstReadStep";
 import type { CefrLevel } from "@/features/onboarding/levelEstimate";
 
@@ -64,6 +67,7 @@ type Step =
   | "path"
   | "plan"
   | "paywall"
+  | "downsell"
   | "success";
 
 /** İlerleme çubuğu gösteren adımlar, sırayla. */
@@ -324,8 +328,34 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
    */
   const handlePlanDone = useCallback(() => setStep("paywall"), []);
 
-  /** Satın alsa da almasa da akış "Harika!" ekranıyla bitiyor. */
-  const handlePaywallClosed = useCallback(() => setStep("success"), []);
+  /**
+   * Satın alsa da almasa da akış "Harika!" ekranıyla bitiyor. Satın almadan
+   * kapatana, kural motoru izin verirse önce tek seferlik çıkış teklifi
+   * (rapor C8, `onboarding_downsell`; deney kolu sunucudaki kovadan).
+   */
+  const { fire: fireInterruption, userBucket } = useInterruptions();
+  const [downsellRule, setDownsellRule] = useState<Rule | null>(null);
+  const handlePaywallClosed = useCallback(
+    (reason: PaywallCloseReason) => {
+      if (reason === "dismissed") {
+        const rule = fireInterruption("paywall_closed", { source: "onboarding" });
+        const downsell = rule?.action.kind === "downsell" ? rule : null;
+        // Kontrol kolu da ölçülsün: deney analizi bu olayı kovaya göre böler.
+        trackEvent("onboarding_paywall_exit", {
+          downsell_shown: downsell !== null,
+          user_bucket: userBucket ?? -1,
+        });
+        if (downsell) {
+          setDownsellRule(downsell);
+          setStep("downsell");
+          return;
+        }
+      }
+      setStep("success");
+    },
+    [fireInterruption, userBucket],
+  );
+  const handleDownsellDone = useCallback(() => setStep("success"), []);
 
   /**
    * İLK KİTAP (1.1.0): kullanıcı tadımını yaptığı pasajın kitabına, o
@@ -505,6 +535,10 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
         onClose={handlePaywallClosed}
       />
     );
+  }
+
+  if (step === "downsell" && downsellRule) {
+    return <DownsellSheet rule={downsellRule} onDone={handleDownsellDone} />;
   }
 
   return (

@@ -1595,5 +1595,29 @@
     "retry": "重试",
     "retrying": "正在连接…",
     "autoRetry": "恢复联网后将自动重试。"
+  },
+  "offers": {
+    "sale": {
+      "badge": "立减 {{percent}}%",
+      "title": "Premium 特别价格",
+      "subtitle": "故事永远免费。现在以更低价格解锁 Premium。",
+      "endsIn": "优惠将在 {{hours}} 小时 {{minutes}} 分钟后结束",
+      "anchorA11y": "原价 {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "领取优惠",
+      "exitTitle": "优惠即将结束",
+      "exitBody": "此价格将在 {{hours}} 小时 {{minutes}} 分钟后结束。",
+      "exitStay": "保留优惠",
+      "exitLeave": "离开",
+      "reminderTitle": "你的折扣即将结束",
+      "reminderBody": "你的 Premium 特别价格将在约 {{hours}} 小时后结束。"
+    },
+    "downsell": {
+      "title": "先试一个月",
+      "body": "如果年度方案太多，可以从月度开始。随时可取消。",
+      "price": "{{price}} / 月",
+      "cta": "从月度开始",
+      "decline": "不用了，谢谢"
+    }
   }
 }

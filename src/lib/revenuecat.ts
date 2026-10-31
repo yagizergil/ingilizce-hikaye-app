@@ -229,6 +229,38 @@ export async function fetchOfferingPackages(
   }
 }
 
+/** Adı verilen offering'in paketleri ve güncel (varsayılan) teklifin paketleri. */
+export interface NamedOfferingPackages {
+  /** İstenen offering RevenueCat'te tanımlı değilse null -- BİRLEŞTİRME YOK. */
+  requested: PurchasesPackage[] | null;
+  current: PurchasesPackage[];
+}
+
+/**
+ * Bir teklif ekranı (indirim, çıkış teklifi) için offering'i OLDUĞU GİBİ okur.
+ *
+ * `fetchOfferingPackages`'tan farkı: istenen offering yoksa sessizce
+ * güncel teklife düşmüyor, `requested: null` diyor. İndirim ekranının
+ * "teklif yok -> normal paywall" kararını verebilmesi için bu ayrımı görmesi
+ * gerekiyor; aksi hâlde normal fiyatlara "indirim" diye bakardı. Ürün
+ * kimliği bilmiyor: offering adı kural tablosundan geliyor.
+ */
+export async function fetchNamedOffering(offeringId: string): Promise<NamedOfferingPackages> {
+  const purchases = await readyPurchases();
+  if (!purchases) return { requested: null, current: [] };
+  try {
+    const offerings = await purchases.getOfferings();
+    const requested = offerings.all[offeringId] ?? null;
+    return {
+      requested: requested ? requested.availablePackages : null,
+      current: offerings.current?.availablePackages ?? [],
+    };
+  } catch (error) {
+    trackError("revenuecat.namedOffering", error, { offering_id: offeringId });
+    throw error;
+  }
+}
+
 /** `customerInfo` içinde premium yetkisi aktif mi. */
 export function hasPremium(info: CustomerInfo | null): boolean {
   if (!info) return false;

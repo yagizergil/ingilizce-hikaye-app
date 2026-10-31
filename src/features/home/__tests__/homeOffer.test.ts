@@ -31,4 +31,11 @@ describe("home offer card rule", () => {
     expect(shouldShowHomeOffer({ ...base, ...finished, isPremium: true })).toBe(false);
     expect(shouldShowHomeOffer({ ...base, ...finished, trialDays: null })).toBe(false);
   });
+
+  it("uses the server-managed cooldown when given (paywall_rules.home_offer)", () => {
+    const finished = { firstChapterFinishedAt: 0, lastShownAt: 40 * HOUR };
+    const cooldownMs = 24 * HOUR;
+    expect(shouldShowHomeOffer({ ...base, ...finished, now: 63 * HOUR, cooldownMs })).toBe(false);
+    expect(shouldShowHomeOffer({ ...base, ...finished, now: 64 * HOUR, cooldownMs })).toBe(true);
+  });
 });
