@@ -51,6 +51,7 @@ import { ReaderModePill } from "@/features/reader/components/ReaderModePill";
 import { ReaderListenPanel } from "@/features/reader/components/ReaderListenPanel";
 import { useReaderModeStore } from "@/features/reader/hooks/useReaderModeStore";
 import { openPaywall, useSubscriptionQuery } from "@/features/paywall";
+import { isReaderListenLocked, useBookAudioAccessQuery } from "@/features/library";
 import { useActiveWordStore } from "@/features/reader/hooks/useActiveWordStore";
 import { BookWordsSheet } from "@/features/reader/components/BookWordsSheet";
 import { ChapterCompleteCard } from "@/features/reader/components/ChapterCompleteCard";
@@ -208,12 +209,13 @@ export function ReaderScreen({
    *
    * İKİ AYRI BAYRAK, ikisi de gerekli:
    *  - `hasStudioAudio` — bu bölüm için kayıt ÜRETİLMİŞ mi (klasiklerde yok).
-   *  - `audio.available` — bu kullanıcı onu ÇALABİLİR mi (premium; karar
-   *    sunucuda, imzalı bağlantıyla geliyor).
+   *  - `audio.available` — bu kullanıcı onu ÇALABİLİR mi (premium ya da
+   *    kitabın ücretsiz ilk seslendirilmiş bölümü; karar sunucuda,
+   *    `can_play_section_audio()`, imzalı bağlantıyla geliyor).
    *
-   * İkisi de doğru değilse seslendirme düğmesi hiç GÖRÜNMÜYOR. Kilit
-   * ikonu, "yükselt" düğmesi ya da herhangi bir premium promosyonu da yok
-   * (Ürün İlkesi #1): reader satış yapmaz, teklif kitap detayında.
+   * Kayıt yoksa seslendirme hapı hiç GÖRÜNMÜYOR. Kayıt var ama erişim
+   * yoksa dinle yuvarlağı kilit rozetli (2026-10-06 kararı) ve yalnızca
+   * kullanıcı KENDİSİ basınca paywall açılıyor; başka teklif yok (İlke #1).
    */
   const hasStudioAudio = Boolean(chapter?.audioUrl && chapter?.audioTimingsUrl);
 
@@ -238,12 +240,21 @@ export function ReaderScreen({
   const storedMode = useReaderModeStore((state) => state.mode);
   const setMode = useReaderModeStore((state) => state.setMode);
   const listening = storedMode === "listen" && canPlayAudio;
-  // Kitapta stüdyo sesi var ama kullanıcı premium değil: hap kilitli görünür.
-  // Hap satırı bölüm verisinden (eşzamanlı) karar veriyor, imzalı bağlantı
-  // gelince DEĞİL: sonradan belirmesi okuma alanını kısaltıp sayfaları
-  // yeniden dizdiriyordu.
+  // Kitapta stüdyo sesi var ama kullanıcı premium değil: hap kilitli görünür
+  // -- bölüm, kitabın ücretsiz bölümü (ilk seslendirilmiş bölüm, migration
+  // 110, 2026-10-31) DEĞİLSE. Ücretsiz bölümde hap normal çalışır; yeni bir
+  // teklif ya da banner YOK. Hap satırının VARLIĞI bölüm verisinden
+  // (eşzamanlı) karar veriyor, imzalı bağlantı gelince DEĞİL: sonradan
+  // belirmesi okuma alanını kısaltıp sayfaları yeniden dizdiriyordu. Kilit
+  // rozeti yalnızca görsel; asıl kapı sunucuda (`chapter-audio`).
   const subscription = useSubscriptionQuery();
-  const audioLocked = hasStudioAudio && subscription.data?.isPremium === false;
+  const bookAudioAccess = useBookAudioAccessQuery(chapter?.bookId, hasStudioAudio);
+  const audioLocked = isReaderListenLocked({
+    hasStudioAudio,
+    isPremium: subscription.data?.isPremium,
+    access: bookAudioAccess.data,
+    sectionId: chapter?.id,
+  });
   // Uygulamanın geri kalanı hep açık temada; okuma yüzeyi koyu temada ya da
   // dinleme modunda (kahverengi) ise durum çubuğu ikonları açık renk olmalı.
   const { themeName: readingThemeName } = useReadingTheme();
@@ -867,9 +878,9 @@ export function ReaderScreen({
         </>
       ) : (
         <>
-          {/* Mod hapı YALNIZCA seslendirmesi olan ve erişimi açık kitaplarda.
-              Kilitli bir hap okuma ekranına premium promosyonu sokmak olurdu
-              (Ürün İlkesi #1, ADR-012). */}
+          {/* Mod hapı YALNIZCA seslendirmesi olan bölümlerde. Erişim yoksa
+              dinle yuvarlağı kilitli (2026-10-06); ücretsiz bölüm 1'de açık
+              (2026-10-31). Kendiliğinden açılan teklif yok (İlke #1). */}
           {hasStudioAudio ? (
             // Akışın içinde (absolute değil): eskiden son satırların
             // üstüne biniyordu. Okuma alanı hap kadar kısalıyor ve

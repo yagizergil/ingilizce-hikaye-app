@@ -492,6 +492,7 @@
     "audio": {
       "label": "朗读",
       "unlocked": "这个故事由录音棚配音朗读，逐词高亮跟读。",
+      "firstChapterFree": "第一章的录音棚朗读对所有人免费。其他章节可通过高级版收听，朗读到的每个词都会高亮显示。",
       "locked": "录音棚朗读属于会员功能。用自然的人声听这个故事，读到哪个词就高亮哪个词。"
     },
     "about": "关于本书",
@@ -1228,7 +1229,7 @@
     "benefits": {
       "studioAudio": {
         "title": "边听边懂",
-        "body": "录音室朗读，正在读到的词会同步高亮。"
+        "body": "每个故事的所有章节都有录音棚朗读，朗读到的词会高亮显示。"
       },
       "unlimitedLookups": {
         "title": "单词翻译无限制",
@@ -1695,7 +1696,7 @@
       "banner": "Premium 将于 {{date}} 结束；自动续订已关闭。",
       "bannerCta": "管理",
       "notifTitle": "Premium 将在 3 天后结束",
-      "notifBody": "收听和无限翻译将于 {{date}} 关闭。如想继续使用，可重新开启续订。"
+      "notifBody": "收听全部章节和无限翻译将于 {{date}} 关闭。如需保留，请重新开启续订。"
     },
     "trial": {
       "lastDayBanner": "你的免费试用将于 {{date}} 结束，订阅随即开始。",
@@ -1721,7 +1722,7 @@
       "title": "取消订阅",
       "lossTitle": "Premium 结束后会有哪些变化",
       "loss": {
-        "audio": "录音棚朗读收听将关闭",
+        "audio": "录音棚朗读将仅保留每本书的第一章",
         "lookups_one": "单词和句子翻译限制为每天 {{count}} 次",
         "lookups_other": "单词和句子翻译限制为每天 {{count}} 次",
         "savedWords_one": "你保存的 {{count}} 个单词会保留；新增单词上限为 {{limit}} 个",

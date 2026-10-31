@@ -150,7 +150,8 @@ export function useChapterAudio({
    * migration 031 ile herkese açık olmaktan çıktı. Adresler hâlâ
    * `book_sections` satırında duruyor ama artık tek başlarına açılmıyor;
    * erişimi sunucu (`chapter-audio`) veriyor ve kararı orada
-   * `can_play_book_audio()` alıyor.
+   * `can_play_section_audio()` alıyor (premium ya da kitabın ücretsiz ilk
+   * seslendirilmiş bölümü, migration 110).
    *
    * 403 (kilitli) bir HATA DEĞİL: sorgu null döner, `available` false olur
    * ve reader cihaz sesine düşer — yani erişimi olmayan kullanıcı için

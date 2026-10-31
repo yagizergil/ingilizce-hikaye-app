@@ -36,6 +36,7 @@ import {
 } from "@/features/home";
 import {
   BookAudioCard,
+  canListenToSection,
   BookSeriesInfo,
   BookWordOverlap,
   ChapterListItem,
@@ -127,7 +128,9 @@ export default function BookDetailScreen() {
       return;
     }
 
-    if (!audioAccess?.canPlay) {
+    // Premium değilse yalnızca kitabın ücretsiz bölümü (ilk seslendirilmiş
+    // bölüm, migration 110) çalınabilir; devam bölümü o değilse paywall.
+    if (!canListenToSection(audioAccess, data.continueChapter.id)) {
       trackEvent("book_listen_locked", { bookId: data.book.id });
       openPaywall("audio");
       return;
@@ -189,7 +192,8 @@ export default function BookDetailScreen() {
   }
 
   const { book, continueChapter, hasStarted, isFinished } = data;
-  const listenLocked = isAudioAccessKnown && !audioAccess?.canPlay;
+  const listenLocked =
+    isAudioAccessKnown && !canListenToSection(audioAccess, continueChapter?.id);
 
   const ctaLabel = isFinished
     ? t("bookDetail.cta.reread")

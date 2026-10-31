@@ -492,6 +492,7 @@
     "audio": {
       "label": "Narración",
       "unlocked": "Esta historia está narrada con voz de estudio y se resalta palabra por palabra.",
+      "firstChapterFree": "La narración de estudio del primer capítulo es gratis para todos. Escucha los demás capítulos con premium, con cada palabra resaltada a medida que se lee.",
       "locked": "La narración de estudio forma parte de premium. Escucha esta historia con una voz natural y cada palabra resaltada a medida que se lee."
     },
     "about": "Sobre el libro",
@@ -1228,7 +1229,7 @@
     "benefits": {
       "studioAudio": {
         "title": "Escucha y entiende",
-        "body": "Narración de estudio con la palabra hablada resaltada mientras lees."
+        "body": "Todos los capítulos de cada historia con narración de estudio y la palabra hablada resaltada mientras lees."
       },
       "unlimitedLookups": {
         "title": "Traducciones de palabras sin límite",
@@ -1695,7 +1696,7 @@
       "banner": "Premium termina el {{date}}; la renovación está desactivada.",
       "bannerCta": "Gestionar",
       "notifTitle": "Premium termina en 3 días",
-      "notifBody": "La escucha y la traducción ilimitada se desactivan el {{date}}. Reactiva la renovación si quieres conservarlas."
+      "notifBody": "La escucha de todos los capítulos y la traducción ilimitada se desactivan el {{date}}. Reactiva la renovación si quieres conservarlas."
     },
     "trial": {
       "lastDayBanner": "Tu prueba gratuita termina el {{date}} y empieza tu suscripción.",
@@ -1721,7 +1722,7 @@
       "title": "Cancelar suscripción",
       "lossTitle": "Qué cambia cuando termina Premium",
       "loss": {
-        "audio": "Se desactiva la escucha con narración de estudio",
+        "audio": "La narración de estudio queda solo en el primer capítulo de cada libro",
         "lookups_one": "La traducción de palabras y frases se limita a {{count}} al día",
         "lookups_other": "La traducción de palabras y frases se limita a {{count}} al día",
         "savedWords_one": "Tu {{count}} palabra guardada se queda; añadir palabras nuevas se limita a {{limit}}",

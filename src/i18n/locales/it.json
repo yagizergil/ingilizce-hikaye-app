@@ -492,6 +492,7 @@
     "audio": {
       "label": "Narrazione",
       "unlocked": "Questa storia è narrata con voce da studio, con ogni parola evidenziata mentre viene letta.",
+      "firstChapterFree": "La narrazione in studio del primo capitolo è gratuita per tutti. Ascolta gli altri capitoli con Premium, con ogni parola evidenziata mentre viene letta.",
       "locked": "La narrazione in studio fa parte di Premium. Ascolta questa storia con una voce naturale, con ogni parola evidenziata mentre viene letta."
     },
     "about": "Informazioni sul libro",
@@ -1228,7 +1229,7 @@
     "benefits": {
       "studioAudio": {
         "title": "Ascolta e capisci",
-        "body": "Narrazione registrata in studio, con la parola pronunciata evidenziata."
+        "body": "Tutti i capitoli di ogni storia con narrazione in studio, con la parola pronunciata evidenziata."
       },
       "unlimitedLookups": {
         "title": "Traduzioni di parole illimitate",
@@ -1695,7 +1696,7 @@
       "banner": "Premium termina il {{date}}; il rinnovo è disattivato.",
       "bannerCta": "Gestisci",
       "notifTitle": "Premium termina tra 3 giorni",
-      "notifBody": "Ascolto e traduzioni illimitate si disattivano il {{date}}. Riattiva il rinnovo se vuoi mantenerli."
+      "notifBody": "L'ascolto di tutti i capitoli e le traduzioni illimitate si disattivano il {{date}}. Riattiva il rinnovo se vuoi mantenerli."
     },
     "trial": {
       "lastDayBanner": "La prova gratuita termina il {{date}} e inizia l'abbonamento.",
@@ -1721,7 +1722,7 @@
       "title": "Disdici l'abbonamento",
       "lossTitle": "Cosa cambia quando Premium finisce",
       "loss": {
-        "audio": "L'ascolto con narrazione in studio si disattiva",
+        "audio": "La narrazione in studio resta solo nel primo capitolo di ogni libro",
         "lookups_one": "La traduzione di parole e frasi è limitata a {{count}} al giorno",
         "lookups_other": "La traduzione di parole e frasi è limitata a {{count}} al giorno",
         "savedWords_one": "La tua {{count}} parola salvata resta; puoi aggiungerne fino a {{limit}}",

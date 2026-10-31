@@ -492,6 +492,7 @@
     "audio": {
       "label": "Narration",
       "unlocked": "Cette histoire est lue par une voix studio, chaque mot surligné au fil de la lecture.",
+      "firstChapterFree": "La narration studio du premier chapitre est gratuite pour tous. Écoute les autres chapitres avec Premium, chaque mot surligné au moment où il est lu.",
       "locked": "La narration studio fait partie de Premium. Écoute cette histoire dans une voix naturelle, avec chaque mot surligné au moment où il est lu."
     },
     "about": "À propos du livre",
@@ -1228,7 +1229,7 @@
     "benefits": {
       "studioAudio": {
         "title": "Écouter et comprendre",
-        "body": "Narration enregistrée en studio, le mot prononcé surligné au fil du texte."
+        "body": "Tous les chapitres de chaque histoire en narration studio, le mot prononcé surligné au fil du texte."
       },
       "unlimitedLookups": {
         "title": "Traductions de mots illimitées",
@@ -1695,7 +1696,7 @@
       "banner": "Premium se termine le {{date}} ; le renouvellement est désactivé.",
       "bannerCta": "Gérer",
       "notifTitle": "Premium se termine dans 3 jours",
-      "notifBody": "L'écoute et la traduction illimitée s'arrêtent le {{date}}. Réactive le renouvellement si tu veux les garder."
+      "notifBody": "L'écoute de tous les chapitres et la traduction illimitée s'arrêtent le {{date}}. Réactive le renouvellement si tu veux les garder."
     },
     "trial": {
       "lastDayBanner": "Ton essai gratuit se termine le {{date}} et ton abonnement commence.",
@@ -1721,7 +1722,7 @@
       "title": "Résilier l'abonnement",
       "lossTitle": "Ce qui change quand Premium se termine",
       "loss": {
-        "audio": "L'écoute avec narration studio s'arrête",
+        "audio": "La narration studio reste disponible uniquement pour le premier chapitre de chaque livre",
         "lookups_one": "La traduction de mots et de phrases est limitée à {{count}} par jour",
         "lookups_other": "La traduction de mots et de phrases est limitée à {{count}} par jour",
         "savedWords_one": "Ton {{count}} mot enregistré reste ; l'ajout de nouveaux mots est limité à {{limit}}",

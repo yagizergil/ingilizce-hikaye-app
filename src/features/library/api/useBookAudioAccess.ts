@@ -1,34 +1,46 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
+import { isMissingFunctionError } from "@/features/library/api/audioAccessRules";
+
+import type { BookAudioAccess } from "@/features/library/api/audioAccessRules";
+
+export type { BookAudioAccess } from "@/features/library/api/audioAccessRules";
 
 /**
  * Bir kitabın stüdyo seslendirmesine erişim durumu.
  *
- * NEDEN KİTAP DETAYINDA, READER'DA DEĞİL: premium teklifinin gösterildiği
- * yer okuma akışının DIŞINDA olmak zorunda (Ürün İlkesi #1). Reader'da
- * kilit ikonu ya da "yükselt" düğmesi yok; erişim yoksa seslendirme düğmesi
- * hiç görünmüyor.
+ * NEDEN KİTAP DETAYINDA: premium teklifinin gösterildiği yer okuma akışının
+ * DIŞINDA olmak zorunda (Ürün İlkesi #1). Okuyucu bu sorguyu yalnızca dinle
+ * yuvarlağının kilit rozetine karar vermek için okuyor (aynı önbellek).
  *
- * NEDEN SUNUCUYA SORULUYOR: kural `can_play_book_audio()` içinde ve tek
- * kopyası orada (migration 032). İstemcide "premium mi" diye ikinci bir
- * kontrol yazmak, iki kopyanın zamanla ayrışması demek — ayrıştığında da
- * kullanıcı ya ödediğini göremez ya da ödemediğini dinler.
+ * NEDEN SUNUCUYA SORULUYOR: "tam erişim" kuralı `can_play_book_audio()`
+ * (migration 032), "ücretsiz bölüm hangisi" tanımı `free_audio_section_id()`
+ * (migration 110) içinde ve tek kopyaları orada. İstemcide ikinci bir kopya
+ * yazmak, iki kopyanın zamanla ayrışması demek.
  */
-export interface BookAudioAccess {
-  /** Bu kitabın stüdyo sesi bu kullanıcıya açık mı (aktif premium). */
-  canPlay: boolean;
-}
-
 export const bookAudioAccessKeys = {
   all: ["bookAudioAccess"] as const,
   forBook: (bookId: string) => [...bookAudioAccessKeys.all, bookId] as const,
 };
 
+async function fetchFreeAudioSectionId(bookId: string): Promise<string | null> {
+  const { data, error } = await supabase.rpc("free_audio_section_id", { p_book_id: bookId });
+  if (error) {
+    // Migration 110 canlıda değilse eski davranış: ücretsiz bölüm yok.
+    if (isMissingFunctionError(error)) return null;
+    throw error;
+  }
+  return typeof data === "string" && data.length > 0 ? data : null;
+}
+
 async function fetchBookAudioAccess(bookId: string): Promise<BookAudioAccess> {
-  const { data, error } = await supabase.rpc("can_play_book_audio", { p_book_id: bookId });
-  if (error) throw error;
-  return { canPlay: data === true };
+  const [full, freeSectionId] = await Promise.all([
+    supabase.rpc("can_play_book_audio", { p_book_id: bookId }),
+    fetchFreeAudioSectionId(bookId),
+  ]);
+  if (full.error) throw full.error;
+  return { canPlay: full.data === true, freeSectionId };
 }
 
 export function useBookAudioAccessQuery(bookId: string | undefined, enabled: boolean) {

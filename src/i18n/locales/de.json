@@ -492,6 +492,7 @@
     "audio": {
       "label": "Vertonung",
       "unlocked": "Diese Geschichte wird von einer Studiostimme gelesen — Wort für Wort hervorgehoben.",
+      "firstChapterFree": "Die Studiovertonung des ersten Kapitels ist für alle kostenlos. Die übrigen Kapitel hörst du mit Premium, jedes Wort wird beim Lesen hervorgehoben.",
       "locked": "Die Studiovertonung gehört zu Premium. Hör dir diese Geschichte in einer natürlichen Stimme an, während jedes Wort beim Lesen hervorgehoben wird."
     },
     "about": "Über dieses Buch",
@@ -1228,7 +1229,7 @@
     "benefits": {
       "studioAudio": {
         "title": "Hören und verstehen",
-        "body": "Studio-Vertonung, bei der das gesprochene Wort mitlaufend hervorgehoben wird."
+        "body": "Jedes Kapitel jeder Geschichte als Studio-Vertonung, das gesprochene Wort mitlaufend hervorgehoben."
       },
       "unlimitedLookups": {
         "title": "Unbegrenzte Wortübersetzungen",
@@ -1695,7 +1696,7 @@
       "banner": "Premium endet am {{date}}; die Verlängerung ist aus.",
       "bannerCta": "Verwalten",
       "notifTitle": "Premium endet in 3 Tagen",
-      "notifBody": "Hören und unbegrenzte Übersetzungen enden am {{date}}. Schalte die Verlängerung wieder ein, wenn du sie behalten möchtest."
+      "notifBody": "Das Hören aller Kapitel und unbegrenzte Übersetzungen enden am {{date}}. Schalte die Verlängerung wieder ein, wenn du sie behalten möchtest."
     },
     "trial": {
       "lastDayBanner": "Deine kostenlose Testphase endet am {{date}} und dein Abo beginnt.",
@@ -1721,7 +1722,7 @@
       "title": "Abo kündigen",
       "lossTitle": "Was sich ändert, wenn Premium endet",
       "loss": {
-        "audio": "Hören mit Studio-Vertonung ist nicht mehr möglich",
+        "audio": "Studio-Vertonung bleibt nur im ersten Kapitel jedes Buches",
         "lookups_one": "Wort- und Satzübersetzungen sind auf {{count}} pro Tag begrenzt",
         "lookups_other": "Wort- und Satzübersetzungen sind auf {{count}} pro Tag begrenzt",
         "savedWords_one": "Dein {{count}} gespeichertes Wort bleibt; neue Wörter kannst du bis {{limit}} hinzufügen",
