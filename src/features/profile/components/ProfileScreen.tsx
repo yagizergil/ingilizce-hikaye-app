@@ -25,9 +25,9 @@ import { reloadApp } from "@/lib/rtl";
 
 import { useProfileAuthStatus } from "@/features/profile/api/useProfileAuthStatus";
 import { useProfileStatsQuery } from "@/features/profile/api/useProfileStatsQuery";
-import { useSubscriptionStatusQuery } from "@/features/profile/api/useSubscriptionStatusQuery";
 import { ProfileHero } from "@/features/profile/components/ProfileHero";
 import { ProfilePremiumCard } from "@/features/profile/components/ProfilePremiumCard";
+import { useSubscriptionQuery } from "@/features/paywall";
 import { ProfileStatTiles } from "@/features/profile/components/ProfileStatTiles";
 import { ProfileAccountRow } from "@/features/profile/components/ProfileAccountRow";
 import { ProfileFooter } from "@/features/profile/components/ProfileFooter";
@@ -71,7 +71,10 @@ export function ProfileScreen() {
 
   const statsQuery = useProfileStatsQuery();
   const vocabularyQuery = useVocabularyQuery();
-  const subscriptionQuery = useSubscriptionStatusQuery();
+  // H1: premium kararı TEK kaynaktan (tier + expires_at). Eski
+  // `useSubscriptionStatusQuery` yalnızca tier'e bakıyordu; EXPIRATION
+  // webhook'u kaçınca profil "premium" derken kapılar ücretsiz davranıyordu.
+  const subscriptionQuery = useSubscriptionQuery();
   const onboardingQuery = useOnboardingStatusQuery();
   const languagePairQuery = useActiveLanguagePairQuery();
 
@@ -186,6 +189,11 @@ export function ProfileScreen() {
     openPaywall("profile");
   }, []);
 
+  /** Premium kullanıcı için kart abonelik yönetimine gider (C11, E4). */
+  const handleOpenSubscription = useCallback(() => {
+    router.push("/subscription?source=profile");
+  }, []);
+
   const handleRateUs = useCallback(() => {
     void openWriteReviewPage();
   }, []);
@@ -203,7 +211,6 @@ export function ProfileScreen() {
   const statsError = statsQuery.isError;
 
   const languageCode = i18n.language.startsWith("tr") ? "tr" : "en";
-  const subscriptionTier = subscriptionQuery.data ?? "free";
 
   return (
     <View style={[styles.container, { backgroundColor: palette.page }]}>
@@ -240,8 +247,9 @@ export function ProfileScreen() {
               bir an "Premium'a geç" göstermek yanlış olurdu. */}
           {subscriptionQuery.data ? (
             <ProfilePremiumCard
-              isPremium={subscriptionTier !== "free"}
+              isPremium={subscriptionQuery.data.isPremium}
               onPress={handleOpenPaywall}
+              onManage={handleOpenSubscription}
             />
           ) : null}
 

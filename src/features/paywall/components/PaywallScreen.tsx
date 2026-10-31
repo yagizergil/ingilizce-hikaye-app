@@ -24,7 +24,12 @@ import { PaywallLegal } from "@/features/paywall/components/PaywallLegal";
 import { PaywallPlanCard } from "@/features/paywall/components/PaywallPlanCard";
 import { buildPlanOptions } from "@/features/paywall/planModel";
 import { computePaywallLayout } from "@/features/paywall/paywallLayout";
-import { headlineKeyFor } from "@/features/paywall/paywallHeadlines";
+import {
+  headlineKeyFor,
+  noTrialNoticeKey,
+  trialAwareHeadlineKey,
+  trialStateFor,
+} from "@/features/paywall/paywallHeadlines";
 import { placementFor } from "@/features/paywall/paywallSources";
 import { takeTriggerLatencyMs } from "@/features/paywall/openPaywall";
 import { PaywallTrialTimeline } from "@/features/paywall/components/PaywallTrialTimeline";
@@ -245,7 +250,12 @@ export function PaywallScreen({
 
   // Başlık, paywall'ın açıldığı ana göre: kullanıcı o an neyi istiyorsa
   // onu söyle (dinlemek, quiz, kelime...). Bilinmeyen kaynakta genel başlık.
-  const headline = headlineKeyFor(source);
+  // H2: deneme vaat eden başlık yalnızca gerçekten sunulabilen bir deneme
+  // varken; uygunluk bilinmiyorken de "denemesiz" varyant (2.3.1).
+  const trialState = trialStateFor(
+    options.map((option) => ({ trial: option.trial, isSelected: option === selected })),
+  );
+  const headline = trialAwareHeadlineKey(headlineKeyFor(source), trialState !== "not_eligible");
   const titleText =
     headlineOverride?.title ??
     t(headline ? `paywall.headlines.${headline}.title` : "paywall.title");
@@ -259,7 +269,13 @@ export function PaywallScreen({
     : t("paywall.ctaSubscribe");
   // Seçili planda deneme yok ama başka planda var (tipik: aylık seçildi):
   // açıkça söyle -- kullanıcı "ücretsiz" sanıp ödemesin.
-  const trialElsewhere = !selected?.trial && options.some((option) => option.trial !== null);
+  const trialElsewhere = trialState === "eligible_no_trial_on_plan";
+  const noTrialKey = trialElsewhere
+    ? noTrialNoticeKey(
+        selected?.kind ?? null,
+        options.find((option) => option.trial !== null)?.kind ?? null,
+      )
+    : null;
   const showTimeline = isTimeline && selected?.trial != null && selected.trial.days >= 2;
 
   const timelineTrackedRef = useRef(false);
@@ -402,9 +418,9 @@ export function PaywallScreen({
             now={now}
           />
         ) : null}
-        {trialElsewhere ? (
+        {noTrialKey ? (
           <Text style={[paywallType.legal, styles.centered, { color: theme.text.secondary }]}>
-            {t("paywall.noTrialOnPlan")}
+            {t(noTrialKey)}
           </Text>
         ) : null}
 

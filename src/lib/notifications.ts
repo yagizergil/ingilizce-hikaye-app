@@ -37,6 +37,24 @@ export const DAILY_READING_ID = "dailyReading";
  */
 export const OFFER_REMINDER_ID = "offerEnding";
 
+/**
+ * Abonelik yaşam döngüsü bildirimleri (migration 100 sonrası): iptal edilmiş
+ * aboneliğin bitişine 3 gün kala ve bitişten 24 saat sonra (winback).
+ * Yalnızca izin ZATEN verilmişse planlanıyor; bunlar için izin istenmez.
+ * Durum hatırlatmalarının "hepsini sil" döngüsü bunlara da dokunmaz.
+ */
+export const SUBSCRIPTION_ENDING_ID = "subscriptionEnding";
+export const WINBACK_REMINDER_ID = "winback";
+
+/** Durum hatırlatmalarının silmediği, kendi yaşam döngüsü olan kimlikler. */
+const PERSISTENT_IDS = [
+  TRIAL_REMINDER_ID,
+  DAILY_READING_ID,
+  OFFER_REMINDER_ID,
+  SUBSCRIPTION_ENDING_ID,
+  WINBACK_REMINDER_ID,
+];
+
 /** Uygulamanın kullandığı tek Android bildirim kanalı. */
 const ANDROID_CHANNEL_ID = "reminders";
 
@@ -121,7 +139,7 @@ export async function requestNotificationPermission(): Promise<boolean> {
 export async function replaceScheduledReminders(reminders: ScheduledReminder[]): Promise<number> {
   try {
     await ensureAndroidChannel();
-    await cancelScheduledExcept([TRIAL_REMINDER_ID, DAILY_READING_ID, OFFER_REMINDER_ID]);
+    await cancelScheduledExcept(PERSISTENT_IDS);
 
     const now = Date.now();
     let scheduled = 0;
@@ -172,10 +190,14 @@ async function cancelScheduledExcept(keep: string[]): Promise<void> {
   }
 }
 
-/** Kullanıcı hatırlatmaları kapattığında temizler (deneme hatırlatması kalır). */
+/**
+ * Kullanıcı hatırlatmaları kapattığında temizler. Deneme hatırlatması ve
+ * abonelik bildirimleri kalır: onlar paywall/abonelik akışının sözü, okuma
+ * hatırlatması ayarı değil.
+ */
 export async function cancelAllReminders(): Promise<void> {
   try {
-    await cancelScheduledExcept([TRIAL_REMINDER_ID]);
+    await cancelScheduledExcept([TRIAL_REMINDER_ID, SUBSCRIPTION_ENDING_ID, WINBACK_REMINDER_ID]);
   } catch (error) {
     trackError("notifications.cancelAll", error);
   }

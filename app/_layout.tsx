@@ -148,6 +148,19 @@ export default function RootLayout() {
                       name="offer"
                       options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
                     />
+                    {/* Abonelik yaşam döngüsü (C9-C11): ödeme düzeltme ve
+                        winback paywall gibi aşağıdan; yönetim ve iptal
+                        akışı normal itilen sayfa. */}
+                    <Stack.Screen
+                      name="billing-fix"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
+                    <Stack.Screen
+                      name="winback"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
+                    <Stack.Screen name="subscription" />
+                    <Stack.Screen name="cancel-subscription" />
                     <Stack.Screen name="language-settings" options={{ presentation: "modal" }} />
                     {/*
                       Kitap bitirme kutlaması. Modal DEĞİL: reader'dan

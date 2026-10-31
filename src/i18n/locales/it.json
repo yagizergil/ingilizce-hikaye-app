@@ -721,7 +721,8 @@
       "description": "Narrazione in studio, traduzioni illimitate e Ripasso intelligente.",
       "cta": "Scopri Premium",
       "activeTitle": "Sei Premium",
-      "activeDescription": "Tutto sbloccato. Buona lettura!"
+      "activeDescription": "Tutto sbloccato. Buona lettura!",
+      "manageCta": "Gestisci abbonamento"
     },
     "sections": {
       "learning": "Apprendimento",
@@ -1369,6 +1370,14 @@
       "homeOffer": {
         "title": "Prova Premium gratis",
         "subtitle": "Ascolta, traduci senza limiti, ricorda con il Ripasso intelligente."
+      },
+      "onboardingNoTrial": {
+        "title": "Il tuo piano di lettura è pronto",
+        "subtitle": "Con Premium: ascolta, traduci liberamente, ricorda di più."
+      },
+      "homeOfferNoTrial": {
+        "title": "Di più con Premium",
+        "subtitle": "Ascolta, traduci senza limiti, ricorda di più con il Ripasso intelligente."
       }
     },
     "cancelAnytime": "Annulla quando vuoi.",
@@ -1389,8 +1398,12 @@
     "onboardingPersonal": {
       "title": "Il tuo piano di livello {{level}} è pronto",
       "subtitle": "{{minutes}} min al giorno sono {{hours}} ore di lettura in 6 mesi. Nella prova è tutto aperto.",
-      "subtitleNoGoal": "Nella prova è tutto aperto: ascolta, traduci senza limiti, ripassa con il Ripasso intelligente."
-    }
+      "subtitleNoGoal": "Nella prova è tutto aperto: ascolta, traduci senza limiti, ripassa con il Ripasso intelligente.",
+      "subtitleNoTrial": "{{minutes}} min al giorno sono {{hours}} ore di lettura in 6 mesi. Premium sblocca tutto.",
+      "subtitleNoGoalNoTrial": "Con Premium: ascolta, traduci senza limiti, esercitati con il Ripasso intelligente."
+    },
+    "noTrialOnPlanAnnual": "Il piano annuale non ha prova gratuita; l'addebito è immediato. La prova gratuita è sul piano mensile.",
+    "noTrialOnPlanOther": "Il piano scelto non ha prova gratuita; l'addebito è immediato."
   },
   "reminders": {
     "settingsLabel": "Promemoria",
@@ -1619,6 +1632,132 @@
       "price": "{{price}} / mese",
       "cta": "Inizia con il mensile",
       "decline": "No, grazie"
+    }
+  },
+  "subscription": {
+    "manage": {
+      "title": "Abbonamento",
+      "loadError": "Impossibile caricare i dettagli dell'abbonamento.",
+      "storeOpenError": "Impossibile aprire la pagina abbonamenti dell'App Store. Puoi gestirlo da Impostazioni > ID Apple > Abbonamenti.",
+      "footnote": "Disdetta e cambio piano avvengono nell'App Store. Disdici almeno 24 ore prima del rinnovo per evitare il prossimo addebito.",
+      "trialDaysLeft_one": "Ancora {{count}} giorno di prova",
+      "trialDaysLeft_other": "Ancora {{count}} giorni di prova",
+      "status": {
+        "trial": "Prova gratuita",
+        "active": "Premium attivo",
+        "cancelled": "Rinnovo disattivato",
+        "grace": "Problema di pagamento",
+        "billing_retry": "Premium sospeso",
+        "lapsed_paid": "Premium terminato",
+        "lapsed_trial": "Prova terminata",
+        "none": "Piano gratuito"
+      },
+      "detail": {
+        "trial": "La tua prova termina il {{date}}. Se non disdici, quel giorno inizia l'abbonamento e ti verrà addebitato.",
+        "active": "Il tuo abbonamento si rinnova il {{date}}.",
+        "activeNoDate": "Il tuo abbonamento si rinnova automaticamente.",
+        "cancelled": "Premium resta attivo fino al {{date}} e poi non si rinnova.",
+        "cancelledNoDate": "Premium resta attivo fino alla fine del periodo e non si rinnova.",
+        "grace": "L'ultimo pagamento non è andato a buon fine. Premium resta attivo fino al {{date}}; aggiorna il metodo di pagamento.",
+        "graceNoDate": "L'ultimo pagamento non è andato a buon fine. Premium per ora resta attivo; aggiorna il metodo di pagamento.",
+        "billing_retry": "Premium è sospeso perché il pagamento non è riuscito. Si riattiva da solo appena il pagamento va a buon fine.",
+        "lapsed": "Premium è terminato il {{date}}. Le parole salvate e i tuoi progressi sono ancora qui.",
+        "lapsedNoDate": "Premium è terminato. Le parole salvate e i tuoi progressi sono ancora qui.",
+        "none": "Tutti i libri sono gratuiti. Premium aggiunge la narrazione in studio, traduzioni illimitate e il Ripasso intelligente."
+      },
+      "actions": {
+        "fixPayment": "Risolvi il pagamento",
+        "cancel": "Voglio disdire",
+        "turnOnRenewal": "Riattiva il rinnovo",
+        "winback": "Vedi le opzioni per tornare",
+        "goPremium": "Passa a Premium",
+        "manageInStore": "Gestisci nell'App Store",
+        "restore": "Ripristina acquisti"
+      }
+    },
+    "billing": {
+      "bannerGrace": "Il pagamento non è andato a buon fine. Risolvi entro il {{date}} per mantenere Premium.",
+      "bannerGraceNoDate": "Il pagamento non è andato a buon fine. Risolvi per mantenere Premium.",
+      "bannerRetry": "Premium è sospeso perché il pagamento non è riuscito.",
+      "bannerCta": "Risolvi",
+      "title": "Pagamento non riuscito",
+      "titleRetry": "Premium è sospeso",
+      "body": "Apple non è riuscita ad addebitare l'ultimo rinnovo. Premium resta attivo fino al {{date}}; aggiorna il metodo di pagamento per continuare senza interruzioni.",
+      "bodyNoDate": "Apple non è riuscita ad addebitare l'ultimo rinnovo. Premium per ora resta attivo; aggiorna il metodo di pagamento per continuare senza interruzioni.",
+      "bodyRetry": "Premium è sospeso perché il pagamento non è riuscito. Apple riproverà per un po'; appena aggiorni il metodo di pagamento, Premium si riattiva da solo.",
+      "cta": "Aggiorna il metodo di pagamento",
+      "manage": "Vedi abbonamento",
+      "later": "Più tardi",
+      "note": "I pagamenti passano da Apple; i dati della carta si aggiornano nel tuo account Apple, non da noi.",
+      "recovered": "Pagamento risolto. Premium continua."
+    },
+    "ending": {
+      "banner": "Premium termina il {{date}}; il rinnovo è disattivato.",
+      "bannerCta": "Gestisci",
+      "notifTitle": "Premium termina tra 3 giorni",
+      "notifBody": "Ascolto e traduzioni illimitate si disattivano il {{date}}. Riattiva il rinnovo se vuoi mantenerli."
+    },
+    "trial": {
+      "lastDayBanner": "La prova gratuita termina il {{date}} e inizia l'abbonamento.",
+      "lastDayCta": "Vedi"
+    },
+    "winback": {
+      "title": "Bentornato",
+      "body": "Premium è terminato, ma i tuoi progressi sono ancora qui. I tuoi libri ti aspettano.",
+      "bodyWords_one": "Premium è terminato, ma i tuoi progressi sono ancora qui: {{count}} parola salvata ti aspetta.",
+      "bodyWords_other": "Premium è terminato, ma i tuoi progressi sono ancora qui: {{count}} parole salvate ti aspettano.",
+      "offerTitle": "Offerta di ritorno",
+      "offerBody": "Primo periodo {{price}}. Poi si rinnova al prezzo normale ({{regular}}); puoi disdire quando vuoi nell'App Store.",
+      "offerCta": "Continua con l'offerta",
+      "noOffer": "Al momento non c'è un'offerta speciale per te. Puoi vedere i piani o continuare a leggere gratis.",
+      "seePlans": "Vedi i piani",
+      "notNow": "Non ora",
+      "purchasedTitle": "Bentornato!",
+      "purchasedBody": "Premium è di nuovo attivo.",
+      "notifTitle": "Riprendi da dove avevi lasciato",
+      "notifBody": "I tuoi libri e le parole salvate ti aspettano."
+    },
+    "cancel": {
+      "title": "Disdici l'abbonamento",
+      "lossTitle": "Cosa cambia quando Premium finisce",
+      "loss": {
+        "audio": "L'ascolto con narrazione in studio si disattiva",
+        "lookups_one": "La traduzione di parole e frasi è limitata a {{count}} al giorno",
+        "lookups_other": "La traduzione di parole e frasi è limitata a {{count}} al giorno",
+        "savedWords_one": "La tua {{count}} parola salvata resta; puoi aggiungerne fino a {{limit}}",
+        "savedWords_other": "Le tue {{count}} parole salvate restano; puoi aggiungerne fino a {{limit}}",
+        "smartPractice": "Il Ripasso intelligente scende a 1 sessione ogni 24 ore",
+        "quiz": "I livelli 2 e 3 dei quiz sui libri si bloccano"
+      },
+      "keep": "Resta su Premium",
+      "continue": "Continua",
+      "reasonTitle": "Perché te ne vai?",
+      "reasonSubtitle": "La tua risposta ci aiuta a migliorare l'app.",
+      "reasons": {
+        "too_expensive": "È troppo caro",
+        "not_using": "Non lo uso abbastanza",
+        "missing_content": "Non c'è il contenuto che cerco",
+        "technical": "Ho problemi tecnici",
+        "other": "Altro"
+      },
+      "notePlaceholder": "Aggiungi qualche parola se vuoi",
+      "offerTitle": "Prima di andare",
+      "offer": {
+        "promotional": "Uno sconto solo per te: primo periodo {{price}}. Poi si rinnova al prezzo normale ({{regular}}).",
+        "promotionalCta": "Continua con lo sconto",
+        "promotionalAccepted": "Lo sconto è stato applicato al tuo abbonamento.",
+        "monthly_switch": "Puoi passare al piano mensile: {{price}}. Il cambio parte alla fine del periodo annuale, non perdi quanto hai pagato.",
+        "monthlyCta": "Passa al mensile",
+        "monthlyAccepted": "Il tuo piano passerà al mensile alla fine del periodo attuale.",
+        "goal": "Bastano anche 5 minuti al giorno. Puoi abbassare l'obiettivo giornaliero e impostare un promemoria.",
+        "goalCta": "Regola l'obiettivo",
+        "support": "Raccontaci il problema e lo risolviamo insieme.",
+        "supportCta": "Apri la pagina di supporto",
+        "none": "Grazie per il tuo feedback.",
+        "acceptedTitle": "Grazie!"
+      },
+      "cancelAnyway": "Disdici comunque",
+      "storeNote": "La disdetta si fa nell'App Store; Premium resta attivo fino alla fine del periodo."
     }
   }
 }

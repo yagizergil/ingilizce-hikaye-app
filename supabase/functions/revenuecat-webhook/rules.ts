@@ -47,6 +47,10 @@ export interface RevenueCatEvent {
   event_timestamp_ms?: number | null;
   transferred_to?: string[];
   transferred_from?: string[];
+  // Yaşam döngüsü alanları (migration 100, bkz. lifecycle.ts).
+  grace_period_expiration_at_ms?: number | null;
+  cancel_reason?: string | null;
+  expiration_reason?: string | null;
 }
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

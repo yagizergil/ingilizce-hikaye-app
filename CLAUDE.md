@@ -277,6 +277,20 @@ RevenueCat  →  supabase/functions/revenuecat-webhook  (paylaşılan sır ile d
 sonrası içeriğin açılmamasını (Guideline 2.1/3.1.1) red sebebi sayıyor.
 Tek yazarlı zincir ikisini birden çözüyor.
 
+**Yaşam döngüsü eki (2026-10-31, migration 100/101):** webhook yetkiyi
+yazdıktan SONRA ayrı bir `apply_subscription_lifecycle()` çağrısıyla
+yalnızca BİLGİ alanlarını yazar (`will_renew`, `billing_issue_at`,
+`grace_expires_at`, `expired_at`, `expiration_reason`, `trial_used`,
+`had_paid`...; eşleme `revenuecat-webhook/lifecycle.ts`, testli). Hiçbir kapı
+bu alanlara bakmaz; `tier`/`expires_at` kuralı ve `apply_entitlement_event`
+DEĞİŞMEDİ. İstemci tarafı `src/features/subscription/` (durum türetme
+`lifecycle.ts`: premium kararı sunucudan, CustomerInfo yalnızca ödeme sorunu
+/ yenileme bilgisini tazeler). Ekranlar: `/subscription` (yönetim),
+`/billing-fix` (ödeme sorununda paywall da bunu açar), `/cancel-subscription`
+(kaybedilecekler -> neden -> teklif; "Yine de iptal et" her adımda App
+Store'a), `/winback`. Teklif ASC/RevenueCat'te yoksa ekranlar yalnızca
+bilgilendirir. `cancel_feedback` tablosu (migration 101) neden anketini tutar.
+
 ### ADR-010: Hatırlatmalar yerel bildirim, push DEĞİL
 
 **Karar:** Üç hatırlatma (tekrar zamanı, yarım kalan hikâye, seri
@@ -305,6 +319,12 @@ hatırlatmayı aç"a bastığında (`OnboardingReminderOptIn`, tekrarlayan
 `features/reminders/trialReminder.ts`). Durum hatırlatmalarının "hepsini
 sil" döngüsü artık bu iki kimliğe dokunmuyor (`lib/notifications.ts`).
 Paywall çizelgesi izin reddedilmişse "hatırlatırız" demiyor.
+
+**Abonelik eki (2026-10-31):** `subscriptionEnding` (iptal edilmiş aboneye
+bitişe 3 gün kala) ve `winback` (iptal edilmiş abone ya da denemedeki
+kullanıcı için bitiş + 24 saat; deneme dönüştüyse sonraki açılışta iptal).
+İkisi için de izin İSTENMEZ, yalnızca zaten verilmişse planlanır; ödeme
+sorunu için bildirim yok (ana sayfa kartı yeter).
 
 ### ADR-011: Cihaz üstü bölüm seslendirmesi (İPTAL EDİLDİ)
 

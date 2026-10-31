@@ -22,3 +22,6 @@ export {
   trialEligibilityOrNone,
   useTrialEligibilityQuery,
 } from "@/features/paywall/api/useTrialEligibilityQuery";
+export { waitForServerPremium } from "@/features/paywall/api/waitForServerPremium";
+export { usePaywallFactsQuery } from "@/features/paywall/api/usePaywallFactsQuery";
+export type { PlanOption } from "@/features/paywall/planModel";

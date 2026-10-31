@@ -11,7 +11,7 @@ import { LANGUAGES } from "@/lib/languages";
 import { trackEvent } from "@/lib/analytics";
 
 import { useSetLanguagePairMutation } from "@/features/languagePair";
-import { PaywallScreen, useSubscriptionQuery } from "@/features/paywall";
+import { PaywallScreen, useSubscriptionQuery, useTrialOffer } from "@/features/paywall";
 import { DownsellSheet, useInterruptions } from "@/features/offers";
 import { useCompleteOnboardingMutation } from "@/features/onboarding/api/useCompleteOnboardingMutation";
 import { useOnboardingContentQuery } from "@/features/onboarding/api/useOnboardingContentQuery";
@@ -111,6 +111,8 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const { t } = useTranslation();
   const setPair = useSetLanguagePairMutation();
   const subscription = useSubscriptionQuery();
+  // Kullanıcıya gerçekten sunulabilen deneme (gün) ya da null -- H2.
+  const trialDays = useTrialOffer();
   const completeOnboarding = useCompleteOnboardingMutation();
   const saveFavorites = useSaveOnboardingFavoritesMutation();
 
@@ -380,11 +382,22 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
     const levelName = t(`onboarding.path.levels.${level}`);
     return {
       title: t("paywall.onboardingPersonal.title", { level: levelName }),
+      // H2: "Denemede her şey açık" yalnızca kullanıcıya gerçekten deneme
+      // sunulabiliyorsa (uygunluk + introPrice); yoksa denemesiz cümle.
       subtitle: hours
-        ? t("paywall.onboardingPersonal.subtitle", { minutes: dailyGoal, hours })
-        : t("paywall.onboardingPersonal.subtitleNoGoal"),
+        ? t(
+            trialDays !== null
+              ? "paywall.onboardingPersonal.subtitle"
+              : "paywall.onboardingPersonal.subtitleNoTrial",
+            { minutes: dailyGoal, hours },
+          )
+        : t(
+            trialDays !== null
+              ? "paywall.onboardingPersonal.subtitleNoGoal"
+              : "paywall.onboardingPersonal.subtitleNoGoalNoTrial",
+          ),
     };
-  }, [level, dailyGoal, t]);
+  }, [level, dailyGoal, t, trialDays]);
 
   if (step === "splash") return <OnboardingSplashScreen onDone={() => setStep("welcome")} />;
   if (step === "welcome") return <OnboardingIntroCarousel onDone={() => setStep("mascot")} />;
