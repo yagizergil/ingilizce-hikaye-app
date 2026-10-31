@@ -31,3 +31,4 @@ export { HomeBookCard } from "@/features/home/components/HomeBookShelf";
 export { RecommendedBookCard } from "@/features/home/components/RecommendedBookCard";
 export { useRecommendedBook } from "@/features/home/hooks/useRecommendedBook";
 export { HomeOfferCard } from "@/features/home/components/HomeOfferCard";
+export { useHomePalette } from "@/features/home/useHomePalette";

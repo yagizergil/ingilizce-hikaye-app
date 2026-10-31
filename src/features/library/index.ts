@@ -14,6 +14,12 @@ export { BookWordOverlap } from "@/features/library/components/BookWordOverlap";
 export { BookSeriesInfo } from "@/features/library/components/BookSeriesInfo";
 export { BookAudioCard } from "@/features/library/components/BookAudioCard";
 export { useBookAudioAccessQuery } from "@/features/library/api/useBookAudioAccess";
+export {
+  bookAudioCardState,
+  canListenToSection,
+  isReaderListenLocked,
+} from "@/features/library/api/audioAccessRules";
+export type { BookAudioAccess, BookAudioCardState } from "@/features/library/api/audioAccessRules";
 export type {
   Book,
   Chapter,

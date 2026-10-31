@@ -23,6 +23,7 @@ import { useWordPackQuery } from "@/features/vocabulary/api/useWordPackQuery";
 import { useAddPackToDecksMutation } from "@/features/vocabulary/api/useAddPackToDecksMutation";
 
 import type { WordPackWord } from "@/features/vocabulary/api/useWordPackQuery";
+import { openPaywall } from "@/features/paywall";
 
 /** Ücretsiz kullanıcıya açık gösterilen kelime sayısı; gerisi bulanık. */
 const FREE_VISIBLE_WORDS = 3;
@@ -78,7 +79,7 @@ export function WordPackScreen({ level, onClose }: WordPackScreenProps) {
 
   const handleUnlock = useCallback(() => {
     trackEvent("paywall_opened", { source: "word_pack" });
-    router.push("/paywall?source=word_pack");
+    openPaywall("word_pack");
   }, []);
 
   const handleAdd = useCallback(() => {

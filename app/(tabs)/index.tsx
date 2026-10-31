@@ -29,6 +29,8 @@ import {
   useRecommendedBook,
 } from "@/features/home";
 import { useActiveLanguagePairQuery } from "@/features/languagePair";
+import { useAppOpenInterruption } from "@/features/offers";
+import { SubscriptionStatusBanner } from "@/features/subscription";
 import {
   challengeState,
   levelFromXp,
@@ -86,6 +88,10 @@ export default function HomeScreen() {
     trackEvent("home_viewed");
   }, []);
 
+  // Takvim teklifleri (gün 2 / 3-30 / 30+): oturumun ilk ana sayfa odağında,
+  // kural motoru izin verirse (rapor §5.3). Okuyucudan dönülünce DEĞİL.
+  useAppOpenInterruption();
+
   useRefetchOnFocusIfStale([
     { dataUpdatedAt: extrasUpdatedAt, refetch: refetchExtras },
     { dataUpdatedAt: currentlyReadingUpdatedAt, refetch: refetchCurrentlyReading },
@@ -141,6 +147,10 @@ export default function HomeScreen() {
           onPressStreak={() => router.push("/statistics")}
           onPressLanguage={() => router.push("/language-settings")}
         />
+        {/* Abonelik durumu (ödeme sorunu, bitmek üzere olan iptal edilmiş
+            abonelik, denemenin son günü). Yoksa hiç çizilmiyor. Satış değil,
+            kullanıcının parasıyla ilgili bilgi; okuyucuda YOK. */}
+        <SubscriptionStatusBanner />
         {/* BİRİNCİL EYLEM EN ÜSTTE (ilk-kullanıcı denetimi, 2026-10-05):
             devam eden kitap varsa o, yoksa seviyeye uygun "Senin için"
             önerisi -- tek dokunuşla kitaba. Eskiden istatistik kartı ve

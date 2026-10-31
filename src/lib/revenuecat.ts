@@ -6,7 +6,14 @@ import { env } from "@/lib/env";
 import { supabase } from "@/lib/supabase";
 import { trackError, trackEvent } from "@/lib/analytics";
 
-import type { CustomerInfo, PurchasesOffering, PurchasesPackage } from "react-native-purchases";
+import type {
+  CustomerInfo,
+  PurchasesOffering,
+  PurchasesPackage,
+  PurchasesPromotionalOffer,
+  PurchasesStoreProductDiscount,
+  PurchasesWinBackOffer,
+} from "react-native-purchases";
 
 /**
  * RevenueCat sarmalayıcısı.
@@ -229,6 +236,38 @@ export async function fetchOfferingPackages(
   }
 }
 
+/** Adı verilen offering'in paketleri ve güncel (varsayılan) teklifin paketleri. */
+export interface NamedOfferingPackages {
+  /** İstenen offering RevenueCat'te tanımlı değilse null -- BİRLEŞTİRME YOK. */
+  requested: PurchasesPackage[] | null;
+  current: PurchasesPackage[];
+}
+
+/**
+ * Bir teklif ekranı (indirim, çıkış teklifi) için offering'i OLDUĞU GİBİ okur.
+ *
+ * `fetchOfferingPackages`'tan farkı: istenen offering yoksa sessizce
+ * güncel teklife düşmüyor, `requested: null` diyor. İndirim ekranının
+ * "teklif yok -> normal paywall" kararını verebilmesi için bu ayrımı görmesi
+ * gerekiyor; aksi hâlde normal fiyatlara "indirim" diye bakardı. Ürün
+ * kimliği bilmiyor: offering adı kural tablosundan geliyor.
+ */
+export async function fetchNamedOffering(offeringId: string): Promise<NamedOfferingPackages> {
+  const purchases = await readyPurchases();
+  if (!purchases) return { requested: null, current: [] };
+  try {
+    const offerings = await purchases.getOfferings();
+    const requested = offerings.all[offeringId] ?? null;
+    return {
+      requested: requested ? requested.availablePackages : null,
+      current: offerings.current?.availablePackages ?? [],
+    };
+  } catch (error) {
+    trackError("revenuecat.namedOffering", error, { offering_id: offeringId });
+    throw error;
+  }
+}
+
 /** `customerInfo` içinde premium yetkisi aktif mi. */
 export function hasPremium(info: CustomerInfo | null): boolean {
   if (!info) return false;
@@ -295,14 +334,66 @@ export type PurchaseOutcome =
 export interface PurchaseContext {
   source: string;
   plan: string;
+  /** Açıldığı yer türü (C15, `features/paywall/paywallSources.ts`). */
+  placement?: string;
+  /** Seçili planda kullanıcıya uygun bir giriş teklifi (deneme) var mıydı. */
+  offerType?: "intro" | "none";
+}
+
+/**
+ * RevenueCat/StoreKit "ödeme bekliyor" hatası (Ask to Buy, SCA).
+ * Kod `PURCHASES_ERROR_CODE.PAYMENT_PENDING_ERROR`; enum Expo Go'da yüklenemeyen
+ * pakette olduğu için değeri burada sabit (INTRO_ELIGIBILITY_ELIGIBLE ile aynı gerekçe).
+ */
+const PAYMENT_PENDING_ERROR_CODE = "20";
+
+function purchaseErrorCode(error: unknown): string {
+  if (typeof error === "object" && error !== null && "code" in error) {
+    const code = (error as { code?: unknown }).code;
+    if (typeof code === "string" || typeof code === "number") return String(code);
+  }
+  return "unknown";
+}
+
+/**
+ * Satın alma olaylarının ortak parametreleri (C14).
+ *
+ * Fiyat METNİ (`priceString`) ve işlem/jeton kimliği BİLEREK yok; yalnızca
+ * mikro birim fiyat + para birimi (C14 kuralı: analitiğe ödeme kimliği gitmez).
+ */
+function purchaseEventParams(
+  pkg: PurchasesPackage,
+  context: PurchaseContext | undefined,
+): Record<string, string | number> {
+  const params: Record<string, string | number> = { package_id: pkg.identifier };
+  if (context) {
+    params.source = context.source;
+    params.plan = context.plan;
+    if (context.placement) params.placement = context.placement;
+    if (context.offerType) params.offer_type = context.offerType;
+  }
+  const price = pkg.product?.price;
+  if (typeof price === "number" && Number.isFinite(price)) {
+    params.price_micros = Math.round(price * 1_000_000);
+  }
+  if (pkg.product?.currencyCode) params.currency = pkg.product.currencyCode;
+  return params;
 }
 
 export async function purchasePackage(
   pkg: PurchasesPackage,
   context?: PurchaseContext,
 ): Promise<PurchaseOutcome> {
+  const params = purchaseEventParams(pkg, context);
+  // Huni adımı (C14, H4): "plan seçti -> ödeme sayfası açıldı" ancak bu
+  // olayla ölçülebiliyor. Mağaza sayfasından ÖNCE atılıyor.
+  trackEvent("purchase_started", params);
+
   const purchases = await readyPurchases();
-  if (!purchases) return { status: "error" };
+  if (!purchases) {
+    trackEvent("purchase_failed", { ...params, code: "sdk_unavailable", cancelled: false });
+    return { status: "error" };
+  }
 
   try {
     const { customerInfo } = await purchases.purchasePackage(pkg);
@@ -314,7 +405,7 @@ export async function purchasePackage(
       return { status: "not_entitled" };
     }
 
-    trackEvent("purchase_completed", { package_id: pkg.identifier, ...context });
+    trackEvent("purchase_completed", params);
     return { status: "success", trialEndsAt: readTrialEnd(customerInfo) };
   } catch (error) {
     if (
@@ -322,9 +413,18 @@ export async function purchasePackage(
       error !== null &&
       (error as { userCancelled?: boolean }).userCancelled === true
     ) {
-      trackEvent("purchase_cancelled", { package_id: pkg.identifier, ...context });
+      trackEvent("purchase_cancelled", params);
       return { status: "cancelled" };
     }
+    const code = purchaseErrorCode(error);
+    // Ask to Buy / SCA: ödeme ebeveyn ya da banka onayını bekliyor. Bu bir
+    // hata DEĞİL; ayrı olay ki huni bunu "başarısız" saymasın. Kullanıcıya
+    // gösterilen mesaj şimdilik genel hata metni (ayrı bir UI kararı).
+    trackEvent(code === PAYMENT_PENDING_ERROR_CODE ? "purchase_pending" : "purchase_failed", {
+      ...params,
+      code,
+      cancelled: false,
+    });
     trackError("revenuecat.purchase", error, { package_id: pkg.identifier });
     return { status: "error" };
   }
@@ -360,7 +460,8 @@ export async function restorePurchases(): Promise<RestoreOutcome> {
   try {
     const info = await purchases.restorePurchases();
     const restored = hasPremium(info);
-    trackEvent("purchase_restored", { restored });
+    // `result` C14 adı; `restored` eski panolar için korunuyor.
+    trackEvent("purchase_restored", { restored, result: restored ? "restored" : "none" });
     return restored ? { status: "restored" } : { status: "none" };
   } catch (error) {
     trackError("revenuecat.restore", error);
@@ -423,5 +524,207 @@ export async function fetchCustomerInfo(): Promise<CustomerInfo | null> {
   } catch (error) {
     trackError("revenuecat.customerInfo", error);
     return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Abonelik yaşam döngüsü (C9-C11): yönetim, ödeme düzeltme, winback ve
+// elde tutma teklifleri. Hiçbiri yetki YAZMAZ; satın alma sonrası yetkiyi
+// yine webhook yazar ve çağıran `waitForServerPremium()` ile bekler.
+// ---------------------------------------------------------------------------
+
+/** Apple'ın abonelik ve ödeme yöntemi sayfaları (SDK yoksa yedek). */
+export const APPLE_SUBSCRIPTIONS_URL = "https://apps.apple.com/account/subscriptions";
+export const APPLE_BILLING_URL = "https://apps.apple.com/account/billing";
+
+/** CustomerInfo'dan yaşam döngüsü için gereken alanlar (saf, testli). */
+export interface CustomerLifecycleSnapshot {
+  isActive: boolean;
+  willRenew: boolean;
+  periodType: string | null;
+  expirationDate: string | null;
+  billingIssueDetectedAt: string | null;
+  unsubscribeDetectedAt: string | null;
+  productIdentifier: string | null;
+}
+
+/**
+ * Premium yetkisinin yaşam döngüsü görüntüsü. `entitlements.all` okunuyor:
+ * süresi dolmuş yetki `active`te yok ama ödeme sorunu izi `all`da duruyor.
+ * Hiç premium geçmişi yoksa null.
+ */
+export function readCustomerLifecycle(info: CustomerInfo | null): CustomerLifecycleSnapshot | null {
+  const entitlement = info?.entitlements.all[PREMIUM_ENTITLEMENT];
+  if (!entitlement) return null;
+  return {
+    isActive: entitlement.isActive,
+    willRenew: entitlement.willRenew,
+    periodType: entitlement.periodType ?? null,
+    expirationDate: entitlement.expirationDate ?? null,
+    billingIssueDetectedAt: entitlement.billingIssueDetectedAt ?? null,
+    unsubscribeDetectedAt: entitlement.unsubscribeDetectedAt ?? null,
+    productIdentifier: entitlement.productIdentifier ?? null,
+  };
+}
+
+/**
+ * App Store'un abonelik yönetim ekranını açar (iptal, plan değişikliği,
+ * yenilemeyi açma). SDK yoksa ya da hata verirse çağıran Apple URL'sine
+ * düşsün diye false döner.
+ */
+export async function showManageSubscriptions(): Promise<boolean> {
+  const purchases = await readyPurchases();
+  if (!purchases) return false;
+  try {
+    await purchases.showManageSubscriptions();
+    return true;
+  } catch (error) {
+    trackError("revenuecat.manageSubscriptions", error);
+    return false;
+  }
+}
+
+/** Bir pakete uygulanabilecek indirim teklifi (winback ya da promotional). */
+export type RetentionOffer =
+  | { kind: "winback"; pkg: PurchasesPackage; discount: PurchasesWinBackOffer }
+  | {
+      kind: "promotional";
+      pkg: PurchasesPackage;
+      discount: PurchasesStoreProductDiscount;
+      signed: PurchasesPromotionalOffer;
+    };
+
+/** Teklifin ekranda gösterilecek fiyatı ve süresi. */
+export function describeRetentionOffer(offer: RetentionOffer): {
+  priceString: string;
+  periodUnit: string;
+  periodNumberOfUnits: number;
+  cycles: number;
+} {
+  return {
+    priceString: offer.discount.priceString,
+    periodUnit: offer.discount.periodUnit,
+    periodNumberOfUnits: offer.discount.periodNumberOfUnits,
+    cycles: offer.discount.cycles,
+  };
+}
+
+/**
+ * Lingo'nun App Store Connect'te tanımlanacak promotional offer kimlikleri
+ * (IZLENECEK-YOL §3.3). İstemci HERHANGİ bir indirimi değil, yalnızca o
+ * bağlam için kararlaştırılmış teklifi arar.
+ */
+export const PROMO_OFFER_IDS = {
+  retainYearly: "lng_retain_yearly_next",
+  retainMonthly: "lng_retain_monthly_3m50",
+  winback: "lng_winback_promo",
+} as const;
+
+/**
+ * Paketler arasında bu kullanıcıya GERÇEKTEN uygulanabilecek ilk teklif.
+ *
+ * Sıra: App Store win-back (iOS 18+, uygunluğu Apple belirler) ->
+ * `promotionalIds` içindeki promotional offer (eski abone; RevenueCat
+ * imzalar, In-App Purchase Key gerekir). Teklif tanımlı değilse, kullanıcı
+ * uygun değilse ya da durum bilinmiyorsa null -- çağıran yalnızca
+ * bilgilendirir. Kazanılmamış bir indirim iddiası yanıltıcı olurdu.
+ *
+ * NOT: hangi kullanıcının hangi promotional teklifi göreceğine nihai
+ * olarak sunucu karar verecek (kural motoru, ayrı iş). O gelene kadar
+ * istemci yalnızca bağlama sabitlenmiş kimlikleri arıyor.
+ */
+export async function findRetentionOffer(
+  packages: PurchasesPackage[],
+  options: { winback: boolean; promotionalIds: readonly string[] },
+): Promise<RetentionOffer | null> {
+  if (packages.length === 0) return null;
+  const purchases = await readyPurchases();
+  if (!purchases) return null;
+
+  if (options.winback) {
+    for (const pkg of packages) {
+      try {
+        const offers = await purchases.getEligibleWinBackOffersForPackage(pkg);
+        const first = offers?.[0];
+        if (first) return { kind: "winback", pkg, discount: first };
+      } catch (error) {
+        // iOS < 18 ya da StoreKit hatası: teklif yok say, kaydet.
+        trackError("revenuecat.winbackOffers", error, { package_id: pkg.identifier });
+      }
+    }
+  }
+
+  for (const pkg of packages) {
+    const discounts = (pkg.product.discounts ?? []).filter((discount) =>
+      options.promotionalIds.includes(discount.identifier),
+    );
+    for (const discount of discounts) {
+      try {
+        const signed = await purchases.getPromotionalOffer(pkg.product, discount);
+        if (signed) return { kind: "promotional", pkg, discount, signed };
+      } catch (error) {
+        trackError("revenuecat.promotionalOffer", error, {
+          package_id: pkg.identifier,
+          discount: discount.identifier,
+        });
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * YALNIZCA istenen offering'in paketleri; tanımlı değilse boş dizi.
+ *
+ * `fetchOfferingPackages`tan farkı: o, offering yoksa varsayılana düşüyor
+ * (paywall boş açılmasın diye). Winback'te `sale` offering'i yoksa normal
+ * fiyatı "teklif" diye göstermek yanıltıcı olurdu; burada yokluk yokluktur.
+ */
+export async function fetchOfferingPackagesStrict(offeringId: string): Promise<PurchasesPackage[]> {
+  const purchases = await readyPurchases();
+  if (!purchases) return [];
+  try {
+    const offerings = await purchases.getOfferings();
+    return offerings.all[offeringId]?.availablePackages ?? [];
+  } catch (error) {
+    trackError("revenuecat.offeringsStrict", error, { offering: offeringId });
+    throw error;
+  }
+}
+
+/** Teklifli satın alma. Sonuç tipi ve kurallar `purchasePackage` ile aynı. */
+export async function purchaseRetentionOffer(
+  offer: RetentionOffer,
+  context?: PurchaseContext,
+): Promise<PurchaseOutcome> {
+  const purchases = await readyPurchases();
+  if (!purchases) return { status: "error" };
+  const params = { package_id: offer.pkg.identifier, offer_kind: offer.kind, ...context };
+  try {
+    const { customerInfo } =
+      offer.kind === "winback"
+        ? await purchases.purchasePackageWithWinBackOffer(offer.pkg, offer.discount)
+        : await purchases.purchaseDiscountedPackage(offer.pkg, offer.signed);
+    if (!hasPremium(customerInfo)) {
+      trackError(
+        "revenuecat.retentionPurchase.notEntitled",
+        new Error("entitlement_inactive"),
+        params,
+      );
+      return { status: "not_entitled" };
+    }
+    trackEvent("purchase_completed", params);
+    return { status: "success", trialEndsAt: null };
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      (error as { userCancelled?: boolean }).userCancelled === true
+    ) {
+      trackEvent("purchase_cancelled", params);
+      return { status: "cancelled" };
+    }
+    trackError("revenuecat.retentionPurchase", error, params);
+    return { status: "error" };
   }
 }

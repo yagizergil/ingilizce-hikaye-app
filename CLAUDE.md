@@ -12,7 +12,9 @@ klasikler public domain, seviyeli hikâyeler kendi ürettiğimiz özgün
 metinler. Gelir premium abonelikten geliyor.
 
 **Premium bugün ne sunuyor** (paywall'da yalnızca bunlar yazılabilir):
-**stüdyo seslendirmesi**, sınırsız kelime çevirisi (ücretsizde kelime + cümle
+**stüdyo seslendirmesinin TÜM bölümleri** (her kitabın ilk seslendirilmiş
+bölümü herkese ücretsiz -- migration 110, 2026-10-31; paywall "seslendirme
+premium" diyemez, "tüm bölümler" der), sınırsız kelime çevirisi (ücretsizde kelime + cümle
 çevirisi ORTAK günde 10, 1 cümle = 1 hak -- migration 057; kelime anlamını
 sunucu da `authorize_word_gloss()` ile kapılıyor), sınırsız kelime defteri, yüksek AI cümle çevirisi kotası,
 ikinci dil çifti, **Akıllı Tekrar** (1.0.6; ücretsizde 24 saatte 1 deneme,
@@ -28,12 +30,18 @@ bir özelliği premium diye satmak demekti (Guideline 2.3.1). Gerçekten
 premium yapılmaları ücretsiz katmandan değer almak demek -- ayrı bir ürün
 kararı.
 
-**Dinlemek premium'dur** (bkz. ADR-012). Bölüm seslendirmesi önceden
-üretilmiş stüdyo kaydıyla yapılıyor ve özgün 63 hikâyede var; klasiklerde
-yok. **Değişti (2026-10-06, ürün sahibi kararı):** seslendirmesi olan
-kitapta premium olmayan kullanıcı okuyucunun oku/dinle hapını görür; dinle
-yuvarlağı kilit rozetli ve paywall'a gider (`source=reader_listen`).
-Kendiliğinden açılan bir teklif, banner ya da modal hâlâ YOK.
+**Dinlemek premium'dur -- bölüm 1 hariç** (bkz. ADR-012). Bölüm
+seslendirmesi önceden üretilmiş stüdyo kaydıyla yapılıyor ve özgün
+hikâyelerde var; klasiklerde yok. **Değişti (2026-10-06, ürün sahibi
+kararı):** seslendirmesi olan kitapta premium olmayan kullanıcı okuyucunun
+oku/dinle hapını görür; dinle yuvarlağı kilit rozetli ve paywall'a gider
+(`source=reader_listen`). **Değişti (2026-10-31, ürün sahibi kararı,
+migration 110):** her kitabın ilk seslendirilmiş bölümü premium olmayan
+kullanıcıya da kalıcı olarak ücretsiz; o bölümde hap normal çalışır, diğer
+bölümlerde 2026-10-06 davranışı aynen sürer. Kitap detayındaki
+`BookAudioCard` ve "Dinle" bunu gösterir (devam bölümü ücretsiz bölümse
+"Dinle" çalar, değilse paywall). Kendiliğinden açılan bir teklif, banner ya
+da modal hâlâ YOK.
 
 **Kelime telaffuzu ÜCRETSİZ ve öyle kalacak.** Sözlük kartındaki hoparlör
 cihazın kendi motoruyla (`expo-speech`) tek kelimeyi okuyor. Bu bir dinleme
@@ -277,6 +285,20 @@ RevenueCat  →  supabase/functions/revenuecat-webhook  (paylaşılan sır ile d
 sonrası içeriğin açılmamasını (Guideline 2.1/3.1.1) red sebebi sayıyor.
 Tek yazarlı zincir ikisini birden çözüyor.
 
+**Yaşam döngüsü eki (2026-10-31, migration 100/101):** webhook yetkiyi
+yazdıktan SONRA ayrı bir `apply_subscription_lifecycle()` çağrısıyla
+yalnızca BİLGİ alanlarını yazar (`will_renew`, `billing_issue_at`,
+`grace_expires_at`, `expired_at`, `expiration_reason`, `trial_used`,
+`had_paid`...; eşleme `revenuecat-webhook/lifecycle.ts`, testli). Hiçbir kapı
+bu alanlara bakmaz; `tier`/`expires_at` kuralı ve `apply_entitlement_event`
+DEĞİŞMEDİ. İstemci tarafı `src/features/subscription/` (durum türetme
+`lifecycle.ts`: premium kararı sunucudan, CustomerInfo yalnızca ödeme sorunu
+/ yenileme bilgisini tazeler). Ekranlar: `/subscription` (yönetim),
+`/billing-fix` (ödeme sorununda paywall da bunu açar), `/cancel-subscription`
+(kaybedilecekler -> neden -> teklif; "Yine de iptal et" her adımda App
+Store'a), `/winback`. Teklif ASC/RevenueCat'te yoksa ekranlar yalnızca
+bilgilendirir. `cancel_feedback` tablosu (migration 101) neden anketini tutar.
+
 ### ADR-010: Hatırlatmalar yerel bildirim, push DEĞİL
 
 **Karar:** Üç hatırlatma (tekrar zamanı, yarım kalan hikâye, seri
@@ -306,6 +328,12 @@ hatırlatmayı aç"a bastığında (`OnboardingReminderOptIn`, tekrarlayan
 sil" döngüsü artık bu iki kimliğe dokunmuyor (`lib/notifications.ts`).
 Paywall çizelgesi izin reddedilmişse "hatırlatırız" demiyor.
 
+**Abonelik eki (2026-10-31):** `subscriptionEnding` (iptal edilmiş aboneye
+bitişe 3 gün kala) ve `winback` (iptal edilmiş abone ya da denemedeki
+kullanıcı için bitiş + 24 saat; deneme dönüştüyse sonraki açılışta iptal).
+İkisi için de izin İSTENMEZ, yalnızca zaten verilmişse planlanır; ödeme
+sorunu için bildirim yok (ana sayfa kartı yeter).
+
 ### ADR-011: Cihaz üstü bölüm seslendirmesi (İPTAL EDİLDİ)
 
 > **İptal (2026-09-08).** Bu ADR bölüm seslendirmesinin cihazın konuşma
@@ -332,9 +360,35 @@ kelime vurgu, cihazın kendi konuşma motoruyla yapılıyordu; platform okumak
 üzere olduğu kelimenin karakter konumunu bildiriyordu (iOS
 `willSpeakRangeOfSpeechString`, Android `onRangeStart`).
 
-### ADR-012: Seslendirme = stüdyo kaydı, istisnasız premium
+### ADR-012: Seslendirme = stüdyo kaydı, premium (bölüm 1 ücretsiz)
 
-**Karar:** Bölüm seslendirmesinin tek sürücüsü var: önceden üretilmiş
+> **Değişti (2026-10-31, ürün sahibi kararı, migration 110).** Migration
+> 032'nin (2026-09-08) tamamen kaldırdığı ücretsiz dinleme, **her kitabın
+> ilk seslendirilmiş bölümüyle sınırlı olarak** geri geldi. 031'deki
+> kullanıcıya bağlı "tadımlık hak" (tablo + talep) geri GELMEDİ: kural
+> içerikten türüyor, saklanan satır yok, herkes için aynı.
+>
+> - "İlk bölüm" TEK yerde: `free_audio_section_id(p_book_id)` -- stüdyo sesi
+>   olan (audio_url + audio_timings_url dolu) bölümler arasında
+>   `order_index` en küçük olan (577 kitabın 544'ünde 0'dan başlıyor ama
+>   hepsinde değil; 0 varsayılmıyor), eşitlikte `id`; yalnızca yayımlanmış
+>   kitap.
+> - Bölüm kapısı `can_play_section_audio(p_section_id)` = premium
+>   (`can_play_book_audio`, DEĞİŞMEDİ, "tam erişim var mı" sorusunun cevabı)
+>   VEYA oturumlu kullanıcı + ücretsiz bölüm. `chapter-audio` bunu çağırıyor;
+>   fonksiyon canlıda yoksa (PGRST202/42883) `can_play_book_audio`'ya geri
+>   düşüyor (`chapter-audio/access.ts`, testli).
+> - İstemci: `library/api/useBookAudioAccess` iki cevabı birleştiriyor
+>   (`canPlay`, `freeSectionId`); yorum `audioAccessRules.ts` (saf, testli).
+>   `free_audio_section_id` yoksa `freeSectionId = null` ve davranış eskisi.
+> - Deploy sırası: migration 110 -> `chapter-audio` -> istemci. Her sıra
+>   güvenli; ücretsiz bölüm 1 üçü de canlıda olunca çalışır.
+> - Paywall faydası artık "tüm bölümler" diyor; iptal ekranı ve bitiş
+>   bildirimi "dinleme kapanır" demiyor (`paywallTriggers.test.ts`).
+>
+> Aşağıdaki "istisnasız premium" metni ve gerekçesi TARİH olarak duruyor.
+
+**Eski karar (2026-09-08):** Bölüm seslendirmesinin tek sürücüsü var: önceden üretilmiş
 stüdyo kaydı. Özgün 63 hikâyenin 207 bölümü Google Cloud TTS
 (`en-US-Neural2-F`) ile seslendirildi; SSML `<mark>` +
 `enableTimePointing` ile kelime zaman işaretleri de üretildi, vurgu oradan
@@ -361,7 +415,8 @@ okuyabiliyor. Bağlantıyı `supabase/functions/chapter-audio` üretiyor —
 2 saatlik imzalı bağlantı veriyor. Kural TEK yerde: istemci de aynı
 fonksiyonu çağırıyor, ikinci bir kopyası yok.
 
-**Reader'da ne görünüyor:** Erişim yoksa seslendirme düğmesi HİÇ
+**Reader'da ne görünüyor** (2026-10-06 ve 2026-10-31'de değişti, yukarıya
+bak; aşağısı tarih): Erişim yoksa seslendirme düğmesi HİÇ
 görünmüyor. Kilitli bir düğme koymak okuma ekranına premium promosyonu
 sokardı (Ürün İlkesi #1); basıldığında hiçbir şey yapmayan bir düğme ise
 arıza gibi görünürdü. Teklif kitap detayında: `BookAudioCard` ve "Dinle"
@@ -501,9 +556,12 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 - **Okuma ekranında paywall** — `features/reader` içine premium
   promosyonu, banner, interstitial veya "yükseltmek ister misin" modalı
   eklenmez (bkz. Ürün İlkesi #1). Tek istisna, kullanıcının KENDİ bastığı
-  oku/dinle hapındaki kilitli dinle yuvarlağı (2026-10-06 kararı).
+  oku/dinle hapındaki kilitli dinle yuvarlağı (2026-10-06 kararı). Ücretsiz
+  bölüm 1 (2026-10-31) okuyucuya HİÇBİR yeni teklif eklemedi; o bölümde
+  yuvarlak yalnızca kilitsiz.
 - **Kelime telaffuzunu ücretli yapma** — sözlük kartındaki hoparlör
-  ücretsiz kalır. Bölüm seslendirmesi premium, telaffuz değil (ADR-012).
+  ücretsiz kalır. Bölüm seslendirmesi premium (ilk bölüm hariç), telaffuz
+  değil (ADR-012).
 
 ## Mevcut Durum ve Sonraki Adımlar
 
@@ -512,6 +570,24 @@ hafta vs Senaryo B: 11 dil ~$15-18k/9-14 ay) tasarım dokümanında.
 > `docs/ROADMAP.md` ve `docs/STATE.md` çok daha eski; çelişki olursa burası
 > geçerlidir. Yayın adımlarının tamamı ve dağıtım komutları `docs/RELEASE.md`
 > içinde.
+
+### Teklif kural motoru (2026-10-31, branch `paywall/faz2-teklif`, CANLIDA DEĞİL)
+
+Tasarım: `PAYWALL-KARSILASTIRMA-VE-COZUM.md` C6/C7/C8, §5.3; `IZLENECEK-YOL.md` T3/T4/U4.
+`src/features/offers/`: kurallar `paywall_rules` (migration 090/093) + gömülü
+kopya `rules/defaultRules.json` (test ikisini eşit tutuyor); değerlendirme
+istemcide (`rules/engine.ts`, saf ve testli); bağlam `paywall_context()` (092);
+sunucu süreli teklif `offer_grants` + `grant_offer()` (091). Kurallar:
+`onboarding_downsell` (aylık, kova < 50 deney kolu), `sale_d2`, `sale_d3_d30`,
+`sale_d30_plus`, `sale_cascade`, `home_offer` (72 sa artık tablodan).
+Global: ilk gün tam ekran yok, tam ekranlar arası 20 sa, oturumda 1, diyalog
+açıkken yok (`hooks/useDialogGuard`), ödeme sorunu varken indirim yok, %10
+kalıcı holdout (ayrı tuzlu kova) zamanlanmış teklif görmez. **Okuyucu motoru
+çağıramaz** (ESLint yasağı + `readerIsolation.test.ts`; okuyucu kaynaklı
+paywall kapanışı motorda engelli). Ürün kimliği kodda yok: offering adı
+(`sale`, `downsell`) kuraldan; offering yoksa sessizce normal paywall'a
+(kaskadda yalnızca kapanır). Satın alma akışı `paywall/hooks/usePurchaseFlow`
+içinde ortak (paywall, indirim ekranı, çıkış teklifi).
 
 ### 1.0.9 turu (2026-10-06): okuyucu, çok dilli ses, onboarding, maskot Lumi, okur seviyesi
 

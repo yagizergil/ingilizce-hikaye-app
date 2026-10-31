@@ -492,6 +492,7 @@
     "audio": {
       "label": "Vertonung",
       "unlocked": "Diese Geschichte wird von einer Studiostimme gelesen — Wort für Wort hervorgehoben.",
+      "firstChapterFree": "Die Studiovertonung des ersten Kapitels ist für alle kostenlos. Die übrigen Kapitel hörst du mit Premium, jedes Wort wird beim Lesen hervorgehoben.",
       "locked": "Die Studiovertonung gehört zu Premium. Hör dir diese Geschichte in einer natürlichen Stimme an, während jedes Wort beim Lesen hervorgehoben wird."
     },
     "about": "Über dieses Buch",
@@ -516,6 +517,7 @@
     "wordSheet": {
       "pronounce": "Aussprechen",
       "noTranslation": "Für dieses Wort gibt es keine Übersetzung",
+      "lookupOffline": "Keine Verbindung. Verbinde dich mit dem Internet, um dieses Wort zu sehen.",
       "lookingUpTranslation": "Übersetzung wird gesucht…",
       "save": "Speichern",
       "saved": "Gespeichert",
@@ -720,7 +722,8 @@
       "description": "Studio-Vertonung, unbegrenzte Übersetzungen und Smart-Training.",
       "cta": "Premium ansehen",
       "activeTitle": "Du bist Premium",
-      "activeDescription": "Alles ist freigeschaltet. Viel Spaß beim Lesen!"
+      "activeDescription": "Alles ist freigeschaltet. Viel Spaß beim Lesen!",
+      "manageCta": "Abo verwalten"
     },
     "sections": {
       "learning": "Lernen",
@@ -1226,7 +1229,7 @@
     "benefits": {
       "studioAudio": {
         "title": "Hören und verstehen",
-        "body": "Studio-Vertonung, bei der das gesprochene Wort mitlaufend hervorgehoben wird."
+        "body": "Jedes Kapitel jeder Geschichte als Studio-Vertonung, das gesprochene Wort mitlaufend hervorgehoben."
       },
       "unlimitedLookups": {
         "title": "Unbegrenzte Wortübersetzungen",
@@ -1368,6 +1371,14 @@
       "homeOffer": {
         "title": "Premium gratis testen",
         "subtitle": "Hören, unbegrenzt übersetzen, mit Smart-Training behalten."
+      },
+      "onboardingNoTrial": {
+        "title": "Dein Leseplan ist fertig",
+        "subtitle": "Mit Premium: hören, frei übersetzen, mehr behalten."
+      },
+      "homeOfferNoTrial": {
+        "title": "Mehr mit Premium",
+        "subtitle": "Hören, unbegrenzt übersetzen, mit Smart-Training mehr behalten."
       }
     },
     "cancelAnytime": "Jederzeit kündbar.",
@@ -1388,8 +1399,12 @@
     "onboardingPersonal": {
       "title": "Dein Plan für Niveau {{level}} ist fertig",
       "subtitle": "{{minutes}} Min. am Tag sind {{hours}} Stunden Lesen in 6 Monaten. Im Test ist alles offen.",
-      "subtitleNoGoal": "Im Test ist alles offen: hören, unbegrenzt übersetzen, mit Smart-Training festigen."
-    }
+      "subtitleNoGoal": "Im Test ist alles offen: hören, unbegrenzt übersetzen, mit Smart-Training festigen.",
+      "subtitleNoTrial": "{{minutes}} Min. am Tag sind {{hours}} Stunden Lesen in 6 Monaten. Premium schaltet alles frei.",
+      "subtitleNoGoalNoTrial": "Mit Premium: hören, unbegrenzt übersetzen, mit Smart-Training üben."
+    },
+    "noTrialOnPlanAnnual": "Der Jahresplan hat keine kostenlose Testphase; die Abbuchung erfolgt sofort. Die Testphase gibt es im Monatsplan.",
+    "noTrialOnPlanOther": "Der gewählte Plan hat keine kostenlose Testphase; die Abbuchung erfolgt sofort."
   },
   "reminders": {
     "settingsLabel": "Erinnerungen",
@@ -1595,5 +1610,155 @@
     "retry": "Erneut versuchen",
     "retrying": "Verbinde…",
     "autoRetry": "Sobald du wieder online bist, versuchen wir es automatisch erneut."
+  },
+  "offers": {
+    "sale": {
+      "badge": "{{percent}} % Rabatt",
+      "title": "Ein Sonderpreis für Premium",
+      "subtitle": "Geschichten sind immer kostenlos. Schalte Premium jetzt günstiger frei.",
+      "endsIn": "Angebot endet in {{hours}} Std. {{minutes}} Min.",
+      "anchorA11y": "Normalpreis {{price}}",
+      "price": "{{price}} / {{period}}",
+      "cta": "Angebot sichern",
+      "exitTitle": "Angebot endet",
+      "exitBody": "Dieser Preis endet in {{hours}} Std. {{minutes}} Min.",
+      "exitStay": "Angebot behalten",
+      "exitLeave": "Verlassen",
+      "reminderTitle": "Dein Rabatt endet bald",
+      "reminderBody": "Dein Premium-Sonderpreis endet in etwa {{hours}} Stunden."
+    },
+    "downsell": {
+      "title": "Erst einen Monat testen",
+      "body": "Ist dir das Jahresabo zu viel? Starte monatlich, jederzeit kündbar.",
+      "price": "{{price}} / Monat",
+      "cta": "Monatlich starten",
+      "decline": "Nein, danke"
+    }
+  },
+  "subscription": {
+    "manage": {
+      "title": "Abo",
+      "loadError": "Abodetails konnten nicht geladen werden.",
+      "storeOpenError": "Die App-Store-Abo-Seite ließ sich nicht öffnen. Du kannst das Abo unter Einstellungen > Apple-ID > Abonnements verwalten.",
+      "footnote": "Kündigen und Planwechsel erfolgen im App Store. Kündige mindestens 24 Stunden vor der Verlängerung, um die nächste Abbuchung zu vermeiden.",
+      "trialDaysLeft_one": "Noch {{count}} Tag Testphase",
+      "trialDaysLeft_other": "Noch {{count}} Tage Testphase",
+      "status": {
+        "trial": "Kostenlose Testphase",
+        "active": "Premium aktiv",
+        "cancelled": "Verlängerung aus",
+        "grace": "Zahlungsproblem",
+        "billing_retry": "Premium pausiert",
+        "lapsed_paid": "Premium beendet",
+        "lapsed_trial": "Testphase beendet",
+        "none": "Kostenloser Plan"
+      },
+      "detail": {
+        "trial": "Deine Testphase endet am {{date}}. Wenn du nicht kündigst, beginnt an dem Tag dein Abo und es wird abgebucht.",
+        "active": "Dein Abo verlängert sich am {{date}}.",
+        "activeNoDate": "Dein Abo verlängert sich automatisch.",
+        "cancelled": "Premium bleibt bis {{date}} aktiv und verlängert sich danach nicht.",
+        "cancelledNoDate": "Premium bleibt bis zum Ende des Zeitraums aktiv und verlängert sich nicht.",
+        "grace": "Deine letzte Zahlung ist fehlgeschlagen. Premium bleibt bis {{date}} aktiv; bitte aktualisiere deine Zahlungsmethode.",
+        "graceNoDate": "Deine letzte Zahlung ist fehlgeschlagen. Premium ist vorerst aktiv; bitte aktualisiere deine Zahlungsmethode.",
+        "billing_retry": "Premium ist pausiert, weil die Zahlung fehlgeschlagen ist. Sobald die Zahlung klappt, wird es automatisch wieder aktiv.",
+        "lapsed": "Premium ist am {{date}} abgelaufen. Deine gespeicherten Wörter und dein Fortschritt sind noch da.",
+        "lapsedNoDate": "Premium ist abgelaufen. Deine gespeicherten Wörter und dein Fortschritt sind noch da.",
+        "none": "Alle Bücher sind kostenlos. Premium bietet Studio-Vertonung, unbegrenzte Übersetzungen und Smart-Training."
+      },
+      "actions": {
+        "fixPayment": "Zahlung korrigieren",
+        "cancel": "Ich möchte kündigen",
+        "turnOnRenewal": "Verlängerung wieder einschalten",
+        "winback": "Optionen für die Rückkehr ansehen",
+        "goPremium": "Premium holen",
+        "manageInStore": "Im App Store verwalten",
+        "restore": "Käufe wiederherstellen"
+      }
+    },
+    "billing": {
+      "bannerGrace": "Deine Zahlung ist fehlgeschlagen. Korrigiere sie bis {{date}}, um Premium zu behalten.",
+      "bannerGraceNoDate": "Deine Zahlung ist fehlgeschlagen. Korrigiere sie, um Premium zu behalten.",
+      "bannerRetry": "Premium ist pausiert, weil die Zahlung fehlgeschlagen ist.",
+      "bannerCta": "Korrigieren",
+      "title": "Zahlung fehlgeschlagen",
+      "titleRetry": "Premium ist pausiert",
+      "body": "Apple konnte die letzte Verlängerung nicht abbuchen. Premium bleibt bis {{date}} aktiv; aktualisiere deine Zahlungsmethode, damit es ohne Unterbrechung weitergeht.",
+      "bodyNoDate": "Apple konnte die letzte Verlängerung nicht abbuchen. Premium ist vorerst aktiv; aktualisiere deine Zahlungsmethode, damit es ohne Unterbrechung weitergeht.",
+      "bodyRetry": "Premium ist pausiert, weil die Zahlung fehlgeschlagen ist. Apple versucht es noch eine Weile; sobald du deine Zahlungsmethode aktualisierst, wird Premium automatisch wieder aktiv.",
+      "cta": "Zahlungsmethode aktualisieren",
+      "manage": "Abo ansehen",
+      "later": "Später",
+      "note": "Zahlungen laufen über Apple; deine Kartendaten aktualisierst du in deinem Apple-Account, nicht bei uns.",
+      "recovered": "Zahlung geklappt. Premium geht weiter."
+    },
+    "ending": {
+      "banner": "Premium endet am {{date}}; die Verlängerung ist aus.",
+      "bannerCta": "Verwalten",
+      "notifTitle": "Premium endet in 3 Tagen",
+      "notifBody": "Das Hören aller Kapitel und unbegrenzte Übersetzungen enden am {{date}}. Schalte die Verlängerung wieder ein, wenn du sie behalten möchtest."
+    },
+    "trial": {
+      "lastDayBanner": "Deine kostenlose Testphase endet am {{date}} und dein Abo beginnt.",
+      "lastDayCta": "Ansehen"
+    },
+    "winback": {
+      "title": "Willkommen zurück",
+      "body": "Premium ist abgelaufen, aber dein Fortschritt ist noch da. Deine Bücher warten auf dich.",
+      "bodyWords_one": "Premium ist abgelaufen, aber dein Fortschritt ist noch da: {{count}} gespeichertes Wort wartet auf dich.",
+      "bodyWords_other": "Premium ist abgelaufen, aber dein Fortschritt ist noch da: {{count}} gespeicherte Wörter warten auf dich.",
+      "offerTitle": "Rückkehrangebot",
+      "offerBody": "Erster Zeitraum {{price}}. Danach verlängert es sich zum regulären Preis ({{regular}}); jederzeit im App Store kündbar.",
+      "offerCta": "Mit dem Angebot weitermachen",
+      "noOffer": "Gerade gibt es kein besonderes Angebot für dich. Du kannst dir die Pläne ansehen oder kostenlos weiterlesen.",
+      "seePlans": "Pläne ansehen",
+      "notNow": "Nicht jetzt",
+      "purchasedTitle": "Willkommen zurück!",
+      "purchasedBody": "Premium ist wieder aktiv.",
+      "notifTitle": "Mach da weiter, wo du aufgehört hast",
+      "notifBody": "Deine Bücher und gespeicherten Wörter warten auf dich."
+    },
+    "cancel": {
+      "title": "Abo kündigen",
+      "lossTitle": "Was sich ändert, wenn Premium endet",
+      "loss": {
+        "audio": "Studio-Vertonung bleibt nur im ersten Kapitel jedes Buches",
+        "lookups_one": "Wort- und Satzübersetzungen sind auf {{count}} pro Tag begrenzt",
+        "lookups_other": "Wort- und Satzübersetzungen sind auf {{count}} pro Tag begrenzt",
+        "savedWords_one": "Dein {{count}} gespeichertes Wort bleibt; neue Wörter kannst du bis {{limit}} hinzufügen",
+        "savedWords_other": "Deine {{count}} gespeicherten Wörter bleiben; neue Wörter kannst du bis {{limit}} hinzufügen",
+        "smartPractice": "Smart-Training ist auf 1 Sitzung alle 24 Stunden begrenzt",
+        "quiz": "Stufe 2 und 3 der Buchquizze werden gesperrt"
+      },
+      "keep": "Bei Premium bleiben",
+      "continue": "Weiter",
+      "reasonTitle": "Warum möchtest du gehen?",
+      "reasonSubtitle": "Deine Antwort hilft uns, die App zu verbessern.",
+      "reasons": {
+        "too_expensive": "Es ist zu teuer",
+        "not_using": "Ich nutze es zu selten",
+        "missing_content": "Die Inhalte, die ich suche, fehlen",
+        "technical": "Ich habe technische Probleme",
+        "other": "Etwas anderes"
+      },
+      "notePlaceholder": "Wenn du magst, schreib ein paar Worte",
+      "offerTitle": "Bevor du gehst",
+      "offer": {
+        "promotional": "Ein Rabatt nur für dich: erster Zeitraum {{price}}. Danach Verlängerung zum regulären Preis ({{regular}}).",
+        "promotionalCta": "Mit Rabatt weitermachen",
+        "promotionalAccepted": "Der Rabatt wurde auf dein Abo angewendet.",
+        "monthly_switch": "Du kannst zum Monatsplan wechseln: {{price}}. Der Wechsel beginnt nach Ende deines Jahreszeitraums, bezahlte Zeit geht nicht verloren.",
+        "monthlyCta": "Zum Monatsplan wechseln",
+        "monthlyAccepted": "Dein Plan wechselt nach Ende des aktuellen Zeitraums auf monatlich.",
+        "goal": "Schon 5 Minuten am Tag reichen. Du kannst dein Tagesziel senken und eine Erinnerung einstellen.",
+        "goalCta": "Ziel anpassen",
+        "support": "Schreib uns, was nicht passt, und wir lösen es gemeinsam.",
+        "supportCta": "Support-Seite öffnen",
+        "none": "Danke für dein Feedback.",
+        "acceptedTitle": "Danke!"
+      },
+      "cancelAnyway": "Trotzdem kündigen",
+      "storeNote": "Gekündigt wird im App Store; Premium bleibt bis zum Ende des Zeitraums aktiv."
+    }
   }
 }

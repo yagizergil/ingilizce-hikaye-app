@@ -47,5 +47,25 @@ module.exports = {
         "no-restricted-syntax": ["error", noRawHexColor, noRawStyleSheetNumbers],
       },
     },
+    {
+      // Okuma ekranı kutsaldır (CLAUDE.md Ürün İlkesi #1): okuyucu kural
+      // motorunu (kendiliğinden açılan teklifler) çağıramaz. Kullanıcının
+      // KENDİ bastığı paywall düğmeleri `/paywall` rotasıyla açılıyor ve
+      // motor okuyucu kaynaklarının kapanışını ayrıca yok sayıyor.
+      files: ["src/features/reader/**/*.{ts,tsx}"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["@/features/offers", "@/features/offers/*"],
+                message: "Okuyucu teklif motorunu çağıramaz (Ürün İlkesi #1).",
+              },
+            ],
+          },
+        ],
+      },
+    },
   ],
 };

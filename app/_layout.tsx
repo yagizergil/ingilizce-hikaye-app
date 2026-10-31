@@ -22,6 +22,7 @@ import { useTheme } from "@/theme/useTheme";
 import { AuthGate, LaunchOverlay, OnboardingGate } from "@/features/onboarding";
 import { ReminderScheduler } from "@/features/reminders";
 import { LanguagePairUiSync } from "@/features/languagePair";
+import { EntitlementRepairOnLaunch } from "@/features/paywall";
 import { ErrorBoundary, ToastHost } from "@/components/ui";
 import { initAnalytics, trackError } from "@/lib/analytics";
 import { configurePurchases } from "@/lib/revenuecat";
@@ -142,6 +143,24 @@ export default function RootLayout() {
                       name="paywall"
                       options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
                     />
+                    {/* Kural motorunun indirim ekranı: paywall ile aynı sunum. */}
+                    <Stack.Screen
+                      name="offer"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
+                    {/* Abonelik yaşam döngüsü (C9-C11): ödeme düzeltme ve
+                        winback paywall gibi aşağıdan; yönetim ve iptal
+                        akışı normal itilen sayfa. */}
+                    <Stack.Screen
+                      name="billing-fix"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
+                    <Stack.Screen
+                      name="winback"
+                      options={{ animation: "slide_from_bottom", gestureDirection: "vertical" }}
+                    />
+                    <Stack.Screen name="subscription" />
+                    <Stack.Screen name="cancel-subscription" />
                     <Stack.Screen name="language-settings" options={{ presentation: "modal" }} />
                     {/*
                       Kitap bitirme kutlaması. Modal DEĞİL: reader'dan
@@ -171,6 +190,7 @@ export default function RootLayout() {
                   */}
                   <ReminderScheduler />
                   <LanguagePairUiSync />
+                  <EntitlementRepairOnLaunch />
                 </OnboardingGate>
               </AuthGate>
             </ErrorBoundary>

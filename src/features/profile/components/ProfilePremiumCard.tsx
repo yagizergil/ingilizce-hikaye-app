@@ -16,14 +16,18 @@ import { MascotAnim } from "@/components/ui";
 interface ProfilePremiumCardProps {
   isPremium: boolean;
   onPress: () => void;
+  /** Premium'da karta dokunmak abonelik yönetimini açar. */
+  onManage: () => void;
 }
 
 /**
  * Profilin tepesindeki premium kartı. Ücretsizde paywall'a götürür,
- * premium'da yalnızca teşekkür eder. Okuma ekranının DIŞINDA ve kullanıcının
+ * premium'da teşekkür eder ve abonelik yönetimine (durum, iptal, ödeme
+ * sorunu) götürür -- eskiden premium'da tıklanamıyordu ve uygulamada
+ * aboneliği yönetecek hiçbir yol yoktu (durum E4). Okuma ekranının DIŞINDA ve kullanıcının
  * kendi açtığı bir sayfada (Ürün İlkesi #1).
  */
-export function ProfilePremiumCard({ isPremium, onPress }: ProfilePremiumCardProps) {
+export function ProfilePremiumCard({ isPremium, onPress, onManage }: ProfilePremiumCardProps) {
   const { t } = useTranslation();
 
   const body = (
@@ -35,23 +39,21 @@ export function ProfilePremiumCard({ isPremium, onPress }: ProfilePremiumCardPro
         <Text style={[homeType.cardSub, styles.description]}>
           {t(isPremium ? "profile.premium.activeDescription" : "profile.premium.description")}
         </Text>
-        {isPremium ? null : (
-          <View style={styles.cta}>
-            <Text style={[detailType.statLabel, styles.ctaText]}>{t("profile.premium.cta")}</Text>
-          </View>
-        )}
+        <View style={styles.cta}>
+          <Text style={[detailType.statLabel, styles.ctaText]}>
+            {t(isPremium ? "profile.premium.manageCta" : "profile.premium.cta")}
+          </Text>
+        </View>
       </View>
       <MascotAnim name="crown" width={mascotSize.card} />
     </>
   );
 
-  if (isPremium) return <View style={styles.card}>{body}</View>;
-
   return (
     <Pressable
-      onPress={onPress}
+      onPress={isPremium ? onManage : onPress}
       accessibilityRole="button"
-      accessibilityLabel={t("profile.premium.title")}
+      accessibilityLabel={t(isPremium ? "profile.premium.manageCta" : "profile.premium.title")}
       style={({ pressed }) => [styles.card, pressed ? styles.pressed : null]}
     >
       {body}

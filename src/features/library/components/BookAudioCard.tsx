@@ -13,6 +13,13 @@ import {
 } from "@/theme";
 import { UiIcon } from "@/components/ui";
 import { useBookAudioAccessQuery } from "@/features/library/api/useBookAudioAccess";
+import { bookAudioCardState } from "@/features/library/api/audioAccessRules";
+
+const CARD_TEXT_KEY = {
+  unlocked: "bookDetail.audio.unlocked",
+  firstChapterFree: "bookDetail.audio.firstChapterFree",
+  locked: "bookDetail.audio.locked",
+} as const;
 
 interface BookAudioCardProps {
   bookId: string;
@@ -28,7 +35,10 @@ interface BookAudioCardProps {
  * olmayan kullanıcıda seslendirme düğmesi hiç görünmüyor.
  *
  * 2026-09-08: ücretsiz "bir hikâye dinle" hakkı kaldırıldı (migration 032).
- * Blok artık iki durum gösteriyor — açık ya da premium gerekli.
+ * 2026-10-31 (ürün sahibi kararı, migration 110): her kitabın ilk
+ * seslendirilmiş bölümü herkese ücretsiz. Blok üç durum gösteriyor — tamamı
+ * açık, bölüm 1 ücretsiz (diğerleri premium) ya da premium gerekli (sunucu
+ * fonksiyonu henüz canlıda değilse).
  *
  * Burada ayrı bir "Premium ile dinle" bağlantısı YOK (kullanıcı bulgusu,
  * 2026-09-24): aynı ekrandaki "Dinle" düğmesi kilitliyken zaten paywall'a
@@ -55,7 +65,7 @@ export function BookAudioCard({ bookId, hasAudio }: BookAudioCardProps) {
           {t("bookDetail.audio.label")}
         </Text>
         <Text style={[homeType.cardSub, { color: detailColors.muted }]}>
-          {access.canPlay ? t("bookDetail.audio.unlocked") : t("bookDetail.audio.locked")}
+          {t(CARD_TEXT_KEY[bookAudioCardState(access)])}
         </Text>
       </View>
     </View>

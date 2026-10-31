@@ -5,4 +5,6 @@ export { ReaderSettingsSheet } from "@/features/reader/components/ReaderSettings
 export { useReaderSettings } from "@/features/reader/hooks/useReaderSettings";
 // Kelime defteri ekranı kelimeyi buradan çıkarıyor (bkz. o hook'un notu).
 export { useRemoveSavedWordMutation } from "@/features/reader/api/useSavedWordsQuery";
+// Hesap sıfırlanınca kelime kotası defteri de silinir (Profil, hesap silme).
+export { clearWordLookupLedger } from "@/features/reader/api/wordLookupLedger";
 export type { ReaderChapter, ReaderParagraph, ReaderSettings } from "@/features/reader/types";

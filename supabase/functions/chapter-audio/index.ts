@@ -6,15 +6,17 @@
 // içinde duruyor ve o satırları her kullanıcı okuyabiliyor. Erişimi
 // gerçekten kısıtlamanın tek yolu bağlantıyı sunucunun üretmesi.
 //
-// KARAR YERİ: erişim kuralı burada YENİDEN YAZILMIYOR; migration 031'deki
-// `can_play_book_audio()` çağrılıyor. Aynı kural istemcide de (düğme
-// kilitli mi) lazım; iki kopya zamanla ayrışır ve ayrıştığında kullanıcı ya
-// ödediğini göremez ya da ödemediğini dinler.
-//
-// NE KISITLAMIYOR: cihaz üstü sesli okuma (ADR-011) bu yoldan geçmiyor ve
-// ücretsiz kalmaya devam ediyor. Buradan dönen 403, kullanıcı için "ses
-// yok" demek değil — reader sessizce cihaz sesine düşüyor.
+// KARAR YERİ: erişim kuralı burada YENİDEN YAZILMIYOR; migration 110'daki
+// `can_play_section_audio()` çağrılıyor (premium YA DA kitabın ilk
+// seslendirilmiş bölümü — ürün sahibi kararı 2026-10-31). Fonksiyon canlıda
+// henüz yoksa (PGRST202 / 42883) eski `can_play_book_audio()` kuralına geri
+// düşülüyor; mantık `access.ts` içinde ve testli. Aynı tanım istemcide de
+// (düğme kilitli mi) `free_audio_section_id()` üzerinden kullanılıyor; iki
+// kopya zamanla ayrışır ve ayrıştığında kullanıcı ya ödediğini göremez ya da
+// ödemediğini dinler.
 import { createClient } from "jsr:@supabase/supabase-js@2";
+
+import { resolveChapterAudioAccess } from "./access.ts";
 
 const BUCKET = "book-audio";
 
@@ -100,19 +102,24 @@ Deno.serve(async (req: Request) => {
   const timingsPath = objectPath(section.audio_timings_url);
   if (!audioPath || !timingsPath) {
     // Bu bölüm için stüdyo sesi üretilmemiş (klasiklerin tamamı böyle).
-    // Hata değil: reader cihaz sesine düşecek.
+    // Hata değil: reader'da seslendirme düğmesi zaten yok.
     return jsonResponse({ error: "no_audio" }, 404);
   }
 
-  const { data: allowed, error: accessError } = await callerClient.rpc("can_play_book_audio", {
-    p_book_id: section.book_id,
-  });
+  // Çağıranın kimliğiyle: auth.uid() kararın parçası.
+  const access = await resolveChapterAudioAccess(
+    (fn, args) => callerClient.rpc(fn, args),
+    { id: section.id, book_id: section.book_id },
+  );
 
-  if (accessError) {
-    console.error(`chapter-audio: access check failed message=${accessError.message}`);
+  if (access.kind === "error") {
+    console.error(`chapter-audio: access check failed message=${access.message}`);
     return jsonResponse({ error: "lookup_failed" }, 500);
   }
-  if (allowed !== true) {
+  if (access.via === "book_fallback") {
+    console.warn("chapter-audio: can_play_section_audio missing, used can_play_book_audio");
+  }
+  if (access.kind !== "allowed") {
     return jsonResponse({ error: "locked" }, 403);
   }
 

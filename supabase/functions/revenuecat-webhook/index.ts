@@ -15,8 +15,15 @@
 //     REVENUECAT_WEBHOOK_SECRET ile karşılaştırılır. Karşılaştırma sabit
 //     zamanlı yapılır.
 //   - Yazma service_role ile ve yalnızca `apply_entitlement_event()`
-//     üzerinden yapılır (migration 028). Fonksiyon idempotans ve sıralama
-//     kurallarını kendi içinde uygular.
+//     üzerinden yapılır (migration 028, 060). Fonksiyon idempotans (olay
+//     defteri `revenuecat_events`), sıralama (`rc_event_ms`) ve sandbox
+//     kurallarını kendi içinde, kullanıcı başına kilitle uygular.
+//
+// SANDBOX (migration 060): olayın `environment` alanı SQL'e geçiyor. Sandbox
+//   olayı, son olayı PRODUCTION olan ve hâlâ geçerli premium bir satırı
+//   ezemez ('sandbox_ignored'). Sandbox TAMAMEN düşürülmüyor: App Review
+//   satın almayı üretimdeki uygulamada sandbox ortamında yapar; o ödemenin
+//   premium açmaması Guideline 2.1 reddi olurdu.
 //
 // TESLİM GARANTİSİ: RevenueCat "at least once" teslim eder ve sıralama
 // garanti etmez. Bu yüzden 2xx dönmek "işlendi" demektir; işlenemeyen ama
@@ -26,56 +33,19 @@
 // hatalar (DB erişilemedi) 5xx döner.
 import { createClient, type SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
-/** Uygulamanın RevenueCat'teki yetki adı — src/lib/revenuecat.ts ile aynı. */
-const PREMIUM_ENTITLEMENT = "premium";
-
-/**
- * Yetkiyi KESİN olarak kaldıran olaylar.
- *
- * CANCELLATION bilerek burada DEĞİL: kullanıcı iptal ettiğinde erişim
- * dönem sonuna kadar sürer. Erişimi orada kesmek, parasını ödediği süreyi
- * kullanıcıdan almak olurdu. Gerçek kesme EXPIRATION ile gelir.
- *
- * BILLING_ISSUE de burada değil: RevenueCat ödeme sorununda önce bir ek
- * süre (grace period) tanır ve süre gerçekten dolduğunda EXPIRATION
- * gönderir.
- */
-const REVOKING_EVENTS = new Set(["EXPIRATION", "SUBSCRIPTION_PAUSED"]);
-
-/** Hiçbir yetki değişikliği anlamına gelmeyen, yalnızca bilgilendirici olaylar. */
-const IGNORED_EVENTS = new Set([
-  "TEST",
-  "SUBSCRIBER_ALIAS",
-  "SUBSCRIPTION_EXTENDED",
-  "INVOICE_ISSUANCE",
-  "TEMPORARY_ENTITLEMENT_GRANT",
-]);
-
-interface RevenueCatEvent {
-  id?: string;
-  type?: string;
-  app_user_id?: string;
-  original_app_user_id?: string;
-  aliases?: string[];
-  product_id?: string;
-  period_type?: string;
-  store?: string;
-  environment?: string;
-  entitlement_id?: string | null;
-  entitlement_ids?: string[] | null;
-  expiration_at_ms?: number | null;
-  event_timestamp_ms?: number | null;
-  transferred_to?: string[];
-  transferred_from?: string[];
-}
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-function uuids(list: string[] | undefined): string[] {
-  return (list ?? [])
-    .filter((v) => typeof v === "string" && UUID_RE.test(v))
-    .map((v) => v.toLowerCase());
-}
+import {
+  decideEntitlementWrite,
+  eventTimestampMs,
+  IGNORED_EVENTS,
+  normalizeEnvironment,
+  PREMIUM_ENTITLEMENT,
+  resolveUserId,
+  type RevenueCatEvent,
+  secretsMatch,
+  touchesPremium,
+  uuids,
+} from "./rules.ts";
+import { lifecyclePatchFor } from "./lifecycle.ts";
 
 type AdminClient = SupabaseClient;
 
@@ -150,7 +120,8 @@ async function handleTransfer(event: RevenueCatEvent, admin: AdminClient): Promi
   const toIds = uuids(event.transferred_to);
   const fromIds = uuids(event.transferred_from);
   const eventId = event.id ?? `transfer:${event.event_timestamp_ms ?? Date.now()}`;
-  const eventMs = typeof event.event_timestamp_ms === "number" ? event.event_timestamp_ms : null;
+  const eventMs = eventTimestampMs(event);
+  const environment = normalizeEnvironment(event.environment);
 
   const { data: rows, error: readError } = fromIds.length
     ? await admin
@@ -187,6 +158,8 @@ async function handleTransfer(event: RevenueCatEvent, admin: AdminClient): Promi
       p_event_id: `${eventId}:to`,
       p_event_ms: eventMs,
       p_is_trial: grant.is_trial,
+      p_environment: environment,
+      p_event_type: "TRANSFER",
     });
     if (error && error.code !== "23503") {
       console.error(`revenuecat-webhook: transfer apply failed to=${to} code=${error.code}`);
@@ -205,6 +178,8 @@ async function handleTransfer(event: RevenueCatEvent, admin: AdminClient): Promi
       p_event_id: `${eventId}:from`,
       p_event_ms: eventMs,
       p_is_trial: false,
+      p_environment: environment,
+      p_event_type: "TRANSFER",
     });
     if (error && error.code !== "23503") {
       console.error(`revenuecat-webhook: transfer revoke failed from=${from} code=${error.code}`);
@@ -213,9 +188,7 @@ async function handleTransfer(event: RevenueCatEvent, admin: AdminClient): Promi
     results.push(`from:${from}:${error ? "unknown_user" : String(data)}`);
   }
 
-  console.log(
-    `revenuecat-webhook: type=TRANSFER ${results.join(" ")} env=${event.environment ?? "?"}`,
-  );
+  console.log(`revenuecat-webhook: type=TRANSFER ${results.join(" ")} env=${environment ?? "?"}`);
   return jsonResponse({ status: "ok", type: "TRANSFER", results }, 200);
 }
 
@@ -227,59 +200,41 @@ function jsonResponse(body: unknown, status: number): Response {
 }
 
 /**
- * Sabit zamanlı string karşılaştırma.
+ * Yaşam döngüsü (bilgi) alanlarını yazar: ödeme sorunu, iptal, bitiş nedeni
+ * (migration 100). YETKİ yazımından SONRA ve ondan bağımsız çağrılıyor;
+ * yetki mantığı (yukarıdaki tier kararı, apply_entitlement_event) DEĞİŞMEDİ.
  *
- * Erken çıkan bir `===` karşılaştırması, sırrın ilk karakterlerini zaman
- * ölçerek tahmin etmeye izin verir. Sır uzun ve rastgele olsa bile doğru
- * olan bunu baştan engellemektir.
- */
-function secretsMatch(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return diff === 0;
-}
-
-/**
- * RevenueCat kullanıcı kimliğinden Supabase kullanıcı kimliğini çıkarır.
+ * Yetki "duplicate" dönse bile çağrılıyor: bir önceki teslimde yetki
+ * yazılıp burası geçici olarak başarısız olduysa RevenueCat'in yeniden
+ * denemesi bu alanları tamamlasın. Fonksiyonun kendi idempotansı var.
  *
- * `configurePurchases()` SDK'yı Supabase kullanıcı kimliğiyle yapılandırır,
- * yani normal durumda `app_user_id` doğrudan bir uuid'dir. Ama SDK, oturum
- * açılmadan önce yapılandırıldıysa RevenueCat kendi anonim kimliğini
- * ("$RCAnonymousID:...") üretir ve gerçek kimlik sonradan `logIn()` ile
- * takma ad (alias) olarak eklenir. Bu yüzden takma adlara da bakılır.
+ * Fonksiyon canlıda yoksa (migration 100 henüz uygulanmamış) yalnızca log:
+ * yetkisi zaten yazılmış bir olayı günlerce yeniden denetmek anlamsız.
  */
-function resolveUserId(event: RevenueCatEvent): string | null {
-  const candidates = [
-    // TRANSFER olayında yetkinin YENİ sahibi burada gelir.
-    ...(event.transferred_to ?? []),
-    event.app_user_id,
-    event.original_app_user_id,
-    ...(event.aliases ?? []),
-  ];
-
-  for (const candidate of candidates) {
-    if (typeof candidate === "string" && UUID_RE.test(candidate)) {
-      return candidate.toLowerCase();
-    }
+async function applyLifecycle(
+  admin: AdminClient,
+  userId: string,
+  event: RevenueCatEvent,
+): Promise<string> {
+  const patch = lifecyclePatchFor(event, Date.now());
+  if (!patch) return "skipped";
+  const eventMs = typeof event.event_timestamp_ms === "number" ? event.event_timestamp_ms : null;
+  const { data, error } = await admin.rpc("apply_subscription_lifecycle", {
+    p_user_id: userId,
+    p_event_id: event.id ?? `${event.type ?? "UNKNOWN"}:${eventMs ?? Date.now()}`,
+    p_event_ms: eventMs,
+    p_event_type: event.type ?? "UNKNOWN",
+    p_patch: patch,
+  });
+  if (!error) return String(data);
+  if (error.code === "PGRST202" || error.code === "42883") {
+    console.error("revenuecat-webhook: apply_subscription_lifecycle missing (migration 100?)");
+    return "not_installed";
   }
-  return null;
-}
-
-/** Olayın premium yetkisiyle ilgili olup olmadığı. */
-function touchesPremium(event: RevenueCatEvent): boolean {
-  const ids = event.entitlement_ids;
-  if (Array.isArray(ids) && ids.length > 0) {
-    return ids.includes(PREMIUM_ENTITLEMENT);
-  }
-  if (typeof event.entitlement_id === "string") {
-    return event.entitlement_id === PREMIUM_ENTITLEMENT;
-  }
-  // RevenueCat bazı olaylarda yetki alanı göndermez (örn. tek ürünlü
-  // uygulamalarda). Tek yetkimiz premium olduğu için olayı ona ait sayıyoruz.
-  return true;
+  console.error(
+    `revenuecat-webhook: lifecycle failed user_id=${userId} code=${error.code} message=${error.message}`,
+  );
+  return "retry";
 }
 
 Deno.serve(async (req: Request) => {
@@ -364,21 +319,16 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ status: "ignored", reason: "unresolvable_user", type }, 200);
   }
 
-  const isRevoking = REVOKING_EVENTS.has(type);
-  const expirationMs = typeof event.expiration_at_ms === "number" ? event.expiration_at_ms : null;
-
-  // Süresi geçmiş bir yenileme olayı da yetki vermemeli.
-  const expired = expirationMs !== null && expirationMs <= Date.now();
-  const tier = isRevoking || expired ? "free" : "premium";
-
-  // Süresiz ürün SATMIYORUZ: bitiş tarihi olmayan bir premium olay, ömür boyu
-  // premium yazılmasın diye işlenmez (has_active_premium null'ı süresiz sayar).
-  if (tier === "premium" && expirationMs === null) {
+  // Süresi geçmiş yenileme -> free; bitişsiz premium -> yazılmaz (rules.ts).
+  const decision = decideEntitlementWrite(event, Date.now());
+  if (decision.action === "ignore") {
     console.error(
       `revenuecat-webhook: premium without expiration ignored type=${type} product=${event.product_id ?? "?"}`,
     );
-    return jsonResponse({ status: "ignored", reason: "no_expiration", type }, 200);
+    return jsonResponse({ status: "ignored", reason: decision.reason, type }, 200);
   }
+  const { tier, expiresAtMs } = decision;
+  const environment = normalizeEnvironment(event.environment);
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -387,12 +337,14 @@ Deno.serve(async (req: Request) => {
   const { data, error } = await adminClient.rpc("apply_entitlement_event", {
     p_user_id: userId,
     p_tier: tier,
-    p_expires_at: expirationMs !== null ? new Date(expirationMs).toISOString() : null,
+    p_expires_at: expiresAtMs !== null ? new Date(expiresAtMs).toISOString() : null,
     p_product_id: event.product_id ?? null,
     p_store: event.store ?? null,
     p_event_id: event.id ?? null,
-    p_event_ms: typeof event.event_timestamp_ms === "number" ? event.event_timestamp_ms : null,
+    p_event_ms: eventTimestampMs(event),
     p_is_trial: event.period_type === "TRIAL",
+    p_environment: environment,
+    p_event_type: type,
   });
 
   if (error) {
@@ -411,9 +363,12 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "apply_failed" }, 500);
   }
 
+  const lifecycle = await applyLifecycle(adminClient, userId, event);
+  if (lifecycle === "retry") return jsonResponse({ error: "lifecycle_failed" }, 500);
+
   console.log(
-    `revenuecat-webhook: type=${type} user_id=${userId} tier=${tier} result=${String(data)} env=${event.environment ?? "?"}`,
+    `revenuecat-webhook: type=${type} user_id=${userId} tier=${tier} result=${String(data)} lifecycle=${lifecycle} env=${environment ?? "?"}`,
   );
 
-  return jsonResponse({ status: "ok", result: data, tier }, 200);
+  return jsonResponse({ status: "ok", result: data, tier, lifecycle }, 200);
 });

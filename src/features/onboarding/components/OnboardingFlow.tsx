@@ -11,7 +11,8 @@ import { LANGUAGES } from "@/lib/languages";
 import { trackEvent } from "@/lib/analytics";
 
 import { useSetLanguagePairMutation } from "@/features/languagePair";
-import { PaywallScreen, useSubscriptionQuery } from "@/features/paywall";
+import { PaywallScreen, useSubscriptionQuery, useTrialOffer } from "@/features/paywall";
+import { DownsellSheet, useInterruptions } from "@/features/offers";
 import { useCompleteOnboardingMutation } from "@/features/onboarding/api/useCompleteOnboardingMutation";
 import { useOnboardingContentQuery } from "@/features/onboarding/api/useOnboardingContentQuery";
 import { useOnboardingGlossesQuery } from "@/features/onboarding/api/useOnboardingGlossesQuery";
@@ -31,6 +32,8 @@ import { OnboardingIntroCarousel } from "@/features/onboarding/components/Onboar
 import { OnboardingMeetMascot } from "@/features/onboarding/components/OnboardingMeetMascot";
 import { OnboardingWordsCelebrationStep } from "@/features/onboarding/components/OnboardingWordsCelebrationStep";
 
+import type { PaywallCloseReason } from "@/features/paywall";
+import type { Rule } from "@/features/offers";
 import type { OnboardingWord } from "@/features/onboarding/components/OnboardingFirstReadStep";
 import type { CefrLevel } from "@/features/onboarding/levelEstimate";
 
@@ -64,6 +67,7 @@ type Step =
   | "path"
   | "plan"
   | "paywall"
+  | "downsell"
   | "success";
 
 /** İlerleme çubuğu gösteren adımlar, sırayla. */
@@ -107,6 +111,8 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
   const { t } = useTranslation();
   const setPair = useSetLanguagePairMutation();
   const subscription = useSubscriptionQuery();
+  // Kullanıcıya gerçekten sunulabilen deneme (gün) ya da null -- H2.
+  const trialDays = useTrialOffer();
   const completeOnboarding = useCompleteOnboardingMutation();
   const saveFavorites = useSaveOnboardingFavoritesMutation();
 
@@ -324,8 +330,34 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
    */
   const handlePlanDone = useCallback(() => setStep("paywall"), []);
 
-  /** Satın alsa da almasa da akış "Harika!" ekranıyla bitiyor. */
-  const handlePaywallClosed = useCallback(() => setStep("success"), []);
+  /**
+   * Satın alsa da almasa da akış "Harika!" ekranıyla bitiyor. Satın almadan
+   * kapatana, kural motoru izin verirse önce tek seferlik çıkış teklifi
+   * (rapor C8, `onboarding_downsell`; deney kolu sunucudaki kovadan).
+   */
+  const { fire: fireInterruption, userBucket } = useInterruptions();
+  const [downsellRule, setDownsellRule] = useState<Rule | null>(null);
+  const handlePaywallClosed = useCallback(
+    (reason: PaywallCloseReason) => {
+      if (reason === "dismissed") {
+        const rule = fireInterruption("paywall_closed", { source: "onboarding" });
+        const downsell = rule?.action.kind === "downsell" ? rule : null;
+        // Kontrol kolu da ölçülsün: deney analizi bu olayı kovaya göre böler.
+        trackEvent("onboarding_paywall_exit", {
+          downsell_shown: downsell !== null,
+          user_bucket: userBucket ?? -1,
+        });
+        if (downsell) {
+          setDownsellRule(downsell);
+          setStep("downsell");
+          return;
+        }
+      }
+      setStep("success");
+    },
+    [fireInterruption, userBucket],
+  );
+  const handleDownsellDone = useCallback(() => setStep("success"), []);
 
   /**
    * İLK KİTAP (1.1.0): kullanıcı tadımını yaptığı pasajın kitabına, o
@@ -350,11 +382,22 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
     const levelName = t(`onboarding.path.levels.${level}`);
     return {
       title: t("paywall.onboardingPersonal.title", { level: levelName }),
+      // H2: "Denemede her şey açık" yalnızca kullanıcıya gerçekten deneme
+      // sunulabiliyorsa (uygunluk + introPrice); yoksa denemesiz cümle.
       subtitle: hours
-        ? t("paywall.onboardingPersonal.subtitle", { minutes: dailyGoal, hours })
-        : t("paywall.onboardingPersonal.subtitleNoGoal"),
+        ? t(
+            trialDays !== null
+              ? "paywall.onboardingPersonal.subtitle"
+              : "paywall.onboardingPersonal.subtitleNoTrial",
+            { minutes: dailyGoal, hours },
+          )
+        : t(
+            trialDays !== null
+              ? "paywall.onboardingPersonal.subtitleNoGoal"
+              : "paywall.onboardingPersonal.subtitleNoGoalNoTrial",
+          ),
     };
-  }, [level, dailyGoal, t]);
+  }, [level, dailyGoal, t, trialDays]);
 
   if (step === "splash") return <OnboardingSplashScreen onDone={() => setStep("welcome")} />;
   if (step === "welcome") return <OnboardingIntroCarousel onDone={() => setStep("mascot")} />;
@@ -505,6 +548,10 @@ export function OnboardingFlow({ onDone }: OnboardingFlowProps) {
         onClose={handlePaywallClosed}
       />
     );
+  }
+
+  if (step === "downsell" && downsellRule) {
+    return <DownsellSheet rule={downsellRule} onDone={handleDownsellDone} />;
   }
 
   return (
