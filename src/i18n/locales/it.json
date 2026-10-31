@@ -516,6 +516,7 @@
     "wordSheet": {
       "pronounce": "Pronuncia",
       "noTranslation": "Nessuna traduzione trovata per questa parola",
+      "lookupOffline": "Nessuna connessione. Connettiti a internet per vedere questa parola.",
       "lookingUpTranslation": "Cerco la traduzione…",
       "save": "Salva",
       "saved": "Salvata",

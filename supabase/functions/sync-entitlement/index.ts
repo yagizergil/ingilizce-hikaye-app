@@ -38,41 +38,15 @@
 //   kullanıcının ödediği erişimi elinden alamaz.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-/** Uygulamanın RevenueCat'teki yetki adı — src/lib/revenuecat.ts ile aynı. */
-const PREMIUM_ENTITLEMENT = "premium";
+import { entitlementSnapshot, type RcSubscriber, syncEventId } from "./snapshot.ts";
 
 const REVENUECAT_API = "https://api.revenuecat.com/v1/subscribers";
-
-interface RcEntitlement {
-  expires_date?: string | null;
-  product_identifier?: string | null;
-  purchase_date?: string | null;
-}
-
-interface RcSubscription {
-  store?: string | null;
-  period_type?: string | null;
-  expires_date?: string | null;
-}
-
-interface RcSubscriber {
-  entitlements?: Record<string, RcEntitlement>;
-  subscriptions?: Record<string, RcSubscription>;
-}
 
 function jsonResponse(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json" },
   });
-}
-
-/** `expires_date` yoksa süresiz (lifetime) demektir; varsa gelecekte mi. */
-function isActive(entitlement: RcEntitlement): boolean {
-  const raw = entitlement.expires_date;
-  if (raw === null || raw === undefined) return true;
-  const ms = Date.parse(raw);
-  return Number.isFinite(ms) && ms > Date.now();
 }
 
 Deno.serve(async (req: Request) => {
@@ -125,36 +99,36 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "store_unavailable" }, 502);
   }
 
-  const entitlement = subscriber.entitlements?.[PREMIUM_ENTITLEMENT];
+  const snapshot = entitlementSnapshot(subscriber, Date.now());
 
-  if (!entitlement || !isActive(entitlement)) {
+  if (snapshot.kind === "none") {
     // Yazma YOK — yukarıdaki "yalnızca verir, asla almaz" kuralı.
     console.log(`sync-entitlement: no active entitlement user_id=${userId}`);
     return jsonResponse({ tier: "free", applied: false }, 200);
   }
 
-  const productId = entitlement.product_identifier ?? null;
-  const subscription = productId ? subscriber.subscriptions?.[productId] : undefined;
-  const expiresAt = entitlement.expires_date ?? null;
-
-  // Olay kimliği DURUMDAN türetiliyor: aynı durum ikinci kez senkronlanırsa
-  // `apply_entitlement_event` bunu 'duplicate' görüp hiçbir şey yazmıyor.
-  // Böylece "geri yükle"ye üst üste basmak veritabanını dövmüyor.
-  const eventId = `sync:${userId}:${productId ?? "?"}:${expiresAt ?? "lifetime"}`;
+  if (snapshot.kind === "no_expiration") {
+    // Süresiz ürün satmıyoruz; bitişsiz premium ömür boyu premium demek
+    // olurdu (G3). Webhook'un kuralıyla aynı: yazılmaz, incelenmek üzere loglanır.
+    console.error(
+      `sync-entitlement: premium without expiration ignored user_id=${userId} product=${snapshot.productId ?? "?"}`,
+    );
+    return jsonResponse({ tier: "free", applied: false, reason: "no_expiration" }, 200);
+  }
 
   const adminClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const { data, error } = await adminClient.rpc("apply_entitlement_event", {
     p_user_id: userId,
     p_tier: "premium",
-    p_expires_at: expiresAt,
-    p_product_id: productId,
-    p_store: subscription?.store ?? null,
-    p_event_id: eventId,
-    // now(): bu, RevenueCat'in ŞU ANKİ durumu. Daha eski bir olayın bunu
-    // ezmemesi gerekiyor. Bundan sonra üretilecek gerçek olaylar (örn.
-    // EXPIRATION) daha büyük bir zaman damgası taşıyacağı için etkilenmez.
-    p_event_ms: Date.now(),
-    p_is_trial: subscription?.period_type === "trial",
+    p_expires_at: snapshot.expiresAt,
+    p_product_id: snapshot.productId,
+    p_store: snapshot.store,
+    p_event_id: syncEventId(userId, snapshot),
+    // Yetkiyi doğuran satın almanın zamanı, onarım anı DEĞİL (snapshot.ts).
+    p_event_ms: snapshot.eventMs,
+    p_is_trial: snapshot.isTrial,
+    p_environment: snapshot.environment,
+    p_event_type: "SYNC",
   });
 
   if (error) {
@@ -165,7 +139,10 @@ Deno.serve(async (req: Request) => {
   }
 
   console.log(
-    `sync-entitlement: user_id=${userId} result=${String(data)} expires=${expiresAt ?? "lifetime"}`,
+    `sync-entitlement: user_id=${userId} result=${String(data)} expires=${snapshot.expiresAt} env=${snapshot.environment ?? "?"}`,
   );
-  return jsonResponse({ tier: "premium", applied: true, result: data, expiresAt }, 200);
+  return jsonResponse(
+    { tier: "premium", applied: true, result: data, expiresAt: snapshot.expiresAt },
+    200,
+  );
 });

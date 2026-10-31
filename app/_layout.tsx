@@ -22,6 +22,7 @@ import { useTheme } from "@/theme/useTheme";
 import { AuthGate, LaunchOverlay, OnboardingGate } from "@/features/onboarding";
 import { ReminderScheduler } from "@/features/reminders";
 import { LanguagePairUiSync } from "@/features/languagePair";
+import { EntitlementRepairOnLaunch } from "@/features/paywall";
 import { ErrorBoundary, ToastHost } from "@/components/ui";
 import { initAnalytics, trackError } from "@/lib/analytics";
 import { configurePurchases } from "@/lib/revenuecat";
@@ -171,6 +172,7 @@ export default function RootLayout() {
                   */}
                   <ReminderScheduler />
                   <LanguagePairUiSync />
+                  <EntitlementRepairOnLaunch />
                 </OnboardingGate>
               </AuthGate>
             </ErrorBoundary>

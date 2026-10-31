@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { detailColors, homeColors, homeMetrics, homeSpace, homeType, mascotSize } from "@/theme";
 import { EmptyState, ErrorState, LoadingState, MascotAnim, SkyHeader } from "@/components/ui";
-import { useSubscriptionQuery } from "@/features/paywall";
+import { openPaywall, useSubscriptionQuery } from "@/features/paywall";
 import { useBookQuizQuery } from "@/features/quiz/api/quizApi";
 import { QuizLevelCard } from "@/features/quiz/components/QuizLevelCard";
 import { levelState } from "@/features/quiz/levelState";
@@ -69,7 +69,7 @@ export function BookQuizScreen() {
                 level={level}
                 state={state}
                 onPress={() => {
-                  if (state === "premium") router.push("/paywall?source=book_quiz");
+                  if (state === "premium") openPaywall("book_quiz");
                   else
                     router.push({
                       pathname: "/quiz-question",

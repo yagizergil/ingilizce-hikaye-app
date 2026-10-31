@@ -8,13 +8,13 @@ import { router } from "expo-router";
 
 import { detailType, homeColors, homeMetrics, homeSpace, homeType, mascotSize } from "@/theme";
 import { useTheme } from "@/theme/useTheme";
-import { trackEvent } from "@/lib/analytics";
+import { trackError, trackEvent } from "@/lib/analytics";
 import { supabase } from "@/lib/supabase";
 import { env } from "@/lib/env";
 import { ErrorState, Hairline, MascotAnim, SkyHeader } from "@/components/ui";
 import { useHomePalette } from "@/features/home/useHomePalette";
 import { useVocabularyQuery } from "@/features/vocabulary";
-import { ReaderSettingsSheet, useReaderSettings } from "@/features/reader";
+import { clearWordLookupLedger, ReaderSettingsSheet, useReaderSettings } from "@/features/reader";
 import { useOnboardingStatusQuery } from "@/features/onboarding";
 import { ReminderSettingsRow } from "@/features/reminders";
 import { SoundEffectsRow } from "@/features/profile/components/SoundEffectsRow";
@@ -32,6 +32,7 @@ import { ProfileStatTiles } from "@/features/profile/components/ProfileStatTiles
 import { ProfileAccountRow } from "@/features/profile/components/ProfileAccountRow";
 import { ProfileFooter } from "@/features/profile/components/ProfileFooter";
 import { useDevToolsUnlock } from "@/features/profile/hooks/useDevToolsUnlock";
+import { openPaywall } from "@/features/paywall";
 
 /**
  * Profil ekranı.
@@ -136,6 +137,9 @@ export function ProfileScreen() {
       if (error) throw error;
 
       queryClient.clear();
+      await clearWordLookupLedger().catch((ledgerError: unknown) =>
+        trackError("reader.wordLookupLedger", ledgerError),
+      );
 
       /**
        * UYGULAMAYI YENİDEN YÜKLÜYORUZ -- ekran değiştirmiyoruz.
@@ -179,7 +183,7 @@ export function ProfileScreen() {
 
   const handleOpenPaywall = useCallback(() => {
     trackEvent("paywall_opened", { source: "profile" });
-    router.push("/paywall?source=profile");
+    openPaywall("profile");
   }, []);
 
   const handleRateUs = useCallback(() => {

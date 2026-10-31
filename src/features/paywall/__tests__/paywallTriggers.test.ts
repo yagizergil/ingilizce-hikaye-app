@@ -166,8 +166,11 @@ describe("paywall başlıkları", () => {
 describe("paywall tetikleyicileri", () => {
   it.each(EXPECTED_TRIGGERS)("$source tetikleyicisi $where içinde duruyor", ({ source, where }) => {
     const contents = readFile(where);
+    // C15: uygulama içi tetikleyiciler tipli `openPaywall("<kaynak>")` ile açılıyor.
     const opensPaywall =
-      contents.includes(`source=${source}`) || contents.includes(`source="${source}"`);
+      contents.includes(`source=${source}`) ||
+      contents.includes(`source="${source}"`) ||
+      contents.includes(`openPaywall("${source}"`);
     expect(opensPaywall).toBe(true);
   });
 
@@ -226,5 +229,35 @@ describe("ortak günlük çeviri kotası (migration 057)", () => {
   it("sentence_quota kaynağının başlığı var", () => {
     const headlines = readFile("src/features/paywall/paywallHeadlines.ts");
     expect(headlines).toMatch(/sentence_quota: "sentences"/);
+  });
+});
+
+describe("tetikleyici kataloğu (C15)", () => {
+  it("envanterdeki her kaynağın katalogda bir yeri (placement) var", () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PLACEMENT_BY_SOURCE } = require("@/features/paywall/paywallSources") as {
+      PLACEMENT_BY_SOURCE: Record<string, string>;
+    };
+    expect(Object.keys(PLACEMENT_BY_SOURCE).sort()).toEqual(
+      EXPECTED_TRIGGERS.map((trigger) => trigger.source).sort(),
+    );
+  });
+
+  it("uygulama içinde artık çıplak router.push('/paywall…') yok", () => {
+    const files = [
+      "src/features/reader/components/ReaderScreen.tsx",
+      "app/book/[id].tsx",
+      "app/(tabs)/vocabulary.tsx",
+      "app/book-finished.tsx",
+      "app/language-settings.tsx",
+      "src/features/profile/components/ProfileScreen.tsx",
+      "src/features/home/components/HomeOfferCard.tsx",
+      "src/features/vocabulary/components/SmartPracticeScreen.tsx",
+      "src/features/vocabulary/components/WordPackScreen.tsx",
+      "src/features/quiz/components/BookQuizScreen.tsx",
+    ];
+    for (const file of files) {
+      expect(readFile(file)).not.toMatch(/router\.(push|replace)\(\s*["'`]\/paywall/);
+    }
   });
 });

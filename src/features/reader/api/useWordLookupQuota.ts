@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
+import { trackError } from "@/lib/analytics";
+import { flushOfflineWordLookups, saveQuotaSnapshot } from "@/features/reader/api/wordLookupLedger";
 
 export interface WordLookupQuota {
   isPremium: boolean;
@@ -17,6 +19,31 @@ interface ConsumeResult extends WordLookupQuota {
 
 export const wordQuotaQueryKey = ["reader", "wordQuota"] as const;
 
+async function rpcConsumeWordLookup(): Promise<ConsumeResult> {
+  const { data, error } = await supabase.rpc("consume_word_lookup");
+  if (error) throw error;
+  return data as ConsumeResult;
+}
+
+/**
+ * Çevrimdışıyken açılan kartların borcunu sunucuya yazar (wordLookupLedger).
+ * Başarısızlık sorguyu düşürmez: borç kuyrukta kalır, sonraki denemede gider.
+ */
+async function settleOfflineLookups(): Promise<void> {
+  try {
+    await flushOfflineWordLookups(rpcConsumeWordLookup);
+  } catch (error) {
+    trackError("reader.wordQuota.flush", error);
+  }
+}
+
+/** Son kota bilgisi çevrimdışı karar için saklanıyor; yazılamazsa loglanır. */
+function rememberQuota(quota: WordLookupQuota): void {
+  void saveQuotaSnapshot(quota).catch((error: unknown) =>
+    trackError("reader.wordQuota.snapshot", error),
+  );
+}
+
 /**
  * Günlük kelime çevirisi kotası (migration 038).
  *
@@ -29,9 +56,13 @@ export function useWordLookupQuotaQuery() {
   return useQuery({
     queryKey: wordQuotaQueryKey,
     queryFn: async (): Promise<WordLookupQuota> => {
+      // Önce çevrimdışı borçlar: gösterilen sayı onları da içersin.
+      await settleOfflineLookups();
       const { data, error } = await supabase.rpc("my_word_lookup_quota");
       if (error) throw error;
-      return data as WordLookupQuota;
+      const quota = data as WordLookupQuota;
+      rememberQuota(quota);
+      return quota;
     },
     // Sayaç her dokunuşta değişiyor; ekrana dönüldüğünde taze olsun.
     staleTime: 10 * 1000,
@@ -53,19 +84,21 @@ export function useConsumeWordLookupMutation() {
 
   return useMutation({
     mutationFn: async (): Promise<ConsumeResult> => {
-      const { data, error } = await supabase.rpc("consume_word_lookup");
-      if (error) throw error;
-      return data as ConsumeResult;
+      // Bekleyen çevrimdışı borç yoksa bu yalnızca bir depo okuması.
+      await settleOfflineLookups();
+      return rpcConsumeWordLookup();
     },
     onSuccess: (result) => {
       // Sayaç rozeti aynı anda güncelleniyor: ayrı bir sorgu turu beklemek,
       // kullanıcıya bir dokunuş boyunca eski sayıyı göstermek demekti.
-      queryClient.setQueryData<WordLookupQuota>(wordQuotaQueryKey, {
+      const quota: WordLookupQuota = {
         isPremium: result.isPremium,
         limit: result.limit,
         used: result.used,
         remaining: result.remaining,
-      });
+      };
+      queryClient.setQueryData<WordLookupQuota>(wordQuotaQueryKey, quota);
+      rememberQuota(quota);
     },
   });
 }

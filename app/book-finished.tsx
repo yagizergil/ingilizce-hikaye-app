@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 
 import { BookFinishedScreen } from "@/features/completion";
+import { openPaywall } from "@/features/paywall";
 
 /**
  * Kitap bitirme kutlaması.
@@ -19,7 +20,7 @@ export default function BookFinishedRoute() {
     <BookFinishedScreen
       bookId={bookId ?? null}
       onClose={() => router.replace("/(tabs)")}
-      onOpenPaywall={() => router.push("/paywall?source=book_finished")}
+      onOpenPaywall={() => openPaywall("book_finished")}
       onOpenReview={() => router.replace("/review")}
     />
   );

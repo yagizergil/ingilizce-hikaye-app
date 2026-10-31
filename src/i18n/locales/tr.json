@@ -516,6 +516,7 @@
     "wordSheet": {
       "pronounce": "Telaffuz et",
       "noTranslation": "Bu kelime için karşılık bulunamadı",
+      "lookupOffline": "Bağlantı yok. Bu kelimenin karşılığı için internete bağlan.",
       "lookingUpTranslation": "Karşılık aranıyor…",
       "save": "Kaydet",
       "saved": "Kaydedildi",

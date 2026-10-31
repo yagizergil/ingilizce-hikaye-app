@@ -295,14 +295,66 @@ export type PurchaseOutcome =
 export interface PurchaseContext {
   source: string;
   plan: string;
+  /** Açıldığı yer türü (C15, `features/paywall/paywallSources.ts`). */
+  placement?: string;
+  /** Seçili planda kullanıcıya uygun bir giriş teklifi (deneme) var mıydı. */
+  offerType?: "intro" | "none";
+}
+
+/**
+ * RevenueCat/StoreKit "ödeme bekliyor" hatası (Ask to Buy, SCA).
+ * Kod `PURCHASES_ERROR_CODE.PAYMENT_PENDING_ERROR`; enum Expo Go'da yüklenemeyen
+ * pakette olduğu için değeri burada sabit (INTRO_ELIGIBILITY_ELIGIBLE ile aynı gerekçe).
+ */
+const PAYMENT_PENDING_ERROR_CODE = "20";
+
+function purchaseErrorCode(error: unknown): string {
+  if (typeof error === "object" && error !== null && "code" in error) {
+    const code = (error as { code?: unknown }).code;
+    if (typeof code === "string" || typeof code === "number") return String(code);
+  }
+  return "unknown";
+}
+
+/**
+ * Satın alma olaylarının ortak parametreleri (C14).
+ *
+ * Fiyat METNİ (`priceString`) ve işlem/jeton kimliği BİLEREK yok; yalnızca
+ * mikro birim fiyat + para birimi (C14 kuralı: analitiğe ödeme kimliği gitmez).
+ */
+function purchaseEventParams(
+  pkg: PurchasesPackage,
+  context: PurchaseContext | undefined,
+): Record<string, string | number> {
+  const params: Record<string, string | number> = { package_id: pkg.identifier };
+  if (context) {
+    params.source = context.source;
+    params.plan = context.plan;
+    if (context.placement) params.placement = context.placement;
+    if (context.offerType) params.offer_type = context.offerType;
+  }
+  const price = pkg.product?.price;
+  if (typeof price === "number" && Number.isFinite(price)) {
+    params.price_micros = Math.round(price * 1_000_000);
+  }
+  if (pkg.product?.currencyCode) params.currency = pkg.product.currencyCode;
+  return params;
 }
 
 export async function purchasePackage(
   pkg: PurchasesPackage,
   context?: PurchaseContext,
 ): Promise<PurchaseOutcome> {
+  const params = purchaseEventParams(pkg, context);
+  // Huni adımı (C14, H4): "plan seçti -> ödeme sayfası açıldı" ancak bu
+  // olayla ölçülebiliyor. Mağaza sayfasından ÖNCE atılıyor.
+  trackEvent("purchase_started", params);
+
   const purchases = await readyPurchases();
-  if (!purchases) return { status: "error" };
+  if (!purchases) {
+    trackEvent("purchase_failed", { ...params, code: "sdk_unavailable", cancelled: false });
+    return { status: "error" };
+  }
 
   try {
     const { customerInfo } = await purchases.purchasePackage(pkg);
@@ -314,7 +366,7 @@ export async function purchasePackage(
       return { status: "not_entitled" };
     }
 
-    trackEvent("purchase_completed", { package_id: pkg.identifier, ...context });
+    trackEvent("purchase_completed", params);
     return { status: "success", trialEndsAt: readTrialEnd(customerInfo) };
   } catch (error) {
     if (
@@ -322,9 +374,18 @@ export async function purchasePackage(
       error !== null &&
       (error as { userCancelled?: boolean }).userCancelled === true
     ) {
-      trackEvent("purchase_cancelled", { package_id: pkg.identifier, ...context });
+      trackEvent("purchase_cancelled", params);
       return { status: "cancelled" };
     }
+    const code = purchaseErrorCode(error);
+    // Ask to Buy / SCA: ödeme ebeveyn ya da banka onayını bekliyor. Bu bir
+    // hata DEĞİL; ayrı olay ki huni bunu "başarısız" saymasın. Kullanıcıya
+    // gösterilen mesaj şimdilik genel hata metni (ayrı bir UI kararı).
+    trackEvent(code === PAYMENT_PENDING_ERROR_CODE ? "purchase_pending" : "purchase_failed", {
+      ...params,
+      code,
+      cancelled: false,
+    });
     trackError("revenuecat.purchase", error, { package_id: pkg.identifier });
     return { status: "error" };
   }
@@ -360,7 +421,8 @@ export async function restorePurchases(): Promise<RestoreOutcome> {
   try {
     const info = await purchases.restorePurchases();
     const restored = hasPremium(info);
-    trackEvent("purchase_restored", { restored });
+    // `result` C14 adı; `restored` eski panolar için korunuyor.
+    trackEvent("purchase_restored", { restored, result: restored ? "restored" : "none" });
     return restored ? { status: "restored" } : { status: "none" };
   } catch (error) {
     trackError("revenuecat.restore", error);

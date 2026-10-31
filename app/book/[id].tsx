@@ -49,6 +49,7 @@ import {
 import { BookQuizEntry } from "@/features/quiz";
 
 import type { Chapter } from "@/features/library";
+import { openPaywall } from "@/features/paywall";
 
 const SCENE = require("../../assets/home/home-scene.jpg") as number;
 const ICON_LEVEL = require("../../assets/home/icon-detail-gauge.png") as number;
@@ -128,7 +129,7 @@ export default function BookDetailScreen() {
 
     if (!audioAccess?.canPlay) {
       trackEvent("book_listen_locked", { bookId: data.book.id });
-      router.push("/paywall?source=audio");
+      openPaywall("audio");
       return;
     }
 

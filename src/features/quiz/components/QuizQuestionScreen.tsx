@@ -20,7 +20,7 @@ import {
   quizType,
 } from "@/theme";
 import { EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui";
-import { useSubscriptionQuery } from "@/features/paywall";
+import { openPaywall, useSubscriptionQuery } from "@/features/paywall";
 import { useQuizQuestionsQuery, useSubmitQuizMutation } from "@/features/quiz/api/quizApi";
 import { QuizOption } from "@/features/quiz/components/QuizOption";
 import { QuizResult } from "@/features/quiz/components/QuizResult";
@@ -97,7 +97,7 @@ export function QuizQuestionScreen() {
         // Kullanıcının en memnun olduğu an; kendisi seçerse paywall'a gider.
         nextLevelUpsell={
           level === "1" && !isPremium && correct / total >= PASS_RATIO
-            ? () => router.replace("/paywall?source=quiz_level_passed")
+            ? () => openPaywall("quiz_level_passed", { replace: true })
             : undefined
         }
       />

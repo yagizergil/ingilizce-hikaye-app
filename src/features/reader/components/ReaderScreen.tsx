@@ -8,8 +8,7 @@ import { useTranslation } from "react-i18next";
 
 import { spacing } from "@/theme";
 import { useReadingTheme } from "@/theme/useTheme";
-import { ErrorState, MascotLoading } from "@/components/ui";
-import { router } from "expo-router";
+import { ErrorState, MascotLoading, useToast } from "@/components/ui";
 
 import { useActivationStore } from "@/hooks/useActivationStore";
 import { trackEvent, trackError } from "@/lib/analytics";
@@ -21,6 +20,10 @@ import {
   useReadingProgressMutation,
 } from "@/features/reader/api/useReadingProgressMutation";
 import { useBookLemmaDictionary } from "@/features/reader/api/useBookLemmaDictionary";
+import {
+  noteWordLookup,
+  resolveUnverifiedWordLookup,
+} from "@/features/reader/api/wordLookupLedger";
 import {
   useSavedLemmas,
   useSaveWordMutation,
@@ -47,7 +50,7 @@ import { ReaderMenuSheet } from "@/features/reader/components/ReaderMenuSheet";
 import { ReaderModePill } from "@/features/reader/components/ReaderModePill";
 import { ReaderListenPanel } from "@/features/reader/components/ReaderListenPanel";
 import { useReaderModeStore } from "@/features/reader/hooks/useReaderModeStore";
-import { useSubscriptionQuery } from "@/features/paywall";
+import { openPaywall, useSubscriptionQuery } from "@/features/paywall";
 import { useActiveWordStore } from "@/features/reader/hooks/useActiveWordStore";
 import { BookWordsSheet } from "@/features/reader/components/BookWordsSheet";
 import { ChapterCompleteCard } from "@/features/reader/components/ChapterCompleteCard";
@@ -111,6 +114,7 @@ export function ReaderScreen({
   autoStartSpeech = false,
 }: ReaderScreenProps) {
   const { t } = useTranslation();
+  const { show: showToast } = useToast();
   const readerColors = useReaderThemeColors();
   const settings = useReaderSettings();
 
@@ -457,6 +461,23 @@ export function ReaderScreen({
         });
 
       /**
+       * TAKILINAN KELİME PAYWALL'A TAŞINIYOR (2026-09-19 dönüşüm turu).
+       *
+       * Üründeki en yüksek niyetli an bu: kullanıcı tam o saniyede
+       * BELİRLİ bir kelimeyi anlamak istiyor ve anlayamıyor. Kelimeyi
+       * adıyla göstermek, soyut bir "sınırsız çeviri" vaadini onun
+       * gerçekten istediği tek somut şeye bağlıyor.
+       *
+       * Bu, okuma ekranına promosyon SOKMUYOR (Ürün İlkesi #1): paywall
+       * zaten reader'ın DIŞINDA, ayrı bir ekranda açılıyordu; değişen
+       * tek şey oraya taşınan bağlam.
+       */
+      const openQuotaPaywall = () => {
+        trackEvent("paywall_opened", { source: "word_quota_exhausted" });
+        openPaywall("word_quota", { word: payload.surface });
+      };
+
+      /**
        * KOTA ÖNCE TÜKETİLİYOR, SÖZLÜK SONRA AÇILIYOR.
        *
        * Sıra önemli: sözlüğü açıp sonra "hakkın bitti" demek, kullanıcıya
@@ -465,38 +486,41 @@ export function ReaderScreen({
        * karar vermek, sınırı istemciyi değiştirebilen herkes için
        * kaldırmak demekti.
        *
-       * AĞ HATASINDA AÇIK KALIYOR: çağrı başarısız olursa sözlük yine
-       * açılıyor ve hak DÜŞMÜYOR. Bir bağlantı kesintisinin okumayı
-       * durdurması, bir kullanıcının birkaç bedava çeviri almasından çok
-       * daha kötü.
+       * AĞ HATASINDA ARTIK KOŞULSUZ AÇILMIYOR (C4, 2026-10-31). Eskiden
+       * çağrı başarısız olursa sözlük açılıyor ve hak düşmüyordu; uçak modu
+       * günlük sınırı tamamen kaldırıyordu. Şimdi karar sunucudan alınmış
+       * SON kota bilgisiyle veriliyor (`wordLookupLedger`): son 24 saatte
+       * açılmış kelime ve elde kalan hak kadar yeni kelime açılıyor, açılan
+       * her yeni kelime bağlantı gelince sunucu sayacına yazılıyor. Okuma
+       * kesilmiyor; yalnızca hiç bilinmeyen bir kota ile yeni bir kelime
+       * "bağlantı yok" diyor.
        */
       void consumeWordLookupAsync()
         .then((result) => {
           if (result.allowed) {
             openSheet();
+            void noteWordLookup(payload.lemma).catch((error: unknown) =>
+              trackError("reader.wordLookupLedger", error),
+            );
             return;
           }
-          trackEvent("paywall_opened", { source: "word_quota_exhausted" });
-          /**
-           * TAKILINAN KELİME PAYWALL'A TAŞINIYOR (2026-09-19 dönüşüm turu).
-           *
-           * Üründeki en yüksek niyetli an bu: kullanıcı tam o saniyede
-           * BELİRLİ bir kelimeyi anlamak istiyor ve anlayamıyor. Kelimeyi
-           * adıyla göstermek, soyut bir "sınırsız çeviri" vaadini onun
-           * gerçekten istediği tek somut şeye bağlıyor.
-           *
-           * Bu, okuma ekranına promosyon SOKMUYOR (Ürün İlkesi #1): paywall
-           * zaten reader'ın DIŞINDA, ayrı bir ekranda açılıyordu; değişen
-           * tek şey oraya taşınan bağlam.
-           */
-          router.push(`/paywall?source=word_quota&word=${encodeURIComponent(payload.surface)}`);
+          openQuotaPaywall();
         })
-        .catch((error) => {
+        .catch(async (error: unknown) => {
           trackError("reader.wordQuota", error);
-          openSheet();
+          const decision = await resolveUnverifiedWordLookup(payload.lemma).catch(
+            (ledgerError: unknown) => {
+              trackError("reader.wordLookupLedger", ledgerError);
+              return "unavailable" as const;
+            },
+          );
+          trackEvent("word_lookup_unverified", { outcome: decision });
+          if (decision === "paywall") openQuotaPaywall();
+          else if (decision === "unavailable") showToast(t("reader.wordSheet.lookupOffline"));
+          else openSheet();
         });
     },
-    [pauseSpeech, consumeWordLookupAsync, setActiveWordKey],
+    [pauseSpeech, consumeWordLookupAsync, setActiveWordKey, showToast, t],
   );
 
   /**
@@ -508,7 +532,7 @@ export function ReaderScreen({
    */
   const handleOpenPaywallFromQuota = useCallback(() => {
     trackEvent("paywall_opened", { source: "word_quota_badge" });
-    router.push("/paywall?source=word_quota_badge");
+    openPaywall("word_quota_badge");
   }, []);
 
   const sentencePaywallFirst = shouldOpenSentencePaywall(wordQuota.data);
@@ -526,7 +550,7 @@ export function ReaderScreen({
     (payload: { sentenceText: string; paragraphId: string }) => {
       if (sentencePaywallFirst) {
         trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
-        router.push("/paywall?source=sentence_quota");
+        openPaywall("sentence_quota");
         return;
       }
       setActiveSentence({ text: payload.sentenceText });
@@ -538,7 +562,7 @@ export function ReaderScreen({
   const handleSentenceQuotaExhausted = useCallback(() => {
     sentenceSheetRef.current?.dismiss();
     trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
-    router.push("/paywall?source=sentence_quota");
+    openPaywall("sentence_quota");
   }, []);
 
   const handlePageChange = useCallback((payload: PaginatedPageChangePayload) => {
@@ -857,7 +881,7 @@ export function ReaderScreen({
                 locked={audioLocked}
                 onLockedPress={() => {
                   trackEvent("paywall_opened", { source: "reader_listen" });
-                  router.push("/paywall?source=reader_listen");
+                  openPaywall("reader_listen");
                 }}
               />
             </View>
@@ -891,7 +915,7 @@ export function ReaderScreen({
           setActiveWord(null);
           setActiveWordKey(null);
           trackEvent("paywall_opened", { source: "sentence_quota_exhausted" });
-          router.push("/paywall?source=sentence_quota");
+          openPaywall("sentence_quota");
         }}
         onDismiss={() => {
           setActiveWord(null);
