@@ -720,7 +720,8 @@
       "description": "Studio narration, unlimited translations and Smart Practice.",
       "cta": "See Premium",
       "activeTitle": "You're Premium",
-      "activeDescription": "Everything is unlocked. Happy reading!"
+      "activeDescription": "Everything is unlocked. Happy reading!",
+      "manageCta": "Manage subscription"
     },
     "sections": {
       "learning": "Learning",
@@ -1368,6 +1369,14 @@
       "homeOffer": {
         "title": "Try Premium for free",
         "subtitle": "Listen, translate without limits, remember with Smart Practice."
+      },
+      "onboardingNoTrial": {
+        "title": "Your reading plan is ready",
+        "subtitle": "With Premium: listen, translate freely, remember more."
+      },
+      "homeOfferNoTrial": {
+        "title": "Do more with Premium",
+        "subtitle": "Listen, translate without limits, remember more with Smart Practice."
       }
     },
     "cancelAnytime": "Cancel anytime.",
@@ -1388,8 +1397,12 @@
     "onboardingPersonal": {
       "title": "Your {{level}} plan is ready",
       "subtitle": "{{minutes}} min a day is {{hours}} hours of reading in 6 months. Everything is open in the trial.",
-      "subtitleNoGoal": "Everything is open in the trial: listen, translate without limits, practise with Smart Practice."
-    }
+      "subtitleNoGoal": "Everything is open in the trial: listen, translate without limits, practise with Smart Practice.",
+      "subtitleNoTrial": "{{minutes}} min a day is {{hours}} hours of reading in 6 months. Premium opens everything.",
+      "subtitleNoGoalNoTrial": "With Premium: listen, translate without limits, practise with Smart Practice."
+    },
+    "noTrialOnPlanAnnual": "The annual plan has no free trial; you're charged right away. The free trial is on the monthly plan.",
+    "noTrialOnPlanOther": "The selected plan has no free trial; you're charged right away."
   },
   "reminders": {
     "settingsLabel": "Reminders",
@@ -1595,5 +1608,131 @@
     "retry": "Try again",
     "retrying": "Connecting…",
     "autoRetry": "We'll retry automatically when you're back online."
+  },
+  "subscription": {
+    "manage": {
+      "title": "Subscription",
+      "loadError": "Couldn't load your subscription details.",
+      "storeOpenError": "Couldn't open the App Store subscriptions page. You can manage it in Settings > Apple ID > Subscriptions.",
+      "footnote": "Cancelling and changing plans happen in the App Store. Cancel at least 24 hours before renewal to avoid the next charge.",
+      "trialDaysLeft_one": "{{count}} day left in your trial",
+      "trialDaysLeft_other": "{{count}} days left in your trial",
+      "status": {
+        "trial": "Free trial",
+        "active": "Premium active",
+        "cancelled": "Renewal off",
+        "grace": "Payment issue",
+        "billing_retry": "Premium paused",
+        "lapsed_paid": "Premium ended",
+        "lapsed_trial": "Trial ended",
+        "none": "Free plan"
+      },
+      "detail": {
+        "trial": "Your trial ends on {{date}}. Unless you cancel, your subscription starts that day and you'll be charged.",
+        "active": "Your subscription renews on {{date}}.",
+        "activeNoDate": "Your subscription renews automatically.",
+        "cancelled": "Premium stays on until {{date}} and won't renew after that.",
+        "cancelledNoDate": "Premium stays on until the end of the period and won't renew.",
+        "grace": "Your last payment didn't go through. Premium stays on until {{date}}; please update your payment method.",
+        "graceNoDate": "Your last payment didn't go through. Premium is still on for now; please update your payment method.",
+        "billing_retry": "Premium is paused because the payment failed. It turns back on automatically once the payment works.",
+        "lapsed": "Premium ended on {{date}}. Your saved words and progress are still here.",
+        "lapsedNoDate": "Premium has ended. Your saved words and progress are still here.",
+        "none": "All books are free. Premium adds studio narration, unlimited translation and Smart Practice."
+      },
+      "actions": {
+        "fixPayment": "Fix payment",
+        "cancel": "I want to cancel",
+        "turnOnRenewal": "Turn renewal back on",
+        "winback": "See ways to come back",
+        "goPremium": "Go Premium",
+        "manageInStore": "Manage in the App Store",
+        "restore": "Restore purchases"
+      }
+    },
+    "billing": {
+      "bannerGrace": "Your payment didn't go through. Fix it by {{date}} to keep Premium.",
+      "bannerGraceNoDate": "Your payment didn't go through. Fix it to keep Premium.",
+      "bannerRetry": "Premium is paused because the payment failed.",
+      "bannerCta": "Fix",
+      "title": "Your payment didn't go through",
+      "titleRetry": "Premium is paused",
+      "body": "Apple couldn't collect your last renewal payment. Premium stays on until {{date}}; update your payment method to keep it without a break.",
+      "bodyNoDate": "Apple couldn't collect your last renewal payment. Premium is still on for now; update your payment method to keep it without a break.",
+      "bodyRetry": "Premium is paused because the payment failed. Apple will keep trying for a while; once you update your payment method, Premium turns back on automatically.",
+      "cta": "Update payment method",
+      "manage": "View subscription",
+      "later": "Later",
+      "note": "Payments go through Apple; your card details are updated in your Apple account, not with us.",
+      "recovered": "Payment fixed. Premium continues."
+    },
+    "ending": {
+      "banner": "Premium ends on {{date}}; renewal is off.",
+      "bannerCta": "Manage",
+      "notifTitle": "Premium ends in 3 days",
+      "notifBody": "Listening and unlimited translation turn off on {{date}}. Turn renewal back on if you'd like to keep them."
+    },
+    "trial": {
+      "lastDayBanner": "Your free trial ends on {{date}} and your subscription starts.",
+      "lastDayCta": "View"
+    },
+    "winback": {
+      "title": "Welcome back",
+      "body": "Premium has ended, but your progress is still here. Your books are waiting.",
+      "bodyWords_one": "Premium has ended, but your progress is still here: {{count}} saved word is waiting for you.",
+      "bodyWords_other": "Premium has ended, but your progress is still here: {{count}} saved words are waiting for you.",
+      "offerTitle": "Welcome-back offer",
+      "offerBody": "First period {{price}}. Then it renews at the regular price ({{regular}}); cancel anytime in the App Store.",
+      "offerCta": "Continue with the offer",
+      "noOffer": "There's no special offer for you right now. You can look at the plans or keep reading for free.",
+      "seePlans": "See plans",
+      "notNow": "Not now",
+      "purchasedTitle": "Welcome back!",
+      "purchasedBody": "Premium is on again.",
+      "notifTitle": "Pick up where you left off",
+      "notifBody": "Your books and saved words are waiting for you."
+    },
+    "cancel": {
+      "title": "Cancel subscription",
+      "lossTitle": "What changes when Premium ends",
+      "loss": {
+        "audio": "Listening with studio narration turns off",
+        "lookups_one": "Word and sentence translation is limited to {{count}} per day",
+        "lookups_other": "Word and sentence translation is limited to {{count}} per day",
+        "savedWords_one": "Your {{count}} saved word stays; adding new words is limited to {{limit}}",
+        "savedWords_other": "Your {{count}} saved words stay; adding new words is limited to {{limit}}",
+        "smartPractice": "Smart Practice drops to 1 session every 24 hours",
+        "quiz": "Book quiz levels 2 and 3 lock"
+      },
+      "keep": "Stay on Premium",
+      "continue": "Continue",
+      "reasonTitle": "Why are you leaving?",
+      "reasonSubtitle": "Your answer helps us improve the app.",
+      "reasons": {
+        "too_expensive": "It's too expensive",
+        "not_using": "I don't use it enough",
+        "missing_content": "The content I want isn't there",
+        "technical": "I'm having technical problems",
+        "other": "Something else"
+      },
+      "notePlaceholder": "Add a few words if you like",
+      "offerTitle": "Before you go",
+      "offer": {
+        "promotional": "A discount just for you: first period {{price}}. Then it renews at the regular price ({{regular}}).",
+        "promotionalCta": "Continue with the discount",
+        "promotionalAccepted": "The discount has been applied to your subscription.",
+        "monthly_switch": "You can switch to the monthly plan: {{price}}. The switch starts when your yearly period ends, so you don't lose what you paid for.",
+        "monthlyCta": "Switch to monthly",
+        "monthlyAccepted": "Your plan will switch to monthly when the current period ends.",
+        "goal": "Even 5 minutes a day is enough. You can lower your daily goal and set a reminder.",
+        "goalCta": "Adjust my goal",
+        "support": "Tell us about the problem and we'll fix it together.",
+        "supportCta": "Open the support page",
+        "none": "Thanks for your feedback.",
+        "acceptedTitle": "Thank you!"
+      },
+      "cancelAnyway": "Cancel anyway",
+      "storeNote": "Cancelling happens in the App Store; Premium stays on until the end of the period."
+    }
   }
 }

@@ -720,7 +720,8 @@
       "description": "录音室朗读、无限翻译和智能复习。",
       "cta": "查看 Premium",
       "activeTitle": "你已是 Premium",
-      "activeDescription": "全部功能已解锁，阅读愉快！"
+      "activeDescription": "全部功能已解锁，阅读愉快！",
+      "manageCta": "管理订阅"
     },
     "sections": {
       "learning": "学习",
@@ -1368,6 +1369,14 @@
       "homeOffer": {
         "title": "免费试用高级版",
         "subtitle": "收听、无限翻译、用智能复习记住。"
+      },
+      "onboardingNoTrial": {
+        "title": "你的阅读计划已就绪",
+        "subtitle": "开通 Premium：收听、自由翻译、记得更牢。"
+      },
+      "homeOfferNoTrial": {
+        "title": "Premium 带来更多",
+        "subtitle": "收听、无限翻译，用智能复习记得更牢。"
       }
     },
     "cancelAnytime": "可随时取消。",
@@ -1388,8 +1397,12 @@
     "onboardingPersonal": {
       "title": "你的{{level}}水平计划已就绪",
       "subtitle": "每天{{minutes}}分钟，6个月共{{hours}}小时阅读。试用期间全部开放。",
-      "subtitleNoGoal": "试用期间全部开放：收听、无限翻译、用智能复习巩固。"
-    }
+      "subtitleNoGoal": "试用期间全部开放：收听、无限翻译、用智能复习巩固。",
+      "subtitleNoTrial": "每天 {{minutes}} 分钟，6 个月就是 {{hours}} 小时的阅读。Premium 解锁全部功能。",
+      "subtitleNoGoalNoTrial": "开通 Premium：收听、无限翻译，并用智能复习巩固。"
+    },
+    "noTrialOnPlanAnnual": "年度方案没有免费试用，会立即扣费。免费试用在月度方案中。",
+    "noTrialOnPlanOther": "所选方案没有免费试用，会立即扣费。"
   },
   "reminders": {
     "settingsLabel": "提醒",
@@ -1595,5 +1608,131 @@
     "retry": "重试",
     "retrying": "正在连接…",
     "autoRetry": "恢复联网后将自动重试。"
+  },
+  "subscription": {
+    "manage": {
+      "title": "订阅",
+      "loadError": "无法加载订阅信息。",
+      "storeOpenError": "无法打开 App Store 订阅页面。你可以在 设置 > Apple ID > 订阅 中管理。",
+      "footnote": "取消和更换方案需在 App Store 中进行。请在续订前至少 24 小时取消，以免下期扣费。",
+      "trialDaysLeft_one": "试用期还剩 {{count}} 天",
+      "trialDaysLeft_other": "试用期还剩 {{count}} 天",
+      "status": {
+        "trial": "免费试用",
+        "active": "Premium 已开通",
+        "cancelled": "已关闭自动续订",
+        "grace": "付款问题",
+        "billing_retry": "Premium 已暂停",
+        "lapsed_paid": "Premium 已结束",
+        "lapsed_trial": "试用已结束",
+        "none": "免费方案"
+      },
+      "detail": {
+        "trial": "你的试用将于 {{date}} 结束。如不取消，订阅将在当天开始并扣费。",
+        "active": "你的订阅将于 {{date}} 续订。",
+        "activeNoDate": "你的订阅会自动续订。",
+        "cancelled": "Premium 将保持到 {{date}}，之后不再续订。",
+        "cancelledNoDate": "Premium 将保持到本期结束，之后不再续订。",
+        "grace": "你的上一次付款未成功。Premium 保持到 {{date}}，请更新付款方式。",
+        "graceNoDate": "你的上一次付款未成功。Premium 暂时仍可使用，请更新付款方式。",
+        "billing_retry": "由于付款失败，Premium 已暂停。付款成功后会自动恢复。",
+        "lapsed": "Premium 已于 {{date}} 结束。你保存的单词和进度都还在。",
+        "lapsedNoDate": "Premium 已结束。你保存的单词和进度都还在。",
+        "none": "所有书籍均免费。Premium 增加录音棚朗读、无限翻译和智能复习。"
+      },
+      "actions": {
+        "fixPayment": "修复付款",
+        "cancel": "我想取消",
+        "turnOnRenewal": "重新开启续订",
+        "winback": "查看回归方案",
+        "goPremium": "升级 Premium",
+        "manageInStore": "在 App Store 中管理",
+        "restore": "恢复购买"
+      }
+    },
+    "billing": {
+      "bannerGrace": "付款未成功。请在 {{date}} 前修复以保留 Premium。",
+      "bannerGraceNoDate": "付款未成功。请修复以保留 Premium。",
+      "bannerRetry": "由于付款失败，Premium 已暂停。",
+      "bannerCta": "修复",
+      "title": "付款未成功",
+      "titleRetry": "Premium 已暂停",
+      "body": "Apple 未能收取你上一次的续订费用。Premium 保持到 {{date}}；更新付款方式即可不间断使用。",
+      "bodyNoDate": "Apple 未能收取你上一次的续订费用。Premium 暂时仍可使用；更新付款方式即可不间断使用。",
+      "bodyRetry": "由于付款失败，Premium 已暂停。Apple 会继续尝试扣款一段时间；更新付款方式后，Premium 会自动恢复。",
+      "cta": "更新付款方式",
+      "manage": "查看订阅",
+      "later": "稍后",
+      "note": "付款通过 Apple 进行；银行卡信息需在你的 Apple 账户中更新，而不是在我们这里。",
+      "recovered": "付款已恢复，Premium 继续生效。"
+    },
+    "ending": {
+      "banner": "Premium 将于 {{date}} 结束；自动续订已关闭。",
+      "bannerCta": "管理",
+      "notifTitle": "Premium 将在 3 天后结束",
+      "notifBody": "收听和无限翻译将于 {{date}} 关闭。如想继续使用，可重新开启续订。"
+    },
+    "trial": {
+      "lastDayBanner": "你的免费试用将于 {{date}} 结束，订阅随即开始。",
+      "lastDayCta": "查看"
+    },
+    "winback": {
+      "title": "欢迎回来",
+      "body": "Premium 已结束，但你的进度还在。你的书在等你。",
+      "bodyWords_one": "Premium 已结束，但你的进度还在：{{count}} 个已保存的单词在等你。",
+      "bodyWords_other": "Premium 已结束，但你的进度还在：{{count}} 个已保存的单词在等你。",
+      "offerTitle": "回归优惠",
+      "offerBody": "首期 {{price}}。之后按原价（{{regular}}）续订；可随时在 App Store 取消。",
+      "offerCta": "使用优惠继续",
+      "noOffer": "目前没有专属优惠。你可以查看方案，或继续免费阅读。",
+      "seePlans": "查看方案",
+      "notNow": "暂不",
+      "purchasedTitle": "欢迎回来！",
+      "purchasedBody": "Premium 已重新开通。",
+      "notifTitle": "从上次停下的地方继续",
+      "notifBody": "你的书和已保存的单词在等你。"
+    },
+    "cancel": {
+      "title": "取消订阅",
+      "lossTitle": "Premium 结束后会有哪些变化",
+      "loss": {
+        "audio": "录音棚朗读收听将关闭",
+        "lookups_one": "单词和句子翻译限制为每天 {{count}} 次",
+        "lookups_other": "单词和句子翻译限制为每天 {{count}} 次",
+        "savedWords_one": "你保存的 {{count}} 个单词会保留；新增单词上限为 {{limit}} 个",
+        "savedWords_other": "你保存的 {{count}} 个单词会保留；新增单词上限为 {{limit}} 个",
+        "smartPractice": "智能复习降为每 24 小时 1 次",
+        "quiz": "书籍测验第 2、3 级将被锁定"
+      },
+      "keep": "继续使用 Premium",
+      "continue": "继续",
+      "reasonTitle": "你为什么要离开？",
+      "reasonSubtitle": "你的回答能帮助我们改进应用。",
+      "reasons": {
+        "too_expensive": "太贵了",
+        "not_using": "我用得不多",
+        "missing_content": "没有我想要的内容",
+        "technical": "遇到技术问题",
+        "other": "其他原因"
+      },
+      "notePlaceholder": "愿意的话可以多写几句",
+      "offerTitle": "离开之前",
+      "offer": {
+        "promotional": "专属折扣：首期 {{price}}。之后按原价（{{regular}}）续订。",
+        "promotionalCta": "使用折扣继续",
+        "promotionalAccepted": "折扣已应用到你的订阅。",
+        "monthly_switch": "你可以改为月度方案：{{price}}。切换会在年度周期结束后生效，已付时间不会浪费。",
+        "monthlyCta": "改为月度",
+        "monthlyAccepted": "当前周期结束后，你的方案将改为月度。",
+        "goal": "每天 5 分钟就够了。你可以降低每日目标并设置提醒。",
+        "goalCta": "调整目标",
+        "support": "告诉我们问题所在，我们一起解决。",
+        "supportCta": "打开支持页面",
+        "none": "感谢你的反馈。",
+        "acceptedTitle": "谢谢！"
+      },
+      "cancelAnyway": "仍要取消",
+      "storeNote": "取消需在 App Store 中进行；Premium 将保持到本期结束。"
+    }
   }
 }

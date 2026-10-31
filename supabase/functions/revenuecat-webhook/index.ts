@@ -26,6 +26,8 @@
 // hatalar (DB erişilemedi) 5xx döner.
 import { createClient, type SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
+import { lifecyclePatchFor } from "./lifecycle.ts";
+
 /** Uygulamanın RevenueCat'teki yetki adı — src/lib/revenuecat.ts ile aynı. */
 const PREMIUM_ENTITLEMENT = "premium";
 
@@ -67,6 +69,10 @@ interface RevenueCatEvent {
   event_timestamp_ms?: number | null;
   transferred_to?: string[];
   transferred_from?: string[];
+  // Yaşam döngüsü alanları (migration 100, bkz. lifecycle.ts).
+  grace_period_expiration_at_ms?: number | null;
+  cancel_reason?: string | null;
+  expiration_reason?: string | null;
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -282,6 +288,44 @@ function touchesPremium(event: RevenueCatEvent): boolean {
   return true;
 }
 
+/**
+ * Yaşam döngüsü (bilgi) alanlarını yazar: ödeme sorunu, iptal, bitiş nedeni
+ * (migration 100). YETKİ yazımından SONRA ve ondan bağımsız çağrılıyor;
+ * yetki mantığı (yukarıdaki tier kararı, apply_entitlement_event) DEĞİŞMEDİ.
+ *
+ * Yetki "duplicate" dönse bile çağrılıyor: bir önceki teslimde yetki
+ * yazılıp burası geçici olarak başarısız olduysa RevenueCat'in yeniden
+ * denemesi bu alanları tamamlasın. Fonksiyonun kendi idempotansı var.
+ *
+ * Fonksiyon canlıda yoksa (migration 100 henüz uygulanmamış) yalnızca log:
+ * yetkisi zaten yazılmış bir olayı günlerce yeniden denetmek anlamsız.
+ */
+async function applyLifecycle(
+  admin: AdminClient,
+  userId: string,
+  event: RevenueCatEvent,
+): Promise<string> {
+  const patch = lifecyclePatchFor(event, Date.now());
+  if (!patch) return "skipped";
+  const eventMs = typeof event.event_timestamp_ms === "number" ? event.event_timestamp_ms : null;
+  const { data, error } = await admin.rpc("apply_subscription_lifecycle", {
+    p_user_id: userId,
+    p_event_id: event.id ?? `${event.type ?? "UNKNOWN"}:${eventMs ?? Date.now()}`,
+    p_event_ms: eventMs,
+    p_event_type: event.type ?? "UNKNOWN",
+    p_patch: patch,
+  });
+  if (!error) return String(data);
+  if (error.code === "PGRST202" || error.code === "42883") {
+    console.error("revenuecat-webhook: apply_subscription_lifecycle missing (migration 100?)");
+    return "not_installed";
+  }
+  console.error(
+    `revenuecat-webhook: lifecycle failed user_id=${userId} code=${error.code} message=${error.message}`,
+  );
+  return "retry";
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
     return jsonResponse({ error: "method_not_allowed" }, 405);
@@ -411,9 +455,12 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "apply_failed" }, 500);
   }
 
+  const lifecycle = await applyLifecycle(adminClient, userId, event);
+  if (lifecycle === "retry") return jsonResponse({ error: "lifecycle_failed" }, 500);
+
   console.log(
-    `revenuecat-webhook: type=${type} user_id=${userId} tier=${tier} result=${String(data)} env=${event.environment ?? "?"}`,
+    `revenuecat-webhook: type=${type} user_id=${userId} tier=${tier} result=${String(data)} lifecycle=${lifecycle} env=${event.environment ?? "?"}`,
   );
 
-  return jsonResponse({ status: "ok", result: data, tier }, 200);
+  return jsonResponse({ status: "ok", result: data, tier, lifecycle }, 200);
 });

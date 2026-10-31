@@ -720,7 +720,8 @@
       "description": "Stüdyo seslendirmesi, sınırsız çeviri ve Akıllı Tekrar.",
       "cta": "Premium'u gör",
       "activeTitle": "Premium üyesin",
-      "activeDescription": "Tüm özellikler açık. İyi okumalar!"
+      "activeDescription": "Tüm özellikler açık. İyi okumalar!",
+      "manageCta": "Aboneliği yönet"
     },
     "sections": {
       "learning": "Öğrenme",
@@ -1368,6 +1369,14 @@
       "homeOffer": {
         "title": "Premium'u ücretsiz dene",
         "subtitle": "Dinle, sınırsız çevir, Akıllı Tekrar ile kalıcı öğren."
+      },
+      "onboardingNoTrial": {
+        "title": "Okuma planın hazır",
+        "subtitle": "Premium ile dinle, sınırsız çevir, kalıcı öğren."
+      },
+      "homeOfferNoTrial": {
+        "title": "Premium ile daha fazlası",
+        "subtitle": "Dinle, sınırsız çevir, Akıllı Tekrar ile kalıcı öğren."
       }
     },
     "cancelAnytime": "İstediğin zaman iptal edebilirsin.",
@@ -1388,8 +1397,12 @@
     "onboardingPersonal": {
       "title": "{{level}} seviyen için planın hazır",
       "subtitle": "Günde {{minutes}} dk ile 6 ayda {{hours}} saat okuma. Denemede her şey açık.",
-      "subtitleNoGoal": "Denemede her şey açık: dinle, sınırsız çevir, Akıllı Tekrar ile pekiştir."
-    }
+      "subtitleNoGoal": "Denemede her şey açık: dinle, sınırsız çevir, Akıllı Tekrar ile pekiştir.",
+      "subtitleNoTrial": "Günde {{minutes}} dk ile 6 ayda {{hours}} saat okuma. Premium ile her şey açık.",
+      "subtitleNoGoalNoTrial": "Premium ile dinle, sınırsız çevir, Akıllı Tekrar ile pekiştir."
+    },
+    "noTrialOnPlanAnnual": "Yıllık planda ücretsiz deneme yok; ödeme hemen alınır. Ücretsiz deneme aylık planda.",
+    "noTrialOnPlanOther": "Seçili planda ücretsiz deneme yok; ödeme hemen alınır."
   },
   "reminders": {
     "settingsLabel": "Hatırlatmalar",
@@ -1595,5 +1608,131 @@
     "retry": "Tekrar dene",
     "retrying": "Bağlanılıyor…",
     "autoRetry": "Bağlantı gelince kendiliğinden yeniden denenecek."
+  },
+  "subscription": {
+    "manage": {
+      "title": "Abonelik",
+      "loadError": "Abonelik bilgisi yüklenemedi.",
+      "storeOpenError": "App Store abonelik sayfası açılamadı. Ayarlar > Apple Kimliği > Abonelikler'den yönetebilirsin.",
+      "footnote": "İptal ve plan değişikliği App Store'da yapılır. Yenilemeden en az 24 saat önce iptal edersen yeni dönem ücreti alınmaz.",
+      "trialDaysLeft_one": "Denemenin bitmesine {{count}} gün kaldı",
+      "trialDaysLeft_other": "Denemenin bitmesine {{count}} gün kaldı",
+      "status": {
+        "trial": "Ücretsiz deneme",
+        "active": "Premium aktif",
+        "cancelled": "Yenileme kapalı",
+        "grace": "Ödeme sorunu",
+        "billing_retry": "Premium durdu",
+        "lapsed_paid": "Premium sona erdi",
+        "lapsed_trial": "Deneme sona erdi",
+        "none": "Ücretsiz plan"
+      },
+      "detail": {
+        "trial": "Denemen {{date}} tarihinde bitiyor. İptal etmezsen o gün abonelik başlar ve ücret alınır.",
+        "active": "Aboneliğin {{date}} tarihinde yenilenecek.",
+        "activeNoDate": "Aboneliğin otomatik olarak yenilenecek.",
+        "cancelled": "Premium {{date}} tarihine kadar açık, sonra yenilenmeyecek.",
+        "cancelledNoDate": "Premium dönem sonuna kadar açık, sonra yenilenmeyecek.",
+        "grace": "Son ödemen alınamadı. Premium {{date}} tarihine kadar açık; ödeme yöntemini güncelle.",
+        "graceNoDate": "Son ödemen alınamadı. Premium şimdilik açık; ödeme yöntemini güncelle.",
+        "billing_retry": "Ödeme alınamadığı için Premium durdu. Ödeme düzelince kendiliğinden açılır.",
+        "lapsed": "Premium {{date}} tarihinde sona erdi. Kayıtlı kelimelerin ve ilerlemen duruyor.",
+        "lapsedNoDate": "Premium sona erdi. Kayıtlı kelimelerin ve ilerlemen duruyor.",
+        "none": "Tüm kitaplar ücretsiz. Premium stüdyo seslendirmesi, sınırsız çeviri ve Akıllı Tekrar ekler."
+      },
+      "actions": {
+        "fixPayment": "Ödemeyi düzelt",
+        "cancel": "İptal etmek istiyorum",
+        "turnOnRenewal": "Yenilemeyi aç",
+        "winback": "Geri dönüş seçeneklerini gör",
+        "goPremium": "Premium'a geç",
+        "manageInStore": "App Store'da yönet",
+        "restore": "Satın alımları geri yükle"
+      }
+    },
+    "billing": {
+      "bannerGrace": "Ödemen alınamadı. Premium'u kaybetmemek için {{date}} tarihine kadar düzelt.",
+      "bannerGraceNoDate": "Ödemen alınamadı. Premium'u kaybetmemek için düzelt.",
+      "bannerRetry": "Ödeme alınamadığı için Premium durdu.",
+      "bannerCta": "Düzelt",
+      "title": "Ödemen alınamadı",
+      "titleRetry": "Premium durdu",
+      "body": "Apple son yenileme ödemesini alamadı. Premium {{date}} tarihine kadar açık kalır; ödeme yöntemini güncellersen kesintisiz devam eder.",
+      "bodyNoDate": "Apple son yenileme ödemesini alamadı. Premium şimdilik açık; ödeme yöntemini güncellersen kesintisiz devam eder.",
+      "bodyRetry": "Ödeme alınamadığı için Premium durdu. Apple tahsilatı bir süre daha deneyecek; ödeme yöntemini güncellediğinde Premium kendiliğinden açılır.",
+      "cta": "Ödeme yöntemini güncelle",
+      "manage": "Aboneliği görüntüle",
+      "later": "Daha sonra",
+      "note": "Ödeme Apple üzerinden alınır; kart bilgilerin bizde değil, Apple hesabında güncellenir.",
+      "recovered": "Ödeme düzeldi, Premium devam ediyor."
+    },
+    "ending": {
+      "banner": "Premium {{date}} tarihinde bitiyor; yenileme kapalı.",
+      "bannerCta": "Yönet",
+      "notifTitle": "Premium 3 gün sonra bitiyor",
+      "notifBody": "Dinleme ve sınırsız çeviri {{date}} tarihinde kapanacak. Devam etmek istersen yenilemeyi açabilirsin."
+    },
+    "trial": {
+      "lastDayBanner": "Ücretsiz denemen {{date}} tarihinde bitiyor ve abonelik başlıyor.",
+      "lastDayCta": "Görüntüle"
+    },
+    "winback": {
+      "title": "Tekrar hoş geldin",
+      "body": "Premium sona erdi ama ilerlemen burada. Kitapların seni bekliyor.",
+      "bodyWords_one": "Premium sona erdi ama ilerlemen burada: {{count}} kayıtlı kelimen seni bekliyor.",
+      "bodyWords_other": "Premium sona erdi ama ilerlemen burada: {{count}} kayıtlı kelimen seni bekliyor.",
+      "offerTitle": "Geri dönüş teklifi",
+      "offerBody": "İlk dönem {{price}}. Sonra normal fiyattan ({{regular}}) yenilenir; istediğin zaman App Store'dan iptal edebilirsin.",
+      "offerCta": "Teklifle devam et",
+      "noOffer": "Şu an sana özel bir teklif yok. Planlara bakabilir ya da ücretsiz okumaya devam edebilirsin.",
+      "seePlans": "Planları gör",
+      "notNow": "Şimdi değil",
+      "purchasedTitle": "Tekrar hoş geldin!",
+      "purchasedBody": "Premium yeniden açık.",
+      "notifTitle": "Kaldığın yerden devam et",
+      "notifBody": "Kitapların ve kayıtlı kelimelerin seni bekliyor."
+    },
+    "cancel": {
+      "title": "Aboneliği iptal et",
+      "lossTitle": "Premium bitince değişenler",
+      "loss": {
+        "audio": "Stüdyo seslendirmesiyle dinleme kapanır",
+        "lookups_one": "Kelime ve cümle çevirisi günde {{count}} hakla sınırlanır",
+        "lookups_other": "Kelime ve cümle çevirisi günde {{count}} hakla sınırlanır",
+        "savedWords_one": "{{count}} kayıtlı kelimen kalır; yeni kelime eklemek {{limit}} kelimeyle sınırlanır",
+        "savedWords_other": "{{count}} kayıtlı kelimen kalır; yeni kelime eklemek {{limit}} kelimeyle sınırlanır",
+        "smartPractice": "Akıllı Tekrar 24 saatte 1 denemeye düşer",
+        "quiz": "Kitap quizlerinin 2. ve 3. basamağı kilitlenir"
+      },
+      "keep": "Premium'da kal",
+      "continue": "Devam et",
+      "reasonTitle": "Neden ayrılıyorsun?",
+      "reasonSubtitle": "Cevabın uygulamayı iyileştirmemize yardım eder.",
+      "reasons": {
+        "too_expensive": "Fiyatı yüksek",
+        "not_using": "Yeterince kullanmıyorum",
+        "missing_content": "Aradığım içerik yok",
+        "technical": "Teknik sorun yaşıyorum",
+        "other": "Başka bir sebep"
+      },
+      "notePlaceholder": "İstersen birkaç kelime ekle",
+      "offerTitle": "Ayrılmadan önce",
+      "offer": {
+        "promotional": "Sana özel indirim: ilk dönem {{price}}. Sonra normal fiyattan ({{regular}}) yenilenir.",
+        "promotionalCta": "İndirimle devam et",
+        "promotionalAccepted": "İndirim aboneliğine uygulandı.",
+        "monthly_switch": "Aylık plana geçebilirsin: {{price}}. Geçiş yıllık dönemin bitince başlar, ödediğin süre yanmaz.",
+        "monthlyCta": "Aylık plana geç",
+        "monthlyAccepted": "Planın, mevcut dönemin bitince aylığa geçecek.",
+        "goal": "Günde 5 dakika bile yeter. Günlük hedefini düşürüp hatırlatma kurabilirsin.",
+        "goalCta": "Hedefi ayarla",
+        "support": "Sorunu bize yaz, birlikte çözelim.",
+        "supportCta": "Destek sayfasını aç",
+        "none": "Geri bildirimin için teşekkürler.",
+        "acceptedTitle": "Teşekkürler!"
+      },
+      "cancelAnyway": "Yine de iptal et",
+      "storeNote": "İptal App Store'da yapılır; Premium dönem sonuna kadar açık kalır."
+    }
   }
 }

@@ -720,7 +720,8 @@
       "description": "スタジオ朗読、無制限の翻訳、スマート復習。",
       "cta": "Premium を見る",
       "activeTitle": "Premium 会員です",
-      "activeDescription": "すべて解放されました。読書を楽しんで！"
+      "activeDescription": "すべて解放されました。読書を楽しんで！",
+      "manageCta": "サブスクリプションを管理"
     },
     "sections": {
       "learning": "学習",
@@ -1368,6 +1369,14 @@
       "homeOffer": {
         "title": "プレミアムを無料で試す",
         "subtitle": "聞く、無制限に翻訳、スマート復習で覚える。"
+      },
+      "onboardingNoTrial": {
+        "title": "読書プランの準備ができました",
+        "subtitle": "Premium なら、聴いて、自由に翻訳して、もっと覚えられます。"
+      },
+      "homeOfferNoTrial": {
+        "title": "Premium でもっと",
+        "subtitle": "聴いて、無制限に翻訳し、スマート復習でもっと覚えよう。"
       }
     },
     "cancelAnytime": "いつでも解約できます。",
@@ -1388,8 +1397,12 @@
     "onboardingPersonal": {
       "title": "{{level}}レベル向けのプランができました",
       "subtitle": "1日{{minutes}}分で、6か月に{{hours}}時間の読書。体験中はすべて使えます。",
-      "subtitleNoGoal": "体験中はすべて使えます：聞く、無制限に翻訳、スマート復習で定着。"
-    }
+      "subtitleNoGoal": "体験中はすべて使えます：聞く、無制限に翻訳、スマート復習で定着。",
+      "subtitleNoTrial": "1日{{minutes}}分で、6か月に{{hours}}時間の読書。Premium ですべてが使えます。",
+      "subtitleNoGoalNoTrial": "Premium なら、聴いて、無制限に翻訳し、スマート復習で定着させられます。"
+    },
+    "noTrialOnPlanAnnual": "年額プランには無料トライアルがなく、すぐに請求されます。無料トライアルは月額プランにあります。",
+    "noTrialOnPlanOther": "選択したプランには無料トライアルがなく、すぐに請求されます。"
   },
   "reminders": {
     "settingsLabel": "リマインダー",
@@ -1595,5 +1608,131 @@
     "retry": "再試行",
     "retrying": "接続中…",
     "autoRetry": "オンラインに戻ると自動的に再試行します。"
+  },
+  "subscription": {
+    "manage": {
+      "title": "サブスクリプション",
+      "loadError": "サブスクリプション情報を読み込めませんでした。",
+      "storeOpenError": "App Store のサブスクリプションページを開けませんでした。設定 > Apple ID > サブスクリプション から管理できます。",
+      "footnote": "解約とプラン変更は App Store で行います。次回の請求を避けるには、更新の24時間前までに解約してください。",
+      "trialDaysLeft_one": "無料トライアル残り{{count}}日",
+      "trialDaysLeft_other": "無料トライアル残り{{count}}日",
+      "status": {
+        "trial": "無料トライアル",
+        "active": "Premium 有効",
+        "cancelled": "自動更新オフ",
+        "grace": "支払いの問題",
+        "billing_retry": "Premium 停止中",
+        "lapsed_paid": "Premium 終了",
+        "lapsed_trial": "トライアル終了",
+        "none": "無料プラン"
+      },
+      "detail": {
+        "trial": "トライアルは{{date}}に終了します。解約しない場合、その日にサブスクリプションが始まり請求されます。",
+        "active": "サブスクリプションは{{date}}に更新されます。",
+        "activeNoDate": "サブスクリプションは自動更新されます。",
+        "cancelled": "Premium は{{date}}まで有効で、その後は更新されません。",
+        "cancelledNoDate": "Premium は期間終了まで有効で、更新されません。",
+        "grace": "前回の支払いができませんでした。Premium は{{date}}まで有効です。支払い方法を更新してください。",
+        "graceNoDate": "前回の支払いができませんでした。Premium は今のところ有効です。支払い方法を更新してください。",
+        "billing_retry": "支払いができなかったため Premium は停止中です。支払いが完了すると自動で再開します。",
+        "lapsed": "Premium は{{date}}に終了しました。保存した単語と進捗はそのまま残っています。",
+        "lapsedNoDate": "Premium は終了しました。保存した単語と進捗はそのまま残っています。",
+        "none": "すべての本は無料です。Premium ではスタジオ朗読、無制限の翻訳、スマート復習が使えます。"
+      },
+      "actions": {
+        "fixPayment": "支払いを修正",
+        "cancel": "解約したい",
+        "turnOnRenewal": "自動更新をオンにする",
+        "winback": "再開のオプションを見る",
+        "goPremium": "Premium にする",
+        "manageInStore": "App Store で管理",
+        "restore": "購入を復元"
+      }
+    },
+    "billing": {
+      "bannerGrace": "支払いができませんでした。Premium を続けるには{{date}}までに修正してください。",
+      "bannerGraceNoDate": "支払いができませんでした。Premium を続けるには修正してください。",
+      "bannerRetry": "支払いができなかったため Premium は停止中です。",
+      "bannerCta": "修正",
+      "title": "支払いができませんでした",
+      "titleRetry": "Premium 停止中",
+      "body": "Apple が前回の更新料金を請求できませんでした。Premium は{{date}}まで有効です。支払い方法を更新すれば途切れずに使えます。",
+      "bodyNoDate": "Apple が前回の更新料金を請求できませんでした。Premium は今のところ有効です。支払い方法を更新すれば途切れずに使えます。",
+      "bodyRetry": "支払いができなかったため Premium は停止中です。Apple はしばらく請求を再試行します。支払い方法を更新すると Premium は自動で再開します。",
+      "cta": "支払い方法を更新",
+      "manage": "サブスクリプションを見る",
+      "later": "あとで",
+      "note": "支払いは Apple を通じて行われます。カード情報は当社ではなく Apple アカウントで更新します。",
+      "recovered": "支払いが完了しました。Premium は継続中です。"
+    },
+    "ending": {
+      "banner": "Premium は{{date}}に終了します。自動更新はオフです。",
+      "bannerCta": "管理",
+      "notifTitle": "Premium はあと3日で終了します",
+      "notifBody": "{{date}}に聴く機能と無制限翻訳が使えなくなります。続けたい場合は自動更新をオンにしてください。"
+    },
+    "trial": {
+      "lastDayBanner": "無料トライアルは{{date}}に終了し、サブスクリプションが始まります。",
+      "lastDayCta": "見る"
+    },
+    "winback": {
+      "title": "おかえりなさい",
+      "body": "Premium は終了しましたが、進捗はそのまま残っています。本があなたを待っています。",
+      "bodyWords_one": "Premium は終了しましたが、進捗は残っています。保存した単語{{count}}個があなたを待っています。",
+      "bodyWords_other": "Premium は終了しましたが、進捗は残っています。保存した単語{{count}}個があなたを待っています。",
+      "offerTitle": "おかえりオファー",
+      "offerBody": "最初の期間は{{price}}。その後は通常価格（{{regular}}）で更新されます。App Store でいつでも解約できます。",
+      "offerCta": "オファーで続ける",
+      "noOffer": "現在、特別なオファーはありません。プランを見るか、無料で読み続けることができます。",
+      "seePlans": "プランを見る",
+      "notNow": "今はしない",
+      "purchasedTitle": "おかえりなさい！",
+      "purchasedBody": "Premium が再び有効になりました。",
+      "notifTitle": "続きから再開しよう",
+      "notifBody": "本と保存した単語があなたを待っています。"
+    },
+    "cancel": {
+      "title": "サブスクリプションを解約",
+      "lossTitle": "Premium 終了後に変わること",
+      "loss": {
+        "audio": "スタジオ朗読で聴く機能が使えなくなります",
+        "lookups_one": "単語・文の翻訳は1日{{count}}回までになります",
+        "lookups_other": "単語・文の翻訳は1日{{count}}回までになります",
+        "savedWords_one": "保存した単語{{count}}個は残ります。新しい単語の追加は{{limit}}個までになります",
+        "savedWords_other": "保存した単語{{count}}個は残ります。新しい単語の追加は{{limit}}個までになります",
+        "smartPractice": "スマート復習は24時間に1回までになります",
+        "quiz": "本のクイズのレベル2と3がロックされます"
+      },
+      "keep": "Premium を続ける",
+      "continue": "続ける",
+      "reasonTitle": "解約の理由は？",
+      "reasonSubtitle": "回答はアプリの改善に役立ちます。",
+      "reasons": {
+        "too_expensive": "価格が高い",
+        "not_using": "あまり使っていない",
+        "missing_content": "欲しいコンテンツがない",
+        "technical": "技術的な問題がある",
+        "other": "その他"
+      },
+      "notePlaceholder": "よければ一言どうぞ",
+      "offerTitle": "解約の前に",
+      "offer": {
+        "promotional": "あなただけの割引：最初の期間は{{price}}。その後は通常価格（{{regular}}）で更新されます。",
+        "promotionalCta": "割引で続ける",
+        "promotionalAccepted": "割引がサブスクリプションに適用されました。",
+        "monthly_switch": "月額プランに変更できます：{{price}}。変更は年間期間の終了後に始まるので、支払った分は無駄になりません。",
+        "monthlyCta": "月額に変更",
+        "monthlyAccepted": "現在の期間が終わると、プランは月額に切り替わります。",
+        "goal": "1日5分でも十分です。毎日の目標を下げてリマインダーを設定できます。",
+        "goalCta": "目標を調整",
+        "support": "問題を教えてください。一緒に解決しましょう。",
+        "supportCta": "サポートページを開く",
+        "none": "フィードバックをありがとうございます。",
+        "acceptedTitle": "ありがとうございます！"
+      },
+      "cancelAnyway": "それでも解約する",
+      "storeNote": "解約は App Store で行います。Premium は期間終了まで有効です。"
+    }
   }
 }
