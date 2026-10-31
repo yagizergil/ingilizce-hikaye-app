@@ -1,4 +1,5 @@
 export { PaywallScreen } from "@/features/paywall/components/PaywallScreen";
+export { EntitlementRepairOnLaunch } from "@/features/paywall/components/EntitlementRepairOnLaunch";
 export {
   useSubscriptionQuery,
   subscriptionQueryKeys,
