@@ -516,6 +516,7 @@
     "wordSheet": {
       "pronounce": "发音",
       "noTranslation": "没有找到这个词的释义",
+      "lookupOffline": "没有网络连接。请连接网络后查看这个词的释义。",
       "lookingUpTranslation": "正在查释义…",
       "save": "收藏",
       "saved": "已收藏",

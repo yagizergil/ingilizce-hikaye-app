@@ -516,6 +516,7 @@
     "wordSheet": {
       "pronounce": "発音を聞く",
       "noTranslation": "この単語の訳が見つかりませんでした",
+      "lookupOffline": "接続がありません。この単語の訳を見るにはインターネットに接続してください。",
       "lookingUpTranslation": "訳を調べています…",
       "save": "保存",
       "saved": "保存済み",

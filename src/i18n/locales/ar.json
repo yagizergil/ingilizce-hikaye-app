@@ -528,6 +528,7 @@
     "wordSheet": {
       "pronounce": "استمع إلى النطق",
       "noTranslation": "لا توجد ترجمة لهذه الكلمة",
+      "lookupOffline": "لا يوجد اتصال. اتصل بالإنترنت لعرض ترجمة هذه الكلمة.",
       "lookingUpTranslation": "جارٍ البحث عن الترجمة…",
       "save": "حفظ",
       "saved": "محفوظة",

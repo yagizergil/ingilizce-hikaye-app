@@ -12,6 +12,7 @@ import { useHomePalette } from "@/features/home/useHomePalette";
 import { supabase } from "@/lib/supabase";
 import { env } from "@/lib/env";
 import { trackError } from "@/lib/analytics";
+import { clearWordLookupLedger } from "@/features/reader";
 import { reloadApp } from "@/lib/rtl";
 
 interface DeleteAccountScreenProps {
@@ -53,6 +54,9 @@ export function DeleteAccountScreen({ onDeleted, onCancel }: DeleteAccountScreen
       const { error } = await supabase.auth.signInAnonymously();
       if (error) throw error;
       queryClient.clear();
+      await clearWordLookupLedger().catch((ledgerError: unknown) =>
+        trackError("reader.wordLookupLedger", ledgerError),
+      );
       const reloaded = await reloadApp();
       if (!reloaded) onDeleted();
     } catch (error) {

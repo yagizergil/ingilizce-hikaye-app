@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 import { spacing } from "@/theme";
 import { useReadingTheme } from "@/theme/useTheme";
-import { ErrorState, MascotLoading } from "@/components/ui";
+import { ErrorState, MascotLoading, useToast } from "@/components/ui";
 import { router } from "expo-router";
 
 import { useActivationStore } from "@/hooks/useActivationStore";
@@ -21,6 +21,10 @@ import {
   useReadingProgressMutation,
 } from "@/features/reader/api/useReadingProgressMutation";
 import { useBookLemmaDictionary } from "@/features/reader/api/useBookLemmaDictionary";
+import {
+  noteWordLookup,
+  resolveUnverifiedWordLookup,
+} from "@/features/reader/api/wordLookupLedger";
 import {
   useSavedLemmas,
   useSaveWordMutation,
@@ -111,6 +115,7 @@ export function ReaderScreen({
   autoStartSpeech = false,
 }: ReaderScreenProps) {
   const { t } = useTranslation();
+  const { show: showToast } = useToast();
   const readerColors = useReaderThemeColors();
   const settings = useReaderSettings();
 
@@ -457,6 +462,23 @@ export function ReaderScreen({
         });
 
       /**
+       * TAKILINAN KELİME PAYWALL'A TAŞINIYOR (2026-09-19 dönüşüm turu).
+       *
+       * Üründeki en yüksek niyetli an bu: kullanıcı tam o saniyede
+       * BELİRLİ bir kelimeyi anlamak istiyor ve anlayamıyor. Kelimeyi
+       * adıyla göstermek, soyut bir "sınırsız çeviri" vaadini onun
+       * gerçekten istediği tek somut şeye bağlıyor.
+       *
+       * Bu, okuma ekranına promosyon SOKMUYOR (Ürün İlkesi #1): paywall
+       * zaten reader'ın DIŞINDA, ayrı bir ekranda açılıyordu; değişen
+       * tek şey oraya taşınan bağlam.
+       */
+      const openQuotaPaywall = () => {
+        trackEvent("paywall_opened", { source: "word_quota_exhausted" });
+        router.push(`/paywall?source=word_quota&word=${encodeURIComponent(payload.surface)}`);
+      };
+
+      /**
        * KOTA ÖNCE TÜKETİLİYOR, SÖZLÜK SONRA AÇILIYOR.
        *
        * Sıra önemli: sözlüğü açıp sonra "hakkın bitti" demek, kullanıcıya
@@ -465,38 +487,41 @@ export function ReaderScreen({
        * karar vermek, sınırı istemciyi değiştirebilen herkes için
        * kaldırmak demekti.
        *
-       * AĞ HATASINDA AÇIK KALIYOR: çağrı başarısız olursa sözlük yine
-       * açılıyor ve hak DÜŞMÜYOR. Bir bağlantı kesintisinin okumayı
-       * durdurması, bir kullanıcının birkaç bedava çeviri almasından çok
-       * daha kötü.
+       * AĞ HATASINDA ARTIK KOŞULSUZ AÇILMIYOR (C4, 2026-10-31). Eskiden
+       * çağrı başarısız olursa sözlük açılıyor ve hak düşmüyordu; uçak modu
+       * günlük sınırı tamamen kaldırıyordu. Şimdi karar sunucudan alınmış
+       * SON kota bilgisiyle veriliyor (`wordLookupLedger`): son 24 saatte
+       * açılmış kelime ve elde kalan hak kadar yeni kelime açılıyor, açılan
+       * her yeni kelime bağlantı gelince sunucu sayacına yazılıyor. Okuma
+       * kesilmiyor; yalnızca hiç bilinmeyen bir kota ile yeni bir kelime
+       * "bağlantı yok" diyor.
        */
       void consumeWordLookupAsync()
         .then((result) => {
           if (result.allowed) {
             openSheet();
+            void noteWordLookup(payload.lemma).catch((error: unknown) =>
+              trackError("reader.wordLookupLedger", error),
+            );
             return;
           }
-          trackEvent("paywall_opened", { source: "word_quota_exhausted" });
-          /**
-           * TAKILINAN KELİME PAYWALL'A TAŞINIYOR (2026-09-19 dönüşüm turu).
-           *
-           * Üründeki en yüksek niyetli an bu: kullanıcı tam o saniyede
-           * BELİRLİ bir kelimeyi anlamak istiyor ve anlayamıyor. Kelimeyi
-           * adıyla göstermek, soyut bir "sınırsız çeviri" vaadini onun
-           * gerçekten istediği tek somut şeye bağlıyor.
-           *
-           * Bu, okuma ekranına promosyon SOKMUYOR (Ürün İlkesi #1): paywall
-           * zaten reader'ın DIŞINDA, ayrı bir ekranda açılıyordu; değişen
-           * tek şey oraya taşınan bağlam.
-           */
-          router.push(`/paywall?source=word_quota&word=${encodeURIComponent(payload.surface)}`);
+          openQuotaPaywall();
         })
-        .catch((error) => {
+        .catch(async (error: unknown) => {
           trackError("reader.wordQuota", error);
-          openSheet();
+          const decision = await resolveUnverifiedWordLookup(payload.lemma).catch(
+            (ledgerError: unknown) => {
+              trackError("reader.wordLookupLedger", ledgerError);
+              return "unavailable" as const;
+            },
+          );
+          trackEvent("word_lookup_unverified", { outcome: decision });
+          if (decision === "paywall") openQuotaPaywall();
+          else if (decision === "unavailable") showToast(t("reader.wordSheet.lookupOffline"));
+          else openSheet();
         });
     },
-    [pauseSpeech, consumeWordLookupAsync, setActiveWordKey],
+    [pauseSpeech, consumeWordLookupAsync, setActiveWordKey, showToast, t],
   );
 
   /**
